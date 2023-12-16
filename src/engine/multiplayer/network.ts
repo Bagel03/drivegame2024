@@ -2,7 +2,7 @@ import { System } from "bagelecs";
 import { Type } from "bagelecs";
 import { Component } from "bagelecs";
 import { World } from "bagelecs";
-import { DataConnection, LogLevel, Peer, PeerConnectOption } from "peerjs";
+import { DataConnection, Peer, PeerConnectOption } from "peerjs";
 import { Diagnostics } from "../diagnostics";
 import { pause, resume } from "../loop";
 import { Application, Ticker } from "pixi.js";
@@ -53,7 +53,6 @@ export class NetworkConnection {
             ...new Array(5).fill(0).map((_) => Math.floor(Math.random() * 26) + 65)
         );
         this.peer = new Peer(`BAGEL-TEST-${this.shortenedId}`, {
-            debug: LogLevel.All,
             logFunction(logLevel, ...rest) {
                 console.log(...rest);
             },
@@ -141,6 +140,8 @@ export class NetworkConnection {
     private setupConnection(connection: DataConnection, startCounter: boolean) {
         this.connections.set(connection.peer, connection);
         this.remoteIds.push(connection.peer);
+
+        console.log("Setting up connection", connection);
 
         if (startCounter) this.timeConnectedTo[connection.peer] = 0;
 

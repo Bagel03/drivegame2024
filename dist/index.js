@@ -42026,7 +42026,11 @@ void main(void)\r
       this.shortenedId = String.fromCharCode(
         ...new Array(5).fill(0).map((_2) => Math.floor(Math.random() * 26) + 65)
       );
-      this.peer = new $416260bce337df90$export$ecd1fc136c422448(`BAGEL-TEST-${this.shortenedId}`);
+      this.peer = new $416260bce337df90$export$ecd1fc136c422448(`BAGEL-TEST-${this.shortenedId}`, {
+        logFunction(logLevel, ...rest) {
+          console.log(...rest);
+        }
+      });
       this.init();
     }
     peer;
@@ -42053,25 +42057,7 @@ void main(void)\r
       });
       this.peer.on("connection", (c3) => {
         console.log("Connected to", c3.peer, "(Initiated remotely)");
-        setTimeout(() => {
-          c3.send({
-            event: "ConnectionAcknowledged",
-            timestamp: Date.now()
-          });
-          console.log("Sent Connection acknowledged");
-          const startCb = (data) => {
-            console.log("Got data");
-            if (data.event === "StartTime") {
-              console.log("Starting at " + data.startTime);
-              setTimeout(
-                () => this.setupConnection(c3, true),
-                data.startTime - Date.now()
-              );
-              c3.removeListener("data", startCb);
-            }
-          };
-          c3.on("data", startCb);
-        }, 300);
+        this.setupConnection(c3, true);
       });
     }
     onData(connection, fn) {
@@ -42098,6 +42084,7 @@ void main(void)\r
     setupConnection(connection, startCounter) {
       this.connections.set(connection.peer, connection);
       this.remoteIds.push(connection.peer);
+      console.log("Setting up connection", connection);
       if (startCounter)
         this.timeConnectedTo[connection.peer] = 0;
       for (const newConnectionListener of this.newConnectionListeners) {
@@ -42119,27 +42106,8 @@ void main(void)\r
         const connection = this.peer.connect(peerId, options);
         connection.once("open", () => {
           console.log("Connecting to", peerId, "(Initiated locally)...");
-          const acknowledge = (data) => {
-            console.log(data);
-            if (data.event === "ConnectionAcknowledged") {
-              let timeDiff = Date.now() - data.timestamp;
-              timeDiff *= 5;
-              timeDiff = Math.min(timeDiff, 1e3);
-              const startTime = Date.now() + timeDiff;
-              console.log(`Starting in ${timeDiff}ms ${startTime}`);
-              connection.removeListener("data", acknowledge);
-              connection.send({
-                event: "StartTime",
-                startTime
-              });
-              console.log("Sent start event");
-              setTimeout(() => {
-                this.setupConnection(connection, true);
-                res(connection);
-              }, timeDiff);
-            }
-          };
-          connection.on("data", acknowledge);
+          this.setupConnection(connection, true);
+          res(connection);
         });
         connection.once("error", (err) => rej(err));
       });
