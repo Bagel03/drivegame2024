@@ -14,7 +14,9 @@ declare module "bagelecs" {
 
 export class LoggedArchetype extends Archetype {
     private readonly bufferSize: number = TypeIdBuilder.defaultLoggedBufferSize;
-    public readonly log: (Int32Array | null)[] = new Array(this.bufferSize);
+    public readonly log: (Int32Array | null)[] = new Array(this.bufferSize).fill(
+        null
+    );
 
     private logInitalState() {
         this.log[0] = new Int32Array(this.entities.length);

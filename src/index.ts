@@ -1,5 +1,7 @@
 // import "./test";
-import { World } from "bagelecs";
+import { Type, TypeIdBuilder, World } from "bagelecs";
+TypeIdBuilder.defaultLoggedBufferSize = 300;
+
 import { editorPlugins } from "./editor/editor";
 import { enginePlugins } from "./engine/engine";
 import { gamePlugins } from "./game/game";

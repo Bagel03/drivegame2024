@@ -4,6 +4,7 @@ import { StorageKind } from "bagelecs";
 import { World } from "bagelecs";
 import { Entity } from "bagelecs";
 import { LoggedArchetypeManager } from "./archetype";
+import { patchWorldMethods } from "./world";
 
 export class RollbackManager {
     public currentlyInRollback: boolean = false;
@@ -64,5 +65,6 @@ export class RollbackManager {
 export function rollbackPlugin(world: World) {
     //@ts-ignore
     world.archetypeManager = new LoggedArchetypeManager(world);
+    patchWorldMethods(world);
     world.add(new RollbackManager(world));
 }

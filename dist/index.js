@@ -42148,7 +42148,9 @@ void main(void)\r
   // src/engine/multiplayer/archetype.ts
   var LoggedArchetype = class extends v {
     bufferSize = u.defaultLoggedBufferSize;
-    log = new Array(this.bufferSize);
+    log = new Array(this.bufferSize).fill(
+      null
+    );
     logInitalState() {
       this.log[0] = new Int32Array(this.entities.length);
       this.entities.set(this.log[0]);
@@ -42371,6 +42373,40 @@ void main(void)\r
     }
   };
 
+  // src/engine/multiplayer/world.ts
+  var MultiplayerEntityManager = class {
+    constructor(world2) {
+      this.world = world2;
+    }
+    entities = /* @__PURE__ */ new Set();
+    spawn() {
+      for (let i2 = 1; i2 <= this.entities.size + 1; i2++) {
+        if (!this.entities.has(i2)) {
+          const result = i2;
+          this.entities.add(result);
+          this.world.archetypeManager.addEntity(result);
+          return result;
+        }
+      }
+      throw new Error("Shouldn't have gotten here");
+    }
+    destroy(ent) {
+      this.entities.delete(ent);
+      this.world.archetypeManager.removeEntity(ent);
+    }
+  };
+  function patchWorldMethods(world2) {
+    const $oldSpawn = world2.spawn;
+    const $oldDestroy = world2.destroy;
+    world2.entityManager = new MultiplayerEntityManager(world2);
+    world2.spawn = function() {
+      return this.entityManager.spawn();
+    };
+    world2.destroy = function(ent) {
+      return this.entityManager.destroy(ent);
+    };
+  }
+
   // src/engine/multiplayer/rollback.ts
   var RollbackManager = class {
     constructor(world2) {
@@ -42420,6 +42456,7 @@ void main(void)\r
   };
   function rollbackPlugin(world2) {
     world2.archetypeManager = new LoggedArchetypeManager(world2);
+    patchWorldMethods(world2);
     world2.add(new RollbackManager(world2));
   }
 
@@ -43360,6 +43397,7 @@ void main(void)\r
   window.jsxFrag = Fragment;
 
   // src/index.ts
+  u.defaultLoggedBufferSize = 300;
   console.dont = {
     log: () => {
     }
