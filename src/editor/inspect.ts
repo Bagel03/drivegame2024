@@ -21,7 +21,7 @@ export function inspect(
     // This lib is nice, but we need to make a fake object
     let temp = { x: entity.get(component) };
 
-    const input = pane.addInput(temp, "x", {
+    const input = pane.addBinding(temp, "x", {
         label: title,
         ...(params || {}),
     });
@@ -39,5 +39,5 @@ export function monitor(entity: Entity, component: TypeId, title: string) {
             return entity.get(component);
         },
     };
-    pane.addMonitor(temp, "x", { label: title });
+    pane.addBinding(temp, "x", { label: title, readonly: true });
 }

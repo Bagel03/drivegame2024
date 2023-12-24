@@ -3,7 +3,6 @@ import { AnalogBinding, ButtonState, DigitalBinding, Input } from "../input";
 import { NetworkConnection } from "./network";
 import { RollbackManager } from "./rollback";
 import { ResourceUpdaterPlugin, ResourceUpdaterSystem } from "../resource";
-import { Diagnostics } from "engine/diagnostics";
 
 export interface Bindings {}
 
@@ -76,8 +75,7 @@ export class MultiplayerInput {
     };
 
     private readonly buffers: Record<string, InputState[]> = {};
-    // Map<Frames Connected, input state>
-    private readonly knownFutureInputs = new Map<number, InputState>();
+    private readonly knownFutureInputs = new Map<string, InputState>();
 
     private readonly localPeerId!: string;
 
@@ -86,25 +84,22 @@ export class MultiplayerInput {
 
     private readonly events: InputEvent[] = [];
 
-    private ready: boolean = false;
     async init() {
-        await this.networkConnection.waitForServerConnection;
-        console.log("Connected");
-        //@ts-expect-error
+        await this.networkConnection.awaitReady();
+
+        //@ts-ignore
         this.localPeerId = this.networkConnection.id;
         this.buffers[this.localPeerId] = new Array(MultiplayerInput.bufferSize).fill(
             {}
         );
 
-        this.networkConnection.waitForConnection.then(() => {
-            this.buffers[this.networkConnection.remoteId] = new Array(
-                MultiplayerInput.bufferSize
-            ).fill({});
-            this.handleRemotePackets();
+        this.networkConnection.newConnectionListeners.add((conn) => {
+            const arr = new Array(MultiplayerInput.bufferSize).fill({});
+
+            this.buffers[conn.peer] = arr;
         });
 
         this.localInput.init();
-        this.ready = true;
     }
 
     addEvent(event: InputEvent) {
@@ -120,7 +115,7 @@ export class MultiplayerInput {
         this.events.splice(this.events.findIndex((e) => e.name === event)!, 1);
     }
 
-    wasFired(event: string, clientId: string = this.networkConnection.id): boolean {
+    wasFired(clientId: string, event: string): boolean {
         return (
             this.buffers[clientId][
                 this.rollbackManager.currentFramesBack
@@ -129,9 +124,9 @@ export class MultiplayerInput {
     }
 
     is(
+        clientId: string,
         bindingName: DigitalBindingKey,
-        state: ButtonState,
-        clientId: string = this.networkConnection.id
+        state: ButtonState
     ): boolean {
         return (
             this.buffers[clientId][this.rollbackManager.currentFramesBack][
@@ -140,10 +135,7 @@ export class MultiplayerInput {
         );
     }
 
-    get(
-        bindingName: AnalogBindingKey,
-        clientId: string = this.networkConnection.id
-    ): number {
+    get(clientId: string, bindingName: AnalogBindingKey): number {
         const val =
             this.buffers[clientId][this.rollbackManager.currentFramesBack][
                 bindingName
@@ -184,40 +176,29 @@ export class MultiplayerInput {
     private oldHash: number | null = null;
 
     update(): void {
-        if (this.world.get(RollbackManager).currentlyInRollback || !this.ready)
-            return;
+        if (this.world.get(RollbackManager).currentlyInRollback) return;
 
         this.localInput.update();
 
-        // for (let i = this.networkConnection.remoteIds.length - 1; i > -1; i--) {
-        //     const peerId = this.networkConnection.remoteIds[i];
-        //     const remoteBuffer = this.buffers[peerId];
+        for (let i = this.networkConnection.remoteIds.length - 1; i > -1; i--) {
+            const peerId = this.networkConnection.remoteIds[i];
+            const remoteBuffer = this.buffers[peerId];
 
-        //     let newState: InputState;
+            let newState: InputState;
 
-        //     let knownFuture = this.knownFutureInputs.get(
-        //         peerId + "-" + this.networkConnection.timeConnectedTo[peerId]
-        //     );
-        //     if (knownFuture) {
-        //         newState = knownFuture;
-        //     } else {
-        //         newState = this.predictNextState(remoteBuffer[0]);
-        //     }
+            let knownFuture = this.knownFutureInputs.get(
+                peerId + "-" + this.networkConnection.timeConnectedTo[peerId]
+            );
+            if (knownFuture) {
+                newState = knownFuture;
+            } else {
+                newState = this.predictNextState(remoteBuffer[0]);
+            }
 
-        //     remoteBuffer.unshift(newState);
-        //     remoteBuffer.pop();
-        // }
-        if (this.networkConnection.isConnected) {
-            const newRemoteState = this.knownFutureInputs.has(
-                this.networkConnection.framesConnected
-            )
-                ? this.knownFutureInputs.get(this.networkConnection.framesConnected)!
-                : this.predictNextState(
-                      this.buffers[this.networkConnection.remoteId][0]
-                  );
-            this.buffers[this.networkConnection.remoteId].unshift(newRemoteState);
-            this.buffers[this.networkConnection.remoteId].pop();
+            remoteBuffer.unshift(newState);
+            remoteBuffer.pop();
         }
+
         // We store what the state was at the start of the frame, bc inputsystem is run first
         const newLocalState = {} as InputState;
         this.buffers[this.localPeerId].unshift(newLocalState);
@@ -254,17 +235,14 @@ export class MultiplayerInput {
 
         if (
             this.oldHash !== newLocalState.__HASH__ &&
-            this.networkConnection.isConnected
+            this.networkConnection.remoteIds.length
         ) {
-            this.networkConnection.send("input", {
-                frame: this.networkConnection.framesConnected,
-                inputState: newLocalState,
-            });
+            this.networkConnection.send("input", newLocalState);
         }
 
         this.oldHash = newLocalState.__HASH__;
 
-        // this.handleRemotePackets();
+        this.handleRemotePackets();
     }
 
     private hashState(state: InputState) {
@@ -285,70 +263,37 @@ export class MultiplayerInput {
     }
 
     private handleRemotePackets() {
-        this.networkConnection.on<{ frame: number; inputState: InputState }>(
-            "input",
-            ({ frame, inputState }) => {
-                const framesBack = this.networkConnection.framesConnected - frame;
-                Diagnostics.worstRemoteLatency = framesBack;
-                // Handle future inputs
-                if (framesBack < 0) {
-                    this.knownFutureInputs.set(frame, inputState);
-                    return;
-                }
-
-                // If the hashes match, do nothing
-                if (
-                    inputState.__HASH__ ===
-                    this.buffers[this.networkConnection.remoteId][0].__HASH__
-                ) {
-                    return;
-                }
-
-                // At this point, theres an input mismatch and were gonna rollback
-                // But first ima correct the buffer
-                let state = inputState;
-                for (let i = framesBack; i > -1; i--) {
-                    this.buffers[this.networkConnection.remoteId][i] = state;
-                    state = this.predictNextState(state);
-                }
-
-                this.rollbackManager.startRollback(framesBack);
+        let farthestRollbackFrame = 0;
+        this.networkConnection.newMessagesByType.get("input")?.forEach((message) => {
+            // Future input,
+            if (message.frame > this.networkConnection.timeConnectedTo[message.id]) {
+                this.knownFutureInputs.set(
+                    message.id + "-" + message.frame,
+                    message.data
+                );
+                return;
             }
-        );
 
-        return;
+            const framesBack =
+                this.networkConnection.timeConnectedTo[message.id] - message.frame;
+            const remote = this.buffers[message.id];
 
-        // let farthestRollbackFrame = 0;
-        // this.networkConnection.newMessagesByType.get("input")?.forEach((message) => {
-        //     // Future input,
-        //     if (message.frame > this.networkConnection.timeConnectedTo[message.id]) {
-        //         this.knownFutureInputs.set(
-        //             message.id + "-" + message.frame,
-        //             message.data
-        //         );
-        //         return;
-        //     }
+            if (message.data.__HASH__ === remote[framesBack].__HASH__) {
+                return;
+            }
 
-        //     const framesBack =
-        //         this.networkConnection.timeConnectedTo[message.id] - message.frame;
-        //     const remote = this.buffers[message.id];
+            let state = message.data;
+            for (let i = framesBack; i > -1; i--) {
+                remote[i] = state;
+                state = this.predictNextState(state);
+            }
 
-        //     if (message.data.__HASH__ === remote[framesBack].__HASH__) {
-        //         return;
-        //     }
+            farthestRollbackFrame = Math.max(farthestRollbackFrame, framesBack);
+        });
 
-        //     let state = message.data;
-        //     for (let i = framesBack; i > -1; i--) {
-        //         remote[i] = state;
-        //         state = this.predictNextState(state);
-        //     }
-
-        //     farthestRollbackFrame = Math.max(farthestRollbackFrame, framesBack);
-        // });
-
-        // if (farthestRollbackFrame > 0) {
-        //     this.rollbackManager.startRollback(farthestRollbackFrame);
-        // }
+        if (farthestRollbackFrame > 0) {
+            this.rollbackManager.startRollback(farthestRollbackFrame);
+        }
     }
 }
 

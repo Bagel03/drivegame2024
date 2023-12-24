@@ -12,7 +12,6 @@ import { Entity } from "bagelecs";
 import { MultiplayerInput } from "../engine/multiplayer/multiplayer_input";
 import { Component } from "bagelecs";
 import { Type } from "bagelecs";
-import { NetworkConnection } from "../engine/multiplayer/network";
 import { RollbackManager, rollbackPlugin } from "../engine/multiplayer/rollback";
 import { MovementSystem } from "./systems/movement";
 

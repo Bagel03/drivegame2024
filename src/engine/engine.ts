@@ -1,3 +1,4 @@
+import "./polyfills";
 import { World } from "bagelecs";
 import { RenderPlugin } from "./rendering/plugin";
 import { LoopPlugin } from "./loop";

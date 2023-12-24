@@ -17,13 +17,13 @@ export class Menu extends State<never> {
     async onEnter(): Promise<void> {
         const pane = this.world.get(Pane);
         const nc = this.world.get(NetworkConnection);
-        await nc.awaitReady();
+        await nc.waitForServerConnection;
 
         this.connectionFolder = pane.addFolder({ title: "Setup Connection" });
 
         const connectToRemote = { id: "" };
 
-        const localId = this.connectionFolder.addBinding(nc, "shortenedId", {
+        const localId = this.connectionFolder.addBinding(nc, "id", {
             disabled: true,
             title: "Local ID",
         });
@@ -48,10 +48,14 @@ export class Menu extends State<never> {
             }
         });
 
-        nc.newConnectionListeners.add(() => {
+        nc.waitForConnection.then(() => {
             this.world.get(StateManager).moveTo(MultiplayerGameState, null);
-            // startGame(world);
         });
+
+        // nc.newConnectionListeners.add(() => {
+        //     this.world.get(StateManager).moveTo(MultiplayerGameState, null);
+        //     // startGame(world);
+        // });
 
         // showDialog({
         //     title: "Test Notification",

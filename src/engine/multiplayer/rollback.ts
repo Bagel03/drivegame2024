@@ -23,12 +23,14 @@ export class RollbackManager {
         storages.forEach((storage) => storage.rollback(numFramesAgo));
         this.world.archetypeManager.rollback(numFramesAgo);
 
-        while (this.currentFramesBack > 0) {
+        while (this.currentFramesBack >= 0) {
             this.world.update("rollback");
             this.world.storageManager.update();
 
             this.currentFramesBack--;
         }
+
+        this.currentFramesBack = 0;
 
         this.currentlyInRollback = false;
     }

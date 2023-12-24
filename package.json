@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "esbuild ./src/index.ts --bundle --outdir=./dist --sourcemap --watch",
     "build": "esbuild ./src/index.ts --bundle --outdir=./dist --sourcemap",
+    "test": "esbuild ./src/test.ts --bundle --outdir=./dist --sourcemap --watch",
     "css": "npx tailwindcss -i ./src/styles/index.css -o ./dist/index.css --minify --watch"
   },
   "dependencies": {

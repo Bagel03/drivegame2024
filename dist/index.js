@@ -12615,9 +12615,27 @@
     world2.add(pane);
     pane.element.parentElement.style.width = "355px";
   }
+  function monitor(entity, component, title) {
+    const pane = entity.world.get(Pane);
+    let temp = {
+      get x() {
+        return entity.get(component);
+      }
+    };
+    pane.addBinding(temp, "x", { label: title, readonly: true });
+  }
 
   // src/editor/editor.ts
   var editorPlugins = [InspectPlugin];
+
+  // src/engine/polyfills.ts
+  Promise.timeout = function(ms) {
+    return new Promise((res) => setTimeout(res, ms));
+  };
+  console.log(Promise.timeout);
+  Promise.prototype.timeout = function(ms) {
+    return Promise.race([this, Promise.timeout(ms)]);
+  };
 
   // node_modules/.pnpm/@pixi+constants@7.3.2/node_modules/@pixi/constants/lib/index.mjs
   var ENV = /* @__PURE__ */ ((ENV2) => (ENV2[ENV2.WEBGL_LEGACY = 0] = "WEBGL_LEGACY", ENV2[ENV2.WEBGL = 1] = "WEBGL", ENV2[ENV2.WEBGL2 = 2] = "WEBGL2", ENV2))(ENV || {});
@@ -35229,12 +35247,33 @@ void main(void)\r
 
   // src/engine/rendering/setup.tsx
   function PixiCanvasContainer(props) {
-    return /* @__PURE__ */ window.jsx("div", { id: "screen", className: "self-center aspect-square w-full" }, props.canvas);
+    return /* @__PURE__ */ window.jsx(
+      "div",
+      {
+        id: "screen",
+        className: " w-screen h-screen flex items-center justify-center"
+      },
+      props.canvas
+    );
   }
   function setupPixiCanvas(app) {
     document.body.appendChild(
       /* @__PURE__ */ window.jsx(PixiCanvasContainer, { canvas: app.view })
     );
+    resize(app);
+    window.addEventListener("resize", () => {
+      resize(app);
+    });
+  }
+  function resize(app) {
+    const view = app.view;
+    const min = Math.min(
+      document.documentElement.clientWidth,
+      document.documentElement.clientHeight
+    );
+    console.log(min);
+    view.style.width = view.style.height = min + "px";
+    view.style.imageRendering = "pixelated";
   }
 
   // src/engine/rendering/position.ts
@@ -35290,9 +35329,9 @@ void main(void)\r
   function RenderPlugin(world2) {
     const app = new Application({
       autoStart: true,
-      width: 1600,
-      height: 900,
-      antialias: true,
+      width: 256,
+      height: 256,
+      antialias: false,
       // resolution: 2,
       autoDensity: true
     });
@@ -42020,124 +42059,289 @@ void main(void)\r
 
   // src/engine/multiplayer/network.ts
   var PeerId = Ye(St.string);
-  var NetworkConnection = class {
+  var _NetworkConnection = class {
     constructor(world2) {
       this.world = world2;
-      this.shortenedId = String.fromCharCode(
-        ...new Array(5).fill(0).map((_2) => Math.floor(Math.random() * 26) + 65)
-      );
-      this.peer = new $416260bce337df90$export$ecd1fc136c422448(`BAGEL-TEST-${this.shortenedId}`, {
-        logFunction(logLevel, ...rest) {
-          console.log(...rest);
-        }
+      this.waitForServerConnection = this.connectToBrokageServer();
+      this.waitForServerConnection.then(() => {
+        this.logger.log("Connected to brokage server, id is", this.id);
+        this.handleIncomingConnections();
+        window.addEventListener("beforeunload", () => {
+          this.close();
+        });
       });
-      this.init();
+      this.onConnect = this.onConnect.bind(this);
+      this.onClose = this.onClose.bind(this);
+    }
+    logger = new m("Network");
+    static generateId() {
+      return new Array(_NetworkConnection.idLength).fill(0).map((_2) => Math.floor(Math.random() * 2)).map((num) => String.fromCharCode("A".charCodeAt(0) + num)).join("");
     }
     peer;
-    connections = /* @__PURE__ */ new Map();
-    remoteIds = [];
-    newConnectionListeners = /* @__PURE__ */ new Set();
-    dataListeners = /* @__PURE__ */ new Set();
-    timeConnectedTo = {};
     id;
-    shortenedId;
-    readyTrigger;
-    readyPromise = new Promise((res, rej) => {
-      this.readyTrigger = res;
+    waitForServerConnection;
+    //#region Server Connection
+    tryFindId() {
+      const id = _NetworkConnection.generateId();
+      const peer = new $416260bce337df90$export$ecd1fc136c422448(_NetworkConnection.idPrefix + id);
+      this.logger.log("Trying to connect with id", id);
+      return new Promise((res, rej) => {
+        peer.on("open", () => {
+          res({ id, peer });
+        });
+        peer.on("error", async (error) => {
+          if (error.type === "unavailable-id") {
+            peer.disconnect();
+            this.logger.log("Failed to connect with id", id);
+            res(await this.tryFindId());
+            return;
+          }
+          this.logger.error(error);
+          rej(error);
+        });
+      });
+    }
+    async connectToBrokageServer() {
+      const { id, peer } = await this.tryFindId();
+      this.id = id;
+      this.peer = peer;
+    }
+    //#endregion
+    //#region Connections
+    isConnected = false;
+    dummyConnection = new DummyDataConnection();
+    remoteConnection = this.dummyConnection;
+    remoteId;
+    resolvePromisesWaitingForConnection;
+    waitForConnection = new Promise((res) => {
+      this.resolvePromisesWaitingForConnection = res;
     });
-    newMessageQueue = /* @__PURE__ */ new Set();
-    newMessagesByType = /* @__PURE__ */ new Map();
-    awaitReady() {
-      return this.readyPromise;
+    connectionStartTime = null;
+    framesConnected = null;
+    onConnect(openTime) {
+      this.isConnected = true;
+      this.connectionStartTime = openTime;
+      this.remoteId = this.remoteConnection.peer.replace(
+        _NetworkConnection.idPrefix,
+        ""
+      );
+      this.framesConnected = 0;
+      this.remoteConnection.on("close", this.onClose);
+      this.logger.log("Connection opened to", this.remoteId);
+      this.resolvePromisesWaitingForConnection(this.remoteId);
     }
-    init() {
-      this.peer.on("open", (id) => {
-        this.id = id;
-        this.readyTrigger();
+    onClose() {
+      this.remoteConnection = this.dummyConnection.fromDataConnection(
+        this.remoteConnection
+      );
+      this.isConnected = false;
+      this.framesConnected = null;
+      this.waitForConnection = new Promise((res) => {
+        this.resolvePromisesWaitingForConnection = res;
       });
-      this.peer.on("connection", (c3) => {
-        console.log("Connected to", c3.peer, "(Initiated remotely)");
-        this.setupConnection(c3, true);
+      this.logger.log("Closed connection to", this.remoteId);
+    }
+    close() {
+      this.remoteConnection.close();
+    }
+    // Established locally
+    async connect(id, timeout = 5e3) {
+      if (this.isConnected) {
+        this.logger.log(
+          "Can not connect to",
+          id,
+          "(Already connected to",
+          this.remoteId,
+          ")"
+        );
+        return Promise.reject();
+      }
+      const remoteConnection = this.peer.connect(_NetworkConnection.idPrefix + id, {
+        metadata: {
+          id: this.id
+        }
+      });
+      this.logger.log(
+        "Establishing connection with",
+        id,
+        "... (Initiated locally)"
+      );
+      return new Promise((res, rej) => {
+        setTimeout(() => {
+          if (this.isConnected)
+            return;
+          remoteConnection.close();
+          rej("timeout");
+        }, timeout);
+        remoteConnection.on("open", () => {
+          const tempStartTime = Date.now();
+          remoteConnection.once("data", ({
+            event,
+            data
+          }) => {
+            if (event === 0 /* ACCEPT_CONNECTION */) {
+              this.logger.log("Connection with", data.id, "was accepted");
+              this.remoteConnection = this.dummyConnection.morphToRealConnection(
+                remoteConnection
+              );
+              this.onConnect(tempStartTime);
+              res();
+            } else if (event === 1 /* DECLINE_CONNECTION */) {
+              this.logger.log(
+                "Connection with",
+                data.id,
+                "was declined, closing connection"
+              );
+              remoteConnection.close();
+              rej();
+            }
+          });
+        });
       });
     }
-    onData(connection, fn) {
-      connection.on("data", fn);
-    }
-    lastFramesReceived = {};
-    canResetStats = false;
-    onDataListener(connection, data) {
-      if (this.lastFramesReceived[connection.peer] > data.frame) {
-        console.warn("Got out of order packets");
-      }
-      if (this.canResetStats) {
-        Diagnostics.worstRemotePing = -Infinity;
-        this.canResetStats = false;
-      }
-      const ping = Date.now() - data.timestamp;
-      if (Diagnostics.worstRemotePing < ping) {
-        Diagnostics.worstRemotePing = ping;
-        Diagnostics.worstRemoteConnection = connection.peer;
-        Diagnostics.worstRemoteLatency = this.timeConnectedTo[connection.peer] - data.frame;
-      }
-      this.newMessageQueue.add({ ...data, id: connection.peer });
-    }
-    setupConnection(connection, startCounter) {
-      this.connections.set(connection.peer, connection);
-      this.remoteIds.push(connection.peer);
-      console.log("Setting up connection", connection);
-      if (startCounter)
-        this.timeConnectedTo[connection.peer] = 0;
-      for (const newConnectionListener of this.newConnectionListeners) {
-        newConnectionListener(connection);
-      }
-      this.onData(connection, (data) => {
-        if (Diagnostics.artificialLag) {
-          setTimeout(() => {
-            this.onDataListener(connection, data);
-          }, 50);
+    // Established remotely
+    handleIncomingConnections() {
+      this.peer.on("connection", async (connection) => {
+        this.logger.log(
+          "Establishing connection with",
+          connection.metadata.id,
+          "... (Initiated remotely)"
+        );
+        if (!connection.open)
+          await this.waitForConnectionCB(connection, "open");
+        const tempStartTime = Date.now();
+        if (this.isConnected) {
+          this.logger.log(
+            "Declining connection with",
+            connection.metadata.id,
+            "(Already connected)"
+          );
+          connection.send({
+            event: 1 /* DECLINE_CONNECTION */,
+            data: {
+              id: this.id
+            }
+          });
+          connection.on("close", () => {
+            this.logger.log(
+              "Closed connection with",
+              connection.metadata.id
+            );
+          });
           return;
         }
-        this.onDataListener(connection, data);
+        this.logger.log(
+          "Accepting connection with",
+          connection.metadata.id,
+          "..."
+        );
+        connection.send({
+          event: 0 /* ACCEPT_CONNECTION */,
+          data: {
+            id: this.id
+          }
+        });
+        this.remoteConnection = this.dummyConnection.morphToRealConnection(connection);
+        this.onConnect(tempStartTime);
       });
     }
-    async connect(peerId, options) {
-      peerId = `BAGEL-TEST-${peerId}`;
-      return new Promise((res, rej) => {
-        const connection = this.peer.connect(peerId, options);
-        connection.once("open", () => {
-          console.log("Connecting to", peerId, "(Initiated locally)...");
-          this.setupConnection(connection, true);
-          res(connection);
-        });
-        connection.once("error", (err) => rej(err));
+    //#endregion
+    //#region Simple Data Transfer
+    on(eventName, cb) {
+      const wrapper = (packet) => {
+        if (eventName !== "ALL" && packet.subEvent !== eventName)
+          return;
+        return cb(packet.data);
+      };
+      this.remoteConnection.on("data", wrapper);
+    }
+    async send(eventName, data) {
+      if (Diagnostics.artificialLag)
+        await Promise.timeout(60);
+      this.remoteConnection.send({
+        event: 2 /* DATA */,
+        subEvent: eventName,
+        data
       });
     }
-    send(event, data, ...peerIds) {
-      if (peerIds.length === 0)
-        peerIds = this.remoteIds;
-      for (const peerId of peerIds) {
-        this.connections.get(peerId).send({
-          event,
-          data,
-          frame: this.timeConnectedTo[peerId],
-          timestamp: Date.now()
+    //#endregion
+    //#region Fetch / Response
+    nextFetchId = 0;
+    fetch(endpoint) {
+      const transactionId = this.nextFetchId++;
+      this.remoteConnection.send({
+        event: 3 /* FETCH */,
+        subEvent: endpoint,
+        id: transactionId
+      });
+      return new Promise((res) => {
+        const tempFn = (packet) => {
+          if (packet.event !== 4 /* FETCH_RESPONSE */)
+            return;
+          if (packet.id !== transactionId)
+            return;
+          this.remoteConnection.off("data", tempFn);
+          res(packet.data);
+        };
+        this.remoteConnection.on("data", tempFn);
+      });
+    }
+    addResponse(endpoint, respond) {
+      this.remoteConnection.on("data", async (packet) => {
+        if (packet.event !== 3 /* FETCH */ || packet.subEvent !== endpoint)
+          return;
+        const data = await respond();
+        this.remoteConnection.send({
+          event: 4 /* FETCH_RESPONSE */,
+          id: packet.id,
+          data
         });
-      }
+      });
+    }
+    //#region Utils
+    waitForConnectionCB(connection, ev) {
+      return new Promise((res) => {
+        connection.once(ev, (...args) => res());
+      });
     }
     update() {
-      for (const id of this.remoteIds) {
-        this.timeConnectedTo[id]++;
+      if (this.framesConnected !== null) {
+        this.framesConnected++;
       }
-      this.newMessagesByType.forEach((set) => set.clear());
-      this.newMessageQueue.forEach((message) => {
-        if (!this.newMessagesByType.has(message.event)) {
-          this.newMessagesByType.set(message.event, /* @__PURE__ */ new Set([message]));
-        } else {
-          this.newMessagesByType.get(message.event).add(message);
-        }
-      });
-      this.newMessageQueue.clear();
-      this.canResetStats = true;
+    }
+  };
+  var NetworkConnection = _NetworkConnection;
+  __publicField(NetworkConnection, "idPrefix", "drivegame-beta-");
+  // "drivegame-prod-"
+  __publicField(NetworkConnection, "idLength", 1);
+  var DummyDataConnection = class {
+    cbs = [];
+    on(ev, cb) {
+      if (ev !== "data")
+        console.warn(
+          "Dummy listener captured unexpected event",
+          ev,
+          '(Only "data" event is expected with a dummy)'
+        );
+      this.cbs.push(cb);
+    }
+    send(...args) {
+      console.warn(
+        "Send was called with a dummy data connection. Data can not be sent without an actual data connection and remote peer. Make sure client is connected before sending data"
+      );
+    }
+    close() {
+    }
+    // Used for when a client connects
+    morphToRealConnection(connection) {
+      this.cbs.forEach((cb) => connection.on("data", cb));
+      return connection;
+    }
+    // Used for when a client disconnects
+    fromDataConnection(connection) {
+      this.cbs.length = 0;
+      this.cbs.push(...connection.listeners("data"));
+      return this;
     }
   };
   var networkConnectionPlugin = ResourceUpdaterPlugin(
@@ -42421,11 +42625,12 @@ void main(void)\r
       const storages = this.world.storageManager.getAllByType(y.logged);
       storages.forEach((storage) => storage.rollback(numFramesAgo));
       this.world.archetypeManager.rollback(numFramesAgo);
-      while (this.currentFramesBack > 0) {
+      while (this.currentFramesBack >= 0) {
         this.world.update("rollback");
         this.world.storageManager.update();
         this.currentFramesBack--;
       }
+      this.currentFramesBack = 0;
       this.currentlyInRollback = false;
     }
     // APIS for resources and entities
@@ -42894,22 +43099,28 @@ void main(void)\r
       analog: /* @__PURE__ */ new Set()
     };
     buffers = {};
+    // Map<Frames Connected, input state>
     knownFutureInputs = /* @__PURE__ */ new Map();
     localPeerId;
     rollbackManager;
     networkConnection;
     events = [];
+    ready = false;
     async init() {
-      await this.networkConnection.awaitReady();
+      await this.networkConnection.waitForServerConnection;
+      console.log("Connected");
       this.localPeerId = this.networkConnection.id;
       this.buffers[this.localPeerId] = new Array(_MultiplayerInput.bufferSize).fill(
         {}
       );
-      this.networkConnection.newConnectionListeners.add((conn) => {
-        const arr = new Array(_MultiplayerInput.bufferSize).fill({});
-        this.buffers[conn.peer] = arr;
+      this.networkConnection.waitForConnection.then(() => {
+        this.buffers[this.networkConnection.remoteId] = new Array(
+          _MultiplayerInput.bufferSize
+        ).fill({});
+        this.handleRemotePackets();
       });
       this.localInput.init();
+      this.ready = true;
     }
     addEvent(event) {
       this.events.push(event);
@@ -42921,13 +43132,13 @@ void main(void)\r
       }
       this.events.splice(this.events.findIndex((e2) => e2.name === event), 1);
     }
-    wasFired(clientId, event) {
+    wasFired(event, clientId = this.networkConnection.id) {
       return this.buffers[clientId][this.rollbackManager.currentFramesBack].__EVENTS__?.includes(event) || false;
     }
-    is(clientId, bindingName, state) {
+    is(bindingName, state, clientId = this.networkConnection.id) {
       return this.buffers[clientId][this.rollbackManager.currentFramesBack][bindingName] === state;
     }
-    get(clientId, bindingName) {
+    get(bindingName, clientId = this.networkConnection.id) {
       const val = this.buffers[clientId][this.rollbackManager.currentFramesBack][bindingName];
       if (typeof val === "number")
         return val;
@@ -42958,23 +43169,17 @@ void main(void)\r
     }
     oldHash = null;
     update() {
-      if (this.world.get(RollbackManager).currentlyInRollback)
+      if (this.world.get(RollbackManager).currentlyInRollback || !this.ready)
         return;
       this.localInput.update();
-      for (let i2 = this.networkConnection.remoteIds.length - 1; i2 > -1; i2--) {
-        const peerId = this.networkConnection.remoteIds[i2];
-        const remoteBuffer = this.buffers[peerId];
-        let newState;
-        let knownFuture = this.knownFutureInputs.get(
-          peerId + "-" + this.networkConnection.timeConnectedTo[peerId]
+      if (this.networkConnection.isConnected) {
+        const newRemoteState = this.knownFutureInputs.has(
+          this.networkConnection.framesConnected
+        ) ? this.knownFutureInputs.get(this.networkConnection.framesConnected) : this.predictNextState(
+          this.buffers[this.networkConnection.remoteId][0]
         );
-        if (knownFuture) {
-          newState = knownFuture;
-        } else {
-          newState = this.predictNextState(remoteBuffer[0]);
-        }
-        remoteBuffer.unshift(newState);
-        remoteBuffer.pop();
+        this.buffers[this.networkConnection.remoteId].unshift(newRemoteState);
+        this.buffers[this.networkConnection.remoteId].pop();
       }
       const newLocalState = {};
       this.buffers[this.localPeerId].unshift(newLocalState);
@@ -43001,11 +43206,13 @@ void main(void)\r
         }
       }
       this.hashState(newLocalState);
-      if (this.oldHash !== newLocalState.__HASH__ && this.networkConnection.remoteIds.length) {
-        this.networkConnection.send("input", newLocalState);
+      if (this.oldHash !== newLocalState.__HASH__ && this.networkConnection.isConnected) {
+        this.networkConnection.send("input", {
+          frame: this.networkConnection.framesConnected,
+          inputState: newLocalState
+        });
       }
       this.oldHash = newLocalState.__HASH__;
-      this.handleRemotePackets();
     }
     hashState(state) {
       let hash = 0;
@@ -43021,30 +43228,27 @@ void main(void)\r
       state.__HASH__ = hash;
     }
     handleRemotePackets() {
-      let farthestRollbackFrame = 0;
-      this.networkConnection.newMessagesByType.get("input")?.forEach((message) => {
-        if (message.frame > this.networkConnection.timeConnectedTo[message.id]) {
-          this.knownFutureInputs.set(
-            message.id + "-" + message.frame,
-            message.data
-          );
-          return;
+      this.networkConnection.on(
+        "input",
+        ({ frame, inputState }) => {
+          const framesBack = this.networkConnection.framesConnected - frame;
+          Diagnostics.worstRemoteLatency = framesBack;
+          if (framesBack < 0) {
+            this.knownFutureInputs.set(frame, inputState);
+            return;
+          }
+          if (inputState.__HASH__ === this.buffers[this.networkConnection.remoteId][0].__HASH__) {
+            return;
+          }
+          let state = inputState;
+          for (let i2 = framesBack; i2 > -1; i2--) {
+            this.buffers[this.networkConnection.remoteId][i2] = state;
+            state = this.predictNextState(state);
+          }
+          this.rollbackManager.startRollback(framesBack);
         }
-        const framesBack = this.networkConnection.timeConnectedTo[message.id] - message.frame;
-        const remote = this.buffers[message.id];
-        if (message.data.__HASH__ === remote[framesBack].__HASH__) {
-          return;
-        }
-        let state = message.data;
-        for (let i2 = framesBack; i2 > -1; i2--) {
-          remote[i2] = state;
-          state = this.predictNextState(state);
-        }
-        farthestRollbackFrame = Math.max(farthestRollbackFrame, framesBack);
-      });
-      if (farthestRollbackFrame > 0) {
-        this.rollbackManager.startRollback(farthestRollbackFrame);
-      }
+      );
+      return;
     }
   };
   var MultiplayerInput = _MultiplayerInput;
@@ -43052,7 +43256,6 @@ void main(void)\r
   var MultiplayerInputSystem = ResourceUpdaterSystem(MultiplayerInput);
   var MultiplayerInputPlugin = async (world2) => {
     world2.add(new MultiplayerInput(world2));
-    await world2.get(NetworkConnection).awaitReady();
     world2.addSystem(MultiplayerInputSystem);
   };
 
@@ -43086,9 +43289,6 @@ void main(void)\r
   // src/game/systems/movement.ts
   var MovementSystem = class extends $t(_(Position, Velocity)) {
     update() {
-      const nc = this.world.get(NetworkConnection);
-      if (nc.remoteIds.length) {
-      }
       this.entities.forEach((entity) => {
         entity.inc(Position.x, entity.get(Velocity.x));
         entity.inc(Position.y, entity.get(Velocity.y));
@@ -43216,22 +43416,19 @@ void main(void)\r
   var movementScript = function() {
     const id = this.get(PeerId);
     const input = this.world.get(MultiplayerInput);
-    this.set(Velocity.x, input.get(id, "x") * 3);
-    this.set(Velocity.y, input.get(id, "y") * 3);
-    if (input.is(id, "dash", "JUST_PRESSED")) {
-      this.set(PlayerInfo.dashTimer, 15);
-    }
+    this.set(Velocity.x, input.get("x", id) * 1);
+    this.set(Velocity.y, input.get("y", id) * 1);
     if (this.get(PlayerInfo.dashTimer) > 0) {
       this.inc(PlayerInfo.dashTimer, -1);
       this.mult(Velocity.x, 3);
       this.mult(Velocity.x, 3);
     }
-    if (input.is(id, "shoot", "JUST_PRESSED")) {
+    if (input.is("shoot", "JUST_PRESSED", id)) {
       BulletEnt(
         this.get(Position.x),
         this.get(Position.y),
-        input.get(id, "aimx") * 8 + this.get(Velocity.x),
-        input.get(id, "aimy") * 8 + this.get(Velocity.y),
+        input.get("aimx", id) * 8 + this.get(Velocity.x),
+        input.get("aimy", id) * 8 + this.get(Velocity.y),
         "purple"
       );
     }
@@ -43249,41 +43446,56 @@ void main(void)\r
     }
   };
 
+  // src/game/levels/maps/1.ts
+  function loadLevel1Map(world2) {
+    document.body.style.background = "#06011f";
+    const sprite = new Sprite(Texture.from("assets/map1bg.png"));
+    console.log(sprite);
+    world2.get(Application).stage.addChild(sprite);
+  }
+
   // src/game/states/multiplayer.ts
   var MultiplayerGameState = class extends State2 {
     async onEnter(payload, from) {
       this.world.addSystem(RemoveDeadEntities);
       this.world.addSystem(RemoveDeadEntities, "rollback");
+      loadLevel1Map(this.world);
+      const localX = this.world.get(NetworkConnection).id === "A" ? 16 * 2 : 16 * 13;
+      const remoteX = this.world.get(NetworkConnection).id === "A" ? 16 * 13 : 16 * 2;
+      const localColor = localX === 16 * 2 ? "blue" : "red";
+      const remoteColor = localX !== 16 * 2 ? "blue" : "red";
       const localPlayer = GraphicsEnt(
-        50,
-        50,
-        { fillStyle: "blue" },
+        localX,
+        16 * 2,
+        { fillStyle: localColor },
         "drawRect",
         0,
         0,
-        50,
-        50
+        16,
+        16
       );
       localPlayer.add(new PeerId(this.world.get(NetworkConnection).id));
       localPlayer.addScript(movementScript);
       localPlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
       localPlayer.add(new Velocity({ x: 0, y: 0 }));
       const remotePlayer = GraphicsEnt(
-        50,
-        50,
+        remoteX,
+        16 * 2,
         {
-          fillStyle: "red"
+          fillStyle: remoteColor
         },
         "drawRect",
         0,
         0,
-        50,
-        50
+        16,
+        16
       );
-      remotePlayer.add(new PeerId(this.world.get(NetworkConnection).remoteIds[0]));
+      remotePlayer.add(new PeerId(this.world.get(NetworkConnection).remoteId));
       remotePlayer.addScript(movementScript);
       remotePlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
       remotePlayer.add(new Velocity({ x: 0, y: 0 }));
+      monitor(localPlayer, Position.x, "Local X");
+      monitor(remotePlayer, Position.x, "Remote X");
     }
     update() {
     }
@@ -43298,10 +43510,10 @@ void main(void)\r
     async onEnter() {
       const pane = this.world.get(Pane);
       const nc = this.world.get(NetworkConnection);
-      await nc.awaitReady();
+      await nc.waitForServerConnection;
       this.connectionFolder = pane.addFolder({ title: "Setup Connection" });
       const connectToRemote = { id: "" };
-      const localId = this.connectionFolder.addBinding(nc, "shortenedId", {
+      const localId = this.connectionFolder.addBinding(nc, "id", {
         disabled: true,
         title: "Local ID"
       });
@@ -43322,7 +43534,7 @@ void main(void)\r
           console.error(e2);
         }
       });
-      nc.newConnectionListeners.add(() => {
+      nc.waitForConnection.then(() => {
         this.world.get(StateManager).moveTo(MultiplayerGameState, null);
       });
     }

@@ -1,234 +1,379 @@
-import { System } from "bagelecs";
-import { Type } from "bagelecs";
-import { Component } from "bagelecs";
-import { World } from "bagelecs";
-import { DataConnection, Peer, PeerConnectOption } from "peerjs";
-import { Diagnostics } from "../diagnostics";
-import { pause, resume } from "../loop";
-import { Application, Ticker } from "pixi.js";
-import { ResourceUpdaterPlugin } from "../resource";
+import { Component, Logger, Type, World } from "bagelecs";
+import { Peer, DataConnection } from "peerjs";
+import { Diagnostics } from "engine/diagnostics";
+import { ResourceUpdaterPlugin } from "engine/resource";
+
+enum NetworkEvent {
+    ACCEPT_CONNECTION,
+    DECLINE_CONNECTION,
+    DATA,
+    FETCH,
+    FETCH_RESPONSE,
+}
+
+type RawNetworkPacket<T = never> = {
+    event: NetworkEvent;
+    data: T;
+    subEvent?: string;
+    id?: number;
+};
+
+declare global {
+    // Override this to add stuff
+    interface NetworkFetchPoints {}
+}
 
 export const PeerId = Component(Type.string);
 
-export type DataPacket<T = any> = {
-    event: string;
-    data: T;
-    frame: number;
-    timestamp: number;
-    id: string;
-};
-
 export class NetworkConnection {
-    private readonly peer: Peer;
+    private readonly logger = new Logger("Network");
 
-    public readonly connections = new Map<string, DataConnection>();
-    public readonly remoteIds: string[] = [];
+    private static readonly idPrefix = "drivegame-beta-"; // "drivegame-prod-"
+    private static readonly idLength = 1;
+    private static generateId(): string {
+        return new Array(NetworkConnection.idLength)
+            .fill(0) // Make array w/ length of 5
+            .map((_) => Math.floor(Math.random() * 2)) // Fill the array with random numbers 0 - 25
+            .map((num) => String.fromCharCode("A".charCodeAt(0) + num)) // Map numbers to capital letters
+            .join(""); // Turn it into a string
+    }
 
-    public readonly newConnectionListeners = new Set<
-        (connection: DataConnection) => void
-    >();
-    public readonly dataListeners = new Set<
-        (data: any, connection: DataConnection) => void
-    >();
-
-    public readonly timeConnectedTo: Record<string, number> = {};
-
+    private readonly peer!: Peer;
     public readonly id!: string;
-    public readonly shortenedId: string;
 
-    private readyTrigger!: () => void;
-    private readonly readyPromise = new Promise<void>((res, rej) => {
-        this.readyTrigger = res;
+    public readonly waitForServerConnection: Promise<void>;
+    constructor(public readonly world: World) {
+        this.waitForServerConnection = this.connectToBrokageServer();
+        this.waitForServerConnection.then(() => {
+            this.logger.log("Connected to brokage server, id is", this.id);
+            this.handleIncomingConnections();
+
+            window.addEventListener("beforeunload", () => {
+                this.close();
+            });
+        });
+        // this.id = NetworkConnection.generateId();
+        // this.peer = new Peer(this.id);
+        this.onConnect = this.onConnect.bind(this);
+        this.onClose = this.onClose.bind(this);
+    }
+
+    //#region Server Connection
+    private tryFindId() {
+        const id = NetworkConnection.generateId();
+        const peer = new Peer(NetworkConnection.idPrefix + id);
+        this.logger.log("Trying to connect with id", id);
+        return new Promise<{ id: string; peer: Peer }>((res, rej) => {
+            peer.on("open", () => {
+                res({ id, peer });
+            });
+            peer.on("error", async (error) => {
+                if (error.type === "unavailable-id") {
+                    peer.disconnect();
+                    this.logger.log("Failed to connect with id", id);
+                    res(await this.tryFindId());
+                    return;
+                    // testssffasd
+                }
+                this.logger.error(error);
+                // This shouldn't happen (really shouldn't get any other errors than in-use id)
+                rej(error);
+            });
+        });
+    }
+
+    async connectToBrokageServer() {
+        const { id, peer } = await this.tryFindId();
+        //@ts-expect-error
+        this.id = id;
+        //@ts-expect-error
+        this.peer = peer;
+    }
+    //#endregion
+
+    //#region Connections
+    public readonly isConnected: boolean = false;
+    private readonly dummyConnection = new DummyDataConnection();
+    private remoteConnection: DataConnection = this.dummyConnection as any;
+
+    public readonly remoteId!: string;
+
+    private resolvePromisesWaitingForConnection!: (remoteId: string) => void;
+    public waitForConnection: Promise<string> = new Promise((res) => {
+        this.resolvePromisesWaitingForConnection = res;
     });
 
-    private readonly newMessageQueue = new Set<DataPacket>();
-    public readonly newMessagesByType = new Map<string, Set<DataPacket>>();
+    public readonly connectionStartTime: number = null as any;
+    public framesConnected: number = null as any;
 
-    awaitReady() {
-        return this.readyPromise;
+    private onConnect(openTime: number) {
+        //@ts-expect-error
+        this.isConnected = true;
+        //@ts-expect-error
+        this.connectionStartTime = openTime;
+        //@ts-expect-error
+        this.remoteId = this.remoteConnection.peer.replace(
+            NetworkConnection.idPrefix,
+            ""
+        );
+
+        this.framesConnected = 0;
+
+        this.remoteConnection.on("close", this.onClose);
+
+        this.logger.log("Connection opened to", this.remoteId);
+        this.resolvePromisesWaitingForConnection(this.remoteId);
     }
 
-    constructor(public world: World) {
-        this.shortenedId = String.fromCharCode(
-            ...new Array(5).fill(0).map((_) => Math.floor(Math.random() * 26) + 65)
+    private onClose() {
+        //@ts-expect-error
+        this.remoteConnection = this.dummyConnection.fromDataConnection(
+            this.remoteConnection
         );
-        this.peer = new Peer(`BAGEL-TEST-${this.shortenedId}`, {
-            logFunction(logLevel, ...rest) {
-                console.log(...rest);
+
+        //@ts-expect-error
+        this.isConnected = false;
+
+        this.framesConnected = null as any;
+
+        this.waitForConnection = new Promise((res) => {
+            this.resolvePromisesWaitingForConnection = res;
+        });
+        this.logger.log("Closed connection to", this.remoteId);
+    }
+
+    close() {
+        this.remoteConnection.close();
+    }
+
+    // Established locally
+    async connect(id: string, timeout = 5000) {
+        if (this.isConnected) {
+            this.logger.log(
+                "Can not connect to",
+                id,
+                "(Already connected to",
+                this.remoteId,
+                ")"
+            );
+            return Promise.reject();
+        }
+        const remoteConnection = this.peer.connect(NetworkConnection.idPrefix + id, {
+            metadata: {
+                id: this.id,
             },
         });
-        this.init();
-    }
+        this.logger.log(
+            "Establishing connection with",
+            id,
+            "... (Initiated locally)"
+        );
 
-    private init() {
-        this.peer.on("open", (id) => {
-            //@ts-ignore
-            this.id = id;
-            this.readyTrigger();
-        });
+        return new Promise<void>((res, rej) => {
+            setTimeout(() => {
+                if (this.isConnected) return;
+                remoteConnection.close();
+                rej("timeout");
+            }, timeout);
+            remoteConnection.on("open", () => {
+                // Save the open time in case this connection was accepted
+                const tempStartTime = Date.now();
 
-        this.peer.on("connection", (c) => {
-            console.log("Connected to", c.peer, "(Initiated remotely)");
-
-            this.setupConnection(c, true);
-            // Find amount of time it takes to send a message, *5, send that time, once you
-
-            // Respond to start counter
-            // setTimeout(() => {
-            //     console.log("Sending");
-            //     c.send({
-            //         event: "ConnectionAcknowledged",
-            //     });
-            //     this.setupConnection(c, true);
-            // }, 300);
-
-            // setTimeout(() => {
-            //     c.send({
-            //         event: "ConnectionAcknowledged",
-            //         timestamp: Date.now(),
-            //     });
-
-            //     console.log("Sent Connection acknowledged");
-
-            //     const startCb = (data: any) => {
-            //         console.log("Got data");
-            //         if (data.event === "StartTime") {
-            //             console.log("Starting at " + data.startTime);
-            //             setTimeout(
-            //                 () => this.setupConnection(c, true),
-            //                 data.startTime - Date.now()
-            //             );
-            //             c.removeListener("data", startCb);
-            //         }
-            //     };
-
-            //     c.on("data", startCb);
-            // }, 300);
+                // We have to wait for a response (either accept or reject)
+                remoteConnection.once("data", (({
+                    event,
+                    data,
+                }: RawNetworkPacket<{ id: string }>) => {
+                    if (event === NetworkEvent.ACCEPT_CONNECTION) {
+                        this.logger.log("Connection with", data.id, "was accepted");
+                        this.remoteConnection =
+                            this.dummyConnection.morphToRealConnection(
+                                remoteConnection
+                            );
+                        this.onConnect(tempStartTime);
+                        res();
+                    } else if (event === NetworkEvent.DECLINE_CONNECTION) {
+                        this.logger.log(
+                            "Connection with",
+                            data.id,
+                            "was declined, closing connection"
+                        );
+                        remoteConnection.close();
+                        rej();
+                    }
+                }) as any);
+            });
         });
     }
-    private onData<T = any>(
-        connection: DataConnection,
-        fn: (data: DataPacket<T>) => void
-    ) {
-        connection.on("data", fn as any);
-    }
 
-    private lastFramesReceived: Record<string, number> = {};
-    private canResetStats: boolean = false;
+    // Established remotely
+    private handleIncomingConnections() {
+        this.peer.on("connection", async (connection) => {
+            this.logger.log(
+                "Establishing connection with",
+                connection.metadata.id,
+                "... (Initiated remotely)"
+            );
 
-    private onDataListener(connection: DataConnection, data: DataPacket) {
-        if (this.lastFramesReceived[connection.peer] > data.frame) {
-            console.warn("Got out of order packets");
-        }
+            if (!connection.open) await this.waitForConnectionCB(connection, "open");
+            const tempStartTime = Date.now();
 
-        if (this.canResetStats) {
-            Diagnostics.worstRemotePing = -Infinity;
-            this.canResetStats = false;
-        }
-
-        const ping = Date.now() - data.timestamp;
-        if (Diagnostics.worstRemotePing < ping) {
-            Diagnostics.worstRemotePing = ping;
-            Diagnostics.worstRemoteConnection = connection.peer;
-            Diagnostics.worstRemoteLatency =
-                this.timeConnectedTo[connection.peer] - data.frame;
-        }
-
-        this.newMessageQueue.add({ ...data, id: connection.peer });
-    }
-
-    private setupConnection(connection: DataConnection, startCounter: boolean) {
-        this.connections.set(connection.peer, connection);
-        this.remoteIds.push(connection.peer);
-
-        console.log("Setting up connection", connection);
-
-        if (startCounter) this.timeConnectedTo[connection.peer] = 0;
-
-        for (const newConnectionListener of this.newConnectionListeners) {
-            newConnectionListener(connection);
-        }
-
-        this.onData(connection, (data) => {
-            // Add fake lag for testing
-            if (Diagnostics.artificialLag) {
-                setTimeout(() => {
-                    this.onDataListener(connection, data);
-                }, 50);
+            if (this.isConnected) {
+                this.logger.log(
+                    "Declining connection with",
+                    connection.metadata.id,
+                    "(Already connected)"
+                );
+                // Send a bad message then close
+                connection.send({
+                    event: NetworkEvent.DECLINE_CONNECTION,
+                    data: {
+                        id: this.id,
+                    },
+                } satisfies RawNetworkPacket<{ id: string }>);
+                connection.on("close", () => {
+                    this.logger.log(
+                        "Closed connection with",
+                        connection.metadata.id
+                    );
+                });
                 return;
             }
 
-            this.onDataListener(connection, data);
+            this.logger.log(
+                "Accepting connection with",
+                connection.metadata.id,
+                "..."
+            );
+            // Send an accept
+            connection.send({
+                event: NetworkEvent.ACCEPT_CONNECTION,
+                data: {
+                    id: this.id,
+                },
+            } satisfies RawNetworkPacket<{ id: string }>);
+            this.remoteConnection =
+                this.dummyConnection.morphToRealConnection(connection);
+            this.onConnect(tempStartTime);
+        });
+    }
+    //#endregion
+
+    //#region Simple Data Transfer
+    on<T>(eventName: string | "ALL", cb: (data: T) => any) {
+        const wrapper = (packet: RawNetworkPacket<T>) => {
+            // if (packet.event !== NetworkEvent.DATA) return;
+            if (eventName !== "ALL" && packet.subEvent !== eventName) return;
+
+            return cb(packet.data);
+        };
+        // this.dataListeners.push(wrapper);
+        this.remoteConnection.on("data", wrapper as any);
+    }
+
+    async send(eventName: string, data: any) {
+        if (Diagnostics.artificialLag) await Promise.timeout(60);
+
+        this.remoteConnection.send({
+            event: NetworkEvent.DATA,
+            subEvent: eventName,
+            data,
+        } satisfies RawNetworkPacket<any>);
+    }
+    //#endregion
+
+    //#region Fetch / Response
+    private nextFetchId = 0;
+    fetch<T extends keyof NetworkFetchPoints>(
+        endpoint: T
+    ): Promise<NetworkFetchPoints[T]> {
+        const transactionId = this.nextFetchId++;
+        this.remoteConnection.send({
+            event: NetworkEvent.FETCH,
+            subEvent: endpoint,
+            id: transactionId,
+        });
+
+        return new Promise((res) => {
+            const tempFn = (packet: RawNetworkPacket<any>) => {
+                if (packet.event !== NetworkEvent.FETCH_RESPONSE) return;
+                if (packet.id !== transactionId) return;
+                this.remoteConnection.off("data", tempFn as any);
+                res(packet.data);
+            };
+
+            this.remoteConnection.on("data", tempFn as any);
         });
     }
 
-    async connect(peerId: string, options?: PeerConnectOption) {
-        peerId = `BAGEL-TEST-${peerId}`;
-        return new Promise<DataConnection>((res, rej) => {
-            const connection = this.peer.connect(peerId, options);
+    addResponse<T extends keyof NetworkFetchPoints>(
+        endpoint: T,
+        respond: () => NetworkFetchPoints[T] | Promise<NetworkFetchPoints[T]>
+    ) {
+        this.remoteConnection.on("data", (async (packet: RawNetworkPacket) => {
+            if (packet.event !== NetworkEvent.FETCH || packet.subEvent !== endpoint)
+                return;
 
-            connection.once("open", () => {
-                console.log("Connecting to", peerId, "(Initiated locally)...");
-                this.setupConnection(connection, true);
-                res(connection);
-                // const acknowledge = (data: any) => {
-                //     console.log(data);
-                //     if (data.event === "ConnectionAcknowledged") {
-                //         let timeDiff = Date.now() - data.timestamp;
-                //         timeDiff *= 5;
-                //         timeDiff = Math.min(timeDiff, 1000);
-                //         const startTime = Date.now() + timeDiff;
-                //         console.log(`Starting in ${timeDiff}ms ${startTime}`);
+            const data = await respond();
 
-                //         connection.removeListener("data", acknowledge);
-                //         connection.send({
-                //             event: "StartTime",
-                //             startTime,
-                //         });
-                //         console.log("Sent start event");
-
-                //         setTimeout(() => {
-                //             this.setupConnection(connection, true);
-                //             res(connection);
-                //         }, timeDiff);
-                //     }
-                // };
-                // connection.on("data", acknowledge);
-            });
-
-            connection.once("error", (err) => rej(err));
-        });
-    }
-
-    send(event: string, data: any, ...peerIds: string[]) {
-        if (peerIds.length === 0) peerIds = this.remoteIds;
-        for (const peerId of peerIds) {
-            this.connections.get(peerId)!.send({
-                event,
+            this.remoteConnection.send({
+                event: NetworkEvent.FETCH_RESPONSE,
+                id: packet.id!,
                 data,
-                frame: this.timeConnectedTo[peerId],
-                timestamp: Date.now(),
-            });
-        }
+            } satisfies RawNetworkPacket<any>);
+        }) as any);
+    }
+
+    //#region Utils
+    private waitForConnectionCB<
+        T extends "open" | "data" | "error" | "close" | "iceStateChanged"
+    >(connection: DataConnection, ev: T) {
+        return new Promise<void>((res) => {
+            connection.once(ev, (...args) => res());
+        });
     }
 
     update() {
-        for (const id of this.remoteIds) {
-            this.timeConnectedTo[id]++;
+        if (this.framesConnected !== null) {
+            this.framesConnected++;
         }
+    }
+}
 
-        this.newMessagesByType.forEach((set) => set.clear());
+// The "DummyDataConnection" class has the same *general* shape as a data connection, but with no actual remote peer
+// Instead, it is used when we dont have a connection to store listeners for when someone does connect
+class DummyDataConnection {
+    private readonly cbs: any[] = [];
 
-        this.newMessageQueue.forEach((message) => {
-            if (!this.newMessagesByType.has(message.event)) {
-                this.newMessagesByType.set(message.event, new Set([message]));
-            } else {
-                this.newMessagesByType.get(message.event)!.add(message);
-            }
-        });
+    on(ev: string, cb: any) {
+        if (ev !== "data")
+            console.warn(
+                "Dummy listener captured unexpected event",
+                ev,
+                '(Only "data" event is expected with a dummy)'
+            );
+        this.cbs.push(cb);
+    }
 
-        this.newMessageQueue.clear();
-        this.canResetStats = true;
+    send(...args: any) {
+        console.warn(
+            "Send was called with a dummy data connection. Data can not be sent without an actual data connection and remote peer. Make sure client is connected before sending data"
+        );
+    }
+
+    close() {}
+
+    // Used for when a client connects
+    morphToRealConnection(connection: DataConnection) {
+        this.cbs.forEach((cb) => connection.on("data", cb));
+        return connection;
+    }
+
+    // Used for when a client disconnects
+    fromDataConnection(connection: DataConnection) {
+        this.cbs.length = 0;
+        this.cbs.push(...connection.listeners("data"));
+        return this;
     }
 }
 

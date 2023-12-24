@@ -19,12 +19,12 @@ export const movementScript: Script = function () {
 
     // const canJump = this.get(PlayerInfo.canJump);
 
-    this.set(Velocity.x, input.get(id, "x") * 3);
-    this.set(Velocity.y, input.get(id, "y") * 3);
+    this.set(Velocity.x, input.get("x", id) * 1);
+    this.set(Velocity.y, input.get("y", id) * 1);
 
-    if (input.is(id, "dash", "JUST_PRESSED")) {
-        this.set(PlayerInfo.dashTimer, 15);
-    }
+    // if (input.is("dash", "JUST_PRESSED", id)) {
+    //     this.set(PlayerInfo.dashTimer, 15);
+    // }
 
     if (this.get(PlayerInfo.dashTimer) > 0) {
         this.inc(PlayerInfo.dashTimer, -1);
@@ -38,12 +38,12 @@ export const movementScript: Script = function () {
     //     this.update(Velocity.y, -8);
     // }
 
-    if (input.is(id, "shoot", "JUST_PRESSED")) {
+    if (input.is("shoot", "JUST_PRESSED", id)) {
         BulletEnt(
             this.get(Position.x),
             this.get(Position.y),
-            input.get(id, "aimx") * 8 + this.get(Velocity.x),
-            input.get(id, "aimy") * 8 + this.get(Velocity.y),
+            input.get("aimx", id) * 8 + this.get(Velocity.x),
+            input.get("aimy", id) * 8 + this.get(Velocity.y),
             "purple"
         );
     }
