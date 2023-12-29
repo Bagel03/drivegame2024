@@ -1,12 +1,9 @@
 import { System, World } from "bagelecs";
 import { ResourceUpdaterPlugin } from "./resource";
+import { JoystickConnectedEvent } from "../game/hud/components/joystick";
 
 //#region Types
-export type ButtonState =
-    | "PRESSED"
-    | "RELEASED"
-    | "JUST_PRESSED"
-    | "JUST_RELEASED";
+export type ButtonState = "PRESSED" | "RELEASED" | "JUST_PRESSED" | "JUST_RELEASED";
 
 export const BUTTON_STATES: ButtonState[] = [
     "JUST_PRESSED",
@@ -120,11 +117,7 @@ type Key =
     | "BracketRight"
     | "Quote";
 
-type MouseButton =
-    | `Mouse${number}`
-    | `MouseLeft`
-    | `MouseMiddle`
-    | `MouseRight`;
+type MouseButton = `Mouse${number}` | `MouseLeft` | `MouseMiddle` | `MouseRight`;
 
 type GamepadKey =
     // Xbox
@@ -184,18 +177,16 @@ type AnalogMouse =
     | "MouseXDelta"
     | "MouseYDelta"
     | "MouseScrollDelta";
-type AnalogGamepad =
-    | "LeftStickX"
-    | "LeftStickY"
-    | "RightStickX"
-    | "RightStickY";
+type AnalogGamepad = "LeftStickX" | "LeftStickY" | "RightStickX" | "RightStickY";
+type AnalogJoystick = "X" | "Y" | "Angle";
 
 // Gamepad buttons are both analog and digital
 export type AnalogInput =
     | AnalogMouse
     | GamepadButton
     | `Gamepad${number}-${AnalogGamepad}`
-    | `DefaultGamepad-${AnalogGamepad}`;
+    | `DefaultGamepad-${AnalogGamepad}`
+    | `Joystick${string}-${AnalogJoystick}`;
 
 //#endregion
 
@@ -301,6 +292,7 @@ export class Input {
     }
 
     init() {
+        /* KEY STUFF */
         window.addEventListener("keydown", (e: KeyboardEvent) => {
             const { code } = e;
 
@@ -318,6 +310,7 @@ export class Input {
             this.digitalInputReleased(e.code);
         });
 
+        /* MOUSE STUFF */
         window.addEventListener("mousedown", (e: MouseEvent) => {
             this.digitalInputPressed(`Mouse${e.button}`);
         });
@@ -342,6 +335,7 @@ export class Input {
             this.setAnalog("MouseScrollDelta", e.deltaY);
         });
 
+        /* GAMEPAD STUFF */
         window.addEventListener("gamepadconnected", (e) => {
             this.connectedGamepads.push(e.gamepad.index);
             this.defaultGamepad = e.gamepad.index;
@@ -355,6 +349,18 @@ export class Input {
             if (this.defaultGamepad === e.gamepad.index) {
                 this.defaultGamepad = null;
             }
+        });
+
+        /* JOYSTICK STUFF */
+        window.addEventListener("joystickconnected", (e) => {
+            e.detail.joystick.addEventListener(
+                "inputchange",
+                ({ detail: { x, y, angle } }) => {
+                    this.setAnalog(`Joystick${e.detail.joystickId}-X`, x);
+                    this.setAnalog(`Joystick${e.detail.joystickId}-Y`, y);
+                    this.setAnalog(`Joystick${e.detail.joystickId}-Angle`, angle);
+                }
+            );
         });
     }
 
@@ -372,9 +378,7 @@ export class Input {
         this.digital.JUST_RELEASED.clear();
 
         // Move QueuedDid -> JustDid
-        this.digital.queue.PRESSED.forEach((b) =>
-            this.digital.JUST_PRESSED.add(b)
-        );
+        this.digital.queue.PRESSED.forEach((b) => this.digital.JUST_PRESSED.add(b));
         this.digital.queue.PRESSED.clear();
         this.digital.queue.RELEASED.forEach((b) =>
             this.digital.JUST_RELEASED.add(b)
@@ -418,22 +422,10 @@ export class Input {
                 }
             });
 
-            this.setAnalog(
-                `Gamepad${gamepad.index}-LeftStickX`,
-                gamepad.axes[0]
-            );
-            this.setAnalog(
-                `Gamepad${gamepad.index}-LeftStickY`,
-                gamepad.axes[1]
-            );
-            this.setAnalog(
-                `Gamepad${gamepad.index}-RightStickX`,
-                gamepad.axes[2]
-            );
-            this.setAnalog(
-                `Gamepad${gamepad.index}-RightStickY`,
-                gamepad.axes[3]
-            );
+            this.setAnalog(`Gamepad${gamepad.index}-LeftStickX`, gamepad.axes[0]);
+            this.setAnalog(`Gamepad${gamepad.index}-LeftStickY`, gamepad.axes[1]);
+            this.setAnalog(`Gamepad${gamepad.index}-RightStickX`, gamepad.axes[2]);
+            this.setAnalog(`Gamepad${gamepad.index}-RightStickY`, gamepad.axes[3]);
         });
     }
 
@@ -506,11 +498,7 @@ export class Input {
         }
     }
 
-    isGamepad(
-        gamepad: number,
-        button: GamepadKey | number,
-        state: ButtonState
-    ) {
+    isGamepad(gamepad: number, button: GamepadKey | number, state: ButtonState) {
         return this.isRaw(`Gamepad${gamepad}-${button}`, state);
     }
 

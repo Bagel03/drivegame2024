@@ -4050,7 +4050,7 @@
     archetypes = /* @__PURE__ */ new Map();
     entityArchetypes;
     nextArchetypeId = 1;
-    defaultArchetype = new v(0, /* @__PURE__ */ new Set(), 1);
+    defaultArchetype = new v(0, /* @__PURE__ */ new Set(), 10);
     loadFromData(e2) {
       U.log("Loading from data dump:", e2), this.defaultArchetype = Object.create(v.prototype, Object.getOwnPropertyDescriptors(e2.defaultArchetype)), e2.archetypes.forEach((t2, n2) => {
         this.archetypes.set(n2, Object.create(v.prototype, Object.getOwnPropertyDescriptors(t2)));
@@ -12632,7 +12632,6 @@
   Promise.timeout = function(ms) {
     return new Promise((res) => setTimeout(res, ms));
   };
-  console.log(Promise.timeout);
   Promise.prototype.timeout = function(ms) {
     return Promise.race([this, Promise.timeout(ms)]);
   };
@@ -35245,35 +35244,38 @@ void main(void)\r
   _HTMLText.defaultMaxHeight = 2024, /** Default autoResolution for all HTMLText objects */
   _HTMLText.defaultAutoResolution = true;
 
-  // src/engine/rendering/setup.tsx
-  function PixiCanvasContainer(props) {
-    return /* @__PURE__ */ window.jsx(
-      "div",
-      {
-        id: "screen",
-        className: " w-screen h-screen flex items-center justify-center"
-      },
-      props.canvas
-    );
+  // src/engine/rendering/resize.ts
+  function resize(app) {
+    console.log("Resizing");
+    const view = app.view;
+    const screen = app.stage.getChildAt(0);
+    app.resize();
+    const screenAspect = screen.width / screen.height;
+    const viewAspect = view.width / view.height;
+    if (screenAspect > viewAspect) {
+      screen.width = view.width;
+      screen.scale.y = screen.scale.x;
+    } else {
+      screen.height = view.height;
+      screen.scale.x = screen.scale.y;
+    }
+    screen.x = (view.width - screen.width) / 2;
+    screen.y = (view.height - screen.height) / 2;
+    view.style.imageRendering = "pixelated";
   }
-  function setupPixiCanvas(app) {
-    document.body.appendChild(
-      /* @__PURE__ */ window.jsx(PixiCanvasContainer, { canvas: app.view })
-    );
+
+  // src/engine/rendering/setup.tsx
+  function setupPixiCanvas(world2) {
+    const app = world2.get(Application);
+    document.body.appendChild(app.view);
+    const screen = new Container();
+    world2.add(screen, "screen");
+    app.stage.addChild(screen);
     resize(app);
     window.addEventListener("resize", () => {
       resize(app);
     });
-  }
-  function resize(app) {
-    const view = app.view;
-    const min = Math.min(
-      document.documentElement.clientWidth,
-      document.documentElement.clientHeight
-    );
-    console.log(min);
-    view.style.width = view.style.height = min + "px";
-    view.style.imageRendering = "pixelated";
+    screen.addEventListener("childAdded", () => resize(app));
   }
 
   // src/engine/rendering/position.ts
@@ -35298,29 +35300,32 @@ void main(void)\r
   };
 
   // src/engine/rendering/system.ts
-  window.container = Container;
-  window.graphics = Graphics;
   Bt(Container);
   var GraphicsSystem = class extends $t(_(Container)) {
+    screen;
+    screenRect = new Rectangle(0, 0, 256, 256);
     init() {
-      window.gs = this;
+      this.screen = this.world.get(Application).stage.getChildAt(0);
     }
     update() {
-      const stage = this.world.get(Application).stage;
       this.entities.forEachAdded((ent) => {
         const container = ent.get(Container);
-        stage.addChild(container);
-        console.log("Adding ent", ent);
+        this.screen.addChild(container);
         container.name = ent.toString();
       });
-      this.entities.forEachRemoved((ent) => {
-        stage.getChildByName(ent.toString()).removeFromParent();
-        console.log("Removing child", ent);
-      });
       this.entities.forEach((ent) => {
+        const x3 = ent.get(Position.x);
+        const y3 = ent.get(Position.y);
+        if (x3 > this.screenRect.right || x3 < this.screenRect.left || y3 < this.screenRect.top || y3 > this.screenRect.bottom) {
+          ent.remove(Container);
+          return;
+        }
         const el = ent.get(Container);
         el.position.set(ent.get(Position.x), ent.get(Position.y));
         el.rotation = ent.get(Position.r);
+      });
+      this.entities.forEachRemoved((ent) => {
+        this.screen.getChildByName(ent.toString()).removeFromParent();
       });
     }
   };
@@ -35333,10 +35338,12 @@ void main(void)\r
       height: 256,
       antialias: false,
       // resolution: 2,
-      autoDensity: true
+      autoDensity: true,
+      resizeTo: window,
+      backgroundColor: "rgb(0, 115, 255)"
     });
     world2.add(app);
-    setupPixiCanvas(app);
+    setupPixiCanvas(world2);
     world2.addSystem(GraphicsSystem);
   }
 
@@ -42166,27 +42173,35 @@ void main(void)\r
         id,
         "... (Initiated locally)"
       );
+      this.setupPing(remoteConnection);
       return new Promise((res, rej) => {
-        setTimeout(() => {
+        setTimeout(async () => {
           if (this.isConnected)
             return;
-          remoteConnection.close();
-          rej("timeout");
+          this.logger.log(
+            "Normal connection timed out, attempting to ping..."
+          );
+          await this.ping(timeout, remoteConnection).catch(() => {
+            this.logger.log("Ping also failed after", timeout, "ms");
+            remoteConnection.close();
+            rej("timeout");
+          });
+          this.logger.log("Ping accepted, yell at edward to implement this");
         }, timeout);
         remoteConnection.on("open", () => {
           const tempStartTime = Date.now();
-          remoteConnection.once("data", ({
+          remoteConnection.on("data", ({
             event,
             data
           }) => {
-            if (event === 0 /* ACCEPT_CONNECTION */) {
+            if (event === 2 /* ACCEPT_CONNECTION */) {
               this.logger.log("Connection with", data.id, "was accepted");
               this.remoteConnection = this.dummyConnection.morphToRealConnection(
                 remoteConnection
               );
               this.onConnect(tempStartTime);
               res();
-            } else if (event === 1 /* DECLINE_CONNECTION */) {
+            } else if (event === 3 /* DECLINE_CONNECTION */) {
               this.logger.log(
                 "Connection with",
                 data.id,
@@ -42207,6 +42222,7 @@ void main(void)\r
           connection.metadata.id,
           "... (Initiated remotely)"
         );
+        this.setupPing(connection);
         if (!connection.open)
           await this.waitForConnectionCB(connection, "open");
         const tempStartTime = Date.now();
@@ -42217,7 +42233,7 @@ void main(void)\r
             "(Already connected)"
           );
           connection.send({
-            event: 1 /* DECLINE_CONNECTION */,
+            event: 3 /* DECLINE_CONNECTION */,
             data: {
               id: this.id
             }
@@ -42236,7 +42252,7 @@ void main(void)\r
           "..."
         );
         connection.send({
-          event: 0 /* ACCEPT_CONNECTION */,
+          event: 2 /* ACCEPT_CONNECTION */,
           data: {
             id: this.id
           }
@@ -42259,7 +42275,7 @@ void main(void)\r
       if (Diagnostics.artificialLag)
         await Promise.timeout(60);
       this.remoteConnection.send({
-        event: 2 /* DATA */,
+        event: 4 /* DATA */,
         subEvent: eventName,
         data
       });
@@ -42270,13 +42286,13 @@ void main(void)\r
     fetch(endpoint) {
       const transactionId = this.nextFetchId++;
       this.remoteConnection.send({
-        event: 3 /* FETCH */,
+        event: 5 /* FETCH */,
         subEvent: endpoint,
         id: transactionId
       });
       return new Promise((res) => {
         const tempFn = (packet) => {
-          if (packet.event !== 4 /* FETCH_RESPONSE */)
+          if (packet.event !== 6 /* FETCH_RESPONSE */)
             return;
           if (packet.id !== transactionId)
             return;
@@ -42288,11 +42304,11 @@ void main(void)\r
     }
     addResponse(endpoint, respond) {
       this.remoteConnection.on("data", async (packet) => {
-        if (packet.event !== 3 /* FETCH */ || packet.subEvent !== endpoint)
+        if (packet.event !== 5 /* FETCH */ || packet.subEvent !== endpoint)
           return;
         const data = await respond();
         this.remoteConnection.send({
-          event: 4 /* FETCH_RESPONSE */,
+          event: 6 /* FETCH_RESPONSE */,
           id: packet.id,
           data
         });
@@ -42302,6 +42318,25 @@ void main(void)\r
     waitForConnectionCB(connection, ev) {
       return new Promise((res) => {
         connection.once(ev, (...args) => res());
+      });
+    }
+    setupPing(connection) {
+      connection.on("data", (packet) => {
+        if (packet.event == 0 /* PING */)
+          connection.send({ event: 1 /* PING_RESPONSE */ });
+      });
+    }
+    ping(timeout, connection) {
+      return new Promise((res, rej) => {
+        connection.send({ event: 0 /* PING */ });
+        Promise.timeout(timeout).then(rej);
+        const fn = (packet) => {
+          if (packet.event === 1 /* PING_RESPONSE */) {
+            res();
+            connection.off("data", fn);
+          }
+        };
+        connection.on("data", fn);
       });
     }
     update() {
@@ -42352,21 +42387,20 @@ void main(void)\r
   // src/engine/multiplayer/archetype.ts
   var LoggedArchetype = class extends v {
     bufferSize = u.defaultLoggedBufferSize;
-    log = new Array(this.bufferSize).fill(
-      null
-    );
-    logInitalState() {
-      this.log[0] = new Int32Array(this.entities.length);
-      this.entities.set(this.log[0]);
+    // Gonna be used a lot, positive numbers means they was added, negative means they was removed
+    log = new Array(this.bufferSize).fill(null);
+    logInitalStateIfNotSet() {
+      if (this.log[0] === null)
+        this.log[0] = [];
     }
     addEntity(entity) {
-      if (this.log[0] === null)
-        this.logInitalState();
+      this.logInitalStateIfNotSet();
+      this.log[0].push(entity);
       super.addEntity(entity);
     }
     removeEntity(entity) {
-      if (this.log[0] === null)
-        this.logInitalState();
+      this.logInitalStateIfNotSet();
+      this.log[0]?.push(-entity);
       super.removeEntity(entity);
     }
     update() {
@@ -42378,11 +42412,16 @@ void main(void)\r
       if (numFrames > this.bufferSize) {
         throw new Error("Out of bounds rollback");
       }
-      for (let i2 = numFrames; i2 > -1; i2--) {
+      for (let i2 = 0; i2 <= numFrames; i2++) {
         if (this.log[i2] === null)
           continue;
-        this.log[i2].set(this.entities);
-        break;
+        for (const id of this.log[i2]) {
+          if (id >= 0) {
+            super.removeEntity(id);
+          } else {
+            super.addEntity(-id);
+          }
+        }
       }
       this.log.splice(0, numFrames + 1);
     }
@@ -42397,10 +42436,8 @@ void main(void)\r
     }
     archetypes = /* @__PURE__ */ new Map();
     entityArchetypes;
-    nextArchetypeId = 1;
     bufferSize = u.defaultLoggedBufferSize;
     log = new Array(this.bufferSize);
-    nextIdLog = new Array(this.bufferSize);
     defaultArchetype = new LoggedArchetype(
       0,
       /* @__PURE__ */ new Set(),
@@ -42429,9 +42466,13 @@ void main(void)\r
       this.entityArchetypes = data.entityArchetypes;
     }
     createNewArchetype(components) {
-      this.nextIdLog[0] ??= this.nextArchetypeId;
+      const sorted = [...components].sort((a3, b3) => a3 - b3);
+      let hash = 0;
+      for (let i2 = 0; i2 < sorted.length; i2++)
+        hash = Math.imul(31, hash) + sorted[i2] | 0;
+      const nextId = hash;
       const newArchetype = new LoggedArchetype(
-        this.nextArchetypeId++,
+        nextId,
         components,
         this.world.maxEntities
       );
@@ -42550,10 +42591,8 @@ void main(void)\r
       }
     }
     update() {
-      this.nextIdLog.unshift(null);
       if (this.log.unshift(null) > this.bufferSize) {
         this.log.pop();
-        this.nextIdLog.pop();
       }
       for (const [_2, archetype] of this.archetypes) {
         archetype.update();
@@ -42566,24 +42605,42 @@ void main(void)\r
       for (let i2 = numFrames; i2 > -1; i2--) {
         if (this.log[i2] === null)
           continue;
-        this.nextArchetypeId = this.nextIdLog[i2];
         this.log[i2].set(this.entityArchetypes);
         break;
       }
       this.log.splice(0, numFrames + 1);
-      for (const [_2, archetype] of this.archetypes) {
-        archetype.rollback(numFrames);
-      }
+      this.archetypes.forEach((archetype) => archetype.rollback(numFrames));
     }
   };
 
   // src/engine/multiplayer/world.ts
-  var MultiplayerEntityManager = class {
+  var _MultiplayerEntityManager = class {
     constructor(world2) {
       this.world = world2;
     }
     entities = /* @__PURE__ */ new Set();
+    log = [];
+    update() {
+      if (this.log.unshift(null) > _MultiplayerEntityManager.bufferSize) {
+        this.log.pop();
+      }
+    }
+    saveInitialState() {
+      if (this.log[0] === null) {
+        this.log[0] = new Set(this.entities);
+      }
+    }
+    rollback(numFrames) {
+      for (let i2 = numFrames; i2 >= 0; i2--) {
+        if (this.log[i2] === null)
+          continue;
+        this.entities = this.log[i2];
+        break;
+      }
+      this.log.splice(0, numFrames + 1);
+    }
     spawn() {
+      this.saveInitialState();
       for (let i2 = 1; i2 <= this.entities.size + 1; i2++) {
         if (!this.entities.has(i2)) {
           const result = i2;
@@ -42595,19 +42652,27 @@ void main(void)\r
       throw new Error("Shouldn't have gotten here");
     }
     destroy(ent) {
+      this.saveInitialState();
       this.entities.delete(ent);
       this.world.archetypeManager.removeEntity(ent);
     }
   };
+  var MultiplayerEntityManager = _MultiplayerEntityManager;
+  __publicField(MultiplayerEntityManager, "bufferSize", u.defaultLoggedBufferSize);
   function patchWorldMethods(world2) {
-    const $oldSpawn = world2.spawn;
-    const $oldDestroy = world2.destroy;
+    const $oldSpawn = world2.spawn.bind(world2);
+    const $oldDestroy = world2.destroy.bind(world2);
+    const $oldTick = world2.tick.bind(world2);
     world2.entityManager = new MultiplayerEntityManager(world2);
     world2.spawn = function() {
       return this.entityManager.spawn();
     };
     world2.destroy = function(ent) {
       return this.entityManager.destroy(ent);
+    };
+    world2.tick = function(schedule) {
+      this.entityManager.update();
+      return $oldTick(schedule);
     };
   }
 
@@ -42625,9 +42690,12 @@ void main(void)\r
       const storages = this.world.storageManager.getAllByType(y.logged);
       storages.forEach((storage) => storage.rollback(numFramesAgo));
       this.world.archetypeManager.rollback(numFramesAgo);
+      this.world.entityManager.rollback(numFramesAgo);
       while (this.currentFramesBack >= 0) {
-        this.world.update("rollback");
         this.world.storageManager.update();
+        this.world.archetypeManager.update();
+        this.world.entityManager.update();
+        this.world.update("rollback");
         this.currentFramesBack--;
       }
       this.currentFramesBack = 0;
@@ -42856,6 +42924,16 @@ void main(void)\r
           this.defaultGamepad = null;
         }
       });
+      window.addEventListener("joystickconnected", (e2) => {
+        e2.detail.joystick.addEventListener(
+          "inputchange",
+          ({ detail: { x: x3, y: y3, angle } }) => {
+            this.setAnalog(`Joystick${e2.detail.joystickId}-X`, x3);
+            this.setAnalog(`Joystick${e2.detail.joystickId}-Y`, y3);
+            this.setAnalog(`Joystick${e2.detail.joystickId}-Angle`, angle);
+          }
+        );
+      });
     }
     update() {
       this.digital.JUST_PRESSED.forEach((button) => {
@@ -42866,9 +42944,7 @@ void main(void)\r
         this.digital.RELEASED.add(button);
       });
       this.digital.JUST_RELEASED.clear();
-      this.digital.queue.PRESSED.forEach(
-        (b3) => this.digital.JUST_PRESSED.add(b3)
-      );
+      this.digital.queue.PRESSED.forEach((b3) => this.digital.JUST_PRESSED.add(b3));
       this.digital.queue.PRESSED.clear();
       this.digital.queue.RELEASED.forEach(
         (b3) => this.digital.JUST_RELEASED.add(b3)
@@ -42900,22 +42976,10 @@ void main(void)\r
             }
           }
         });
-        this.setAnalog(
-          `Gamepad${gamepad.index}-LeftStickX`,
-          gamepad.axes[0]
-        );
-        this.setAnalog(
-          `Gamepad${gamepad.index}-LeftStickY`,
-          gamepad.axes[1]
-        );
-        this.setAnalog(
-          `Gamepad${gamepad.index}-RightStickX`,
-          gamepad.axes[2]
-        );
-        this.setAnalog(
-          `Gamepad${gamepad.index}-RightStickY`,
-          gamepad.axes[3]
-        );
+        this.setAnalog(`Gamepad${gamepad.index}-LeftStickX`, gamepad.axes[0]);
+        this.setAnalog(`Gamepad${gamepad.index}-LeftStickY`, gamepad.axes[1]);
+        this.setAnalog(`Gamepad${gamepad.index}-RightStickX`, gamepad.axes[2]);
+        this.setAnalog(`Gamepad${gamepad.index}-RightStickY`, gamepad.axes[3]);
       });
     }
     findAlias(button) {
@@ -43289,10 +43353,31 @@ void main(void)\r
   // src/game/systems/movement.ts
   var MovementSystem = class extends $t(_(Position, Velocity)) {
     update() {
+      let xPos = "";
       this.entities.forEach((entity) => {
+        xPos += entity.get(Position.x) + ", ";
         entity.inc(Position.x, entity.get(Velocity.x));
         entity.inc(Position.y, entity.get(Velocity.y));
       });
+      const nc = this.world.get(NetworkConnection);
+      const rb = this.world.get(RollbackManager);
+      const input = this.world.get(MultiplayerInput);
+      if (nc.isConnected) {
+      }
+    }
+  };
+
+  // src/engine/input_bindings.ts
+  var AimAngleBinding = class extends AnalogBinding {
+    constructor(getters) {
+      super();
+      this.getters = getters;
+    }
+    get(input) {
+      return Math.atan2(
+        this.getters.targetY(input) - this.getters.originY(input),
+        this.getters.targetX(input) - this.getters.originX(input)
+      );
     }
   };
 
@@ -43331,6 +43416,27 @@ void main(void)\r
     input.bind(
       "shoot",
       new AnyBinding("MouseLeft", "DefaultGamepad-B", "DefaultGamepad-R1")
+    );
+    input.bind(
+      "aimAngle",
+      new AimAngleBinding({
+        originX: () => {
+          try {
+            return world2.get("local_player").get(Graphics).toGlobal(new Point(0, 0)).x;
+          } catch (e2) {
+            return 0;
+          }
+        },
+        originY: () => {
+          try {
+            return world2.get("local_player").get(Graphics).toGlobal(new Point(0, 0)).y;
+          } catch (e2) {
+            return 0;
+          }
+        },
+        targetX: (i2) => i2.getRaw("MouseX"),
+        targetY: (i2) => i2.getRaw("MouseY")
+      })
     );
     input.bind(
       "aimx",
@@ -43392,7 +43498,7 @@ void main(void)\r
     Position,
     Velocity,
     Graphics,
-    new TimedAlive(100)
+    new TimedAlive(1e3)
   );
   var BulletEnt = Be2(
     bulletBlueprint,
@@ -43424,11 +43530,14 @@ void main(void)\r
       this.mult(Velocity.x, 3);
     }
     if (input.is("shoot", "JUST_PRESSED", id)) {
+      console.log(input.get("aimAngle"));
       BulletEnt(
         this.get(Position.x),
         this.get(Position.y),
-        input.get("aimx", id) * 8 + this.get(Velocity.x),
-        input.get("aimy", id) * 8 + this.get(Velocity.y),
+        Math.cos(input.get("aimAngle", id)) * 1,
+        //+ this.get(Velocity.x),
+        Math.sin(input.get("aimAngle", id)) * 1,
+        //+ this.get(Velocity.y),
         "purple"
       );
     }
@@ -43448,10 +43557,12 @@ void main(void)\r
 
   // src/game/levels/maps/1.ts
   function loadLevel1Map(world2) {
-    document.body.style.background = "#06011f";
+    const app = world2.get(Application);
+    app.renderer.background.backgroundColor.setValue("#06011f");
     const sprite = new Sprite(Texture.from("assets/map1bg.png"));
     console.log(sprite);
-    world2.get(Application).stage.addChild(sprite);
+    sprite.texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
+    world2.get("screen").addChild(sprite);
   }
 
   // src/game/states/multiplayer.ts
@@ -43478,6 +43589,7 @@ void main(void)\r
       localPlayer.addScript(movementScript);
       localPlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
       localPlayer.add(new Velocity({ x: 0, y: 0 }));
+      this.world.add(localPlayer, "local_player");
       const remotePlayer = GraphicsEnt(
         remoteX,
         16 * 2,
@@ -43501,6 +43613,67 @@ void main(void)\r
     }
     async onLeave(to) {
       return;
+    }
+  };
+
+  // src/game/hud/components/joystick.tsx
+  var Joystick = (props) => {
+    const thumb = /* @__PURE__ */ window.jsx("div", { className: "rounded-full w-8 h-8 bg-gray-800" });
+    const container = /* @__PURE__ */ window.jsx(
+      "div",
+      {
+        className: `fixed bottom-0 mb-4 ml-4  w-16 h-16 ${props.side === "left" ? "left-0" : "right-0"}`
+      },
+      /* @__PURE__ */ window.jsx("div", { className: "rounded-full border-gray-600 border-2 w-16 h-16 bg-gray-400 bg-opacity-40 flex items-center justify-center" }, thumb)
+    );
+    window.dispatchEvent(
+      new CustomEvent("joystickconnected", {
+        detail: { joystickId: props.id, joystick: container }
+      })
+    );
+    let pointerId = null;
+    container.addEventListener("pointerdown", (e2) => {
+      if (pointerId !== null)
+        return;
+      pointerId = e2.pointerId;
+      correctOffset(e2);
+    });
+    window.addEventListener("pointermove", (e2) => {
+      if (e2.pointerId !== pointerId)
+        return;
+      correctOffset(e2);
+    });
+    window.addEventListener("pointerup", (e2) => {
+      console.log("Up");
+      if (e2.pointerId === pointerId) {
+        pointerId = null;
+        thumb.style.transform = "";
+        container.dispatchEvent(
+          new CustomEvent("inputchange", {
+            detail: { x: 0, y: 0, angle: 0 }
+          })
+        );
+      }
+    });
+    return container;
+    function correctOffset(event) {
+      const elPos = container.getBoundingClientRect();
+      let diffX = (elPos.left + elPos.right) / 2 - event.clientX;
+      let diffY = (elPos.top + elPos.bottom) / 2 - event.clientY;
+      const radius = elPos.width / 2;
+      const theta = Math.atan2(diffY, diffX);
+      if (diffX ** 2 + diffY ** 2 > radius ** 2) {
+        diffX = Math.cos(theta) * radius;
+        diffY = Math.sin(theta) * radius;
+      }
+      thumb.style.transform = `translate(${-diffX}px,${-diffY}px)`;
+      container.dataset.x = diffX / radius + "";
+      container.dataset.y = diffY / radius + "";
+      container.dispatchEvent(
+        new CustomEvent("inputchange", {
+          detail: { x: diffX / radius, y: diffY / radius, angle: theta }
+        })
+      );
     }
   };
 
@@ -43537,6 +43710,7 @@ void main(void)\r
       nc.waitForConnection.then(() => {
         this.world.get(StateManager).moveTo(MultiplayerGameState, null);
       });
+      document.body.append(Joystick({ side: "left" }));
     }
     async onLeave() {
       this.world.get(Pane).remove(this.connectionFolder);

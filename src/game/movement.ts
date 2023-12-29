@@ -14,6 +14,9 @@ import { Component } from "bagelecs";
 import { Type } from "bagelecs";
 import { RollbackManager, rollbackPlugin } from "../engine/multiplayer/rollback";
 import { MovementSystem } from "./systems/movement";
+import { AimAngleBinding, FavorBinding } from "engine/input_bindings";
+import { Position } from "engine/rendering/position";
+import { Graphics, Point } from "pixi.js";
 
 declare module "../engine/multiplayer/multiplayer_input" {
     export interface Bindings {
@@ -23,6 +26,7 @@ declare module "../engine/multiplayer/multiplayer_input" {
         shoot: DigitalBinding;
         aimx: AnalogBinding;
         aimy: AnalogBinding;
+        aimAngle: AnalogBinding;
     }
 }
 
@@ -63,6 +67,34 @@ export async function MovementPlugin(world: World) {
     input.bind(
         "shoot",
         new AnyBinding("MouseLeft", "DefaultGamepad-B", "DefaultGamepad-R1")
+    );
+
+    input.bind(
+        "aimAngle",
+        new AimAngleBinding({
+            originX: () => {
+                try {
+                    return world
+                        .get<Entity>("local_player")
+                        .get(Graphics)
+                        .toGlobal(new Point(0, 0)).x;
+                } catch (e) {
+                    return 0;
+                }
+            },
+            originY: () => {
+                try {
+                    return world
+                        .get<Entity>("local_player")
+                        .get(Graphics)
+                        .toGlobal(new Point(0, 0)).y;
+                } catch (e) {
+                    return 0;
+                }
+            },
+            targetX: (i) => i.getRaw("MouseX"),
+            targetY: (i) => i.getRaw("MouseY"),
+        })
     );
 
     input.bind(

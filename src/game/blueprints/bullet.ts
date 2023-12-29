@@ -8,7 +8,7 @@ const bulletBlueprint = new Blueprint(
     Position,
     Velocity,
     Graphics,
-    new TimedAlive(100)
+    new TimedAlive(1000)
 );
 
 export const BulletEnt = AdvancedBlueprintFactory(

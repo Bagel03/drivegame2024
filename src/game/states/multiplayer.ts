@@ -36,6 +36,7 @@ export class MultiplayerGameState extends State<never> {
         localPlayer.addScript(movementScript);
         localPlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
         localPlayer.add(new Velocity({ x: 0, y: 0 }));
+        this.world.add(localPlayer, "local_player");
 
         const remotePlayer = GraphicsEnt(
             remoteX,

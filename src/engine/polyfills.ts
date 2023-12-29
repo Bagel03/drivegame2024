@@ -13,8 +13,6 @@ Promise.timeout = function (ms: number) {
     return new Promise((res) => setTimeout(res, ms));
 };
 
-console.log(Promise.timeout);
-
 Promise.prototype.timeout = function (ms: number) {
     return Promise.race([this, Promise.timeout(ms)]);
 };

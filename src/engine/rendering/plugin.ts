@@ -11,9 +11,11 @@ export function RenderPlugin(world: World) {
         antialias: false,
         // resolution: 2,
         autoDensity: true,
+        resizeTo: window,
+        backgroundColor: "rgb(0, 115, 255)",
     });
     world.add(app);
-    setupPixiCanvas(app);
+    setupPixiCanvas(world);
 
     world.addSystem(GraphicsSystem);
 }

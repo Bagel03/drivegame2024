@@ -4,6 +4,8 @@ import { Diagnostics } from "engine/diagnostics";
 import { ResourceUpdaterPlugin } from "engine/resource";
 
 enum NetworkEvent {
+    PING,
+    PING_RESPONSE,
     ACCEPT_CONNECTION,
     DECLINE_CONNECTION,
     DATA,
@@ -168,19 +170,29 @@ export class NetworkConnection {
             id,
             "... (Initiated locally)"
         );
+        this.setupPing(remoteConnection);
 
         return new Promise<void>((res, rej) => {
-            setTimeout(() => {
+            // Sometimes, it doesn't like to fire the open event. This tries to account for that
+            setTimeout(async () => {
                 if (this.isConnected) return;
-                remoteConnection.close();
-                rej("timeout");
+                this.logger.log(
+                    "Normal connection timed out, attempting to ping..."
+                );
+                await this.ping(timeout, remoteConnection).catch(() => {
+                    this.logger.log("Ping also failed after", timeout, "ms");
+                    remoteConnection.close();
+                    rej("timeout");
+                });
+                this.logger.log("Ping accepted, yell at edward to implement this");
             }, timeout);
+
             remoteConnection.on("open", () => {
                 // Save the open time in case this connection was accepted
                 const tempStartTime = Date.now();
 
                 // We have to wait for a response (either accept or reject)
-                remoteConnection.once("data", (({
+                remoteConnection.on("data", (({
                     event,
                     data,
                 }: RawNetworkPacket<{ id: string }>) => {
@@ -214,6 +226,7 @@ export class NetworkConnection {
                 connection.metadata.id,
                 "... (Initiated remotely)"
             );
+            this.setupPing(connection);
 
             if (!connection.open) await this.waitForConnectionCB(connection, "open");
             const tempStartTime = Date.now();
@@ -330,6 +343,28 @@ export class NetworkConnection {
     >(connection: DataConnection, ev: T) {
         return new Promise<void>((res) => {
             connection.once(ev, (...args) => res());
+        });
+    }
+
+    private setupPing(connection: DataConnection) {
+        connection.on("data", ((packet: RawNetworkPacket) => {
+            if (packet.event == NetworkEvent.PING)
+                connection.send({ event: NetworkEvent.PING_RESPONSE });
+        }) as any);
+    }
+
+    private ping(timeout: number, connection: DataConnection) {
+        return new Promise<void>((res, rej) => {
+            connection.send({ event: NetworkEvent.PING });
+            Promise.timeout(timeout).then(rej);
+            const fn = (packet: RawNetworkPacket) => {
+                if (packet.event === NetworkEvent.PING_RESPONSE) {
+                    res();
+                    connection.off("data", fn as any);
+                }
+            };
+
+            connection.on("data", fn as any);
         });
     }
 

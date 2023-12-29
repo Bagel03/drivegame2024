@@ -14,22 +14,24 @@ declare module "bagelecs" {
 
 export class LoggedArchetype extends Archetype {
     private readonly bufferSize: number = TypeIdBuilder.defaultLoggedBufferSize;
-    public readonly log: (Int32Array | null)[] = new Array(this.bufferSize).fill(
-        null
-    );
 
-    private logInitalState() {
-        this.log[0] = new Int32Array(this.entities.length);
-        this.entities.set(this.log[0]);
+    // Gonna be used a lot, positive numbers means they was added, negative means they was removed
+    public readonly log: (number[] | null)[] = new Array(this.bufferSize).fill(null);
+
+    private logInitalStateIfNotSet() {
+        if (this.log[0] === null) this.log[0] = [];
+        // this.entities.set(this.log[0]);
     }
 
     addEntity(entity: Entity): void {
-        if (this.log[0] === null) this.logInitalState();
+        this.logInitalStateIfNotSet();
+        this.log[0]!.push(entity);
         super.addEntity(entity);
     }
 
     removeEntity(entity: Entity): void {
-        if (this.log[0] === null) this.logInitalState();
+        this.logInitalStateIfNotSet();
+        this.log[0]?.push(-entity);
         super.removeEntity(entity);
     }
 
@@ -44,12 +46,18 @@ export class LoggedArchetype extends Archetype {
             throw new Error("Out of bounds rollback");
         }
 
-        // Start at the front and do stuff
-        for (let i = numFrames; i > -1; i--) {
+        for (let i = 0; i <= numFrames; i++) {
             if (this.log[i] === null) continue;
 
-            this.log[i]!.set(this.entities);
-            break;
+            // Remember, positive means the entity was added (ie. we need to remove it) + vice versa
+            for (const id of this.log[i]!) {
+                if (id >= 0) {
+                    super.removeEntity(id as Entity);
+                } else {
+                    super.addEntity(-id as Entity);
+                }
+            }
+            // this.log[i]!.set(this.entities);
         }
 
         this.log.splice(0, numFrames + 1);
@@ -59,11 +67,9 @@ export class LoggedArchetype extends Archetype {
 export class LoggedArchetypeManager {
     public readonly archetypes: Map<number, LoggedArchetype> = new Map();
     public readonly entityArchetypes: Int32Array;
-    protected nextArchetypeId = 1;
 
     private readonly bufferSize = TypeIdBuilder.defaultLoggedBufferSize;
     private readonly log: (Int32Array | null)[] = new Array(this.bufferSize);
-    public readonly nextIdLog: (number | null)[] = new Array(this.bufferSize);
 
     public readonly defaultArchetype: LoggedArchetype = new LoggedArchetype(
         0,
@@ -112,10 +118,16 @@ export class LoggedArchetypeManager {
 
     createNewArchetype(components: Set<number>) {
         // logger.log("Creating new archetype for components:", components);
-        this.nextIdLog[0] ??= this.nextArchetypeId;
+        // Generate the next ID
+        const sorted = [...components].sort((a, b) => a - b);
+        let hash = 0;
+        for (let i = 0; i < sorted.length; i++)
+            hash = (Math.imul(31, hash) + sorted[i]) | 0;
+        const nextId = hash;
+        // this.nextIdLog[0] ??= this.nextArchetypeId;
 
         const newArchetype = new LoggedArchetype(
-            this.nextArchetypeId++,
+            nextId,
             components,
             this.world.maxEntities
         );
@@ -289,10 +301,8 @@ export class LoggedArchetypeManager {
     }
 
     update() {
-        this.nextIdLog.unshift(null);
         if (this.log.unshift(null) > this.bufferSize) {
             this.log.pop();
-            this.nextIdLog.pop();
         }
 
         for (const [_, archetype] of this.archetypes) {
@@ -308,15 +318,15 @@ export class LoggedArchetypeManager {
         // Start at the front and do stuff
         for (let i = numFrames; i > -1; i--) {
             if (this.log[i] === null) continue;
-            this.nextArchetypeId = this.nextIdLog[i]!;
             this.log[i]!.set(this.entityArchetypes);
             break;
         }
 
         this.log.splice(0, numFrames + 1);
+        this.archetypes.forEach((archetype) => archetype.rollback(numFrames));
 
-        for (const [_, archetype] of this.archetypes) {
-            archetype.rollback(numFrames);
-        }
+        // for (const [_, archetype] of this.archetypes) {
+        //     archetype.rollback(numFrames);
+        // }
     }
 }

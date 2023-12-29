@@ -10,6 +10,7 @@ import { NetworkConnection } from "../../engine/multiplayer/network";
 import { Game } from "./game";
 import { showDialog } from "../../engine/rendering/hud/dialogs";
 import { MultiplayerGameState } from "./multiplayer";
+import { Joystick } from "../hud/components/joystick";
 
 export class Menu extends State<never> {
     private connectionFolder!: FolderApi;
@@ -51,6 +52,7 @@ export class Menu extends State<never> {
         nc.waitForConnection.then(() => {
             this.world.get(StateManager).moveTo(MultiplayerGameState, null);
         });
+        document.body.append(Joystick({ side: "left" }));
 
         // nc.newConnectionListeners.add(() => {
         //     this.world.get(StateManager).moveTo(MultiplayerGameState, null);

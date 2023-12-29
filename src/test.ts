@@ -21,7 +21,6 @@ Promise.resolve().then(() => {
                 nc.framesConnected,
                 Date.now() - nc.connectionStartTime,
             ]);
-            console.log("updating");
         }, 1000 / 60);
     });
 });

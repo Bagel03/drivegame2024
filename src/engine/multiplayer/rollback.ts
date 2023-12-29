@@ -19,13 +19,15 @@ export class RollbackManager {
         this.currentFramesBack = numFramesAgo;
 
         const storages = this.world.storageManager.getAllByType(StorageKind.logged);
-
         storages.forEach((storage) => storage.rollback(numFramesAgo));
         this.world.archetypeManager.rollback(numFramesAgo);
+        this.world.entityManager.rollback(numFramesAgo);
 
         while (this.currentFramesBack >= 0) {
-            this.world.update("rollback");
             this.world.storageManager.update();
+            this.world.archetypeManager.update();
+            this.world.entityManager.update();
+            this.world.update("rollback");
 
             this.currentFramesBack--;
         }

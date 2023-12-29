@@ -39,11 +39,12 @@ export const movementScript: Script = function () {
     // }
 
     if (input.is("shoot", "JUST_PRESSED", id)) {
+        console.log(input.get("aimAngle"));
         BulletEnt(
             this.get(Position.x),
             this.get(Position.y),
-            input.get("aimx", id) * 8 + this.get(Velocity.x),
-            input.get("aimy", id) * 8 + this.get(Velocity.y),
+            Math.cos(input.get("aimAngle", id)) * 1, //+ this.get(Velocity.x),
+            Math.sin(input.get("aimAngle", id)) * 1, //+ this.get(Velocity.y),
             "purple"
         );
     }

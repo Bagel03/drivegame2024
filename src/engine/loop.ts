@@ -23,6 +23,7 @@ export function LoopPlugin(world: World) {
         while (leftoverTime >= desiredFrameRate) {
             const start = performance.now();
             world.tick();
+            // console.log(world.archetypeManager.update);
             Diagnostics.logicTick = performance.now() - start;
             leftoverTime -= desiredFrameRate;
         }
