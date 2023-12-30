@@ -28,11 +28,10 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
 
     const container = (
         <div
-            className={`fixed bottom-0 mb-4 ml-4  w-16 h-16 ${
+            className={`fixed bottom-0 mb-4 mr-4 ml-4  w-16 h-16 ${
                 props.side === "left" ? "left-0" : "right-0"
             }`}
         >
-            {/* Outside */}
             <div className="rounded-full border-gray-600 border-2 w-16 h-16 bg-gray-400 bg-opacity-40 flex items-center justify-center">
                 {thumb}
             </div>
@@ -94,7 +93,7 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
 
         container.dispatchEvent(
             new CustomEvent("inputchange", {
-                detail: { x: diffX / radius, y: diffY / radius, angle: theta },
+                detail: { x: -diffX / radius, y: -diffY / radius, angle: theta },
             }) satisfies JoystickInputChangeEvent
         );
         // container.dispatchEvent()

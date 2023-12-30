@@ -28,5 +28,5 @@ export function setupPixiCanvas(world: World) {
         resize(app);
     });
 
-    screen.addEventListener("childAdded", () => resize(app));
+    // screen.addEventListener("childAdded", () => resize(app));
 }

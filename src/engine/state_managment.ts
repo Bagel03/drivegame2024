@@ -5,10 +5,7 @@ export abstract class State<T = any> {
 
     constructor(public readonly world: World) {}
 
-    abstract onEnter<From extends StateClass>(
-        payload: T,
-        from: From
-    ): Promise<void>;
+    abstract onEnter<From extends StateClass>(payload: T, from: From): Promise<void>;
     abstract update(): void;
     abstract onLeave<Into extends StateClass>(
         to: Into
@@ -26,15 +23,13 @@ class DefaultState extends State<never> {
     async onLeave() {}
 }
 
-export type ExtractPayload<T extends StateClass> = T extends Class<
-    State<infer U>
->
+export type ExtractPayload<T extends StateClass> = T extends Class<State<infer U>>
     ? U
     : never;
 
 export class StateManager {
     private readonly states = new Map<StateClass, State>();
-    private currentState!: StateClass;
+    public currentState!: StateClass;
     private currentStateInstance!: State;
 
     private readonly history: StateClass[] = [];
@@ -64,8 +59,7 @@ export class StateManager {
             await stateInstance.onEnter(payload, this.currentState);
         }
 
-        if (this.currentState.recordInHistory)
-            this.history.push(this.currentState);
+        if (this.currentState.recordInHistory) this.history.push(this.currentState);
 
         this.currentState = state;
         this.currentStateInstance = stateInstance;
@@ -77,11 +71,7 @@ export class StateManager {
     ): Promise<boolean> {
         if (this.history.length === 0) return false;
 
-        await this.moveTo(
-            this.history.pop()!,
-            payload,
-            useExitPayloadIfAvailable
-        );
+        await this.moveTo(this.history.pop()!, payload, useExitPayloadIfAvailable);
         this.history.pop();
         return true;
     }

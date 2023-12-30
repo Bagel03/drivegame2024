@@ -1,8 +1,17 @@
 import { System, World } from "bagelecs";
-import { ResourceUpdaterPlugin } from "./resource";
-import { JoystickConnectedEvent } from "../game/hud/components/joystick";
+import { ResourceUpdaterPlugin } from "../resource";
+import { JoystickConnectedEvent } from "../../game/hud/components/joystick";
+import { AnalogBinding, Binding, DigitalBinding } from "./input_bindings";
+import {
+    AnalogGamepad,
+    AnalogInput,
+    DigitalInput,
+    GAMEPAD_ALIASES,
+    GamepadKey,
+    INPUT_ALIASES,
+} from "./input_types";
+import EventEmitter from "events";
 
-//#region Types
 export type ButtonState = "PRESSED" | "RELEASED" | "JUST_PRESSED" | "JUST_RELEASED";
 
 export const BUTTON_STATES: ButtonState[] = [
@@ -12,235 +21,78 @@ export const BUTTON_STATES: ButtonState[] = [
     "RELEASED",
 ];
 
-type Key =
-    | "Backspace"
-    | "Tab"
-    | "Enter"
-    | "ShiftLeft"
-    | "ShiftRight"
-    | "ControlLeft"
-    | "ControlRight"
-    | "AltLeft"
-    | "AltRight"
-    | "Pause"
-    | "CapsLock"
-    | "Escape"
-    | "Space"
-    | "PageUp"
-    | "PageDown"
-    | "End"
-    | "Home"
-    | "ArrowLeft"
-    | "ArrowUp"
-    | "ArrowRight"
-    | "ArrowDown"
-    | "PrintScreen"
-    | "Insert"
-    | "Delete"
-    | "Digit0"
-    | "Digit1"
-    | "Digit2"
-    | "Digit3"
-    | "Digit4"
-    | "Digit5"
-    | "Digit6"
-    | "Digit7"
-    | "Digit8"
-    | "Digit9"
-    | "KeyA"
-    | "KeyB"
-    | "KeyC"
-    | "KeyD"
-    | "KeyE"
-    | "KeyF"
-    | "KeyG"
-    | "KeyH"
-    | "KeyI"
-    | "KeyJ"
-    | "KeyK"
-    | "KeyL"
-    | "KeyM"
-    | "KeyN"
-    | "KeyO"
-    | "KeyP"
-    | "KeyQ"
-    | "KeyR"
-    | "KeyS"
-    | "KeyT"
-    | "KeyU"
-    | "KeyV"
-    | "KeyW"
-    | "KeyX"
-    | "KeyY"
-    | "KeyZ"
-    | "MetaLeft"
-    | "MetaRight"
-    | "ContextMenu"
-    | "Numpad0"
-    | "Numpad1"
-    | "Numpad2"
-    | "Numpad3"
-    | "Numpad4"
-    | "Numpad5"
-    | "Numpad6"
-    | "Numpad7"
-    | "Numpad8"
-    | "Numpad9"
-    | "NumpadMultiply"
-    | "NumpadAdd"
-    | "NumpadSubtract"
-    | "NumpadDecimal"
-    | "NumpadDivide"
-    | "F1"
-    | "F2"
-    | "F3"
-    | "F4"
-    | "F5"
-    | "F6"
-    | "F7"
-    | "F8"
-    | "F9"
-    | "F10"
-    | "F11"
-    | "F12"
-    | "NumLock"
-    | "ScrollLock"
-    | "Semicolon"
-    | "Equal"
-    | "Comma"
-    | "Minus"
-    | "Period"
-    | "Slash"
-    | "Backquote"
-    | "BracketLeft"
-    | "Backslash"
-    | "BracketRight"
-    | "Quote";
+/** Extend this to add bindings */
+export interface Bindings {}
 
-type MouseButton = `Mouse${number}` | `MouseLeft` | `MouseMiddle` | `MouseRight`;
+export type AnalogBindingKey = keyof Bindings;
 
-type GamepadKey =
-    // Xbox
-    | "LT"
-    | "LeftTrigger"
-    | "LB"
-    | "LeftBumper"
-    | "RT"
-    | "RightTrigger"
-    | "RB"
-    | "RightBumper"
-    | "A"
-    | "B"
-    | "X"
-    | "Y"
-    | "LeftStick"
-    | "RightStick"
-    | "DPadUp"
-    | "DPadRight"
-    | "DPadDown"
-    | "DPadLeft"
-    | "View"
-    | "Menu"
-    | "Xbox"
-    // PS
-    | "L1"
-    | "L2"
-    | "R1"
-    | "R2"
-    | "Triangle"
-    | "Circle"
-    | "Cross"
-    | "Square"
-    | "▲"
-    | "◯"
-    | "✖"
-    | "□"
-    | "Share"
-    | "Options"
-    | "PS"
-    | "Touchpad";
-// TODO: Switch
+export type DigitalBindingKey = keyof {
+    [key in keyof Bindings as Bindings[key] extends DigitalBinding ? key : never]: 0;
+};
 
-type GamepadButton =
-    | `Gamepad${number}-${number}`
-    | `Gamepad${number}-${GamepadKey}`
-    | `DefaultGamepad-${number}`
-    | `DefaultGamepad-${GamepadKey}`;
+/** A list of input methods and functions that detect when to change between them */
+export type InputMethodName = "KBM" | "MOBILE" | "GAMEPAD";
 
-export type DigitalInput = Key | MouseButton | GamepadButton;
+export class InputMethod {
+    private constructor(
+        public readonly name: InputMethodName,
+        public readonly init: (input: Input) => void,
+        public readonly isAvailable: (input: Input) => boolean
+    ) {}
 
-// Analog
+    private static readonly isMobile = () =>
+        /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-type AnalogMouse =
-    | "MouseX"
-    | "MouseY"
-    | "MouseXDelta"
-    | "MouseYDelta"
-    | "MouseScrollDelta";
-type AnalogGamepad = "LeftStickX" | "LeftStickY" | "RightStickX" | "RightStickY";
-type AnalogJoystick = "X" | "Y" | "Angle";
+    static readonly KMB = new InputMethod(
+        "KBM",
+        (input: Input) => {
+            if (InputMethod.isMobile()) return;
 
-// Gamepad buttons are both analog and digital
-export type AnalogInput =
-    | AnalogMouse
-    | GamepadButton
-    | `Gamepad${number}-${AnalogGamepad}`
-    | `DefaultGamepad-${AnalogGamepad}`
-    | `Joystick${string}-${AnalogJoystick}`;
+            window.addEventListener("keydown", (e) =>
+                input.requestInputMethodChange("KBM")
+            );
 
-//#endregion
+            // Don't instantly request this, because gamepad might be connected and this is inited by default
+        },
+        () => !InputMethod.isMobile()
+    );
 
-const INPUT_ALIASES = new Map<DigitalInput, DigitalInput>([
-    ["MouseLeft", "Mouse0"],
-    ["MouseRight", "Mouse2"],
-    ["MouseMiddle", "Mouse1"],
-]);
+    static readonly mobile = new InputMethod(
+        "MOBILE",
+        (input: Input) => {
+            if (InputMethod.isMobile()) input.requestInputMethodChange("MOBILE");
+        },
+        () => InputMethod.isMobile()
+    );
 
-const GAMEPAD_ALIASES = new Map<GamepadKey, number>([
-    ["✖", 0],
-    ["Cross", 0],
-    ["A", 0],
+    static readonly gamepad = new InputMethod(
+        "GAMEPAD",
+        (input: Input) => {
+            if (input.connectedGamepads.length > 0)
+                input.requestInputMethodChange("GAMEPAD");
+        },
+        (input: Input) => input.connectedGamepads.length > 0
+    );
 
-    ["◯", 1],
-    ["Circle", 1],
-    ["B", 1],
+    static readonly methods = [this.KMB, this.mobile, this.gamepad] as const;
 
-    ["□", 2],
-    ["Square", 2],
-    ["X", 2],
+    static getMethod(name: InputMethodName) {
+        return this.methods.find((n) => n.name == name)!;
+    }
+}
 
-    ["▲", 3],
-    ["Triangle", 3],
-    ["Y", 3],
+export type GamepadButtonEvent = CustomEvent<{
+    gamepad: Gamepad;
+    button: number;
+    state: "PRESSED" | "RELEASED";
+}>;
+// export type GamepadAxisChange = CustomEvent<{gamepad: Gamepad, button: GamepadButton, state: "PRESSED" | "RELEASED"}>
 
-    ["L1", 4],
-    ["LeftBumper", 4],
-    ["R1", 5],
-    ["RightBumper", 5],
-
-    ["L2", 6],
-    ["LeftTrigger", 6],
-    ["R2", 7],
-    ["RightTrigger", 7],
-
-    ["Share", 8],
-    ["View", 8],
-    ["Options", 9],
-    ["Menu", 9],
-
-    ["LeftStick", 10],
-    ["RightStick", 11],
-
-    ["DPadUp", 12],
-    ["DPadDown", 13],
-    ["DPadLeft", 14],
-    ["DPadRight", 15],
-
-    ["PS", 16],
-    ["Xbox", 16],
-
-    ["Touchpad", 17],
-]);
+declare global {
+    interface WindowEventHandlersEventMap {
+        gamepadbuttonpressed: GamepadButtonEvent;
+    }
+}
 
 export class Input {
     protected readonly digital = {
@@ -258,8 +110,8 @@ export class Input {
 
     protected readonly analog: Map<AnalogInput, number> = new Map();
 
-    protected connectedGamepads: number[] = [];
-    protected defaultGamepad: number | null = null;
+    public connectedGamepads: number[] = [];
+    public defaultGamepad: number | null = null;
 
     protected readonly analogBindings = new Map<string, AnalogBinding>();
     protected readonly digitalBindings = new Map<string, DigitalBinding>();
@@ -411,6 +263,15 @@ export class Input {
                         !this.digital.JUST_PRESSED.has(name)
                     ) {
                         this.digitalInputPressed(name);
+                        window.dispatchEvent(
+                            new CustomEvent("gamepadbuttonpressed", {
+                                detail: {
+                                    gamepad,
+                                    button: buttonIdx,
+                                    state: "PRESSED",
+                                },
+                            }) satisfies GamepadButtonEvent
+                        );
                     }
                 } else {
                     if (
@@ -418,6 +279,15 @@ export class Input {
                         this.digital.JUST_PRESSED.has(name)
                     ) {
                         this.digitalInputReleased(name);
+                        window.dispatchEvent(
+                            new CustomEvent("gamepadbuttonpressed", {
+                                detail: {
+                                    gamepad,
+                                    button: buttonIdx,
+                                    state: "RELEASED",
+                                },
+                            }) satisfies GamepadButtonEvent
+                        );
                     }
                 }
             });
@@ -444,10 +314,32 @@ export class Input {
                 GamepadKey
             ];
 
-            return `${GPnum}-${GAMEPAD_ALIASES.get(key as any) ?? key}`;
+            return `${GPnum}-${GAMEPAD_ALIASES.get(key) ?? key}`;
         }
 
         return INPUT_ALIASES.get(button) || button;
+    }
+
+    protected inputMethods: Record<InputMethodName, Bindings> = {} as any;
+    protected currentInputMethod!: InputMethodName;
+    addInputMethod(method: InputMethodName, bindings: Bindings) {
+        this.inputMethods[method] = bindings;
+
+        if (
+            InputMethod.getMethod(method).isAvailable(this) &&
+            !this.currentInputMethod
+        ) {
+            this.currentInputMethod = method;
+            this.requestInputMethodChange(method);
+        }
+    }
+
+    requestInputMethodChange(method: InputMethodName) {
+        this.currentInputMethod = method;
+
+        Object.entries(this.inputMethods[method]).forEach(([name, binding]) =>
+            this.bind(name, binding)
+        );
     }
 
     //#region API
@@ -551,185 +443,3 @@ export class Input {
 }
 
 export const InputPlugin = ResourceUpdaterPlugin(Input, true);
-
-//#region Bindings
-
-export type Binding = DigitalBinding | AnalogBinding;
-
-export abstract class DigitalBinding {
-    abstract is(input: Input, state: ButtonState): boolean;
-}
-
-export abstract class AnalogBinding {
-    abstract get(input: Input): number;
-}
-
-export class DirectDigitalBinding extends DigitalBinding {
-    constructor(public raw: DigitalInput) {
-        super();
-    }
-
-    is(input: Input, state: ButtonState): boolean {
-        return input.isRaw(this.raw, state);
-    }
-}
-
-export class DirectAnalogBinding extends AnalogBinding {
-    constructor(public raw: DigitalInput | AnalogInput) {
-        super();
-    }
-
-    get(input: Input): number {
-        return input.getRaw(this.raw);
-    }
-}
-
-export class AllBinding extends DigitalBinding {
-    public readonly inputs: DigitalInput[];
-    constructor(...inputs: DigitalInput[]) {
-        super();
-        this.inputs = inputs;
-    }
-
-    is(inputInstance: Input, state: ButtonState): boolean {
-        switch (state) {
-            case "PRESSED":
-            case "RELEASED":
-                return this.inputs.every((input) =>
-                    inputInstance.isRaw(input, state)
-                );
-
-            case "JUST_PRESSED":
-                let oneJustPressed = false;
-                for (const input of this.inputs) {
-                    if (!inputInstance.isRaw(input, "PRESSED")) return false;
-                    if (inputInstance.isRaw(input, "JUST_PRESSED"))
-                        oneJustPressed = true;
-                }
-                return oneJustPressed;
-            case "JUST_RELEASED":
-                let oneJustReleased = false;
-                for (const input of this.inputs) {
-                    if (!inputInstance.isRaw(input, "RELEASED")) return false;
-                    if (inputInstance.isRaw(input, "JUST_RELEASED"))
-                        oneJustReleased = true;
-                }
-                return oneJustReleased;
-        }
-    }
-}
-
-// It doesn't really extend I can just steal all the constructor code
-export class AnyBinding extends AllBinding {
-    is(inputInstance: Input, state: ButtonState): boolean {
-        for (const input of this.inputs) {
-            if (inputInstance.isRaw(input, state)) return true;
-        }
-        return false;
-    }
-}
-
-export class CombinedBinding<T extends number> extends AnalogBinding {
-    constructor(
-        public inputs: (AnalogInput | DigitalInput)[] & { length: T },
-        public weights: number[] & { length: T }
-    ) {
-        super();
-    }
-
-    get(input: Input) {
-        let sum = 0;
-        for (let i = 0; i < this.inputs.length; i++) {
-            sum += input.getRaw(this.inputs[i]) * this.weights[i];
-        }
-        return sum;
-    }
-}
-
-export class DeadzoneBinding extends AnalogBinding {
-    public regions: number[][];
-
-    constructor(
-        public input: AnalogInput | DigitalInput,
-        ...regions: [min: number, max: number, val: number][]
-    ) {
-        super();
-        this.regions = regions;
-    }
-
-    get(inputInstance: Input): number {
-        const raw = inputInstance.getRaw(this.input);
-
-        for (const region of this.regions) {
-            if (region[0] <= raw && region[1] >= raw) return region[2];
-        }
-        return raw;
-    }
-}
-
-export class GreatestAbsBinding extends AnalogBinding {
-    public inputs: (AnalogInput | DigitalInput)[];
-
-    constructor(...inputs: (AnalogInput | DigitalInput)[]) {
-        super();
-        this.inputs = inputs;
-    }
-
-    get(inputInstance: Input): number {
-        let greatest = 0;
-        for (const input of this.inputs) {
-            const val = inputInstance.getRaw(input);
-            if (Math.abs(greatest) < Math.abs(val)) greatest = val;
-        }
-
-        return greatest;
-    }
-}
-
-export class RemappedBinding extends AnalogBinding {
-    constructor(
-        public input: AnalogInput | DigitalInput,
-        public options: {
-            min?: number;
-            max?: number;
-            mult?: number;
-            offset?: number;
-            customFn: (num: number) => number;
-        }
-    ) {
-        super();
-
-        this.options.min ??= 0;
-        this.options.max ??= 1;
-        this.options.mult ??= 1;
-        this.options.offset ??= 0;
-    }
-
-    get(input: Input): number {
-        const raw = input.getRaw(this.input);
-
-        if (this.options.customFn) return this.options.customFn(raw);
-
-        return Math.max(
-            this.options.min!,
-            Math.min(
-                this.options.max!,
-                raw * this.options.mult! + this.options.offset!
-            )
-        );
-    }
-}
-
-export const Binding = {
-    DIRECT: {
-        ANALOG: DirectAnalogBinding,
-        DIGITAL: DirectDigitalBinding,
-    },
-    ALL: AllBinding,
-    ANY: AnyBinding,
-    COMBINED: CombinedBinding,
-    DEADZONE: DeadzoneBinding,
-    GREATEST: GreatestAbsBinding,
-    REMAPPED: RemappedBinding,
-} as const;
-//#endregion

@@ -52,7 +52,10 @@ export class Menu extends State<never> {
         nc.waitForConnection.then(() => {
             this.world.get(StateManager).moveTo(MultiplayerGameState, null);
         });
-        document.body.append(Joystick({ side: "left" }));
+        document.body.append(
+            Joystick({ side: "left", id: "Movement" }),
+            Joystick({ side: "right", id: "Shoot" })
+        );
 
         // nc.newConnectionListeners.add(() => {
         //     this.world.get(StateManager).moveTo(MultiplayerGameState, null);

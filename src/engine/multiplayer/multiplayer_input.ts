@@ -1,17 +1,17 @@
 import { Entity, World } from "bagelecs";
-import { AnalogBinding, ButtonState, DigitalBinding, Input } from "../input";
+import {
+    AnalogBindingKey,
+    Bindings,
+    ButtonState,
+    DigitalBindingKey,
+    Input,
+    InputMethodName,
+} from "../input/input";
 import { NetworkConnection } from "./network";
 import { RollbackManager } from "./rollback";
 import { ResourceUpdaterPlugin, ResourceUpdaterSystem } from "../resource";
 import { Diagnostics } from "engine/diagnostics";
-
-export interface Bindings {}
-
-type AnalogBindingKey = keyof Bindings;
-
-type DigitalBindingKey = keyof {
-    [key in keyof Bindings as Bindings[key] extends DigitalBinding ? key : never]: 0;
-};
+import { DigitalBinding } from "engine/input/input_bindings";
 
 export type InputState = Record<string, number | ButtonState> & {
     __HASH__: number;
@@ -152,18 +152,30 @@ export class MultiplayerInput {
         return val === "JUST_PRESSED" || val === "PRESSED" ? 1 : 0;
     }
 
-    bind(bindingName: AnalogBindingKey, binding: AnalogBinding): MultiplayerInput;
-    bind(bindingName: DigitalBindingKey, binding: DigitalBinding): MultiplayerInput;
+    // bind(bindingName: AnalogBindingKey, binding: AnalogBinding): MultiplayerInput;
+    // bind(bindingName: DigitalBindingKey, binding: DigitalBinding): MultiplayerInput;
 
-    bind(bindingName: AnalogBindingKey, binding: AnalogBinding | DigitalBinding) {
-        this.localInput.bind(bindingName, binding);
+    // bind(bindingName: AnalogBindingKey, binding: AnalogBinding | DigitalBinding) {
+    //     this.localInput.bind(bindingName, binding);
 
-        if (binding instanceof DigitalBinding) {
-            this.watchedBindings.digital.add(bindingName);
-        } else {
-            this.watchedBindings.analog.add(bindingName);
+    //     if (binding instanceof DigitalBinding) {
+    //         this.watchedBindings.digital.add(bindingName);
+    //     } else {
+    //         this.watchedBindings.analog.add(bindingName);
+    //     }
+    //     return this;
+    // }
+
+    addInputMethod(method: InputMethodName, bindings: Bindings) {
+        this.localInput.addInputMethod(method, bindings);
+
+        for (const [key, val] of Object.entries(bindings)) {
+            if (val instanceof DigitalBinding) {
+                this.watchedBindings.digital.add(key);
+            } else {
+                this.watchedBindings.analog.add(key);
+            }
         }
-        return this;
     }
 
     private predictNextState(state: InputState): InputState {
@@ -189,24 +201,6 @@ export class MultiplayerInput {
 
         this.localInput.update();
 
-        // for (let i = this.networkConnection.remoteIds.length - 1; i > -1; i--) {
-        //     const peerId = this.networkConnection.remoteIds[i];
-        //     const remoteBuffer = this.buffers[peerId];
-
-        //     let newState: InputState;
-
-        //     let knownFuture = this.knownFutureInputs.get(
-        //         peerId + "-" + this.networkConnection.timeConnectedTo[peerId]
-        //     );
-        //     if (knownFuture) {
-        //         newState = knownFuture;
-        //     } else {
-        //         newState = this.predictNextState(remoteBuffer[0]);
-        //     }
-
-        //     remoteBuffer.unshift(newState);
-        //     remoteBuffer.pop();
-        // }
         if (this.networkConnection.isConnected) {
             const newRemoteState = this.knownFutureInputs.has(
                 this.networkConnection.framesConnected
@@ -263,8 +257,6 @@ export class MultiplayerInput {
         }
 
         this.oldHash = newLocalState.__HASH__;
-
-        // this.handleRemotePackets();
     }
 
     private hashState(state: InputState) {
@@ -317,44 +309,11 @@ export class MultiplayerInput {
         );
 
         return;
-
-        // let farthestRollbackFrame = 0;
-        // this.networkConnection.newMessagesByType.get("input")?.forEach((message) => {
-        //     // Future input,
-        //     if (message.frame > this.networkConnection.timeConnectedTo[message.id]) {
-        //         this.knownFutureInputs.set(
-        //             message.id + "-" + message.frame,
-        //             message.data
-        //         );
-        //         return;
-        //     }
-
-        //     const framesBack =
-        //         this.networkConnection.timeConnectedTo[message.id] - message.frame;
-        //     const remote = this.buffers[message.id];
-
-        //     if (message.data.__HASH__ === remote[framesBack].__HASH__) {
-        //         return;
-        //     }
-
-        //     let state = message.data;
-        //     for (let i = framesBack; i > -1; i--) {
-        //         remote[i] = state;
-        //         state = this.predictNextState(state);
-        //     }
-
-        //     farthestRollbackFrame = Math.max(farthestRollbackFrame, framesBack);
-        // });
-
-        // if (farthestRollbackFrame > 0) {
-        //     this.rollbackManager.startRollback(farthestRollbackFrame);
-        // }
     }
 }
 
 export const MultiplayerInputSystem = ResourceUpdaterSystem(MultiplayerInput);
 export const MultiplayerInputPlugin = async (world: World) => {
     world.add(new MultiplayerInput(world));
-    // await world.get(NetworkConnection).awaitReady();
     world.addSystem(MultiplayerInputSystem);
 };

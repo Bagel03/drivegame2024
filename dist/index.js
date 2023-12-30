@@ -35275,7 +35275,6 @@ void main(void)\r
     window.addEventListener("resize", () => {
       resize(app);
     });
-    screen.addEventListener("childAdded", () => resize(app));
   }
 
   // src/engine/rendering/position.ts
@@ -42782,11 +42781,7 @@ void main(void)\r
     async back(payload, useExitPayloadIfAvailable = false) {
       if (this.history.length === 0)
         return false;
-      await this.moveTo(
-        this.history.pop(),
-        payload,
-        useExitPayloadIfAvailable
-      );
+      await this.moveTo(this.history.pop(), payload, useExitPayloadIfAvailable);
       this.history.pop();
       return true;
     }
@@ -42795,13 +42790,97 @@ void main(void)\r
     world2.add(new StateManager(world2));
   }
 
-  // src/engine/input.ts
-  var BUTTON_STATES = [
-    "JUST_PRESSED",
-    "JUST_RELEASED",
-    "PRESSED",
-    "RELEASED"
-  ];
+  // src/engine/input/input_bindings.ts
+  var DigitalBinding = class {
+  };
+  var AnalogBinding = class {
+  };
+  var DirectDigitalBinding = class extends DigitalBinding {
+    constructor(raw) {
+      super();
+      this.raw = raw;
+    }
+    is(input, state) {
+      return input.isRaw(this.raw, state);
+    }
+  };
+  var DirectAnalogBinding = class extends AnalogBinding {
+    constructor(raw) {
+      super();
+      this.raw = raw;
+    }
+    get(input) {
+      return input.getRaw(this.raw);
+    }
+  };
+  var AnyBinding = class extends DigitalBinding {
+    inputs;
+    constructor(...inputs) {
+      super();
+      this.inputs = inputs;
+    }
+    is(inputInstance, state) {
+      for (const input of this.inputs) {
+        if (inputInstance.isRaw(input, state))
+          return true;
+      }
+      return false;
+    }
+  };
+  var CombinedBinding = class extends AnalogBinding {
+    inputs;
+    weights;
+    constructor(inputsAndWeights) {
+      super();
+      this.inputs = Object.keys(inputsAndWeights);
+      this.weights = Object.values(inputsAndWeights).filter(
+        (n2) => n2 !== void 0
+      );
+    }
+    get(input) {
+      let sum = 0;
+      for (let i2 = 0; i2 < this.inputs.length; i2++) {
+        sum += input.getRaw(this.inputs[i2]) * this.weights[i2];
+      }
+      return sum;
+    }
+  };
+  var AngleBinding = class extends AnalogBinding {
+    constructor(xInput, yInput) {
+      super();
+      this.xInput = xInput;
+      this.yInput = yInput;
+    }
+    get(input) {
+      return Math.atan2(input.get(this.yInput), input.get(this.xInput));
+    }
+  };
+  var AdvancedAngleBinding = class extends AnalogBinding {
+    constructor(getters) {
+      super();
+      this.getters = getters;
+      for (const dir of ["X", "Y"]) {
+        const origin = getters[`origin${dir}`];
+        const target2 = getters[`target${dir}`];
+        if (typeof origin === "function" && typeof target2 === "function") {
+          this[`get${dir}Diff`] = (input) => target2(input) - origin(input);
+        } else if (typeof origin === "string" && typeof target2 === "string") {
+          this[`get${dir}Diff`] = (input) => input.getRaw(target2) - input.getRaw(origin);
+        } else if (typeof origin === "string" && typeof target2 === "function") {
+          this[`get${dir}Diff`] = (input) => target2(input) - input.getRaw(origin);
+        } else if (typeof origin === "function" && typeof target2 === "string") {
+          this[`get${dir}Diff`] = (input) => input.getRaw(target2) - origin(input);
+        }
+      }
+    }
+    getXDiff;
+    getYDiff;
+    get(input) {
+      return Math.atan2(this.getYDiff(input), this.getXDiff(input));
+    }
+  };
+
+  // src/engine/input/input_types.ts
   var INPUT_ALIASES = /* @__PURE__ */ new Map([
     ["MouseLeft", "Mouse0"],
     ["MouseRight", "Mouse2"],
@@ -42842,6 +42921,55 @@ void main(void)\r
     ["Xbox", 16],
     ["Touchpad", 17]
   ]);
+
+  // src/engine/input/input.ts
+  var BUTTON_STATES = [
+    "JUST_PRESSED",
+    "JUST_RELEASED",
+    "PRESSED",
+    "RELEASED"
+  ];
+  var _InputMethod = class {
+    constructor(name, init3, isAvailable) {
+      this.name = name;
+      this.init = init3;
+      this.isAvailable = isAvailable;
+    }
+    static getMethod(name) {
+      return this.methods.find((n2) => n2.name == name);
+    }
+  };
+  var InputMethod = _InputMethod;
+  __publicField(InputMethod, "isMobile", () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+  __publicField(InputMethod, "KMB", new _InputMethod(
+    "KBM",
+    (input) => {
+      if (_InputMethod.isMobile())
+        return;
+      window.addEventListener(
+        "keydown",
+        (e2) => input.requestInputMethodChange("KBM")
+      );
+    },
+    () => !_InputMethod.isMobile()
+  ));
+  __publicField(InputMethod, "mobile", new _InputMethod(
+    "MOBILE",
+    (input) => {
+      if (_InputMethod.isMobile())
+        input.requestInputMethodChange("MOBILE");
+    },
+    () => _InputMethod.isMobile()
+  ));
+  __publicField(InputMethod, "gamepad", new _InputMethod(
+    "GAMEPAD",
+    (input) => {
+      if (input.connectedGamepads.length > 0)
+        input.requestInputMethodChange("GAMEPAD");
+    },
+    (input) => input.connectedGamepads.length > 0
+  ));
+  __publicField(InputMethod, "methods", [_InputMethod.KMB, _InputMethod.mobile, _InputMethod.gamepad]);
   var Input = class {
     constructor(world2) {
       this.world = world2;
@@ -42969,10 +43097,28 @@ void main(void)\r
           if (button.pressed) {
             if (!this.digital.PRESSED.has(name) && !this.digital.JUST_PRESSED.has(name)) {
               this.digitalInputPressed(name);
+              window.dispatchEvent(
+                new CustomEvent("gamepadbuttonpressed", {
+                  detail: {
+                    gamepad,
+                    button: buttonIdx,
+                    state: "PRESSED"
+                  }
+                })
+              );
             }
           } else {
             if (this.digital.PRESSED.has(name) || this.digital.JUST_PRESSED.has(name)) {
               this.digitalInputReleased(name);
+              window.dispatchEvent(
+                new CustomEvent("gamepadbuttonpressed", {
+                  detail: {
+                    gamepad,
+                    button: buttonIdx,
+                    state: "RELEASED"
+                  }
+                })
+              );
             }
           }
         });
@@ -42994,6 +43140,21 @@ void main(void)\r
         return `${GPnum}-${GAMEPAD_ALIASES.get(key) ?? key}`;
       }
       return INPUT_ALIASES.get(button) || button;
+    }
+    inputMethods = {};
+    currentInputMethod;
+    addInputMethod(method, bindings) {
+      this.inputMethods[method] = bindings;
+      if (InputMethod.getMethod(method).isAvailable(this) && !this.currentInputMethod) {
+        this.currentInputMethod = method;
+        this.requestInputMethodChange(method);
+      }
+    }
+    requestInputMethodChange(method) {
+      this.currentInputMethod = method;
+      Object.entries(this.inputMethods[method]).forEach(
+        ([name, binding]) => this.bind(name, binding)
+      );
     }
     //#region API
     stateRaw(button) {
@@ -43075,67 +43236,6 @@ void main(void)\r
     }
   };
   var InputPlugin = ResourceUpdaterPlugin(Input, true);
-  var DigitalBinding = class {
-  };
-  var AnalogBinding = class {
-  };
-  var AllBinding = class extends DigitalBinding {
-    inputs;
-    constructor(...inputs) {
-      super();
-      this.inputs = inputs;
-    }
-    is(inputInstance, state) {
-      switch (state) {
-        case "PRESSED":
-        case "RELEASED":
-          return this.inputs.every(
-            (input) => inputInstance.isRaw(input, state)
-          );
-        case "JUST_PRESSED":
-          let oneJustPressed = false;
-          for (const input of this.inputs) {
-            if (!inputInstance.isRaw(input, "PRESSED"))
-              return false;
-            if (inputInstance.isRaw(input, "JUST_PRESSED"))
-              oneJustPressed = true;
-          }
-          return oneJustPressed;
-        case "JUST_RELEASED":
-          let oneJustReleased = false;
-          for (const input of this.inputs) {
-            if (!inputInstance.isRaw(input, "RELEASED"))
-              return false;
-            if (inputInstance.isRaw(input, "JUST_RELEASED"))
-              oneJustReleased = true;
-          }
-          return oneJustReleased;
-      }
-    }
-  };
-  var AnyBinding = class extends AllBinding {
-    is(inputInstance, state) {
-      for (const input of this.inputs) {
-        if (inputInstance.isRaw(input, state))
-          return true;
-      }
-      return false;
-    }
-  };
-  var CombinedBinding = class extends AnalogBinding {
-    constructor(inputs, weights) {
-      super();
-      this.inputs = inputs;
-      this.weights = weights;
-    }
-    get(input) {
-      let sum = 0;
-      for (let i2 = 0; i2 < this.inputs.length; i2++) {
-        sum += input.getRaw(this.inputs[i2]) * this.weights[i2];
-      }
-      return sum;
-    }
-  };
 
   // src/engine/multiplayer/multiplayer_input.ts
   var _MultiplayerInput = class {
@@ -43208,14 +43308,26 @@ void main(void)\r
         return val;
       return val === "JUST_PRESSED" || val === "PRESSED" ? 1 : 0;
     }
-    bind(bindingName, binding) {
-      this.localInput.bind(bindingName, binding);
-      if (binding instanceof DigitalBinding) {
-        this.watchedBindings.digital.add(bindingName);
-      } else {
-        this.watchedBindings.analog.add(bindingName);
+    // bind(bindingName: AnalogBindingKey, binding: AnalogBinding): MultiplayerInput;
+    // bind(bindingName: DigitalBindingKey, binding: DigitalBinding): MultiplayerInput;
+    // bind(bindingName: AnalogBindingKey, binding: AnalogBinding | DigitalBinding) {
+    //     this.localInput.bind(bindingName, binding);
+    //     if (binding instanceof DigitalBinding) {
+    //         this.watchedBindings.digital.add(bindingName);
+    //     } else {
+    //         this.watchedBindings.analog.add(bindingName);
+    //     }
+    //     return this;
+    // }
+    addInputMethod(method, bindings) {
+      this.localInput.addInputMethod(method, bindings);
+      for (const [key, val] of Object.entries(bindings)) {
+        if (val instanceof DigitalBinding) {
+          this.watchedBindings.digital.add(key);
+        } else {
+          this.watchedBindings.analog.add(key);
+        }
       }
-      return this;
     }
     predictNextState(state) {
       const newState = {};
@@ -43367,101 +43479,6 @@ void main(void)\r
     }
   };
 
-  // src/engine/input_bindings.ts
-  var AimAngleBinding = class extends AnalogBinding {
-    constructor(getters) {
-      super();
-      this.getters = getters;
-    }
-    get(input) {
-      return Math.atan2(
-        this.getters.targetY(input) - this.getters.originY(input),
-        this.getters.targetX(input) - this.getters.originX(input)
-      );
-    }
-  };
-
-  // src/game/movement.ts
-  async function MovementPlugin(world2) {
-    const input = world2.get(MultiplayerInput);
-    input.bind(
-      "x",
-      new CombinedBinding(["KeyA", "KeyD"], [-1, 1])
-      // new DeadzoneBinding(
-      //     "DefaultGamepad-LeftStickX",
-      //     [-1, -0.5, -1],
-      //     [-0.5, 0.5, 0],
-      //     [0.5, 1, 1]
-      // )
-    );
-    input.bind(
-      "y",
-      new CombinedBinding(["KeyW", "KeyS"], [-1, 1])
-      // new DeadzoneBinding(
-      //     "DefaultGamepad-LeftStickY",
-      //     [-1, -0.9, -1],
-      //     [-0.1, 0.1, 0],
-      //     [0.9, 1, 1]
-      // )
-    );
-    input.bind(
-      "dash",
-      new AnyBinding(
-        "Space",
-        "DefaultGamepad-A",
-        "ArrowUp",
-        "DefaultGamepad-LeftStick"
-      )
-    );
-    input.bind(
-      "shoot",
-      new AnyBinding("MouseLeft", "DefaultGamepad-B", "DefaultGamepad-R1")
-    );
-    input.bind(
-      "aimAngle",
-      new AimAngleBinding({
-        originX: () => {
-          try {
-            return world2.get("local_player").get(Graphics).toGlobal(new Point(0, 0)).x;
-          } catch (e2) {
-            return 0;
-          }
-        },
-        originY: () => {
-          try {
-            return world2.get("local_player").get(Graphics).toGlobal(new Point(0, 0)).y;
-          } catch (e2) {
-            return 0;
-          }
-        },
-        targetX: (i2) => i2.getRaw("MouseX"),
-        targetY: (i2) => i2.getRaw("MouseY")
-      })
-    );
-    input.bind(
-      "aimx",
-      new CombinedBinding(["ArrowLeft", "ArrowRight"], [-1, 1])
-      // new DeadzoneBinding(
-      //     "DefaultGamepad-RightStickX",
-      //     [-1, -0.5, -1],
-      //     [-0.5, 0.5, 0],
-      //     [0.5, 1, 1]
-      // )
-    );
-    input.bind(
-      "aimy",
-      new CombinedBinding(["ArrowUp", "ArrowDown"], [-1, 1])
-      // new DeadzoneBinding(
-      //     "DefaultGamepad-RightStickY",
-      //     [-1, -0.9, -1],
-      //     [-0.1, 0.1, 0],
-      //     [0.9, 1, 1]
-      // )
-    );
-    world2.addSystem(MovementSystem);
-    world2.addToSchedule(MovementSystem, "rollback");
-  }
-
   // src/engine/rendering/blueprints/graphics.ts
   var graphicsBlueprint = new a(
     new Position({ x: 0, y: 0, r: 0 }),
@@ -43530,13 +43547,13 @@ void main(void)\r
       this.mult(Velocity.x, 3);
     }
     if (input.is("shoot", "JUST_PRESSED", id)) {
-      console.log(input.get("aimAngle"));
+      console.log(input.get("aim"));
       BulletEnt(
         this.get(Position.x),
         this.get(Position.y),
-        Math.cos(input.get("aimAngle", id)) * 1,
+        Math.cos(input.get("aim", id)) * 1,
         //+ this.get(Velocity.x),
-        Math.sin(input.get("aimAngle", id)) * 1,
+        Math.sin(input.get("aim", id)) * 1,
         //+ this.get(Velocity.y),
         "purple"
       );
@@ -43556,13 +43573,17 @@ void main(void)\r
   };
 
   // src/game/levels/maps/1.ts
-  function loadLevel1Map(world2) {
+  async function loadLevel1Map(world2) {
     const app = world2.get(Application);
     app.renderer.background.backgroundColor.setValue("#06011f");
     const sprite = new Sprite(Texture.from("assets/map1bg.png"));
     console.log(sprite);
     sprite.texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
     world2.get("screen").addChild(sprite);
+    console.log(sprite.texture.baseTexture);
+    setTimeout(() => {
+      resize(app);
+    }, 100);
   }
 
   // src/game/states/multiplayer.ts
@@ -43616,13 +43637,53 @@ void main(void)\r
     }
   };
 
+  // src/game/setup/init_bindings.ts
+  var zero = new Point(0, 0);
+  function initializeBindings(world2) {
+    const input = world2.get(Input);
+    input.addInputMethod("KBM", {
+      x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
+      y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
+      aim: new AdvancedAngleBinding({
+        originX: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(new Point(0, 0)).x : 0,
+        originY: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(new Point(0, 0)).y : 0,
+        targetX: "MouseX",
+        targetY: "MouseY"
+      }),
+      shoot: new AnyBinding("MouseLeft", "Space")
+    });
+    input.addInputMethod("GAMEPAD", {
+      x: new DirectAnalogBinding("DefaultGamepad-LeftStickX"),
+      y: new DirectAnalogBinding("DefaultGamepad-LeftStickY"),
+      aim: new AngleBinding(
+        "DefaultGamepad-RightStickX",
+        "DefaultGamepad-RightStickY"
+      ),
+      shoot: new DirectDigitalBinding("DefaultGamepad-A")
+    });
+    input.addInputMethod("MOBILE", {
+      x: new DirectAnalogBinding("JoystickMovement-X"),
+      y: new DirectAnalogBinding("JoystickMovement-Y"),
+      aim: new DirectAnalogBinding("JoystickShoot-Angle"),
+      shoot: new DirectDigitalBinding("DefaultGamepad-A")
+    });
+  }
+
+  // src/game/movement.ts
+  async function MovementPlugin(world2) {
+    const input = world2.get(MultiplayerInput);
+    initializeBindings(world2);
+    world2.addSystem(MovementSystem);
+    world2.addToSchedule(MovementSystem, "rollback");
+  }
+
   // src/game/hud/components/joystick.tsx
   var Joystick = (props) => {
     const thumb = /* @__PURE__ */ window.jsx("div", { className: "rounded-full w-8 h-8 bg-gray-800" });
     const container = /* @__PURE__ */ window.jsx(
       "div",
       {
-        className: `fixed bottom-0 mb-4 ml-4  w-16 h-16 ${props.side === "left" ? "left-0" : "right-0"}`
+        className: `fixed bottom-0 mb-4 mr-4 ml-4  w-16 h-16 ${props.side === "left" ? "left-0" : "right-0"}`
       },
       /* @__PURE__ */ window.jsx("div", { className: "rounded-full border-gray-600 border-2 w-16 h-16 bg-gray-400 bg-opacity-40 flex items-center justify-center" }, thumb)
     );
@@ -43671,7 +43732,7 @@ void main(void)\r
       container.dataset.y = diffY / radius + "";
       container.dispatchEvent(
         new CustomEvent("inputchange", {
-          detail: { x: diffX / radius, y: diffY / radius, angle: theta }
+          detail: { x: -diffX / radius, y: -diffY / radius, angle: theta }
         })
       );
     }
@@ -43710,7 +43771,10 @@ void main(void)\r
       nc.waitForConnection.then(() => {
         this.world.get(StateManager).moveTo(MultiplayerGameState, null);
       });
-      document.body.append(Joystick({ side: "left" }));
+      document.body.append(
+        Joystick({ side: "left", id: "Movement" }),
+        Joystick({ side: "right", id: "Shoot" })
+      );
     }
     async onLeave() {
       this.world.get(Pane).remove(this.connectionFolder);

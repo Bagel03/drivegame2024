@@ -1,5 +1,5 @@
 import { Entity, World } from "bagelecs";
-import { AnalogBinding, ButtonState, DigitalBinding, Input } from "../input";
+import { AnalogBinding, ButtonState, DigitalBinding, Input } from "../input/input";
 import { NetworkConnection } from "./network";
 import { RollbackManager } from "./rollback";
 import { ResourceUpdaterPlugin, ResourceUpdaterSystem } from "../resource";
