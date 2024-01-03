@@ -3,12 +3,13 @@ import { Velocity } from "../components/velocity";
 import { Position } from "../../engine/rendering/position";
 import { Graphics } from "pixi.js";
 import { TimedAlive } from "../components/timed";
+import { NetworkConnection } from "../../engine/multiplayer/network";
 
 const bulletBlueprint = new Blueprint(
     Position,
     Velocity,
     Graphics,
-    new TimedAlive(1000)
+    new TimedAlive(100)
 );
 
 export const BulletEnt = AdvancedBlueprintFactory(
@@ -19,7 +20,7 @@ export const BulletEnt = AdvancedBlueprintFactory(
 
         const graphics = new Graphics();
         graphics.beginFill(fillColor);
-        graphics.arc(0, 0, 5, 0, Math.PI * 2);
+        graphics.arc(0, 0, 3, 0, Math.PI * 2);
 
         this.update(graphics);
     }

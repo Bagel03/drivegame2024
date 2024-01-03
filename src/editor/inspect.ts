@@ -1,7 +1,7 @@
 import { TypeId } from "bagelecs";
 import { Entity } from "bagelecs";
 import { World } from "bagelecs";
-import { InputParams, Pane } from "tweakpane";
+import { Pane, BindingParams } from "tweakpane";
 
 export function InspectPlugin(world: World) {
     const pane = new Pane();
@@ -14,7 +14,7 @@ export function inspect(
     entity: Entity,
     component: TypeId,
     title: string,
-    params?: InputParams
+    params?: BindingParams
 ) {
     const pane = entity.world.get(Pane);
 

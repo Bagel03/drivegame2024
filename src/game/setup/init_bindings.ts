@@ -1,5 +1,5 @@
 import { Entity, World } from "bagelecs";
-import { Input } from "engine/input/input";
+import { Input } from "../../engine/input/input";
 import {
     AdvancedAngleBinding,
     AnalogBinding,
@@ -9,8 +9,8 @@ import {
     DigitalBinding,
     DirectAnalogBinding,
     DirectDigitalBinding,
-} from "engine/input/input_bindings";
-import { StateManager } from "engine/state_managment";
+} from "../../engine/input/input_bindings";
+import { StateManager } from "../../engine/state_managment";
 import { MultiplayerGameState } from "../states/multiplayer";
 import { Container, Point } from "pixi.js";
 
@@ -34,17 +34,13 @@ export function initializeBindings(world: World) {
         aim: new AdvancedAngleBinding({
             originX: () =>
                 world.get(StateManager).currentState === MultiplayerGameState
-                    ? world
-                          .get<Entity>("local_player")
-                          .get(Container)
-                          .toGlobal(new Point(0, 0)).x
+                    ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+                          .x
                     : 0,
             originY: () =>
                 world.get(StateManager).currentState === MultiplayerGameState
-                    ? world
-                          .get<Entity>("local_player")
-                          .get(Container)
-                          .toGlobal(new Point(0, 0)).y
+                    ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+                          .y
                     : 0,
             targetX: "MouseX",
             targetY: "MouseY",
@@ -69,3 +65,21 @@ export function initializeBindings(world: World) {
         shoot: new DirectDigitalBinding("DefaultGamepad-A"),
     });
 }
+
+/**
+ * 
+ *         aim: new AdvancedAngleBinding({
+            originX: () => 0,
+            // world.get(StateManager).currentState === MultiplayerGameState
+            //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+            //           .x
+            //     : 0,
+            originY: () => 0,
+            // world.get(StateManager).currentState === MultiplayerGameState
+            //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+            //           .y
+            //     : 0,
+            targetX: () => 1, // "MouseX",
+            targetY: () => 1, //"MouseY",
+        }),
+ */

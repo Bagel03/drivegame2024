@@ -186,6 +186,12 @@ declare namespace JSX {
         };
     };
 
+    function createElement<P extends {}, T extends keyof HTMLElementTagNameMap>(
+        type: T,
+        props?: (Attributes & P) | null,
+        ...children: ReactNode[]
+    ): HTMLElementTagNameMap[T];
+
     function createElement<P extends {}, T extends Element>(
         type: string,
         props?: (Attributes & P) | null,

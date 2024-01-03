@@ -1,4 +1,4 @@
-import { FailButton, PrimaryButton, SuccessButton } from "../components/button";
+import { FailButton, PrimaryButton, SuccessButton } from "./button";
 
 export interface DialogPopupProps {
     hideCancelButton?: boolean;
@@ -15,10 +15,10 @@ function closeOpenModal() {
 export const DialogPopup: JSX.FC<DialogPopupProps> = function (props) {
     return (
         <dialog className="bg-base w-5/12 h-1/2 overflow-hidden rounded backdrop:bg-secondary/80 open:flex flex-col justify-betweens">
-            <div className="w-auto h-16 m-auto p-4">
+            <div className="w-auto h-16  p-4">
                 <h1 className="text-white text-center text-4xl">{props.title}</h1>
             </div>
-            <p className="h-min text-white flex-1 m-4"> {props.message || ""}</p>
+            <p className="text-white  m-4"> {props.message || ""}</p>
             {props.children}
             <div className="bottom-0 h-16 mt-auto items-center flex">
                 <FailButton
@@ -45,13 +45,9 @@ export const DialogPopup: JSX.FC<DialogPopupProps> = function (props) {
     );
 };
 
-export function showDialog(options: DialogPopupProps | HTMLElement) {
+export function showDialog(options: DialogPopupProps | Node) {
     const el = (
-        options instanceof HTMLElement ? (
-            options
-        ) : (
-            <DialogPopup {...options}></DialogPopup>
-        )
+        options instanceof Node ? options : <DialogPopup {...options}></DialogPopup>
     ) as HTMLDialogElement;
     document.body.appendChild(el);
 

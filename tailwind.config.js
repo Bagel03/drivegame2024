@@ -16,7 +16,12 @@ module.exports = {
                 base: "#0B0E0E",
                 secondary: "#141919",
                 primary: "#7651D6",
-                accent: "622AE4",
+                accent: "#622AE4",
+                menuBackground: "#1e1b4b",
+                menuBackgroundAccent: "#5b21b6",
+            },
+            backgroundImage: {
+                "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
             },
         },
     },

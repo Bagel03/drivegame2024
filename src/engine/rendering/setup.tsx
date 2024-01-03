@@ -11,6 +11,7 @@ export function setupPixiCanvas(world: World) {
     document.body.appendChild(app.view as any);
 
     const screen = new Container();
+    screen.sortableChildren = true;
     // const screen = new Graphics();
     // screen.beginFill("rgb(16, 205, 126)");
     // screen.drawRect(0, 0, 256, 256);

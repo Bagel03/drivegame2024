@@ -1,7 +1,7 @@
 import { Component, Logger, Type, World } from "bagelecs";
 import { Peer, DataConnection } from "peerjs";
-import { Diagnostics } from "engine/diagnostics";
-import { ResourceUpdaterPlugin } from "engine/resource";
+import { Diagnostics } from "../diagnostics";
+import { ResourceUpdaterPlugin } from "../resource";
 
 enum NetworkEvent {
     PING,

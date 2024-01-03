@@ -1,7 +1,10 @@
 // import "./test";
-import { Type, TypeIdBuilder, World } from "bagelecs";
-TypeIdBuilder.defaultLoggedBufferSize = 300;
-
+import {
+    Type,
+    TypeIdBuilder,
+    World,
+    setDefaultLoggedStorageBufferSize,
+} from "bagelecs";
 import { editorPlugins } from "./editor/editor";
 import { enginePlugins } from "./engine/engine";
 import { gamePlugins } from "./game/game";
@@ -10,6 +13,7 @@ import { resume } from "./engine/loop";
 import "./engine/jsx-runtime";
 // import { debug } from "console";
 
+setDefaultLoggedStorageBufferSize(100);
 // Logger.prototype.log = function () {};
 
 //@ts-ignore
@@ -17,7 +21,8 @@ console.dont = {
     log: () => {},
 };
 
-const world = new World(1000);
+const world = new World(100);
+//@ts-ignore
 window.world = world;
 
 async function init() {

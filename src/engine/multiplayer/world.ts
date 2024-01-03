@@ -1,8 +1,18 @@
-import { Entity, TypeIdBuilder, World } from "bagelecs";
+import {
+    Entity,
+    LOGGED_COMPONENT_STORAGE_BUFFER_SIZE,
+    TypeIdBuilder,
+    World,
+} from "bagelecs";
 
+declare module "bagelecs" {
+    interface EntityManager {
+        rollback(numFrames: number): void;
+    }
+}
 export class MultiplayerEntityManager {
     public readonly entities = new Set<Entity>();
-    private static readonly bufferSize = TypeIdBuilder.defaultLoggedBufferSize;
+    private static readonly bufferSize = LOGGED_COMPONENT_STORAGE_BUFFER_SIZE;
     private readonly log: (Set<Entity> | null)[] = [];
 
     constructor(public readonly world: World) {}
@@ -65,16 +75,16 @@ export function patchWorldMethods(world: World) {
 
     world.entityManager = new MultiplayerEntityManager(world);
 
-    world.spawn = function () {
-        return this.entityManager.spawn();
-    };
+    // world.spawn = function () {
+    //     return this.entityManager.spawn();
+    // };
 
-    world.destroy = function (ent) {
-        return this.entityManager.destroy(ent);
-    };
+    // world.destroy = function (ent) {
+    //     return this.entityManager.destroy(ent);
+    // };
 
-    world.tick = function (schedule) {
-        this.entityManager.update();
-        return $oldTick(schedule);
-    };
+    // world.tick = function (schedule) {
+    //     this.entityManager.update();
+    //     return $oldTick(schedule);
+    // };
 }

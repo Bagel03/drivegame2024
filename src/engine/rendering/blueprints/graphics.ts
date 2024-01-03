@@ -66,7 +66,7 @@ export const GraphicsEnt = AdvancedBlueprintFactory(
         }
 
         graphics.position.set(this.get(Position.x), this.get(Position.y));
-        this.world.get(Application).stage.addChild(graphics);
+        // this.world.get(Application).stage.addChild(graphics);
 
         this.update(graphics);
     }

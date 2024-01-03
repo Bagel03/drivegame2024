@@ -242,7 +242,7 @@
         var hasHoles = holeIndices && holeIndices.length, outerLen = hasHoles ? holeIndices[0] * dim : data.length, outerNode = linkedList(data, 0, outerLen, dim, true), triangles = [];
         if (!outerNode || outerNode.next === outerNode.prev)
           return triangles;
-        var minX, minY, maxX, maxY, x3, y3, invSize;
+        var minX, minY, maxX, maxY, x3, y2, invSize;
         if (hasHoles)
           outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
         if (data.length > 80 * dim) {
@@ -250,15 +250,15 @@
           minY = maxY = data[1];
           for (var i2 = dim; i2 < outerLen; i2 += dim) {
             x3 = data[i2];
-            y3 = data[i2 + 1];
+            y2 = data[i2 + 1];
             if (x3 < minX)
               minX = x3;
-            if (y3 < minY)
-              minY = y3;
+            if (y2 < minY)
+              minY = y2;
             if (x3 > maxX)
               maxX = x3;
-            if (y3 > maxY)
-              maxY = y3;
+            if (y2 > maxY)
+              maxY = y2;
           }
           invSize = Math.max(maxX - minX, maxY - minY);
           invSize = invSize !== 0 ? 32767 / invSize : 0;
@@ -525,18 +525,18 @@
         } while (numMerges > 1);
         return list;
       }
-      function zOrder(x3, y3, minX, minY, invSize) {
+      function zOrder(x3, y2, minX, minY, invSize) {
         x3 = (x3 - minX) * invSize | 0;
-        y3 = (y3 - minY) * invSize | 0;
+        y2 = (y2 - minY) * invSize | 0;
         x3 = (x3 | x3 << 8) & 16711935;
         x3 = (x3 | x3 << 4) & 252645135;
         x3 = (x3 | x3 << 2) & 858993459;
         x3 = (x3 | x3 << 1) & 1431655765;
-        y3 = (y3 | y3 << 8) & 16711935;
-        y3 = (y3 | y3 << 4) & 252645135;
-        y3 = (y3 | y3 << 2) & 858993459;
-        y3 = (y3 | y3 << 1) & 1431655765;
-        return x3 | y3 << 1;
+        y2 = (y2 | y2 << 8) & 16711935;
+        y2 = (y2 | y2 << 4) & 252645135;
+        y2 = (y2 | y2 << 2) & 858993459;
+        y2 = (y2 | y2 << 1) & 1431655765;
+        return x3 | y2 << 1;
       }
       function getLeftmost(start) {
         var p3 = start, leftmost = start;
@@ -607,7 +607,7 @@
         return inside;
       }
       function splitPolygon(a3, b3) {
-        var a22 = new Node(a3.i, a3.x, a3.y), b22 = new Node(b3.i, b3.x, b3.y), an = a3.next, bp = b3.prev;
+        var a22 = new Node2(a3.i, a3.x, a3.y), b22 = new Node2(b3.i, b3.x, b3.y), an = a3.next, bp = b3.prev;
         a3.next = b3;
         b3.prev = a3;
         a22.next = an;
@@ -618,8 +618,8 @@
         b22.prev = bp;
         return b22;
       }
-      function insertNode(i2, x3, y3, last) {
-        var p3 = new Node(i2, x3, y3);
+      function insertNode(i2, x3, y2, last) {
+        var p3 = new Node2(i2, x3, y2);
         if (!last) {
           p3.prev = p3;
           p3.next = p3;
@@ -639,10 +639,10 @@
         if (p3.nextZ)
           p3.nextZ.prevZ = p3.prevZ;
       }
-      function Node(i2, x3, y3) {
+      function Node2(i2, x3, y2) {
         this.i = i2;
         this.x = x3;
-        this.y = y3;
+        this.y = y2;
         this.prev = null;
         this.next = null;
         this.z = 0;
@@ -1613,17 +1613,17 @@
           return typeof obj === "object" && !hasShammedSymbols ? markBoxed(symString) : symString;
         }
         if (isElement(obj)) {
-          var s2 = "<" + $toLowerCase.call(String(obj.nodeName));
+          var s3 = "<" + $toLowerCase.call(String(obj.nodeName));
           var attrs = obj.attributes || [];
           for (var i2 = 0; i2 < attrs.length; i2++) {
-            s2 += " " + attrs[i2].name + "=" + wrapQuotes(quote(attrs[i2].value), "double", opts);
+            s3 += " " + attrs[i2].name + "=" + wrapQuotes(quote(attrs[i2].value), "double", opts);
           }
-          s2 += ">";
+          s3 += ">";
           if (obj.childNodes && obj.childNodes.length) {
-            s2 += "...";
+            s3 += "...";
           }
-          s2 += "</" + $toLowerCase.call(String(obj.nodeName)) + ">";
-          return s2;
+          s3 += "</" + $toLowerCase.call(String(obj.nodeName)) + ">";
+          return s3;
         }
         if (isArray(obj)) {
           if (obj.length === 0) {
@@ -1708,12 +1708,12 @@
         }
         return String(obj);
       };
-      function wrapQuotes(s2, defaultStyle, opts) {
+      function wrapQuotes(s3, defaultStyle, opts) {
         var quoteChar = (opts.quoteStyle || defaultStyle) === "double" ? '"' : "'";
-        return quoteChar + s2 + quoteChar;
+        return quoteChar + s3 + quoteChar;
       }
-      function quote(s2) {
-        return $replace.call(String(s2), /"/g, "&quot;");
+      function quote(s3) {
+        return $replace.call(String(s3), /"/g, "&quot;");
       }
       function isArray(obj) {
         return toStr(obj) === "[object Array]" && (!toStringTag || !(typeof obj === "object" && toStringTag in obj));
@@ -1802,7 +1802,7 @@
           mapSize2.call(x3);
           try {
             setSize.call(x3);
-          } catch (s2) {
+          } catch (s3) {
             return true;
           }
           return x3 instanceof Map;
@@ -1818,7 +1818,7 @@
           weakMapHas.call(x3, weakMapHas);
           try {
             weakSetHas.call(x3, weakSetHas);
-          } catch (s2) {
+          } catch (s3) {
             return true;
           }
           return x3 instanceof WeakMap;
@@ -1861,7 +1861,7 @@
           weakSetHas.call(x3, weakSetHas);
           try {
             weakMapHas.call(x3, weakMapHas);
-          } catch (s2) {
+          } catch (s3) {
             return true;
           }
           return x3 instanceof WeakSet;
@@ -1884,8 +1884,8 @@
           var trailer = "... " + remaining + " more character" + (remaining > 1 ? "s" : "");
           return inspectString($slice.call(str, 0, opts.maxStringLength), opts) + trailer;
         }
-        var s2 = $replace.call($replace.call(str, /(['\\])/g, "\\$1"), /[\x00-\x1f]/g, lowbyte);
-        return wrapQuotes(s2, "single", opts);
+        var s3 = $replace.call($replace.call(str, /(['\\])/g, "\\$1"), /[\x00-\x1f]/g, lowbyte);
+        return wrapQuotes(s3, "single", opts);
       }
       function lowbyte(c3) {
         var n2 = c3.charCodeAt(0);
@@ -3046,8 +3046,8 @@
         }
         if (this.pathname || this.search) {
           var p3 = this.pathname || "";
-          var s2 = this.search || "";
-          this.path = p3 + s2;
+          var s3 = this.search || "";
+          this.path = p3 + s3;
         }
         this.href = this.format();
         return this;
@@ -3191,8 +3191,8 @@
           result.port = relative.port;
           if (result.pathname || result.search) {
             var p3 = result.pathname || "";
-            var s2 = result.search || "";
-            result.path = p3 + s2;
+            var s3 = result.search || "";
+            result.path = p3 + s3;
           }
           result.slashes = result.slashes || relative.slashes;
           result.href = result.format();
@@ -3957,10 +3957,10 @@
   });
 
   // node_modules/.pnpm/file+..+BagelECS+bagelecs-0.0.3.tgz/node_modules/bagelecs/dist/shared.js
-  var ve = Object.defineProperty;
-  var Re = (r2, e2, t2) => e2 in r2 ? ve(r2, e2, { enumerable: true, configurable: true, writable: true, value: t2 }) : r2[e2] = t2;
-  var d = (r2, e2, t2) => (Re(r2, typeof e2 != "symbol" ? e2 + "" : e2, t2), t2);
-  var Le = typeof importScripts == "function";
+  var Re = Object.defineProperty;
+  var Le = (r2, e2, t2) => e2 in r2 ? Re(r2, e2, { enumerable: true, configurable: true, writable: true, value: t2 }) : r2[e2] = t2;
+  var d = (r2, e2, t2) => (Le(r2, typeof e2 != "symbol" ? e2 + "" : e2, t2), t2);
+  var Ne = typeof importScripts == "function";
   var m = class {
     context;
     color;
@@ -4013,11 +4013,11 @@
           i2 = this.color;
           break;
       }
-      return Le && (e2 = "\u2699\uFE0F"), [`%c ${e2} %c ` + this.context.padEnd(30, " ") + " %c " + a3, `background: ${i2}; color: #fff; padding: 2px 5px 0 5px;  border-top-left-radius: 3px; border-bottom-left-radius: 3px;`, `background: #333438; color: ${i2}; border-top-right-radius: 3px; border-bottom-right-radius: 3px; padding-top: 2px`, "color: gray", ...o2];
+      return Ne && (e2 = "\u2699\uFE0F"), [`%c ${e2} %c ` + this.context.padEnd(25, " ") + " %c " + a3, `background: ${i2}; color: #fff; padding: 2px 5px 0 5px;  border-top-left-radius: 3px; border-bottom-left-radius: 3px;`, `background: #333438; color: ${i2}; border-top-right-radius: 3px; border-bottom-right-radius: 3px; padding-top: 2px`, "color: gray", ...o2];
     }
   };
   var U = new m("Archetype Manager");
-  var v = class {
+  var M = class {
     constructor(e2, t2, n2) {
       this.id = e2;
       this.components = t2;
@@ -4050,15 +4050,15 @@
     archetypes = /* @__PURE__ */ new Map();
     entityArchetypes;
     nextArchetypeId = 1;
-    defaultArchetype = new v(0, /* @__PURE__ */ new Set(), 10);
+    defaultArchetype = new M(0, /* @__PURE__ */ new Set(), 10);
     loadFromData(e2) {
-      U.log("Loading from data dump:", e2), this.defaultArchetype = Object.create(v.prototype, Object.getOwnPropertyDescriptors(e2.defaultArchetype)), e2.archetypes.forEach((t2, n2) => {
-        this.archetypes.set(n2, Object.create(v.prototype, Object.getOwnPropertyDescriptors(t2)));
+      U.log("Loading from data dump:", e2), this.defaultArchetype = Object.create(M.prototype, Object.getOwnPropertyDescriptors(e2.defaultArchetype)), e2.archetypes.forEach((t2, n2) => {
+        this.archetypes.set(n2, Object.create(M.prototype, Object.getOwnPropertyDescriptors(t2)));
       }), this.entityArchetypes = e2.entityArchetypes;
     }
     createNewArchetype(e2) {
       U.log("Creating new archetype for components:", e2);
-      let t2 = new v(this.nextArchetypeId++, e2, this.world.maxEntities);
+      let t2 = new M(this.nextArchetypeId++, e2, this.world.maxEntities);
       return this.world.queryManager.onNewArchetypeCreated(t2), this.world.workerManager.onNewArchetypeCreated(t2), this.archetypes.set(t2.id, t2), t2;
     }
     getOrCreateArchetype(e2) {
@@ -4090,7 +4090,7 @@
       let n2 = this.archetypes.get(this.entityArchetypes[e2]);
       if (n2.removeEntity(e2), !n2.graph.added.has(t2)) {
         for (let [i2, a3] of this.archetypes.entries())
-          if (a3.components.size == n2.components.size + 1 && a3.components.has(t2) && n2.components.every((s2) => a3.components.has(s2))) {
+          if (a3.components.size == n2.components.size + 1 && a3.components.has(t2) && n2.components.every((y2) => a3.components.has(y2))) {
             n2.graph.added.set(t2, a3);
             break;
           }
@@ -4110,7 +4110,7 @@
       let n2 = this.archetypes.get(this.entityArchetypes[e2]);
       if (n2.removeEntity(e2), !n2.graph.removed.has(t2)) {
         for (let [i2, a3] of this.archetypes)
-          if (a3.components.size == n2.components.size - 1 && a3.components.every((s2) => s2 !== t2 && n2.components.has(s2))) {
+          if (a3.components.size == n2.components.size - 1 && a3.components.every((y2) => y2 !== t2 && n2.components.has(y2))) {
             n2.graph.removed.set(t2, a3);
             break;
           }
@@ -4129,13 +4129,13 @@
     update() {
     }
   };
-  function V(r2, ...e2) {
+  function $(r2, ...e2) {
     for (; e2.length; ) {
       let t2 = r2(e2.pop(), e2.push);
       t2 != null && e2.push(...t2);
     }
   }
-  function ge(r2, e2) {
+  function Te(r2, e2) {
     for (; r2; ) {
       let t2 = Object.getOwnPropertyDescriptor(r2, e2);
       if (t2)
@@ -4143,7 +4143,7 @@
       r2 = Object.getPrototypeOf(r2);
     }
   }
-  function Te(r2, e2) {
+  function be(r2, e2) {
     for (; r2; ) {
       let t2 = Object.getOwnPropertyDescriptor(r2, e2);
       if (t2)
@@ -4151,7 +4151,7 @@
       r2 = Object.getPrototypeOf(r2);
     }
   }
-  var be = new m("Component Storage");
+  var Se = new m("Component Storage");
   var W = class {
     constructor(e2) {
       this.world = e2;
@@ -4160,13 +4160,13 @@
     updateQueue = [];
     storagesByType = /* @__PURE__ */ new Map();
     loadFromData(e2) {
-      be.log("Loading from data dump:", e2), e2.forEach((t2, n2) => {
+      Se.log("Loading from data dump:", e2), e2.forEach((t2, n2) => {
         this.storages[n2] = Object.create(l.get(t2.id).prototype, Object.getOwnPropertyDescriptors(t2));
       });
     }
     createStorage(e2, t2) {
       let n2 = l.get(t2), o2 = new n2(e2, this.world.maxEntities);
-      return o2.needsUpdate && this.updateQueue.push(o2), this.storagesByType.has(o2.kind) ? this.storagesByType.get(o2.kind).push(o2) : this.storagesByType.set(o2.kind, [o2]), be.log("Created new data storage for", e2, "(Type:", t2, ")"), o2;
+      return o2.needsUpdate && this.updateQueue.push(o2), this.storagesByType.has(o2.kind) ? this.storagesByType.get(o2.kind).push(o2) : this.storagesByType.set(o2.kind, [o2]), Se.log("Created new data storage for", e2, "(Type:", t2, ")"), o2;
     }
     getOrCreateStorage(e2, t2) {
       return this.storages[e2] ? this.storages[e2] : (this.storages[e2] = this.createStorage(e2, t2), this.storages[e2]);
@@ -4183,20 +4183,20 @@
       return this.storagesByType.get(e2) ?? [];
     }
   };
-  var y = {};
-  function f(r2, e2) {
-    y[r2] = e2;
+  var s = {};
+  function h(r2, e2) {
+    s[r2] = e2;
   }
-  f("any", 0);
-  f("f64", 1);
-  f("f32", 2);
-  f("i8", 3);
-  f("i16", 4);
-  f("i32", 5);
-  f("u8", 6);
-  f("u16", 7);
-  f("u32", 8);
-  f("bool", 9);
+  h("any", 0);
+  h("f64", 1);
+  h("f32", 2);
+  h("i8", 3);
+  h("i16", 4);
+  h("i32", 5);
+  h("u8", 6);
+  h("u16", 7);
+  h("u32", 8);
+  h("bool", 9);
   var O = class {
     constructor(e2, t2) {
       this.id = e2;
@@ -4205,16 +4205,16 @@
     needsUpdate = false;
     link(e2, t2, n2, o2 = false) {
       if (o2) {
-        let i2 = ge(e2, t2), a3 = Te(e2, t2);
-        Object.defineProperty(this.internalArray, n2, { get: i2 || (() => e2[t2]), set: a3 || ((s2) => e2[t2] = s2), enumerable: true, configurable: true });
+        let i2 = Te(e2, t2), a3 = be(e2, t2);
+        Object.defineProperty(this.internalArray, n2, { get: i2 || (() => e2[t2]), set: a3 || ((y2) => e2[t2] = y2), enumerable: true, configurable: true });
       }
       Object.defineProperty(e2, t2, { get: () => this.getEnt(n2), set: (i2) => this.addOrSetEnt(n2, i2) });
     }
   };
-  var $ = class extends O {
+  var J = class extends O {
     internalArray = [];
-    id = y.any;
-    kind = y.any;
+    id = s.any;
+    kind = s.any;
     getEnt(e2) {
       return this.internalArray[e2];
     }
@@ -4227,21 +4227,21 @@
     resize(e2) {
     }
   };
-  Object.defineProperty(Object.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: y.any });
+  Object.defineProperty(Object.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: s.any });
   function A(r2, e2) {
-    return class Se extends O {
+    return class Ee extends O {
       internalArray;
       id = r2;
       kind = r2;
       constructor(n2, o2) {
         super(n2, o2), this.internalArray = new e2(new SharedArrayBuffer(e2.BYTES_PER_ELEMENT * o2));
         let i2 = new.target;
-        i2 !== Se && !i2.patchedByNCS && (new.target.prototype.inc = function(a3, s2 = 1) {
-          this.addOrSetEnt(a3, this.getEnt(a3) + s2);
-        }, new.target.prototype.mult = function(a3, s2) {
-          this.addOrSetEnt(a3, this.getEnt(a3) * s2);
-        }, new.target.prototype.mod = function(a3, s2) {
-          this.addOrSetEnt(a3, this.getEnt(a3) % s2);
+        i2 !== Ee && !i2.patchedByNCS && (new.target.prototype.inc = function(a3, y2 = 1) {
+          this.addOrSetEnt(a3, this.getEnt(a3) + y2);
+        }, new.target.prototype.mult = function(a3, y2) {
+          this.addOrSetEnt(a3, this.getEnt(a3) * y2);
+        }, new.target.prototype.mod = function(a3, y2) {
+          this.addOrSetEnt(a3, this.getEnt(a3) % y2);
         }, i2.patchedByNCS = true);
       }
       resize(n2) {
@@ -4267,19 +4267,19 @@
       }
     };
   }
-  var Ne = A(y.f64, Float64Array);
-  var ke = A(y.f32, Float32Array);
-  var Be = A(y.i8, Int16Array);
-  var _e = A(y.i16, Int16Array);
-  var De = A(y.i32, Int32Array);
-  var Ue = A(y.u8, Uint16Array);
-  var Pe = A(y.u16, Uint16Array);
-  var We = A(y.u32, Uint32Array);
-  Object.defineProperty(Number.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: y.f64 });
-  var J = class extends O {
+  var ke = A(s.f64, Float64Array);
+  var _e = A(s.f32, Float32Array);
+  var Be = A(s.i8, Int16Array);
+  var De = A(s.i16, Int16Array);
+  var Ue = A(s.i32, Int32Array);
+  var Pe = A(s.u8, Uint16Array);
+  var We = A(s.u16, Uint16Array);
+  var Qe = A(s.u32, Uint32Array);
+  Object.defineProperty(Number.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: s.f64 });
+  var Z = class extends O {
     internalArray;
-    id = y.bool;
-    kind = y.bool;
+    id = s.bool;
+    kind = s.bool;
     constructor(e2, t2) {
       super(e2, t2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * t2));
     }
@@ -4296,68 +4296,71 @@
       this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * e2)), this.internalArray.set(t2);
     }
   };
-  Object.defineProperty(Boolean.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: y.bool });
+  Object.defineProperty(Boolean.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: s.bool });
   var l = /* @__PURE__ */ new Map();
-  l.set(0, $);
-  l.set(1, Ne);
-  l.set(2, ke);
+  l.set(0, J);
+  l.set(1, ke);
+  l.set(2, _e);
   l.set(3, Be);
-  l.set(4, _e);
-  l.set(5, De);
-  l.set(6, Ue);
-  l.set(7, Pe);
-  l.set(8, We);
-  l.set(9, J);
-  var Ee = new m("Custom Storages");
+  l.set(4, De);
+  l.set(5, Ue);
+  l.set(6, Pe);
+  l.set(7, We);
+  l.set(8, Qe);
+  l.set(9, Z);
+  var Ae = new m("Custom Storages");
   var Q = /* @__PURE__ */ new Map();
-  var X = { 3: /* @__PURE__ */ new Map(), 4: /* @__PURE__ */ new Map(), 5: /* @__PURE__ */ new Map(), 6: /* @__PURE__ */ new Map() };
-  f("logged", 3);
-  f("enum", 4);
-  f("nullable", 5);
-  f("ranged", 6);
-  var Ae = { 3: Ke, 4: je, 5: ze, 6: Fe };
+  var X = { 10: /* @__PURE__ */ new Map(), 11: /* @__PURE__ */ new Map(), 12: /* @__PURE__ */ new Map(), 13: /* @__PURE__ */ new Map() };
+  h("logged", 10);
+  h("enum", 11);
+  h("nullable", 12);
+  h("ranged", 13);
+  var Ie = { [s.logged]: je, [s.enum]: ze, [s.nullable]: Fe, [s.ranged]: Ge };
   function k(r2) {
     let e2 = JSON.stringify(r2);
     if (X[r2.type].has(e2))
       return X[r2.type].get(e2);
     let t2 = l.size;
     X[r2.type].set(e2, t2);
-    let n2 = Ae[r2.type](t2, r2);
+    let n2 = Ie[r2.type](t2, r2);
     return l.set(t2, n2), Q.set(t2, r2), t2;
   }
-  function Ke(r2, { backingStorageId: e2, bufferSize: t2 }) {
-    let n2 = l.get(e2);
-    return class extends n2 {
-      bufferSize = t2;
+  var v = 15;
+  function mt(r2) {
+    v = r2;
+  }
+  function je(r2, { backingStorageId: e2 }) {
+    let t2 = l.get(e2);
+    return class extends t2 {
       needsUpdate = true;
       id = r2;
-      kind = y.logged;
-      log = new Array(t2);
+      kind = s.logged;
+      log = new Array(v);
       writeableLog = this.log;
-      addOrSetEnt(i2, a3) {
+      addOrSetEnt(o2, i2) {
         this.log[0] || (this.writeableLog[0] = /* @__PURE__ */ new Map());
-        let s2 = this.writeableLog[0];
-        s2.has(i2) || s2.set(i2, super.getEnt(i2)), super.addOrSetEnt(i2, a3);
+        let a3 = this.writeableLog[0];
+        a3.has(o2) || a3.set(o2, super.getEnt(o2)), super.addOrSetEnt(o2, i2);
       }
       update() {
-        this.writeableLog.unshift(null) > this.bufferSize && this.writeableLog.pop();
+        this.writeableLog.unshift(null) > v && this.writeableLog.pop();
       }
-      rollback(i2) {
-        i2 > this.bufferSize && (Ee.log("Can not rollback", i2, "frames, max buffer size is", this.bufferSize, "frames"), i2 = this.bufferSize);
-        for (let a3 = 0; a3 < i2 + 1; a3++)
-          this.log[a3] && this.log[a3].forEach((s2, T) => {
-            super.addOrSetEnt(T, s2);
+      rollback(o2) {
+        o2 > v && (Ae.log("Can not rollback", o2, "frames, max buffer size is", v, "frames"), o2 = v);
+        for (let i2 = 0; i2 < o2 + 1; i2++)
+          this.log[i2] && this.log[i2].forEach((a3, y2) => {
+            super.addOrSetEnt(y2, a3);
           });
-        this.writeableLog.splice(0, i2 + 1);
+        this.writeableLog.splice(0, o2 + 1);
       }
     };
   }
-  function je(r2, { options: e2 }) {
+  function ze(r2, { options: e2 }) {
     class t2 extends O {
       internalArray;
       internalMap;
       id = r2;
-      kind = y.enum;
+      kind = s.enum;
       options = e2;
       constructor(o2, i2) {
         super(o2, i2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * i2)), e2.length > 20;
@@ -4376,12 +4379,12 @@
       }
     }
   }
-  function ze(r2, e2) {
+  function Fe(r2, e2) {
     let t2 = l.get(e2.backingStorageId);
     return class extends t2 {
       nullValues = /* @__PURE__ */ new Set();
       id = r2;
-      kind = y.nullable;
+      kind = s.nullable;
       addOrSetEnt(o2, i2) {
         i2 == null ? this.nullValues.add(o2) : super.addOrSetEnt(o2, i2);
       }
@@ -4396,11 +4399,11 @@
       }
     };
   }
-  function Fe(r2, { backingStorageId: e2, capacity: t2 }) {
+  function Ge(r2, { backingStorageId: e2, capacity: t2 }) {
     let n2 = l.get(e2);
     return class extends n2 {
       first;
-      kind = y.ranged;
+      kind = s.ranged;
       constructor() {
         super(r2, t2);
       }
@@ -4420,7 +4423,7 @@
   function g(r2) {
     return typeof r2 == "number" ? r2 : r2.getId();
   }
-  var M = class {
+  var p = class {
     constructor(e2) {
       this.id = e2;
     }
@@ -4428,24 +4431,22 @@
       return this.id;
     }
     nullable() {
-      return new M(k({ type: y.nullable, backingStorageId: this.id }));
+      return new p(k({ type: s.nullable, backingStorageId: this.id }));
     }
-    logged(e2 = M.defaultLoggedBufferSize) {
-      return new M(k({ type: y.logged, backingStorageId: this.id, bufferSize: e2 }));
+    logged() {
+      return new p(k({ type: s.logged, backingStorageId: this.id }));
     }
     ranged(e2) {
-      return new M(k({ type: y.ranged, capacity: e2, backingStorageId: this.id }));
+      return new p(k({ type: s.ranged, capacity: e2, backingStorageId: this.id }));
     }
     vec(e2) {
-      return new h(new Array(e2).fill(0).map((t2) => new M(this.id)));
+      return new f(new Array(e2).fill(0).map((t2) => new p(this.id)));
     }
   };
-  var u = M;
-  d(u, "defaultLoggedBufferSize", 15);
-  var h = class {
+  var f = class {
     #e;
     constructor(e2) {
-      if (this.#e = e2, !(typeof this.#e == "number" || this.#e instanceof h || this.#e instanceof u))
+      if (this.#e = e2, !(typeof this.#e == "number" || this.#e instanceof f || this.#e instanceof p))
         for (let [t2, n2] of Object.entries(e2))
           this[t2] = n2;
     }
@@ -4453,7 +4454,7 @@
       return this.#e;
     }
     static nullableRaw(e2) {
-      if (e2 instanceof u)
+      if (e2 instanceof p)
         return e2.nullable();
       if (Array.isArray(e2))
         return e2.map((n2) => this.nullableRaw(n2));
@@ -4463,10 +4464,10 @@
       return t2;
     }
     nullable() {
-      return new h(h.nullableRaw(this.#e));
+      return new f(f.nullableRaw(this.#e));
     }
     static loggedRaw(e2) {
-      if (e2 instanceof u)
+      if (e2 instanceof p)
         return e2.logged();
       if (Array.isArray(e2))
         return e2.map((n2) => this.loggedRaw(n2));
@@ -4476,10 +4477,10 @@
       return t2;
     }
     logged() {
-      return new h(h.loggedRaw(this.#e));
+      return new f(f.loggedRaw(this.#e));
     }
     static rangedRaw(e2, t2) {
-      if (e2 instanceof u)
+      if (e2 instanceof p)
         return e2.ranged(t2);
       if (Array.isArray(e2))
         return e2.map((o2) => this.rangedRaw(o2, t2));
@@ -4489,57 +4490,57 @@
       return n2;
     }
     ranged(e2) {
-      return new h(h.rangedRaw(this.#e, e2));
+      return new f(f.rangedRaw(this.#e, e2));
     }
   };
-  function B(r2) {
-    return new h(r2);
+  function _(r2) {
+    return new f(r2);
   }
-  var Z = class {
+  var ee = class {
   };
-  var p = Z;
-  d(p, "any", new u(g(y.any))), d(p, "bool", new u(g(y.bool))), d(p, "string", new u(g(y.any))), d(p, "entity", new u(g(y.i32))), d(p, "f64", new u(g(y.f64))), d(p, "f32", new u(g(y.f32))), d(p, "i8", new u(g(y.i8))), d(p, "i16", new u(g(y.i16))), d(p, "i32", new u(g(y.i32))), d(p, "u8", new u(g(y.u8))), d(p, "u16", new u(g(y.u16))), d(p, "u32", new u(g(y.u32))), d(p, "number", Z.f64);
+  var u = ee;
+  d(u, "any", new p(g(s.any))), d(u, "bool", new p(g(s.bool))), d(u, "string", new p(g(s.any))), d(u, "entity", new p(g(s.i32))), d(u, "f64", new p(g(s.f64))), d(u, "f32", new p(g(s.f32))), d(u, "i8", new p(g(s.i8))), d(u, "i16", new p(g(s.i16))), d(u, "i32", new p(g(s.i32))), d(u, "u8", new p(g(s.u8))), d(u, "u16", new p(g(s.u16))), d(u, "u32", new p(g(s.u32))), d(u, "number", ee.f64);
   var I = class {
   };
   d(I, "custom", function(e2) {
-    return new u(g(0));
+    return new p(g(0));
   }), d(I, "component", function(e2) {
-    return new h(e2.schema);
+    return new f(e2.schema);
   }), d(I, "enum", function(...e2) {
-    return new u(k({ type: y.enum, options: e2 }));
+    return new p(k({ type: s.enum, options: e2 }));
   });
   var K = class {
   };
   var E = K;
-  d(E, "vec2", B({ x: p.number, y: p.number })), d(E, "vec3", B({ x: p.number, y: p.number, z: p.number })), d(E, "rect", B({ ...K.vec2, width: p.number, height: p.number })), d(E, "circle", B({ ...K.vec2, radius: p.number })), d(E, "directionStr", I.enum("UP", "DOWN", "LEFT", "RIGHT")), d(E, "rotationDirection", I.enum("CLOCKWISE", "COUNTERCLOCKWISE"));
-  var St = Object.assign(B, p, I, E);
-  var Ie = new m("Components");
-  var ee = Symbol("CACHED_HASH");
-  var te = 1;
-  function S() {
-    return te++;
+  d(E, "vec2", _({ x: u.number, y: u.number })), d(E, "vec3", _({ x: u.number, y: u.number, z: u.number })), d(E, "rect", _({ ...K.vec2, width: u.number, height: u.number })), d(E, "circle", _({ ...K.vec2, radius: u.number })), d(E, "directionStr", I.enum("UP", "DOWN", "LEFT", "RIGHT")), d(E, "rotationDirection", I.enum("CLOCKWISE", "COUNTERCLOCKWISE"));
+  var Et = Object.assign(_, u, I, E);
+  var we = new m("Components");
+  var te = Symbol("CACHED_HASH");
+  var re = 1;
+  function b() {
+    return re++;
   }
   var w = {};
-  function Ge(r2) {
+  function He(r2) {
     switch (r2) {
       case "MANUALLY IMPLEMENTED":
         Function.prototype.getId = function() {
-          throw Ie.error("Cannot get the ID of object:", this, 'because the "MANUALLY_IMPLEMENTED" method of getId() was chosen '), new Error("Cannot get the ID of object");
+          throw we.error("Cannot get the ID of object:", this, 'because the "MANUALLY_IMPLEMENTED" method of getId() was chosen '), new Error("Cannot get the ID of object");
         };
         break;
       case "CONSTRUCTOR HASH":
         Function.prototype.getId = function() {
-          if (this[ee])
-            return this[ee];
+          if (this[te])
+            return this[te];
           let e2 = this.toString(), t2;
           for (let n2 = 0; n2 < e2.length; n2++)
             t2 = Math.imul(31, t2) + e2.charCodeAt(n2) | 0;
-          return this[ee] = t2, t2;
+          return this[te] = t2, t2;
         };
         break;
       case "CONSTRUCTOR NAME":
         Function.prototype.getId = function() {
-          return w[this.name] ??= S();
+          return w[this.name] ??= b();
         };
     }
   }
@@ -4549,12 +4550,12 @@
       return e2.getId();
     };
   }
-  function _t() {
-    Ge("CONSTRUCTOR NAME"), String.prototype.getId = function() {
-      return w[this] ??= S();
-    }, Ie.log("Patched Object prototype, 3rd party external components are now available");
+  function Dt() {
+    He("CONSTRUCTOR NAME"), String.prototype.getId = function() {
+      return w[this] ??= b();
+    }, we.log("Patched Object prototype, 3rd party external components are now available");
   }
-  var b = class {
+  var T = class {
     constructor(e2) {
       this.cache = e2;
     }
@@ -4565,8 +4566,8 @@
       this.prototype.schema = e2;
     }
   };
-  d(b, "id"), d(b, "currentEntity");
-  var re = class extends b {
+  d(T, "id"), d(T, "currentEntity");
+  var ne = class extends T {
     static __init__(e2) {
       super.__init__(e2), this.prototype.propIds = [this.getId()], this.prototype.flattenedSchema = [e2], Object.defineProperty(this.prototype, "data", { get: () => this.currentEntity.get(this.getId()), set: (t2) => this.currentEntity.update(this.getId(), t2) });
     }
@@ -4574,7 +4575,7 @@
       e2.storageManager.getOrCreateStorage(this.constructor.getId(), this.schema).addOrSetEnt(t2, this.cache);
     }
   };
-  var ne = class extends b {
+  var oe = class extends T {
     constructor(e2) {
       super([]);
       for (let t2 = this.propNames.length - 1; t2 > -1; t2--)
@@ -4587,17 +4588,17 @@
     static __init__(e2) {
       this.prototype.flattenedSchema = [], this.prototype.propIds = [], this.prototype.propNames = [];
       for (let [t2, n2] of Object.entries(e2)) {
-        let o2 = S();
+        let o2 = b();
         this.prototype.flattenedSchema.push(n2), this.prototype.propIds.push(o2), this.prototype.propNames.push(t2), this[t2] = o2, Object.defineProperty(this.prototype, t2, { get: () => this.currentEntity.get(o2), set: (i2) => this.currentEntity.update(o2, i2) });
       }
       super.__init__(e2);
     }
   };
-  var oe = class extends b {
+  var ie = class extends T {
     constructor(e2) {
       super([]);
       let t2 = [[this.schema, e2]];
-      V(([n2, o2], i2) => {
+      $(([n2, o2], i2) => {
         if (typeof n2 == "number") {
           this.cache.push(o2);
           return;
@@ -4611,61 +4612,61 @@
         e2.storageManager.getOrCreateStorage(this.propIds[n2], this.flattenedSchema[n2]).addOrSetEnt(t2, this.cache[n2]);
     }
     static __init__(e2) {
-      this.prototype.propIds = [], this.prototype.flattenedSchema = [], V(([n2, o2, i2], a3) => {
+      this.prototype.propIds = [], this.prototype.flattenedSchema = [], $(([n2, o2, i2], a3) => {
         if (typeof n2 == "number") {
-          let s2 = S();
-          Object.defineProperty(o2, i2, { get: () => this.currentEntity.get(s2), set: (T) => this.currentEntity.update(s2, T) }), this.prototype.propIds.push(s2), this.prototype.flattenedSchema.push(n2);
+          let y2 = b();
+          Object.defineProperty(o2, i2, { get: () => this.currentEntity.get(y2), set: (S2) => this.currentEntity.update(y2, S2) }), this.prototype.propIds.push(y2), this.prototype.flattenedSchema.push(n2);
           return;
         }
-        for (let s2 of Object.keys(n2))
-          a3([n2[s2], o2[s2] = {}, s2]);
+        for (let y2 of Object.keys(n2))
+          a3([n2[y2], o2[y2] = {}, y2]);
       }, ...[[e2, this, "prototype"]]), super.__init__(e2);
     }
   };
   function Ye(r2) {
-    let e2 = ie(r2);
+    let e2 = ae(r2);
     if (typeof e2 == "number") {
-      class n2 extends re {
-        static id = S();
-      }
-      return n2.__init__(e2), n2;
-    }
-    if (Ve(e2)) {
       class n2 extends ne {
-        static id = S();
+        static id = b();
       }
       return n2.__init__(e2), n2;
     }
-    class t2 extends oe {
-      static id = S();
+    if ($e(e2)) {
+      class n2 extends oe {
+        static id = b();
+      }
+      return n2.__init__(e2), n2;
+    }
+    class t2 extends ie {
+      static id = b();
     }
     return t2.__init__(e2), t2;
   }
-  function He(r2) {
+  function qe(r2) {
     return typeof r2 == "number";
   }
-  function qe(r2) {
-    return r2 instanceof u;
-  }
   function Ve(r2) {
-    return Object.values(r2).every((e2) => typeof e2 == "number");
+    return r2 instanceof p;
   }
   function $e(r2) {
-    return r2 instanceof h;
+    return Object.values(r2).every((e2) => typeof e2 == "number");
   }
-  function ie(r2) {
-    if (He(r2))
-      return r2;
+  function Je(r2) {
+    return r2 instanceof f;
+  }
+  function ae(r2) {
     if (qe(r2))
+      return r2;
+    if (Ve(r2))
       return r2.toTypeId();
-    if ($e(r2))
-      return ie(r2.toTypeTree());
+    if (Je(r2))
+      return ae(r2.toTypeTree());
     let e2 = {};
     for (let [t2, n2] of Object.entries(r2))
-      e2[t2] = ie(n2);
+      e2[t2] = ae(n2);
     return e2;
   }
-  function Wt() {
+  function Qt() {
     Set.prototype.clone = function() {
       return new Set(this);
     }, Set.prototype.concat = function(...r2) {
@@ -4747,12 +4748,12 @@
       for (let i2 = this.targetedArchetypes.length - 1; i2 >= 0; i2--) {
         let a3 = this.targetedArchetypes[i2];
         if (a3.lastModified === this.lastCheckedArchetypes.get(a3))
-          for (let s2 = this.targetedArchetypes[i2].entities[0] - this.offset; s2 > 0; s2 -= this.stepSize)
-            o2.delete(this.targetedArchetypes[i2].entities[s2]);
+          for (let y2 = this.targetedArchetypes[i2].entities[0] - this.offset; y2 > 0; y2 -= this.stepSize)
+            o2.delete(this.targetedArchetypes[i2].entities[y2]);
         else
-          for (let s2 = this.targetedArchetypes[i2].entities[0] - this.offset; s2 > 0; s2 -= this.stepSize) {
-            let T = this.targetedArchetypes[i2].entities[s2];
-            e2.has(T) || (e2.add(T), t2(T)), o2.delete(T);
+          for (let y2 = this.targetedArchetypes[i2].entities[0] - this.offset; y2 > 0; y2 -= this.stepSize) {
+            let S2 = this.targetedArchetypes[i2].entities[y2];
+            e2.has(S2) || (e2.add(S2), t2(S2)), o2.delete(S2);
           }
       }
       o2.forEach((i2) => {
@@ -4772,7 +4773,7 @@
     }
     queries = [];
     query(...e2) {
-      let t2 = new x(ae(...e2));
+      let t2 = new x(se(...e2));
       for (let [n2, o2] of this.world.archetypeManager.archetypes)
         t2.componentTester(o2.components) && t2.addTargetedArchetype(o2);
       return t2;
@@ -4787,8 +4788,8 @@
         this.queries[t2].componentTester(e2.components) && this.queries[t2].addTargetedArchetype(e2);
     }
   };
-  var _ = (...r2) => r2.length === 1 && typeof r2[0] == "function" && !j(r2[0]) ? r2[0] : (r2 = r2.map((e2) => typeof e2 == "number" ? e2 : e2.getId()), (e2) => r2.every((t2) => e2.has(t2)));
-  var ae = (...r2) => {
+  var B = (...r2) => r2.length === 1 && typeof r2[0] == "function" && !j(r2[0]) ? r2[0] : (r2 = r2.map((e2) => typeof e2 == "number" ? e2 : e2.getId()), (e2) => r2.every((t2) => e2.has(t2)));
+  var se = (...r2) => {
     let e2 = function(o2) {
       for (let i2 = r2.length - 1; i2 > -1; i2--)
         if (!r2[i2](o2))
@@ -4819,28 +4820,28 @@
     }
   };
   d(C, "nextSystemId", 0), d(C, "runOrder", "STANDARD");
-  function $t(r2) {
-    let e2 = se(r2);
+  function Jt(r2) {
+    let e2 = ye(r2);
     class t2 extends C {
       entities = e2;
       static id = C.nextSystemId++;
     }
     return t2;
   }
-  function Je(r2) {
+  function Ze(r2) {
     return r2.constructor !== Object;
   }
-  function we(r2) {
-    return typeof r2 == "number" ? _(r2) : typeof r2 == "function" && !j(r2) ? r2 : Array.isArray(r2) ? ae(...r2.map(we)) : _(r2.getId());
+  function xe(r2) {
+    return typeof r2 == "number" ? B(r2) : typeof r2 == "function" && !j(r2) ? r2 : Array.isArray(r2) ? se(...r2.map(xe)) : B(r2.getId());
   }
-  function se(r2) {
-    if (Je(r2))
-      return new x(we(r2));
+  function ye(r2) {
+    if (Ze(r2))
+      return new x(xe(r2));
     if (Array.isArray(r2))
-      return r2.map(se);
+      return r2.map(ye);
     let e2 = {};
     for (let [t2, n2] of Object.entries(r2))
-      e2[t2] = se(n2);
+      e2[t2] = ye(n2);
     return e2;
   }
   var F = { LOCAL: 0, REMOTE: 1 };
@@ -4857,7 +4858,7 @@
       let t2 = this.enabledSchedules[e2].slice(), n2 = this.enabledSchedules[e2];
       n2.length = 0;
       let { first: o2, standard: i2, last: a3 } = this.schedules[e2];
-      n2.push(...[...o2, ...i2, ...a3].filter((s2) => t2.includes(s2)));
+      n2.push(...[...o2, ...i2, ...a3].filter((y2) => t2.includes(y2)));
     }
     registerSystem(e2, t2 = F.REMOTE) {
       this.systemLocations[e2] = t2;
@@ -4866,14 +4867,14 @@
       this.schedules[e2] = { first: [], standard: t2, last: [] }, this.enabledSchedules[e2] = [];
     }
     addToSchedule(e2, t2, n2, o2) {
-      let i2 = this.schedules[t2] ??= { first: [], standard: [], last: [] }, { first: a3, standard: s2, last: T } = i2;
+      let i2 = this.schedules[t2] ??= { first: [], standard: [], last: [] }, { first: a3, standard: y2, last: S2 } = i2;
       if (n2 === "STANDARD" || n2 === "LAST" || n2 === "FIRST")
         i2[n2.toLowerCase()].push(e2);
       else if ("position" in n2)
-        n2.position < a3.length ? a3.splice(n2.position, 0, e2) : n2.position < a3.length + s2.length ? s2.splice(n2.position - a3.length, 0, e2) : T.splice(n2.position - a3.length - s2.length, e2);
+        n2.position < a3.length ? a3.splice(n2.position, 0, e2) : n2.position < a3.length + y2.length ? y2.splice(n2.position - a3.length, 0, e2) : S2.splice(n2.position - a3.length - y2.length, e2);
       else {
-        let me = Object.keys(n2)[0], fe = n2[me], he = [a3, s2, T].find((Me) => Me.includes(fe)), Oe = he.indexOf(fe);
-        he.splice(Oe + (me === "before" ? 0 : 1), 0, e2);
+        let he = Object.keys(n2)[0], fe = n2[he], ge = [a3, y2, S2].find((ve) => ve.includes(fe)), Me = ge.indexOf(fe);
+        ge.splice(Me + (he === "before" ? 0 : 1), 0, e2);
       }
       o2 && this.enable(e2, t2);
     }
@@ -4908,7 +4909,7 @@
       return Promise.all(n2);
     }
   };
-  function ye(r2, e2) {
+  function de(r2, e2) {
     return new Promise((t2, n2) => {
       function o2({ data: i2 }) {
         i2.type === e2 && (r2.removeEventListener("message", o2), t2(i2));
@@ -4917,8 +4918,8 @@
     });
   }
   var Xe = ((o2) => (o2[o2.init = 0] = "init", o2[o2.update = 1] = "update", o2[o2.sync = 2] = "sync", o2[o2.newArchetype = 3] = "newArchetype", o2))(Xe || {});
-  var de = new m("Worker Manager");
-  var pe = class {
+  var pe = new m("Worker Manager");
+  var ue = class {
     constructor(e2, t2) {
       this.url = e2;
       this.numThreads = t2;
@@ -4931,11 +4932,11 @@
     async initAndEmitData(e2, t2, n2) {
       let o2 = [];
       for (let i2 = 0; i2 < this.numThreads; i2++)
-        this.workers.push(new Worker(this.url, { type: "module" })), n2 ? this.workers[i2].postMessage({ ...e2, [n2]: i2 }) : this.workers[i2].postMessage(e2), o2[i2] = await ye(this.workers[i2], t2);
+        this.workers.push(new Worker(this.url, { type: "module" })), n2 ? this.workers[i2].postMessage({ ...e2, [n2]: i2 }) : this.workers[i2].postMessage(e2), o2[i2] = await de(this.workers[i2], t2);
       return o2;
     }
   };
-  var Y = class {
+  var H = class {
     constructor(e2) {
       this.world = e2;
     }
@@ -4943,7 +4944,7 @@
     triggerArrays = [];
     async loadWorkerSystem(e2, t2 = 1) {
       let n2, o2, i2 = new Int32Array(new SharedArrayBuffer(t2 * Int32Array.BYTES_PER_ELEMENT));
-      return t2 === 1 ? (de.log("Loading remote system..."), n2 = new Worker(e2, { type: "module" }), n2.postMessage({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: 1, offset: 0, triggerArray: i2 }), o2 = await ye(n2, 0)) : (de.log(`Loading remote system with ${t2} threads`), n2 = new pe(e2, t2), o2 = (await n2.initAndEmitData({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: t2, triggerArray: i2 }, 0, "offset"))[0]), this.workers[o2.id] = n2, this.triggerArrays[o2.id] = i2, de.logOk(`Remote system ${o2.name} (${o2.id}) is ready`), o2.id;
+      return t2 === 1 ? (pe.log("Loading remote system..."), n2 = new Worker(e2, { type: "module" }), n2.postMessage({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: 1, offset: 0, triggerArray: i2 }), o2 = await de(n2, 0)) : (pe.log(`Loading remote system with ${t2} threads`), n2 = new ue(e2, t2), o2 = (await n2.initAndEmitData({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: t2, triggerArray: i2 }, 0, "offset"))[0]), this.workers[o2.id] = n2, this.triggerArrays[o2.id] = i2, pe.logOk(`Remote system ${o2.name} (${o2.id}) is ready`), o2.id;
     }
     update(e2) {
       let t2 = this.triggerArrays[e2];
@@ -4962,65 +4963,83 @@
         t2.postMessage({ type: 3, archetype: e2 });
     }
   };
-  function ue(r2, e2, t2) {
+  function ce(r2, e2, t2) {
     return r2 >> e2 & (1 << t2) - 1;
   }
   var R = 15;
-  function ce(r2, e2) {
+  function le(r2, e2) {
     return typeof r2 != "number" && (r2 = r2.getId()), r2 << R | e2;
   }
-  var xe = (r2) => r2.push(() => {
+  var Ce = (r2) => r2.push(() => {
     Number.prototype.relate = function(e2, t2, n2) {
-      n2 == null ? this.tag(ce(e2, t2)) : this.add(ce(e2, t2), n2);
+      n2 == null ? this.tag(le(e2, t2)) : this.add(le(e2, t2), n2);
     }, Number.prototype.getAllRelatedBy = function(e2) {
-      return typeof e2 != "number" && (e2 = e2.getId()), this.components().filter((t2) => t2 >> R == e2).map((t2) => ue(t2, 0, R));
+      return typeof e2 != "number" && (e2 = e2.getId()), this.components().filter((t2) => t2 >> R == e2).map((t2) => ce(t2, 0, R));
     }, Number.prototype.getSingleRelatedBy = function(e2) {
       typeof e2 != "number" && (e2 = e2.getId());
       for (let t2 of this.components())
         if (t2 >> R == e2)
-          return ue(t2, 0, R);
+          return ce(t2, 0, R);
       return null;
     };
   });
   var N;
   var L;
-  var Ce = (r2) => r2.push(() => {
-    N = S(), L = S(), Number.prototype.addChild = function(e2) {
+  var Oe = (r2) => r2.push(() => {
+    N = b(), L = b(), Number.prototype.addChild = function(e2) {
       this.relate(N, e2), e2.relate(L, this);
     }, Number.prototype.children = function() {
       return this.getAllRelatedBy(N);
     };
   });
-  var H = new m("World");
-  var q = class {
+  var Y = class {
+    constructor(e2) {
+      this.world = e2;
+    }
+    entities = /* @__PURE__ */ new Set();
+    spawn(...e2) {
+      for (let t2 = 1; t2 <= this.entities.size + 1; t2++) {
+        let n2 = t2;
+        if (!this.entities.has(n2)) {
+          for (let o2 of e2)
+            Array.isArray(o2) ? n2.add(o2[0], o2[1]) : n2.add(o2);
+          return this.entities.add(n2), n2;
+        }
+      }
+      throw new Error("Couldn't find free entity");
+    }
+    destroy(e2) {
+      this.entities.delete(e2) || console.warn("removed entity that wasn't present in the world");
+      let t2 = this.world.archetypeManager.archetypes.get(this.world.archetypeManager.entityArchetypes[e2]);
+      this.world.archetypeManager.moveWithoutGraph(e2, t2, this.world.archetypeManager.defaultArchetype);
+    }
+    update() {
+    }
+  };
+  var q = new m("World");
+  var V = class {
     constructor(e2) {
       this.internalMaxEntities = e2;
-      H.group("Creating world with", e2, "entities"), this.storageManager = new W(this), this.queryManager = new z(this), this.workerManager = new Y(this), this.systemManager = new G(this), this.archetypeManager = new P(this), this.entities = new Int32Array(new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * (e2 + 1))), q.GLOBAL_WORLD = this, H.groupEnd(), H.logOk("Created world with max capacity of", e2, "entities");
+      q.group("Creating world with", e2, "entities"), this.storageManager = new W(this), this.queryManager = new z(this), this.workerManager = new H(this), this.systemManager = new G(this), this.archetypeManager = new P(this), this.entityManager = new Y(this), V.GLOBAL_WORLD = this, q.groupEnd(), q.logOk("Created world with max capacity of", e2, "entities");
     }
-    entities;
     storageManager;
     queryManager;
     workerManager;
     systemManager;
     archetypeManager;
+    entityManager;
     reservedEntity = 0;
     get maxEntities() {
       return this.internalMaxEntities;
     }
     set maxEntities(e2) {
-      this.internalMaxEntities = e2, H.log("Resizing all storages for", e2, "entities..."), this.archetypeManager.resize(e2), this.storageManager.resize(e2);
+      this.internalMaxEntities = e2, q.log("Resizing all storages for", e2, "entities..."), this.archetypeManager.resize(e2), this.storageManager.resize(e2);
     }
-    openEntIds = [];
-    nextEntId = 1;
     spawn(...e2) {
-      let t2 = this.openEntIds.pop() ?? this.nextEntId++;
-      this.entities[this.entities[0]] = t2, this.entities[0]++;
-      for (let n2 of e2)
-        Array.isArray(n2) ? t2.add(n2[0], n2[1]) : t2.add(n2);
-      return t2;
+      return this.entityManager.spawn(...e2);
     }
     destroy(e2) {
-      this.openEntIds.push(e2), this.archetypeManager.archetypes.get(this.archetypeManager.entityArchetypes[e2]).removeEntity(e2);
+      return this.entityManager.destroy(e2);
     }
     query(...e2) {
       return this.queryManager.query(...e2);
@@ -5047,7 +5066,7 @@
       this.systemManager.disable(e2.id, t2);
     }
     tick(e2 = "DEFAULT") {
-      return this.storageManager.update(), this.archetypeManager.update(), this.update(e2);
+      return this.entityManager.update(), this.storageManager.update(), this.archetypeManager.update(), this.update(e2);
     }
     update(e2 = "DEFAULT") {
       if (typeof e2 == "string")
@@ -5057,11 +5076,11 @@
       return this.systemManager.update(e2);
     }
     add(e2, t2 = e2.constructor.getId()) {
-      if (e2 instanceof b) {
+      if (e2 instanceof T) {
         e2.copyIntoStorage(this, this.reservedEntity);
         return;
       }
-      typeof t2 != "number" && (t2 = t2.getId()), q.GLOBAL_WORLD.storageManager.getOrCreateStorage(t2, e2.storageKind).addOrSetEnt(this.reservedEntity, e2);
+      typeof t2 != "number" && (t2 = t2.getId()), V.GLOBAL_WORLD.storageManager.getOrCreateStorage(t2, e2.storageKind).addOrSetEnt(this.reservedEntity, e2);
     }
     get = this.reservedEntity.get.bind(this.reservedEntity);
     set = this.reservedEntity.set.bind(this.reservedEntity);
@@ -5069,17 +5088,17 @@
       typeof e2 != "number" && (e2 = e2.getId()), this.storageManager.storages[e2].deleteEnt(this.reservedEntity);
     }
   };
-  var c = q;
+  var c = V;
   d(c, "GLOBAL_WORLD");
-  var Ze = new m("Entities");
-  var le = [];
-  xe(le);
-  Ce(le);
-  function Qr() {
+  var et = new m("Entities");
+  var me = [];
+  Ce(me);
+  Oe(me);
+  function jr() {
     Object.defineProperty(Number.prototype, "world", { configurable: false, enumerable: false, get() {
       return c.GLOBAL_WORLD;
     } }), Number.prototype.add = function(r2, e2 = r2.constructor.getId()) {
-      if (c.GLOBAL_WORLD.archetypeManager.entityAddComponent(this, e2), r2 instanceof b) {
+      if (c.GLOBAL_WORLD.archetypeManager.entityAddComponent(this, e2), r2 instanceof T) {
         r2.copyIntoStorage(c.GLOBAL_WORLD, this);
         return;
       }
@@ -5091,8 +5110,7 @@
     }, Number.prototype.remove = function(r2) {
       typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2]?.deleteEnt(this), c.GLOBAL_WORLD.archetypeManager.entityRemoveComponent(this, r2);
     }, Number.prototype.has = function(r2) {
-      let { archetypes: e2, entityArchetypes: t2 } = c.GLOBAL_WORLD.archetypeManager;
-      return e2.get(t2[this]).components.has(r2);
+      return typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.archetypeManager.archetypes.get(c.GLOBAL_WORLD.archetypeManager.entityArchetypes[this]).components.has(r2);
     }, Number.prototype.components = function() {
       let { archetypes: r2, entityArchetypes: e2 } = c.GLOBAL_WORLD.archetypeManager;
       return r2.get(e2[this]).components;
@@ -5110,7 +5128,7 @@
       typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].mult(this, e2);
     }, Number.prototype.mod = function(r2, e2) {
       typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].mod(this, e2);
-    }, le.forEach((r2) => r2()), Ze.logOk("Loaded all entity polyfills");
+    }, me.forEach((r2) => r2()), et.logOk("Loaded all entity polyfills");
   }
 
   // node_modules/.pnpm/file+..+BagelECS+bagelecs-0.0.3.tgz/node_modules/bagelecs/dist/bundle.js
@@ -5122,15 +5140,15 @@
     neededPropertyStorageKinds = [];
     constructor(...e2) {
       for (let t2 of e2)
-        if (t2 instanceof b) {
+        if (t2 instanceof T) {
           this.targetedComponents.add(t2.constructor.getId());
-          let o2 = t2 instanceof re ? [t2.cache] : t2.cache;
+          let o2 = t2 instanceof ne ? [t2.cache] : t2.cache;
           for (let r2 = 0; r2 < t2.propIds.length; r2++)
             this.defaultData.set(t2.propIds[r2], o2[r2]);
           this.registerComponentProperties(t2.constructor);
         } else if (typeof t2 == "function" || typeof t2 == "number") {
           let o2 = typeof t2 == "number" ? t2 : t2.getId();
-          this.targetedComponents.add(o2), typeof t2 == "function" && t2.prototype instanceof b && this.registerComponentProperties(t2);
+          this.targetedComponents.add(o2), typeof t2 == "function" && t2.prototype instanceof T && this.registerComponentProperties(t2);
         } else {
           let o2 = t2.constructor.getId();
           this.targetedComponents.add(o2), this.defaultData.set(o2, t2);
@@ -5166,7 +5184,7 @@
       return r2;
     };
   }
-  function Be2(p3, e2, t2) {
+  function Pe2(p3, e2, t2) {
     return (...o2) => {
       let r2 = p3.new();
       for (let n2 = e2.length - 1; n2 > -1; n2--)
@@ -5175,9 +5193,9 @@
     };
   }
   var u2 = new m("World", "Resources");
-  Qr();
-  _t();
-  Wt();
+  jr();
+  Dt();
+  Qt();
 
   // node_modules/.pnpm/tweakpane@4.0.1/node_modules/tweakpane/dist/tweakpane.js
   function forceCast(v3) {
@@ -6438,9 +6456,9 @@
       this.view.valueElement.appendChild(this.valueController.view.element);
     }
     importState(state) {
-      return importBladeState(state, (s2) => {
+      return importBladeState(state, (s3) => {
         var _a, _b, _c;
-        return super.importState(s2) && this.labelController.importProps(s2) && ((_c = (_b = (_a = this.valueController).importProps) === null || _b === void 0 ? void 0 : _b.call(_a, state)) !== null && _c !== void 0 ? _c : true);
+        return super.importState(s3) && this.labelController.importProps(s3) && ((_c = (_b = (_a = this.valueController).importProps) === null || _b === void 0 ? void 0 : _b.call(_a, state)) !== null && _c !== void 0 ? _c : true);
       }, (p3) => ({
         value: p3.optional.raw
       }), (result) => {
@@ -6493,7 +6511,7 @@
   }
   var InputBindingController = class extends BindingController {
     importState(state) {
-      return importBladeState(state, (s2) => super.importState(s2), (p3) => ({
+      return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
         binding: p3.required.object({
           value: p3.required.raw
         })
@@ -6693,7 +6711,7 @@
       this.labelController = lc;
     }
     importState(state) {
-      return importBladeState(state, (s2) => super.importState(s2) && this.buttonController.importProps(s2) && this.labelController.importProps(s2), () => ({}), () => true);
+      return importBladeState(state, (s3) => super.importState(s3) && this.buttonController.importProps(s3) && this.labelController.importProps(s3), () => ({}), () => true);
     }
     exportState() {
       return exportBladeState(() => super.exportState(), Object.assign(Object.assign({}, this.buttonController.exportProps()), this.labelController.exportProps()));
@@ -6850,7 +6868,7 @@
       this.rackController = config.rackController;
     }
     importState(state) {
-      return importBladeState(state, (s2) => super.importState(s2), (p3) => ({
+      return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
         children: p3.required.array(p3.required.raw)
       }), (result) => {
         return this.rackController.rack.children.every((c3, index) => {
@@ -7375,7 +7393,7 @@
       return this.view.element.ownerDocument;
     }
     importState(state) {
-      return importBladeState(state, (s2) => super.importState(s2), (p3) => ({
+      return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
         expanded: p3.required.boolean,
         title: p3.optional.string
       }), (result) => {
@@ -7585,7 +7603,7 @@
       return this.ic_;
     }
     importState(state) {
-      return importBladeState(state, (s2) => super.importState(s2), (p3) => ({
+      return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
         selected: p3.required.boolean,
         title: p3.required.string
       }), (result) => {
@@ -7716,15 +7734,15 @@
         this.empty.rawValue = true;
         return;
       }
-      const firstSelIndex = this.items_.findIndex((s2) => s2.rawValue);
+      const firstSelIndex = this.items_.findIndex((s3) => s3.rawValue);
       if (firstSelIndex < 0) {
-        this.items_.forEach((s2, i2) => {
-          s2.rawValue = i2 === 0;
+        this.items_.forEach((s3, i2) => {
+          s3.rawValue = i2 === 0;
         });
         this.selectedIndex.rawValue = 0;
       } else {
-        this.items_.forEach((s2, i2) => {
-          s2.rawValue = i2 === firstSelIndex;
+        this.items_.forEach((s3, i2) => {
+          s3.rawValue = i2 === firstSelIndex;
         });
         this.selectedIndex.rawValue = firstSelIndex;
       }
@@ -7732,9 +7750,9 @@
     }
     onItemSelectedChange_(ev) {
       if (ev.rawValue) {
-        const index = this.items_.findIndex((s2) => s2 === ev.sender);
-        this.items_.forEach((s2, i2) => {
-          s2.rawValue = i2 === index;
+        const index = this.items_.findIndex((s3) => s3 === ev.sender);
+        this.items_.forEach((s3, i2) => {
+          s3.rawValue = i2 === index;
         });
         this.selectedIndex.rawValue = index;
       } else {
@@ -8903,10 +8921,10 @@
     const cmin = Math.min(rp, gp, bp);
     const c3 = cmax - cmin;
     let h3 = 0;
-    let s2 = 0;
+    let s3 = 0;
     const l4 = (cmin + cmax) / 2;
     if (c3 !== 0) {
-      s2 = c3 / (1 - Math.abs(cmax + cmin - 1));
+      s3 = c3 / (1 - Math.abs(cmax + cmin - 1));
       if (rp === cmax) {
         h3 = (gp - bp) / c3;
       } else if (gp === cmax) {
@@ -8916,11 +8934,11 @@
       }
       h3 = h3 / 6 + (h3 < 0 ? 1 : 0);
     }
-    return [h3 * 360, s2 * 100, l4 * 100];
+    return [h3 * 360, s3 * 100, l4 * 100];
   }
-  function hslToRgbInt(h3, s2, l4) {
+  function hslToRgbInt(h3, s3, l4) {
     const hp = (h3 % 360 + 360) % 360;
-    const sp = constrainRange(s2 / 100, 0, 1);
+    const sp = constrainRange(s3 / 100, 0, 1);
     const lp = constrainRange(l4 / 100, 0, 1);
     const c3 = (1 - Math.abs(2 * lp - 1)) * sp;
     const x3 = c3 * (1 - Math.abs(hp / 60 % 2 - 1));
@@ -8958,13 +8976,13 @@
     } else {
       h3 = 60 * ((rp - gp) / d3 + 4);
     }
-    const s2 = cmax === 0 ? 0 : d3 / cmax;
+    const s3 = cmax === 0 ? 0 : d3 / cmax;
     const v3 = cmax;
-    return [h3, s2 * 100, v3 * 100];
+    return [h3, s3 * 100, v3 * 100];
   }
-  function hsvToRgbInt(h3, s2, v3) {
+  function hsvToRgbInt(h3, s3, v3) {
     const hp = loopRange(h3, 360);
-    const sp = constrainRange(s2 / 100, 0, 1);
+    const sp = constrainRange(s3 / 100, 0, 1);
     const vp = constrainRange(v3 / 100, 0, 1);
     const c3 = vp * sp;
     const x3 = c3 * (1 - Math.abs(hp / 60 % 2 - 1));
@@ -8985,17 +9003,17 @@
     }
     return [(rp + m3) * 255, (gp + m3) * 255, (bp + m3) * 255];
   }
-  function hslToHsvInt(h3, s2, l4) {
-    const sd = l4 + s2 * (100 - Math.abs(2 * l4 - 100)) / (2 * 100);
+  function hslToHsvInt(h3, s3, l4) {
+    const sd = l4 + s3 * (100 - Math.abs(2 * l4 - 100)) / (2 * 100);
     return [
       h3,
-      sd !== 0 ? s2 * (100 - Math.abs(2 * l4 - 100)) / sd : 0,
-      l4 + s2 * (100 - Math.abs(2 * l4 - 100)) / (2 * 100)
+      sd !== 0 ? s3 * (100 - Math.abs(2 * l4 - 100)) / sd : 0,
+      l4 + s3 * (100 - Math.abs(2 * l4 - 100)) / (2 * 100)
     ];
   }
-  function hsvToHslInt(h3, s2, v3) {
-    const sd = 100 - Math.abs(v3 * (200 - s2) / 100 - 100);
-    return [h3, sd !== 0 ? s2 * v3 / sd : 0, v3 * (200 - s2) / (2 * 100)];
+  function hsvToHslInt(h3, s3, v3) {
+    const sd = 100 - Math.abs(v3 * (200 - s3) / 100 - 100);
+    return [h3, sd !== 0 ? s3 * v3 / sd : 0, v3 * (200 - s3) / (2 * 100)];
   }
   function removeAlphaComponent(comps) {
     return [comps[0], comps[1], comps[2]];
@@ -9005,13 +9023,13 @@
   }
   var MODE_CONVERTER_MAP = {
     hsl: {
-      hsl: (h3, s2, l4) => [h3, s2, l4],
+      hsl: (h3, s3, l4) => [h3, s3, l4],
       hsv: hslToHsvInt,
       rgb: hslToRgbInt
     },
     hsv: {
       hsl: hsvToHslInt,
-      hsv: (h3, s2, v3) => [h3, s2, v3],
+      hsv: (h3, s3, v3) => [h3, s3, v3],
       rgb: hsvToRgbInt
     },
     rgb: {
@@ -9756,8 +9774,8 @@
       }
       const alpha = d3.point.x / d3.bounds.width;
       const c3 = this.value.rawValue;
-      const [h3, s2, v3] = c3.getComponents("hsv");
-      this.value.setRawValue(new IntColor([h3, s2, v3, alpha], "hsv"), opts);
+      const [h3, s3, v3] = c3.getComponents("hsv");
+      this.value.setRawValue(new IntColor([h3, s3, v3, alpha], "hsv"), opts);
     }
     onPointerDown_(ev) {
       this.handlePointerEvent_(ev.data, {
@@ -9783,8 +9801,8 @@
         return;
       }
       const c3 = this.value.rawValue;
-      const [h3, s2, v3, a3] = c3.getComponents("hsv");
-      this.value.setRawValue(new IntColor([h3, s2, v3, a3 + step], "hsv"), {
+      const [h3, s3, v3, a3] = c3.getComponents("hsv");
+      this.value.setRawValue(new IntColor([h3, s3, v3, a3 + step], "hsv"), {
         forceEmit: false,
         last: false
       });
@@ -9906,11 +9924,11 @@
           const mc = mapColorType(p3, config.colorType);
           return mc.getComponents(config.colorMode)[i2];
         },
-        backward(p3, s2) {
+        backward(p3, s3) {
           const pickedMode = config.colorMode;
           const mc = mapColorType(p3, config.colorType);
           const comps = mc.getComponents(pickedMode);
-          comps[i2] = s2;
+          comps[i2] = s3;
           const c4 = createColor(appendAlphaComponent(removeAlphaComponent(comps), comps[3]), pickedMode, config.colorType);
           return mapColorType(c4, "int");
         }
@@ -9931,7 +9949,7 @@
       primary: config.value,
       secondary: c3.value,
       forward: (p3) => new IntColor(removeAlphaComponent(p3.getComponents()), p3.mode),
-      backward: (p3, s2) => new IntColor(appendAlphaComponent(removeAlphaComponent(s2.getComponents(p3.mode)), p3.getComponents()[3]), p3.mode)
+      backward: (p3, s3) => new IntColor(appendAlphaComponent(removeAlphaComponent(s3.getComponents(p3.mode)), p3.getComponents()[3]), p3.mode)
     });
     return [c3];
   }
@@ -10031,8 +10049,8 @@
       }
       const hue = mapRange(constrainRange(d3.point.x, 0, d3.bounds.width), 0, d3.bounds.width, 0, 360);
       const c3 = this.value.rawValue;
-      const [, s2, v3, a3] = c3.getComponents("hsv");
-      this.value.setRawValue(new IntColor([hue, s2, v3, a3], "hsv"), opts);
+      const [, s3, v3, a3] = c3.getComponents("hsv");
+      this.value.setRawValue(new IntColor([hue, s3, v3, a3], "hsv"), opts);
     }
     onPointerDown_(ev) {
       this.handlePointerEvent_(ev.data, {
@@ -10058,8 +10076,8 @@
         return;
       }
       const c3 = this.value.rawValue;
-      const [h3, s2, v3, a3] = c3.getComponents("hsv");
-      this.value.setRawValue(new IntColor([h3 + step, s2, v3, a3], "hsv"), {
+      const [h3, s3, v3, a3] = c3.getComponents("hsv");
+      this.value.setRawValue(new IntColor([h3 + step, s3, v3, a3], "hsv"), {
         forceEmit: false,
         last: false
       });
@@ -10111,9 +10129,9 @@
       const data = imgData.data;
       for (let iy = 0; iy < height; iy++) {
         for (let ix = 0; ix < width; ix++) {
-          const s2 = mapRange(ix, 0, width, 0, 100);
+          const s3 = mapRange(ix, 0, width, 0, 100);
           const v3 = mapRange(iy, 0, height, 100, 0);
-          const rgbComps = hsvToRgbInt(hsvComps[0], s2, v3);
+          const rgbComps = hsvToRgbInt(hsvComps[0], s3, v3);
           const i2 = (iy * width + ix) * 4;
           data[i2] = rgbComps[0];
           data[i2 + 1] = rgbComps[1];
@@ -10182,14 +10200,14 @@
       if (isArrowKey(ev.key)) {
         ev.preventDefault();
       }
-      const [h3, s2, v3, a3] = this.value.rawValue.getComponents("hsv");
+      const [h3, s3, v3, a3] = this.value.rawValue.getComponents("hsv");
       const keyScale = getKeyScaleForColor(false);
       const ds = getStepForKey(keyScale, getHorizontalStepKeys(ev));
       const dv = getStepForKey(keyScale, getVerticalStepKeys(ev));
       if (ds === 0 && dv === 0) {
         return;
       }
-      this.value.setRawValue(new IntColor([h3, s2 + ds, v3 + dv, a3], "hsv"), {
+      this.value.setRawValue(new IntColor([h3, s3 + ds, v3 + dv, a3], "hsv"), {
         forceEmit: false,
         last: false
       });
@@ -10242,9 +10260,9 @@
           primary: this.value,
           secondary: this.alphaIcs_.text.value,
           forward: (p3) => p3.getComponents()[3],
-          backward: (p3, s2) => {
+          backward: (p3, s3) => {
             const comps = p3.getComponents();
-            comps[3] = s2;
+            comps[3] = s3;
             return new IntColor(comps, p3.mode);
           }
         });
@@ -10359,7 +10377,7 @@
           primary: this.foldable_.value("expanded"),
           secondary: this.popC_.shows,
           forward: (p3) => p3,
-          backward: (_2, s2) => s2
+          backward: (_2, s3) => s3
         });
       } else if (this.view.pickerElement) {
         this.view.pickerElement.appendChild(this.pickerC_.view.element);
@@ -10735,9 +10753,9 @@
           primary: this.value,
           secondary: c3.value,
           forward: (p3) => config.assembly.toComponents(p3)[index],
-          backward: (p3, s2) => {
+          backward: (p3, s3) => {
             const comps = config.assembly.toComponents(p3);
-            comps[index] = s2;
+            comps[index] = s3;
             return config.assembly.fromComponents(comps);
           }
         });
@@ -10837,9 +10855,9 @@
     }
   });
   var Point2d = class {
-    constructor(x3 = 0, y3 = 0) {
+    constructor(x3 = 0, y2 = 0) {
       this.x = x3;
-      this.y = y3;
+      this.y = y2;
     }
     getComponents() {
       return [this.x, this.y];
@@ -10849,8 +10867,8 @@
         return false;
       }
       const x3 = obj.x;
-      const y3 = obj.y;
-      if (typeof x3 !== "number" || typeof y3 !== "number") {
+      const y2 = obj.y;
+      if (typeof x3 !== "number" || typeof y2 !== "number") {
         return false;
       }
       return true;
@@ -10954,10 +10972,10 @@
       return [this.padElement];
     }
     update_() {
-      const [x3, y3] = this.value.rawValue.getComponents();
+      const [x3, y2] = this.value.rawValue.getComponents();
       const max = this.props_.get("max");
       const px = mapRange(x3, -max, +max, 0, 100);
-      const py = mapRange(y3, -max, +max, 0, 100);
+      const py = mapRange(y2, -max, +max, 0, 100);
       const ipy = this.props_.get("invertsY") ? 100 - py : py;
       this.lineElem_.setAttributeNS(null, "x2", `${px}%`);
       this.lineElem_.setAttributeNS(null, "y2", `${ipy}%`);
@@ -11105,7 +11123,7 @@
           primary: this.foldable_.value("expanded"),
           secondary: this.popC_.shows,
           forward: (p3) => p3,
-          backward: (_2, s2) => s2
+          backward: (_2, s3) => s3
         });
       } else if (this.view.pickerElement) {
         this.view.pickerElement.appendChild(this.pickerC_.view.element);
@@ -11242,9 +11260,9 @@
     }
   });
   var Point3d = class {
-    constructor(x3 = 0, y3 = 0, z2 = 0) {
+    constructor(x3 = 0, y2 = 0, z2 = 0) {
       this.x = x3;
-      this.y = y3;
+      this.y = y2;
       this.z = z2;
     }
     getComponents() {
@@ -11255,9 +11273,9 @@
         return false;
       }
       const x3 = obj.x;
-      const y3 = obj.y;
+      const y2 = obj.y;
       const z2 = obj.z;
-      if (typeof x3 !== "number" || typeof y3 !== "number" || typeof z2 !== "number") {
+      if (typeof x3 !== "number" || typeof y2 !== "number" || typeof z2 !== "number") {
         return false;
       }
       return true;
@@ -11335,9 +11353,9 @@
     }
   });
   var Point4d = class {
-    constructor(x3 = 0, y3 = 0, z2 = 0, w3 = 0) {
+    constructor(x3 = 0, y2 = 0, z2 = 0, w3 = 0) {
       this.x = x3;
-      this.y = y3;
+      this.y = y2;
       this.z = z2;
       this.w = w3;
     }
@@ -11349,10 +11367,10 @@
         return false;
       }
       const x3 = obj.x;
-      const y3 = obj.y;
+      const y2 = obj.y;
       const z2 = obj.z;
       const w3 = obj.w;
-      if (typeof x3 !== "number" || typeof y3 !== "number" || typeof z2 !== "number" || typeof w3 !== "number") {
+      if (typeof x3 !== "number" || typeof y2 !== "number" || typeof z2 !== "number" || typeof w3 !== "number") {
         return false;
       }
       return true;
@@ -11685,8 +11703,8 @@
           return;
         }
         const x3 = mapRange(index, 0, maxIndex, 0, bounds.width);
-        const y3 = mapRange(v3, min, max, bounds.height, 0);
-        points.push([x3, y3].join(","));
+        const y2 = mapRange(v3, min, max, bounds.height, 0);
+        points.push([x3, y2].join(","));
       });
       this.lineElem_.setAttributeNS(null, "points", points.join(" "));
       const tooltipElem = this.tooltipElem_;
@@ -12636,6 +12654,249 @@
     return Promise.race([this, Promise.timeout(ms)]);
   };
 
+  // node_modules/.pnpm/pixi.js@7.3.2_@pixi+utils@7.3.2/node_modules/pixi.js/lib/index.mjs
+  var lib_exports2 = {};
+  __export(lib_exports2, {
+    ALPHA_MODES: () => ALPHA_MODES,
+    AbstractMultiResource: () => AbstractMultiResource,
+    AccessibilityManager: () => AccessibilityManager,
+    AlphaFilter: () => AlphaFilter,
+    AnimatedSprite: () => AnimatedSprite,
+    Application: () => Application,
+    ArrayResource: () => ArrayResource,
+    Assets: () => Assets,
+    AssetsClass: () => AssetsClass,
+    Attribute: () => Attribute,
+    BLEND_MODES: () => BLEND_MODES,
+    BUFFER_BITS: () => BUFFER_BITS,
+    BUFFER_TYPE: () => BUFFER_TYPE,
+    BackgroundSystem: () => BackgroundSystem,
+    BaseImageResource: () => BaseImageResource,
+    BasePrepare: () => BasePrepare,
+    BaseRenderTexture: () => BaseRenderTexture,
+    BaseTexture: () => BaseTexture,
+    BatchDrawCall: () => BatchDrawCall,
+    BatchGeometry: () => BatchGeometry,
+    BatchRenderer: () => BatchRenderer,
+    BatchShaderGenerator: () => BatchShaderGenerator,
+    BatchSystem: () => BatchSystem,
+    BatchTextureArray: () => BatchTextureArray,
+    BitmapFont: () => BitmapFont,
+    BitmapFontData: () => BitmapFontData,
+    BitmapText: () => BitmapText,
+    BlobResource: () => BlobResource,
+    BlurFilter: () => BlurFilter,
+    BlurFilterPass: () => BlurFilterPass,
+    Bounds: () => Bounds,
+    BrowserAdapter: () => BrowserAdapter,
+    Buffer: () => Buffer2,
+    BufferResource: () => BufferResource,
+    BufferSystem: () => BufferSystem,
+    CLEAR_MODES: () => CLEAR_MODES,
+    COLOR_MASK_BITS: () => COLOR_MASK_BITS,
+    Cache: () => Cache,
+    CanvasResource: () => CanvasResource,
+    Circle: () => Circle,
+    Color: () => Color,
+    ColorMatrixFilter: () => ColorMatrixFilter,
+    CompressedTextureResource: () => CompressedTextureResource,
+    Container: () => Container,
+    ContextSystem: () => ContextSystem,
+    CountLimiter: () => CountLimiter,
+    CubeResource: () => CubeResource,
+    DEG_TO_RAD: () => DEG_TO_RAD,
+    DRAW_MODES: () => DRAW_MODES,
+    DisplacementFilter: () => DisplacementFilter,
+    DisplayObject: () => DisplayObject,
+    ENV: () => ENV,
+    Ellipse: () => Ellipse,
+    EventBoundary: () => EventBoundary,
+    EventSystem: () => EventSystem,
+    ExtensionType: () => ExtensionType,
+    Extract: () => Extract,
+    FORMATS: () => FORMATS,
+    FORMATS_TO_COMPONENTS: () => FORMATS_TO_COMPONENTS,
+    FXAAFilter: () => FXAAFilter,
+    FederatedDisplayObject: () => FederatedDisplayObject,
+    FederatedEvent: () => FederatedEvent,
+    FederatedMouseEvent: () => FederatedMouseEvent,
+    FederatedPointerEvent: () => FederatedPointerEvent,
+    FederatedWheelEvent: () => FederatedWheelEvent,
+    FillStyle: () => FillStyle,
+    Filter: () => Filter,
+    FilterState: () => FilterState,
+    FilterSystem: () => FilterSystem,
+    Framebuffer: () => Framebuffer,
+    FramebufferSystem: () => FramebufferSystem,
+    GC_MODES: () => GC_MODES,
+    GLFramebuffer: () => GLFramebuffer,
+    GLProgram: () => GLProgram,
+    GLTexture: () => GLTexture,
+    GRAPHICS_CURVES: () => GRAPHICS_CURVES,
+    GenerateTextureSystem: () => GenerateTextureSystem,
+    Geometry: () => Geometry,
+    GeometrySystem: () => GeometrySystem,
+    Graphics: () => Graphics,
+    GraphicsData: () => GraphicsData,
+    GraphicsGeometry: () => GraphicsGeometry,
+    HTMLText: () => HTMLText,
+    HTMLTextStyle: () => HTMLTextStyle,
+    IGLUniformData: () => IGLUniformData,
+    INSTALLED: () => INSTALLED,
+    INTERNAL_FORMATS: () => INTERNAL_FORMATS,
+    INTERNAL_FORMAT_TO_BYTES_PER_PIXEL: () => INTERNAL_FORMAT_TO_BYTES_PER_PIXEL,
+    ImageBitmapResource: () => ImageBitmapResource,
+    ImageResource: () => ImageResource,
+    LINE_CAP: () => LINE_CAP,
+    LINE_JOIN: () => LINE_JOIN,
+    LineStyle: () => LineStyle,
+    LoaderParserPriority: () => LoaderParserPriority,
+    MASK_TYPES: () => MASK_TYPES,
+    MIPMAP_MODES: () => MIPMAP_MODES,
+    MSAA_QUALITY: () => MSAA_QUALITY,
+    MaskData: () => MaskData,
+    MaskSystem: () => MaskSystem,
+    Matrix: () => Matrix,
+    Mesh: () => Mesh,
+    MeshBatchUvs: () => MeshBatchUvs,
+    MeshGeometry: () => MeshGeometry,
+    MeshMaterial: () => MeshMaterial,
+    MultisampleSystem: () => MultisampleSystem,
+    NineSlicePlane: () => NineSlicePlane,
+    NoiseFilter: () => NoiseFilter,
+    ObjectRenderer: () => ObjectRenderer,
+    ObjectRendererSystem: () => ObjectRendererSystem,
+    ObservablePoint: () => ObservablePoint,
+    PI_2: () => PI_2,
+    PRECISION: () => PRECISION,
+    ParticleContainer: () => ParticleContainer,
+    ParticleRenderer: () => ParticleRenderer,
+    PlaneGeometry: () => PlaneGeometry,
+    PluginSystem: () => PluginSystem,
+    Point: () => Point,
+    Polygon: () => Polygon,
+    Prepare: () => Prepare,
+    Program: () => Program,
+    ProjectionSystem: () => ProjectionSystem,
+    Quad: () => Quad,
+    QuadUv: () => QuadUv,
+    RAD_TO_DEG: () => RAD_TO_DEG,
+    RENDERER_TYPE: () => RENDERER_TYPE,
+    Rectangle: () => Rectangle,
+    RenderTexture: () => RenderTexture,
+    RenderTexturePool: () => RenderTexturePool,
+    RenderTextureSystem: () => RenderTextureSystem,
+    Renderer: () => Renderer,
+    ResizePlugin: () => ResizePlugin,
+    Resource: () => Resource,
+    RopeGeometry: () => RopeGeometry,
+    RoundedRectangle: () => RoundedRectangle,
+    Runner: () => Runner,
+    SAMPLER_TYPES: () => SAMPLER_TYPES,
+    SCALE_MODES: () => SCALE_MODES,
+    SHAPES: () => SHAPES,
+    SVGResource: () => SVGResource,
+    ScissorSystem: () => ScissorSystem,
+    Shader: () => Shader,
+    ShaderSystem: () => ShaderSystem,
+    SimpleMesh: () => SimpleMesh,
+    SimplePlane: () => SimplePlane,
+    SimpleRope: () => SimpleRope,
+    Sprite: () => Sprite,
+    SpriteMaskFilter: () => SpriteMaskFilter,
+    Spritesheet: () => Spritesheet,
+    StartupSystem: () => StartupSystem,
+    State: () => State,
+    StateSystem: () => StateSystem,
+    StencilSystem: () => StencilSystem,
+    SystemManager: () => SystemManager,
+    TARGETS: () => TARGETS,
+    TEXT_GRADIENT: () => TEXT_GRADIENT,
+    TYPES: () => TYPES,
+    TYPES_TO_BYTES_PER_COMPONENT: () => TYPES_TO_BYTES_PER_COMPONENT,
+    TYPES_TO_BYTES_PER_PIXEL: () => TYPES_TO_BYTES_PER_PIXEL,
+    TemporaryDisplayObject: () => TemporaryDisplayObject,
+    Text: () => Text,
+    TextFormat: () => TextFormat,
+    TextMetrics: () => TextMetrics,
+    TextStyle: () => TextStyle,
+    Texture: () => Texture,
+    TextureGCSystem: () => TextureGCSystem,
+    TextureMatrix: () => TextureMatrix,
+    TextureSystem: () => TextureSystem,
+    TextureUvs: () => TextureUvs,
+    Ticker: () => Ticker,
+    TickerPlugin: () => TickerPlugin,
+    TilingSprite: () => TilingSprite,
+    TilingSpriteRenderer: () => TilingSpriteRenderer,
+    TimeLimiter: () => TimeLimiter,
+    Transform: () => Transform,
+    TransformFeedback: () => TransformFeedback,
+    TransformFeedbackSystem: () => TransformFeedbackSystem,
+    UPDATE_PRIORITY: () => UPDATE_PRIORITY,
+    UniformGroup: () => UniformGroup,
+    VERSION: () => VERSION2,
+    VideoResource: () => VideoResource,
+    ViewSystem: () => ViewSystem,
+    ViewableBuffer: () => ViewableBuffer,
+    WRAP_MODES: () => WRAP_MODES,
+    XMLFormat: () => XMLFormat,
+    XMLStringFormat: () => XMLStringFormat,
+    accessibleTarget: () => accessibleTarget,
+    autoDetectFormat: () => autoDetectFormat,
+    autoDetectRenderer: () => autoDetectRenderer,
+    autoDetectResource: () => autoDetectResource,
+    cacheTextureArray: () => cacheTextureArray,
+    checkDataUrl: () => checkDataUrl,
+    checkExtension: () => checkExtension,
+    checkMaxIfStatementsInShader: () => checkMaxIfStatementsInShader,
+    convertToList: () => convertToList,
+    copySearchParams: () => copySearchParams,
+    createStringVariations: () => createStringVariations,
+    createTexture: () => createTexture,
+    createUBOElements: () => createUBOElements,
+    curves: () => curves,
+    defaultFilterVertex: () => defaultFilterVertex,
+    defaultVertex: () => defaultVertex4,
+    detectAvif: () => detectAvif,
+    detectCompressedTextures: () => detectCompressedTextures,
+    detectDefaults: () => detectDefaults,
+    detectMp4: () => detectMp4,
+    detectOgv: () => detectOgv,
+    detectWebm: () => detectWebm,
+    detectWebp: () => detectWebp,
+    extensions: () => extensions,
+    filters: () => filters,
+    generateProgram: () => generateProgram,
+    generateUniformBufferSync: () => generateUniformBufferSync,
+    getFontFamilyName: () => getFontFamilyName,
+    getTestContext: () => getTestContext,
+    getUBOData: () => getUBOData,
+    graphicsUtils: () => graphicsUtils,
+    groupD8: () => groupD8,
+    isMobile: () => isMobile2,
+    isSingleItem: () => isSingleItem,
+    loadBitmapFont: () => loadBitmapFont,
+    loadDDS: () => loadDDS,
+    loadImageBitmap: () => loadImageBitmap,
+    loadJson: () => loadJson,
+    loadKTX: () => loadKTX,
+    loadSVG: () => loadSVG,
+    loadTextures: () => loadTextures,
+    loadTxt: () => loadTxt,
+    loadVideo: () => loadVideo,
+    loadWebFont: () => loadWebFont,
+    parseDDS: () => parseDDS,
+    parseKTX: () => parseKTX,
+    resolveCompressedTextureUrl: () => resolveCompressedTextureUrl,
+    resolveTextureUrl: () => resolveTextureUrl,
+    settings: () => settings,
+    spritesheetAsset: () => spritesheetAsset,
+    uniformParsers: () => uniformParsers,
+    unsafeEvalSupported: () => unsafeEvalSupported,
+    utils: () => lib_exports
+  });
+
   // node_modules/.pnpm/@pixi+constants@7.3.2/node_modules/@pixi/constants/lib/index.mjs
   var ENV = /* @__PURE__ */ ((ENV2) => (ENV2[ENV2.WEBGL_LEGACY = 0] = "WEBGL_LEGACY", ENV2[ENV2.WEBGL = 1] = "WEBGL", ENV2[ENV2.WEBGL2 = 2] = "WEBGL2", ENV2))(ENV || {});
   var RENDERER_TYPE = /* @__PURE__ */ ((RENDERER_TYPE2) => (RENDERER_TYPE2[RENDERER_TYPE2.UNKNOWN = 0] = "UNKNOWN", RENDERER_TYPE2[RENDERER_TYPE2.WEBGL = 1] = "WEBGL", RENDERER_TYPE2[RENDERER_TYPE2.CANVAS = 2] = "CANVAS", RENDERER_TYPE2))(RENDERER_TYPE || {});
@@ -12654,6 +12915,7 @@
   var GC_MODES = /* @__PURE__ */ ((GC_MODES2) => (GC_MODES2[GC_MODES2.AUTO = 0] = "AUTO", GC_MODES2[GC_MODES2.MANUAL = 1] = "MANUAL", GC_MODES2))(GC_MODES || {});
   var PRECISION = /* @__PURE__ */ ((PRECISION2) => (PRECISION2.LOW = "lowp", PRECISION2.MEDIUM = "mediump", PRECISION2.HIGH = "highp", PRECISION2))(PRECISION || {});
   var MASK_TYPES = /* @__PURE__ */ ((MASK_TYPES2) => (MASK_TYPES2[MASK_TYPES2.NONE = 0] = "NONE", MASK_TYPES2[MASK_TYPES2.SCISSOR = 1] = "SCISSOR", MASK_TYPES2[MASK_TYPES2.STENCIL = 2] = "STENCIL", MASK_TYPES2[MASK_TYPES2.SPRITE = 3] = "SPRITE", MASK_TYPES2[MASK_TYPES2.COLOR = 4] = "COLOR", MASK_TYPES2))(MASK_TYPES || {});
+  var COLOR_MASK_BITS = /* @__PURE__ */ ((COLOR_MASK_BITS2) => (COLOR_MASK_BITS2[COLOR_MASK_BITS2.RED = 1] = "RED", COLOR_MASK_BITS2[COLOR_MASK_BITS2.GREEN = 2] = "GREEN", COLOR_MASK_BITS2[COLOR_MASK_BITS2.BLUE = 4] = "BLUE", COLOR_MASK_BITS2[COLOR_MASK_BITS2.ALPHA = 8] = "ALPHA", COLOR_MASK_BITS2))(COLOR_MASK_BITS || {});
   var MSAA_QUALITY = /* @__PURE__ */ ((MSAA_QUALITY2) => (MSAA_QUALITY2[MSAA_QUALITY2.NONE = 0] = "NONE", MSAA_QUALITY2[MSAA_QUALITY2.LOW = 2] = "LOW", MSAA_QUALITY2[MSAA_QUALITY2.MEDIUM = 4] = "MEDIUM", MSAA_QUALITY2[MSAA_QUALITY2.HIGH = 8] = "HIGH", MSAA_QUALITY2))(MSAA_QUALITY || {});
   var BUFFER_TYPE = /* @__PURE__ */ ((BUFFER_TYPE2) => (BUFFER_TYPE2[BUFFER_TYPE2.ELEMENT_ARRAY_BUFFER = 34963] = "ELEMENT_ARRAY_BUFFER", BUFFER_TYPE2[BUFFER_TYPE2.ARRAY_BUFFER = 34962] = "ARRAY_BUFFER", BUFFER_TYPE2[BUFFER_TYPE2.UNIFORM_BUFFER = 35345] = "UNIFORM_BUFFER", BUFFER_TYPE2))(BUFFER_TYPE || {});
 
@@ -13284,7 +13546,7 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
     return { r: n(r2.r), g: n(r2.g), b: n(r2.b), a: n(r2.a, 3) };
   };
   var i = /^#([0-9a-f]{3,8})$/i;
-  var s = function(r2) {
+  var s2 = function(r2) {
     var t2 = r2.toString(16);
     return t2.length < 2 ? "0" + t2 : t2;
   };
@@ -13295,8 +13557,8 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
   var b2 = function(r2) {
     var t2 = r2.h, n2 = r2.s, e2 = r2.v, u4 = r2.a;
     t2 = t2 / 360 * 6, n2 /= 100, e2 /= 100;
-    var a3 = Math.floor(t2), o2 = e2 * (1 - n2), i2 = e2 * (1 - (t2 - a3) * n2), s2 = e2 * (1 - (1 - t2 + a3) * n2), h3 = a3 % 6;
-    return { r: 255 * [e2, i2, o2, o2, s2, e2][h3], g: 255 * [s2, e2, e2, i2, o2, o2][h3], b: 255 * [o2, o2, s2, e2, e2, i2][h3], a: u4 };
+    var a3 = Math.floor(t2), o2 = e2 * (1 - n2), i2 = e2 * (1 - (t2 - a3) * n2), s3 = e2 * (1 - (1 - t2 + a3) * n2), h3 = a3 % 6;
+    return { r: 255 * [e2, i2, o2, o2, s3, e2][h3], g: 255 * [s3, e2, e2, i2, o2, o2][h3], b: 255 * [o2, o2, s3, e2, e2, i2][h3], a: u4 };
   };
   var g2 = function(r2) {
     return { h: u3(r2.h), s: e(r2.s, 0, 100), l: e(r2.l, 0, 100), a: e(r2.a) };
@@ -13316,7 +13578,7 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
   var p2 = /^hsla?\(\s*([+-]?\d*\.?\d+)(deg|rad|grad|turn)?\s+([+-]?\d*\.?\d+)%\s+([+-]?\d*\.?\d+)%\s*(?:\/\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
   var v2 = /^rgba?\(\s*([+-]?\d*\.?\d+)(%)?\s*,\s*([+-]?\d*\.?\d+)(%)?\s*,\s*([+-]?\d*\.?\d+)(%)?\s*(?:,\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
   var m2 = /^rgba?\(\s*([+-]?\d*\.?\d+)(%)?\s+([+-]?\d*\.?\d+)(%)?\s+([+-]?\d*\.?\d+)(%)?\s*(?:\/\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
-  var y2 = { string: [[function(r2) {
+  var y = { string: [[function(r2) {
     var t2 = i.exec(r2);
     return t2 ? (r2 = t2[1]).length <= 4 ? { r: parseInt(r2[0] + r2[0], 16), g: parseInt(r2[1] + r2[1], 16), b: parseInt(r2[2] + r2[2], 16), a: 4 === r2.length ? n(parseInt(r2[3] + r2[3], 16) / 255, 2) : 1 } : 6 === r2.length || 8 === r2.length ? { r: parseInt(r2.substr(0, 2), 16), g: parseInt(r2.substr(2, 2), 16), b: parseInt(r2.substr(4, 2), 16), a: 8 === r2.length ? n(parseInt(r2.substr(6, 2), 16) / 255, 2) : 1 } : null : null;
   }, "hex"], [function(r2) {
@@ -13338,12 +13600,12 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
     var i2 = g2({ h: Number(n2), s: Number(e2), l: Number(u4), a: Number(o2) });
     return f2(i2);
   }, "hsl"], [function(r2) {
-    var n2 = r2.h, a3 = r2.s, o2 = r2.v, i2 = r2.a, s2 = void 0 === i2 ? 1 : i2;
+    var n2 = r2.h, a3 = r2.s, o2 = r2.v, i2 = r2.a, s3 = void 0 === i2 ? 1 : i2;
     if (!t(n2) || !t(a3) || !t(o2))
       return null;
     var h3 = function(r3) {
       return { h: u3(r3.h), s: e(r3.s, 0, 100), v: e(r3.v, 0, 100), a: e(r3.a) };
-    }({ h: Number(n2), s: Number(a3), v: Number(o2), a: Number(s2) });
+    }({ h: Number(n2), s: Number(a3), v: Number(o2), a: Number(s3) });
     return b2(h3);
   }, "hsv"]] };
   var N2 = function(r2, t2) {
@@ -13355,7 +13617,7 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
     return [null, void 0];
   };
   var x2 = function(r2) {
-    return "string" == typeof r2 ? N2(r2.trim(), y2.string) : "object" == typeof r2 && null !== r2 ? N2(r2, y2.object) : [null, void 0];
+    return "string" == typeof r2 ? N2(r2.trim(), y.string) : "object" == typeof r2 && null !== r2 ? N2(r2, y.object) : [null, void 0];
   };
   var M2 = function(r2, t2) {
     var n2 = c2(r2);
@@ -13381,7 +13643,7 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
     }, r2.prototype.isLight = function() {
       return H2(this.rgba) >= 0.5;
     }, r2.prototype.toHex = function() {
-      return r3 = o(this.rgba), t2 = r3.r, e2 = r3.g, u4 = r3.b, i2 = (a3 = r3.a) < 1 ? s(n(255 * a3)) : "", "#" + s(t2) + s(e2) + s(u4) + i2;
+      return r3 = o(this.rgba), t2 = r3.r, e2 = r3.g, u4 = r3.b, i2 = (a3 = r3.a) < 1 ? s2(n(255 * a3)) : "", "#" + s2(t2) + s2(e2) + s2(u4) + i2;
       var r3, t2, e2, u4, a3, i2;
     }, r2.prototype.toRgb = function() {
       return o(this.rgba);
@@ -13424,10 +13686,10 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
   var w2 = function(r2) {
     return r2 instanceof j2 ? r2 : new j2(r2);
   };
-  var S2 = [];
+  var S = [];
   var k2 = function(r2) {
     r2.forEach(function(r3) {
-      S2.indexOf(r3) < 0 && (r3(j2, y2), S2.push(r3));
+      S.indexOf(r3) < 0 && (r3(j2, y), S.push(r3));
     });
   };
 
@@ -13963,15 +14225,15 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
   };
 
   // node_modules/.pnpm/@pixi+utils@7.3.2/node_modules/@pixi/utils/lib/media/getCanvasBoundingBox.mjs
-  function checkRow(data, width, y3) {
-    for (let x3 = 0, index = 4 * y3 * width; x3 < width; ++x3, index += 4)
+  function checkRow(data, width, y2) {
+    for (let x3 = 0, index = 4 * y2 * width; x3 < width; ++x3, index += 4)
       if (data[index + 3] !== 0)
         return false;
     return true;
   }
   function checkColumn(data, width, x3, top, bottom) {
     const stride = 4 * width;
-    for (let y3 = top, index = top * stride + 4 * x3; y3 <= bottom; ++y3, index += stride)
+    for (let y2 = top, index = top * stride + 4 * x3; y2 <= bottom; ++y2, index += stride)
       if (data[index + 3] !== 0)
         return false;
     return true;
@@ -15237,8 +15499,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param {number} [x=0] - position of the point on the x axis
      * @param {number} [y=0] - position of the point on the y axis
      */
-    constructor(x3 = 0, y3 = 0) {
-      this.x = 0, this.y = 0, this.x = x3, this.y = y3;
+    constructor(x3 = 0, y2 = 0) {
+      this.x = 0, this.y = 0, this.x = x3, this.y = y2;
     }
     /**
      * Creates a clone of this point
@@ -15278,8 +15540,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param {number} [y=x] - position of the point on the `y` axis
      * @returns The point instance itself
      */
-    set(x3 = 0, y3 = x3) {
-      return this.x = x3, this.y = y3, this;
+    set(x3 = 0, y2 = x3) {
+      return this.x = x3, this.y = y2, this;
     }
   };
   Point.prototype.toString = function() {
@@ -15295,8 +15557,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param width - The overall width of the rectangle
      * @param height - The overall height of the rectangle
      */
-    constructor(x3 = 0, y3 = 0, width = 0, height = 0) {
-      this.x = Number(x3), this.y = Number(y3), this.width = Number(width), this.height = Number(height), this.type = SHAPES.RECT;
+    constructor(x3 = 0, y2 = 0, width = 0, height = 0) {
+      this.x = Number(x3), this.y = Number(y2), this.width = Number(width), this.height = Number(height), this.type = SHAPES.RECT;
     }
     /** Returns the left edge of the rectangle. */
     get left() {
@@ -15347,8 +15609,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - The Y coordinate of the point to test
      * @returns Whether the x/y coordinates are within this Rectangle
      */
-    contains(x3, y3) {
-      return this.width <= 0 || this.height <= 0 ? false : x3 >= this.x && x3 < this.x + this.width && y3 >= this.y && y3 < this.y + this.height;
+    contains(x3, y2) {
+      return this.width <= 0 || this.height <= 0 ? false : x3 >= this.x && x3 < this.x + this.width && y2 >= this.y && y2 < this.y + this.height;
     }
     /**
      * Determines whether the `other` Rectangle transformed by `transform` intersects with `this` Rectangle object.
@@ -15370,17 +15632,17 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
       const x0 = this.left, x1 = this.right, y0 = this.top, y1 = this.bottom;
       if (x1 <= x0 || y1 <= y0)
         return false;
-      const lt = tempPoints[0].set(other.left, other.top), lb = tempPoints[1].set(other.left, other.bottom), rt = tempPoints[2].set(other.right, other.top), rb = tempPoints[3].set(other.right, other.bottom);
-      if (rt.x <= lt.x || lb.y <= lt.y)
+      const lt2 = tempPoints[0].set(other.left, other.top), lb = tempPoints[1].set(other.left, other.bottom), rt = tempPoints[2].set(other.right, other.top), rb = tempPoints[3].set(other.right, other.bottom);
+      if (rt.x <= lt2.x || lb.y <= lt2.y)
         return false;
-      const s2 = Math.sign(transform.a * transform.d - transform.b * transform.c);
-      if (s2 === 0 || (transform.apply(lt, lt), transform.apply(lb, lb), transform.apply(rt, rt), transform.apply(rb, rb), Math.max(lt.x, lb.x, rt.x, rb.x) <= x0 || Math.min(lt.x, lb.x, rt.x, rb.x) >= x1 || Math.max(lt.y, lb.y, rt.y, rb.y) <= y0 || Math.min(lt.y, lb.y, rt.y, rb.y) >= y1))
+      const s3 = Math.sign(transform.a * transform.d - transform.b * transform.c);
+      if (s3 === 0 || (transform.apply(lt2, lt2), transform.apply(lb, lb), transform.apply(rt, rt), transform.apply(rb, rb), Math.max(lt2.x, lb.x, rt.x, rb.x) <= x0 || Math.min(lt2.x, lb.x, rt.x, rb.x) >= x1 || Math.max(lt2.y, lb.y, rt.y, rb.y) <= y0 || Math.min(lt2.y, lb.y, rt.y, rb.y) >= y1))
         return false;
-      const nx = s2 * (lb.y - lt.y), ny = s2 * (lt.x - lb.x), n00 = nx * x0 + ny * y0, n10 = nx * x1 + ny * y0, n01 = nx * x0 + ny * y1, n11 = nx * x1 + ny * y1;
-      if (Math.max(n00, n10, n01, n11) <= nx * lt.x + ny * lt.y || Math.min(n00, n10, n01, n11) >= nx * rb.x + ny * rb.y)
+      const nx = s3 * (lb.y - lt2.y), ny = s3 * (lt2.x - lb.x), n00 = nx * x0 + ny * y0, n10 = nx * x1 + ny * y0, n01 = nx * x0 + ny * y1, n11 = nx * x1 + ny * y1;
+      if (Math.max(n00, n10, n01, n11) <= nx * lt2.x + ny * lt2.y || Math.min(n00, n10, n01, n11) >= nx * rb.x + ny * rb.y)
         return false;
-      const mx = s2 * (lt.y - rt.y), my = s2 * (rt.x - lt.x), m00 = mx * x0 + my * y0, m10 = mx * x1 + my * y0, m01 = mx * x0 + my * y1, m11 = mx * x1 + my * y1;
-      return !(Math.max(m00, m10, m01, m11) <= mx * lt.x + my * lt.y || Math.min(m00, m10, m01, m11) >= mx * rb.x + my * rb.y);
+      const mx = s3 * (lt2.y - rt.y), my = s3 * (rt.x - lt2.x), m00 = mx * x0 + my * y0, m10 = mx * x1 + my * y0, m01 = mx * x0 + my * y1, m11 = mx * x1 + my * y1;
+      return !(Math.max(m00, m10, m01, m11) <= mx * lt2.x + my * lt2.y || Math.min(m00, m10, m01, m11) >= mx * rb.x + my * rb.y);
     }
     /**
      * Pads the rectangle making it grow in all directions.
@@ -15398,8 +15660,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @returns Returns itself.
      */
     fit(rectangle) {
-      const x1 = Math.max(this.x, rectangle.x), x22 = Math.min(this.x + this.width, rectangle.x + rectangle.width), y1 = Math.max(this.y, rectangle.y), y22 = Math.min(this.y + this.height, rectangle.y + rectangle.height);
-      return this.x = x1, this.width = Math.max(x22 - x1, 0), this.y = y1, this.height = Math.max(y22 - y1, 0), this;
+      const x1 = Math.max(this.x, rectangle.x), x22 = Math.min(this.x + this.width, rectangle.x + rectangle.width), y1 = Math.max(this.y, rectangle.y), y2 = Math.min(this.y + this.height, rectangle.y + rectangle.height);
+      return this.x = x1, this.width = Math.max(x22 - x1, 0), this.y = y1, this.height = Math.max(y2 - y1, 0), this;
     }
     /**
      * Enlarges rectangle that way its corners lie on grid
@@ -15408,8 +15670,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @returns Returns itself.
      */
     ceil(resolution = 1, eps = 1e-3) {
-      const x22 = Math.ceil((this.x + this.width - eps) * resolution) / resolution, y22 = Math.ceil((this.y + this.height - eps) * resolution) / resolution;
-      return this.x = Math.floor((this.x + eps) * resolution) / resolution, this.y = Math.floor((this.y + eps) * resolution) / resolution, this.width = x22 - this.x, this.height = y22 - this.y, this;
+      const x22 = Math.ceil((this.x + this.width - eps) * resolution) / resolution, y2 = Math.ceil((this.y + this.height - eps) * resolution) / resolution;
+      return this.x = Math.floor((this.x + eps) * resolution) / resolution, this.y = Math.floor((this.y + eps) * resolution) / resolution, this.width = x22 - this.x, this.height = y2 - this.y, this;
     }
     /**
      * Enlarges this rectangle to include the passed rectangle.
@@ -15417,8 +15679,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @returns Returns itself.
      */
     enlarge(rectangle) {
-      const x1 = Math.min(this.x, rectangle.x), x22 = Math.max(this.x + this.width, rectangle.x + rectangle.width), y1 = Math.min(this.y, rectangle.y), y22 = Math.max(this.y + this.height, rectangle.y + rectangle.height);
-      return this.x = x1, this.width = x22 - x1, this.y = y1, this.height = y22 - y1, this;
+      const x1 = Math.min(this.x, rectangle.x), x22 = Math.max(this.x + this.width, rectangle.x + rectangle.width), y1 = Math.min(this.y, rectangle.y), y2 = Math.max(this.y + this.height, rectangle.y + rectangle.height);
+      return this.x = x1, this.width = x22 - x1, this.y = y1, this.height = y2 - y1, this;
     }
   };
   Rectangle.prototype.toString = function() {
@@ -15432,8 +15694,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - The Y coordinate of the center of this circle
      * @param radius - The radius of the circle
      */
-    constructor(x3 = 0, y3 = 0, radius = 0) {
-      this.x = x3, this.y = y3, this.radius = radius, this.type = SHAPES.CIRC;
+    constructor(x3 = 0, y2 = 0, radius = 0) {
+      this.x = x3, this.y = y2, this.radius = radius, this.type = SHAPES.CIRC;
     }
     /**
      * Creates a clone of this Circle instance
@@ -15448,11 +15710,11 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - The Y coordinate of the point to test
      * @returns Whether the x/y coordinates are within this Circle
      */
-    contains(x3, y3) {
+    contains(x3, y2) {
       if (this.radius <= 0)
         return false;
       const r2 = this.radius * this.radius;
-      let dx = this.x - x3, dy = this.y - y3;
+      let dx = this.x - x3, dy = this.y - y2;
       return dx *= dx, dy *= dy, dx + dy <= r2;
     }
     /**
@@ -15475,8 +15737,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param halfWidth - The half width of this ellipse
      * @param halfHeight - The half height of this ellipse
      */
-    constructor(x3 = 0, y3 = 0, halfWidth = 0, halfHeight = 0) {
-      this.x = x3, this.y = y3, this.width = halfWidth, this.height = halfHeight, this.type = SHAPES.ELIP;
+    constructor(x3 = 0, y2 = 0, halfWidth = 0, halfHeight = 0) {
+      this.x = x3, this.y = y2, this.width = halfWidth, this.height = halfHeight, this.type = SHAPES.ELIP;
     }
     /**
      * Creates a clone of this Ellipse instance
@@ -15491,10 +15753,10 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - The Y coordinate of the point to test
      * @returns Whether the x/y coords are within this ellipse
      */
-    contains(x3, y3) {
+    contains(x3, y2) {
       if (this.width <= 0 || this.height <= 0)
         return false;
-      let normx = (x3 - this.x) / this.width, normy = (y3 - this.y) / this.height;
+      let normx = (x3 - this.x) / this.width, normy = (y2 - this.y) / this.height;
       return normx *= normx, normy *= normy, normx + normy <= 1;
     }
     /**
@@ -15542,12 +15804,12 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - The Y coordinate of the point to test.
      * @returns - Whether the x/y coordinates are within this polygon.
      */
-    contains(x3, y3) {
+    contains(x3, y2) {
       let inside = false;
       const length = this.points.length / 2;
       for (let i2 = 0, j3 = length - 1; i2 < length; j3 = i2++) {
         const xi = this.points[i2 * 2], yi = this.points[i2 * 2 + 1], xj = this.points[j3 * 2], yj = this.points[j3 * 2 + 1];
-        yi > y3 != yj > y3 && x3 < (xj - xi) * ((y3 - yi) / (yj - yi)) + xi && (inside = !inside);
+        yi > y2 != yj > y2 && x3 < (xj - xi) * ((y2 - yi) / (yj - yi)) + xi && (inside = !inside);
       }
       return inside;
     }
@@ -15565,8 +15827,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param height - The overall height of this rounded rectangle
      * @param radius - Controls the radius of the rounded corners
      */
-    constructor(x3 = 0, y3 = 0, width = 0, height = 0, radius = 20) {
-      this.x = x3, this.y = y3, this.width = width, this.height = height, this.radius = radius, this.type = SHAPES.RREC;
+    constructor(x3 = 0, y2 = 0, width = 0, height = 0, radius = 20) {
+      this.x = x3, this.y = y2, this.width = width, this.height = height, this.radius = radius, this.type = SHAPES.RREC;
     }
     /**
      * Creates a clone of this Rounded Rectangle.
@@ -15581,16 +15843,16 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - The Y coordinate of the point to test.
      * @returns - Whether the x/y coordinates are within this Rounded Rectangle.
      */
-    contains(x3, y3) {
+    contains(x3, y2) {
       if (this.width <= 0 || this.height <= 0)
         return false;
-      if (x3 >= this.x && x3 <= this.x + this.width && y3 >= this.y && y3 <= this.y + this.height) {
+      if (x3 >= this.x && x3 <= this.x + this.width && y2 >= this.y && y2 <= this.y + this.height) {
         const radius = Math.max(0, Math.min(this.radius, Math.min(this.width, this.height) / 2));
-        if (y3 >= this.y + radius && y3 <= this.y + this.height - radius || x3 >= this.x + radius && x3 <= this.x + this.width - radius)
+        if (y2 >= this.y + radius && y2 <= this.y + this.height - radius || x3 >= this.x + radius && x3 <= this.x + this.width - radius)
           return true;
-        let dx = x3 - (this.x + radius), dy = y3 - (this.y + radius);
+        let dx = x3 - (this.x + radius), dy = y2 - (this.y + radius);
         const radius2 = radius * radius;
-        if (dx * dx + dy * dy <= radius2 || (dx = x3 - (this.x + this.width - radius), dx * dx + dy * dy <= radius2) || (dy = y3 - (this.y + this.height - radius), dx * dx + dy * dy <= radius2) || (dx = x3 - (this.x + radius), dx * dx + dy * dy <= radius2))
+        if (dx * dx + dy * dy <= radius2 || (dx = x3 - (this.x + this.width - radius), dx * dx + dy * dy <= radius2) || (dy = y2 - (this.y + this.height - radius), dx * dx + dy * dy <= radius2) || (dx = x3 - (this.x + radius), dx * dx + dy * dy <= radius2))
           return true;
       }
       return false;
@@ -15660,8 +15922,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      */
     apply(pos, newPos) {
       newPos = newPos || new Point();
-      const x3 = pos.x, y3 = pos.y;
-      return newPos.x = this.a * x3 + this.c * y3 + this.tx, newPos.y = this.b * x3 + this.d * y3 + this.ty, newPos;
+      const x3 = pos.x, y2 = pos.y;
+      return newPos.x = this.a * x3 + this.c * y2 + this.tx, newPos.y = this.b * x3 + this.d * y2 + this.ty, newPos;
     }
     /**
      * Get a new position with the inverse of the current transformation applied.
@@ -15672,8 +15934,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      */
     applyInverse(pos, newPos) {
       newPos = newPos || new Point();
-      const id = 1 / (this.a * this.d + this.c * -this.b), x3 = pos.x, y3 = pos.y;
-      return newPos.x = this.d * id * x3 + -this.c * id * y3 + (this.ty * this.c - this.tx * this.d) * id, newPos.y = this.a * id * y3 + -this.b * id * x3 + (-this.ty * this.a + this.tx * this.b) * id, newPos;
+      const id = 1 / (this.a * this.d + this.c * -this.b), x3 = pos.x, y2 = pos.y;
+      return newPos.x = this.d * id * x3 + -this.c * id * y2 + (this.ty * this.c - this.tx * this.d) * id, newPos.y = this.a * id * y2 + -this.b * id * x3 + (-this.ty * this.a + this.tx * this.b) * id, newPos;
     }
     /**
      * Translates the matrix on the x and y.
@@ -15681,8 +15943,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - How much to translate y by
      * @returns This matrix. Good for chaining method calls.
      */
-    translate(x3, y3) {
-      return this.tx += x3, this.ty += y3, this;
+    translate(x3, y2) {
+      return this.tx += x3, this.ty += y2, this;
     }
     /**
      * Applies a scale transformation to the matrix.
@@ -15690,8 +15952,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param y - The amount to scale vertically
      * @returns This matrix. Good for chaining method calls.
      */
-    scale(x3, y3) {
-      return this.a *= x3, this.d *= y3, this.c *= x3, this.b *= y3, this.tx *= x3, this.ty *= y3, this;
+    scale(x3, y2) {
+      return this.a *= x3, this.d *= y2, this.c *= x3, this.b *= y2, this.tx *= x3, this.ty *= y2, this;
     }
     /**
      * Applies a rotation transformation to the matrix.
@@ -15724,8 +15986,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param skewY - Skew on the y axis
      * @returns This matrix. Good for chaining method calls.
      */
-    setTransform(x3, y3, pivotX, pivotY, scaleX, scaleY, rotation, skewX, skewY) {
-      return this.a = Math.cos(rotation + skewY) * scaleX, this.b = Math.sin(rotation + skewY) * scaleX, this.c = -Math.sin(rotation - skewX) * scaleY, this.d = Math.cos(rotation - skewX) * scaleY, this.tx = x3 - (pivotX * this.a + pivotY * this.c), this.ty = y3 - (pivotX * this.b + pivotY * this.d), this;
+    setTransform(x3, y2, pivotX, pivotY, scaleX, scaleY, rotation, skewX, skewY) {
+      return this.a = Math.cos(rotation + skewY) * scaleX, this.b = Math.sin(rotation + skewY) * scaleX, this.c = -Math.sin(rotation - skewX) * scaleY, this.d = Math.cos(rotation - skewX) * scaleY, this.tx = x3 - (pivotX * this.a + pivotY * this.c), this.ty = y2 - (pivotX * this.b + pivotY * this.d), this;
     }
     /**
      * Prepends the given Matrix to this Matrix.
@@ -16019,8 +16281,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param {number} [x=0] - position of the point on the x axis
      * @param {number} [y=0] - position of the point on the y axis
      */
-    constructor(cb, scope, x3 = 0, y3 = 0) {
-      this._x = x3, this._y = y3, this.cb = cb, this.scope = scope;
+    constructor(cb, scope, x3 = 0, y2 = 0) {
+      this._x = x3, this._y = y2, this.cb = cb, this.scope = scope;
     }
     /**
      * Creates a clone of this point.
@@ -16041,8 +16303,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
      * @param {number} [y=x] - position of the point on the y axis
      * @returns The observable point instance itself
      */
-    set(x3 = 0, y3 = x3) {
-      return (this._x !== x3 || this._y !== y3) && (this._x = x3, this._y = y3, this.cb.call(this.scope)), this;
+    set(x3 = 0, y2 = x3) {
+      return (this._x !== x3 || this._y !== y2) && (this._x = x3, this._y = y2, this.cb.call(this.scope)), this;
     }
     /**
      * Copies x and y from the given point (`p`)
@@ -16102,18 +16364,18 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
     }
     /** Updates the local transformation matrix. */
     updateLocalTransform() {
-      const lt = this.localTransform;
-      this._localID !== this._currentLocalID && (lt.a = this._cx * this.scale.x, lt.b = this._sx * this.scale.x, lt.c = this._cy * this.scale.y, lt.d = this._sy * this.scale.y, lt.tx = this.position.x - (this.pivot.x * lt.a + this.pivot.y * lt.c), lt.ty = this.position.y - (this.pivot.x * lt.b + this.pivot.y * lt.d), this._currentLocalID = this._localID, this._parentID = -1);
+      const lt2 = this.localTransform;
+      this._localID !== this._currentLocalID && (lt2.a = this._cx * this.scale.x, lt2.b = this._sx * this.scale.x, lt2.c = this._cy * this.scale.y, lt2.d = this._sy * this.scale.y, lt2.tx = this.position.x - (this.pivot.x * lt2.a + this.pivot.y * lt2.c), lt2.ty = this.position.y - (this.pivot.x * lt2.b + this.pivot.y * lt2.d), this._currentLocalID = this._localID, this._parentID = -1);
     }
     /**
      * Updates the local and the world transformation matrices.
      * @param parentTransform - The parent transform
      */
     updateTransform(parentTransform) {
-      const lt = this.localTransform;
-      if (this._localID !== this._currentLocalID && (lt.a = this._cx * this.scale.x, lt.b = this._sx * this.scale.x, lt.c = this._cy * this.scale.y, lt.d = this._sy * this.scale.y, lt.tx = this.position.x - (this.pivot.x * lt.a + this.pivot.y * lt.c), lt.ty = this.position.y - (this.pivot.x * lt.b + this.pivot.y * lt.d), this._currentLocalID = this._localID, this._parentID = -1), this._parentID !== parentTransform._worldID) {
+      const lt2 = this.localTransform;
+      if (this._localID !== this._currentLocalID && (lt2.a = this._cx * this.scale.x, lt2.b = this._sx * this.scale.x, lt2.c = this._cy * this.scale.y, lt2.d = this._sy * this.scale.y, lt2.tx = this.position.x - (this.pivot.x * lt2.a + this.pivot.y * lt2.c), lt2.ty = this.position.y - (this.pivot.x * lt2.b + this.pivot.y * lt2.d), this._currentLocalID = this._localID, this._parentID = -1), this._parentID !== parentTransform._worldID) {
         const pt = parentTransform.worldTransform, wt = this.worldTransform;
-        wt.a = lt.a * pt.a + lt.b * pt.c, wt.b = lt.a * pt.b + lt.b * pt.d, wt.c = lt.c * pt.a + lt.d * pt.c, wt.d = lt.c * pt.b + lt.d * pt.d, wt.tx = lt.tx * pt.a + lt.ty * pt.c + pt.tx, wt.ty = lt.tx * pt.b + lt.ty * pt.d + pt.ty, this._parentID = parentTransform._worldID, this._worldID++;
+        wt.a = lt2.a * pt.a + lt2.b * pt.c, wt.b = lt2.a * pt.b + lt2.b * pt.d, wt.c = lt2.c * pt.a + lt2.d * pt.c, wt.d = lt2.c * pt.b + lt2.d * pt.d, wt.tx = lt2.tx * pt.a + lt2.ty * pt.c + pt.tx, wt.ty = lt2.tx * pt.b + lt2.ty * pt.d + pt.ty, this._parentID = parentTransform._worldID, this._worldID++;
       }
     }
     /**
@@ -18323,9 +18585,9 @@ void main(void)
     }
     set frame(frame) {
       this._frame = frame, this.noFrame = false;
-      const { x: x3, y: y3, width, height } = frame, xNotFit = x3 + width > this.baseTexture.width, yNotFit = y3 + height > this.baseTexture.height;
+      const { x: x3, y: y2, width, height } = frame, xNotFit = x3 + width > this.baseTexture.width, yNotFit = y2 + height > this.baseTexture.height;
       if (xNotFit || yNotFit) {
-        const relationship = xNotFit && yNotFit ? "and" : "or", errorX = `X: ${x3} + ${width} = ${x3 + width} > ${this.baseTexture.width}`, errorY = `Y: ${y3} + ${height} = ${y3 + height} > ${this.baseTexture.height}`;
+        const relationship = xNotFit && yNotFit ? "and" : "or", errorX = `X: ${x3} + ${width} = ${x3 + width} > ${this.baseTexture.width}`, errorY = `Y: ${y2} + ${height} = ${y2 + height} > ${this.baseTexture.height}`;
         throw new Error(`Texture Error: frame does not fit inside the base Texture dimensions: ${errorX} ${relationship} ${errorY}`);
       }
       this.valid = width && height && this.baseTexture.valid, !this.trim && !this.rotate && (this.orig = frame), this.valid && this.updateUvs();
@@ -18586,8 +18848,8 @@ void main(void)
      * @returns - Returns itself.
      */
     map(targetTextureFrame, destinationFrame) {
-      let x3 = 0, y3 = 0;
-      return this.uvs[0] = x3, this.uvs[1] = y3, this.uvs[2] = x3 + destinationFrame.width / targetTextureFrame.width, this.uvs[3] = y3, this.uvs[4] = x3 + destinationFrame.width / targetTextureFrame.width, this.uvs[5] = y3 + destinationFrame.height / targetTextureFrame.height, this.uvs[6] = x3, this.uvs[7] = y3 + destinationFrame.height / targetTextureFrame.height, x3 = destinationFrame.x, y3 = destinationFrame.y, this.vertices[0] = x3, this.vertices[1] = y3, this.vertices[2] = x3 + destinationFrame.width, this.vertices[3] = y3, this.vertices[4] = x3 + destinationFrame.width, this.vertices[5] = y3 + destinationFrame.height, this.vertices[6] = x3, this.vertices[7] = y3 + destinationFrame.height, this.invalidate(), this;
+      let x3 = 0, y2 = 0;
+      return this.uvs[0] = x3, this.uvs[1] = y2, this.uvs[2] = x3 + destinationFrame.width / targetTextureFrame.width, this.uvs[3] = y2, this.uvs[4] = x3 + destinationFrame.width / targetTextureFrame.width, this.uvs[5] = y2 + destinationFrame.height / targetTextureFrame.height, this.uvs[6] = x3, this.uvs[7] = y2 + destinationFrame.height / targetTextureFrame.height, x3 = destinationFrame.x, y2 = destinationFrame.y, this.vertices[0] = x3, this.vertices[1] = y2, this.vertices[2] = x3 + destinationFrame.width, this.vertices[3] = y2, this.vertices[4] = x3 + destinationFrame.width, this.vertices[5] = y2 + destinationFrame.height, this.vertices[6] = x3, this.vertices[7] = y2 + destinationFrame.height, this.invalidate(), this;
     }
     /**
      * Legacy upload method, just marks buffers dirty.
@@ -18816,9 +19078,9 @@ void main(void)
      * @param rect - second param
      */
     transformAABB(matrix, rect) {
-      const lt = tempPoints2[0], lb = tempPoints2[1], rt = tempPoints2[2], rb = tempPoints2[3];
-      lt.set(rect.left, rect.top), lb.set(rect.left, rect.bottom), rt.set(rect.right, rect.top), rb.set(rect.right, rect.bottom), matrix.apply(lt, lt), matrix.apply(lb, lb), matrix.apply(rt, rt), matrix.apply(rb, rb);
-      const x0 = Math.min(lt.x, lb.x, rt.x, rb.x), y0 = Math.min(lt.y, lb.y, rt.y, rb.y), x1 = Math.max(lt.x, lb.x, rt.x, rb.x), y1 = Math.max(lt.y, lb.y, rt.y, rb.y);
+      const lt2 = tempPoints2[0], lb = tempPoints2[1], rt = tempPoints2[2], rb = tempPoints2[3];
+      lt2.set(rect.left, rect.top), lb.set(rect.left, rect.bottom), rt.set(rect.right, rect.top), rb.set(rect.right, rect.bottom), matrix.apply(lt2, lt2), matrix.apply(lb, lb), matrix.apply(rt, rt), matrix.apply(rb, rb);
+      const x0 = Math.min(lt2.x, lb.x, rt.x, rb.x), y0 = Math.min(lt2.y, lb.y, rt.y, rb.y), x1 = Math.max(lt2.x, lb.x, rt.x, rb.x), y1 = Math.max(lt2.y, lb.y, rt.y, rb.y);
       rect.x = x0, rect.y = y0, rect.width = x1 - x0, rect.height = y1 - y0;
     }
     roundFrame(frame, resolution, bindingSourceFrame, bindingDestinationFrame, transform) {
@@ -18905,9 +19167,9 @@ void main(void)
      * @param width - Width of viewport
      * @param height - Height of viewport
      */
-    setViewport(x3, y3, width, height) {
+    setViewport(x3, y2, width, height) {
       const v3 = this.viewport;
-      x3 = Math.round(x3), y3 = Math.round(y3), width = Math.round(width), height = Math.round(height), (v3.width !== width || v3.height !== height || v3.x !== x3 || v3.y !== y3) && (v3.x = x3, v3.y = y3, v3.width = width, v3.height = height, this.gl.viewport(x3, y3, width, height));
+      x3 = Math.round(x3), y2 = Math.round(y2), width = Math.round(width), height = Math.round(height), (v3.width !== width || v3.height !== height || v3.x !== x3 || v3.y !== y2) && (v3.x = x3, v3.y = y2, v3.width = width, v3.height = height, this.gl.viewport(x3, y2, width, height));
     }
     /**
      * Get the size of the current width and height. Returns object with `width` and `height` values.
@@ -19368,8 +19630,8 @@ void main(void)
       out === void 0 && (out = uvs);
       const mat = this.mapCoord;
       for (let i2 = 0; i2 < uvs.length; i2 += 2) {
-        const x3 = uvs[i2], y3 = uvs[i2 + 1];
-        out[i2] = x3 * mat.a + y3 * mat.c + mat.tx, out[i2 + 1] = x3 * mat.b + y3 * mat.d + mat.ty;
+        const x3 = uvs[i2], y2 = uvs[i2 + 1];
+        out[i2] = x3 * mat.a + y2 * mat.c + mat.tx, out[i2 + 1] = x3 * mat.b + y2 * mat.d + mat.ty;
       }
       return out;
     }
@@ -19768,8 +20030,8 @@ void main(void)
      */
     _useCurrent() {
       const rect = this.maskStack[this.maskStack.length - 1]._scissorRect;
-      let y3;
-      this.renderer.renderTexture.current ? y3 = rect.y : y3 = this.renderer.height - rect.height - rect.y, this.renderer.gl.scissor(rect.x, y3, rect.width, rect.height);
+      let y2;
+      this.renderer.renderTexture.current ? y2 = rect.y : y2 = this.renderer.height - rect.height - rect.y, this.renderer.gl.scissor(rect.x, y2, rect.width, rect.height);
     }
   };
   _ScissorSystem.extension = {
@@ -20024,8 +20286,8 @@ void main(void)
       (this.current && this.current.baseTexture.alphaMode > 0 || !this.current && this._rendererPremultipliedAlpha) && color.premultiply(color.alpha);
       const destinationFrame = this.destinationFrame, baseFrame = this.current ? this.current.baseTexture : this.renderer._view.screen, clearMask = destinationFrame.width !== baseFrame.width || destinationFrame.height !== baseFrame.height;
       if (clearMask) {
-        let { x: x3, y: y3, width, height } = this.viewportFrame;
-        x3 = Math.round(x3), y3 = Math.round(y3), width = Math.round(width), height = Math.round(height), this.renderer.gl.enable(this.renderer.gl.SCISSOR_TEST), this.renderer.gl.scissor(x3, y3, width, height);
+        let { x: x3, y: y2, width, height } = this.viewportFrame;
+        x3 = Math.round(x3), y2 = Math.round(y2), width = Math.round(width), height = Math.round(height), this.renderer.gl.enable(this.renderer.gl.SCISSOR_TEST), this.renderer.gl.scissor(x3, y2, width, height);
       }
       this.renderer.framebuffer.clear(color.red, color.green, color.blue, color.alpha, mask), clearMask && this.renderer.scissor.pop();
     }
@@ -20047,6 +20309,8 @@ void main(void)
   extensions.add(RenderTextureSystem);
 
   // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/shader/GLProgram.mjs
+  var IGLUniformData = class {
+  };
   var GLProgram = class {
     /**
      * Makes a new Pixi program.
@@ -22993,6 +23257,28 @@ void main(void)
     ArrayResource
   );
 
+  // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/transformFeedback/TransformFeedback.mjs
+  var TransformFeedback = class {
+    constructor() {
+      this._glTransformFeedbacks = {}, this.buffers = [], this.disposeRunner = new Runner("disposeTransformFeedback");
+    }
+    /**
+     * Bind buffer to TransformFeedback
+     * @param index - index to bind
+     * @param buffer - buffer to bind
+     */
+    bindBuffer(index, buffer) {
+      this.buffers[index] = buffer;
+    }
+    /** Destroy WebGL resources that are connected to this TransformFeedback. */
+    destroy() {
+      this.disposeRunner.emit(this, false);
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/index.mjs
+  var VERSION2 = "7.3.2";
+
   // node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/Bounds.mjs
   var Bounds = class {
     constructor() {
@@ -23031,16 +23317,16 @@ void main(void)
      * @param point
      */
     addPointMatrix(matrix, point) {
-      const { a: a3, b: b3, c: c3, d: d3, tx, ty } = matrix, x3 = a3 * point.x + c3 * point.y + tx, y3 = b3 * point.x + d3 * point.y + ty;
-      this.minX = Math.min(this.minX, x3), this.maxX = Math.max(this.maxX, x3), this.minY = Math.min(this.minY, y3), this.maxY = Math.max(this.maxY, y3);
+      const { a: a3, b: b3, c: c3, d: d3, tx, ty } = matrix, x3 = a3 * point.x + c3 * point.y + tx, y2 = b3 * point.x + d3 * point.y + ty;
+      this.minX = Math.min(this.minX, x3), this.maxX = Math.max(this.maxX, x3), this.minY = Math.min(this.minY, y2), this.maxY = Math.max(this.maxY, y2);
     }
     /**
      * Adds a quad, not transformed
      * @param vertices - The verts to add.
      */
     addQuad(vertices) {
-      let minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, x3 = vertices[0], y3 = vertices[1];
-      minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, x3 = vertices[2], y3 = vertices[3], minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, x3 = vertices[4], y3 = vertices[5], minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, x3 = vertices[6], y3 = vertices[7], minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, this.minX = minX, this.minY = minY, this.maxX = maxX, this.maxY = maxY;
+      let minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, x3 = vertices[0], y2 = vertices[1];
+      minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, x3 = vertices[2], y2 = vertices[3], minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, x3 = vertices[4], y2 = vertices[5], minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, x3 = vertices[6], y2 = vertices[7], minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, this.minX = minX, this.minY = minY, this.maxX = maxX, this.maxY = maxY;
     }
     /**
      * Adds sprite frame, transformed.
@@ -23063,8 +23349,8 @@ void main(void)
      */
     addFrameMatrix(matrix, x0, y0, x1, y1) {
       const a3 = matrix.a, b3 = matrix.b, c3 = matrix.c, d3 = matrix.d, tx = matrix.tx, ty = matrix.ty;
-      let minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, x3 = a3 * x0 + c3 * y0 + tx, y3 = b3 * x0 + d3 * y0 + ty;
-      minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, x3 = a3 * x1 + c3 * y0 + tx, y3 = b3 * x1 + d3 * y0 + ty, minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, x3 = a3 * x0 + c3 * y1 + tx, y3 = b3 * x0 + d3 * y1 + ty, minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, x3 = a3 * x1 + c3 * y1 + tx, y3 = b3 * x1 + d3 * y1 + ty, minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY, this.minX = minX, this.minY = minY, this.maxX = maxX, this.maxY = maxY;
+      let minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY, x3 = a3 * x0 + c3 * y0 + tx, y2 = b3 * x0 + d3 * y0 + ty;
+      minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, x3 = a3 * x1 + c3 * y0 + tx, y2 = b3 * x1 + d3 * y0 + ty, minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, x3 = a3 * x0 + c3 * y1 + tx, y2 = b3 * x0 + d3 * y1 + ty, minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, x3 = a3 * x1 + c3 * y1 + tx, y2 = b3 * x1 + d3 * y1 + ty, minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY, this.minX = minX, this.minY = minY, this.maxX = maxX, this.maxY = maxY;
     }
     /**
      * Adds screen vertices from array
@@ -23075,8 +23361,8 @@ void main(void)
     addVertexData(vertexData, beginOffset, endOffset) {
       let minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY;
       for (let i2 = beginOffset; i2 < endOffset; i2 += 2) {
-        const x3 = vertexData[i2], y3 = vertexData[i2 + 1];
-        minX = x3 < minX ? x3 : minX, minY = y3 < minY ? y3 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y3 > maxY ? y3 : maxY;
+        const x3 = vertexData[i2], y2 = vertexData[i2 + 1];
+        minX = x3 < minX ? x3 : minX, minY = y2 < minY ? y2 : minY, maxX = x3 > maxX ? x3 : maxX, maxY = y2 > maxY ? y2 : maxY;
       }
       this.minX = minX, this.minY = minY, this.maxX = maxX, this.maxY = maxY;
     }
@@ -23103,8 +23389,8 @@ void main(void)
       const a3 = matrix.a, b3 = matrix.b, c3 = matrix.c, d3 = matrix.d, tx = matrix.tx, ty = matrix.ty;
       let minX = this.minX, minY = this.minY, maxX = this.maxX, maxY = this.maxY;
       for (let i2 = beginOffset; i2 < endOffset; i2 += 2) {
-        const rawX = vertices[i2], rawY = vertices[i2 + 1], x3 = a3 * rawX + c3 * rawY + tx, y3 = d3 * rawY + b3 * rawX + ty;
-        minX = Math.min(minX, x3 - padX), maxX = Math.max(maxX, x3 + padX), minY = Math.min(minY, y3 - padY), maxY = Math.max(maxY, y3 + padY);
+        const rawX = vertices[i2], rawY = vertices[i2 + 1], x3 = a3 * rawX + c3 * rawY + tx, y2 = d3 * rawY + b3 * rawX + ty;
+        minX = Math.min(minX, x3 - padX), maxX = Math.max(maxX, x3 + padX), minY = Math.min(minY, y2 - padY), maxY = Math.max(maxY, y2 + padY);
       }
       this.minX = minX, this.minY = minY, this.maxX = maxX, this.maxY = maxY;
     }
@@ -23322,8 +23608,8 @@ void main(void)
      * @param pivotY - The Y pivot value
      * @returns - The DisplayObject instance
      */
-    setTransform(x3 = 0, y3 = 0, scaleX = 1, scaleY = 1, rotation = 0, skewX = 0, skewY = 0, pivotX = 0, pivotY = 0) {
-      return this.position.x = x3, this.position.y = y3, this.scale.x = scaleX || 1, this.scale.y = scaleY || 1, this.rotation = rotation, this.skew.x = skewX, this.skew.y = skewY, this.pivot.x = pivotX, this.pivot.y = pivotY, this;
+    setTransform(x3 = 0, y2 = 0, scaleX = 1, scaleY = 1, rotation = 0, skewX = 0, skewY = 0, pivotX = 0, pivotY = 0) {
+      return this.position.x = x3, this.position.y = y2, this.scale.x = scaleX || 1, this.scale.y = scaleY || 1, this.rotation = rotation, this.skew.x = skewX, this.skew.y = skewY, this.pivot.x = pivotX, this.pivot.y = pivotY, this;
     }
     /**
      * Base destroy method for generic display objects. This will automatically
@@ -24008,16 +24294,16 @@ void main(void)
       return Math.abs(this.scale.x) * this._texture.orig.width;
     }
     set width(value) {
-      const s2 = lib_exports.sign(this.scale.x) || 1;
-      this.scale.x = s2 * value / this._texture.orig.width, this._width = value;
+      const s3 = lib_exports.sign(this.scale.x) || 1;
+      this.scale.x = s3 * value / this._texture.orig.width, this._width = value;
     }
     /** The height of the sprite, setting this will actually modify the scale to achieve the value set. */
     get height() {
       return Math.abs(this.scale.y) * this._texture.orig.height;
     }
     set height(value) {
-      const s2 = lib_exports.sign(this.scale.y) || 1;
-      this.scale.y = s2 * value / this._texture.orig.height, this._height = value;
+      const s3 = lib_exports.sign(this.scale.y) || 1;
+      this.scale.y = s3 * value / this._texture.orig.height, this._height = value;
     }
     /**
      * The anchor sets the origin point of the sprite. The default value is taken from the {@link PIXI.Texture|Texture}
@@ -24798,19 +25084,19 @@ void main(void)
      *  just set the current matrix with @param matrix
      */
     saturate(amount = 0, multiply) {
-      const x3 = amount * 2 / 3 + 1, y3 = (x3 - 1) * -0.5, matrix = [
+      const x3 = amount * 2 / 3 + 1, y2 = (x3 - 1) * -0.5, matrix = [
         x3,
-        y3,
-        y3,
+        y2,
+        y2,
         0,
         0,
-        y3,
+        y2,
         x3,
-        y3,
+        y2,
         0,
         0,
-        y3,
-        y3,
+        y2,
+        y2,
         x3,
         0,
         0,
@@ -25984,12 +26270,12 @@ void main()
      * @param x
      * @param y
      */
-    hitTest(x3, y3) {
+    hitTest(x3, y2) {
       EventsTicker.pauseUpdate = true;
       const fn = this._isPointerMoveEvent && this.enableGlobalMoveEvents ? "hitTestMoveRecursive" : "hitTestRecursive", invertedPath = this[fn](
         this.rootTarget,
         this.rootTarget.eventMode,
-        tempHitLocation.set(x3, y3),
+        tempHitLocation.set(x3, y2),
         this.hitTestFn,
         this.hitPruneFn
       );
@@ -26727,7 +27013,7 @@ void main()
      * @param  {number} x - the x coord of the position to map
      * @param  {number} y - the y coord of the position to map
      */
-    mapPositionToPoint(point, x3, y3) {
+    mapPositionToPoint(point, x3, y2) {
       const rect = this.domElement.isConnected ? this.domElement.getBoundingClientRect() : {
         x: 0,
         y: 0,
@@ -26736,7 +27022,7 @@ void main()
         left: 0,
         top: 0
       }, resolutionMultiplier = 1 / this.resolution;
-      point.x = (x3 - rect.left) * (this.domElement.width / rect.width) * resolutionMultiplier, point.y = (y3 - rect.top) * (this.domElement.height / rect.height) * resolutionMultiplier;
+      point.x = (x3 - rect.left) * (this.domElement.width / rect.width) * resolutionMultiplier, point.y = (y2 - rect.top) * (this.domElement.height / rect.height) * resolutionMultiplier;
     }
     /**
      * Ensures that the original event object contains all data that a regular pointer event would have
@@ -27470,9 +27756,9 @@ void main()
       if (lib_exports.isMobile.android.device && now < this.androidUpdateCount || (this.androidUpdateCount = now + this.androidUpdateFrequency, !this.renderer.renderingToScreen))
         return;
       this.renderer.lastObjectRendered && this.updateAccessibleObjects(this.renderer.lastObjectRendered);
-      const { x: x3, y: y3, width, height } = this.renderer.view.getBoundingClientRect(), { width: viewWidth, height: viewHeight, resolution } = this.renderer, sx = width / viewWidth * resolution, sy = height / viewHeight * resolution;
+      const { x: x3, y: y2, width, height } = this.renderer.view.getBoundingClientRect(), { width: viewWidth, height: viewHeight, resolution } = this.renderer, sx = width / viewWidth * resolution, sy = height / viewHeight * resolution;
       let div = this.div;
-      div.style.left = `${x3}px`, div.style.top = `${y3}px`, div.style.width = `${viewWidth}px`, div.style.height = `${viewHeight}px`;
+      div.style.left = `${x3}px`, div.style.top = `${y2}px`, div.style.width = `${viewWidth}px`, div.style.height = `${viewHeight}px`;
       for (let i2 = 0; i2 < this.children.length; i2++) {
         const child = this.children[i2];
         if (child.renderId !== this.renderId)
@@ -29884,8 +30170,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
     static _flipY(pixels, width, height) {
       const w3 = width << 2, h3 = height >> 1, temp = new Uint8Array(w3);
-      for (let y3 = 0; y3 < h3; y3++) {
-        const t2 = y3 * w3, b3 = (height - y3 - 1) * w3;
+      for (let y2 = 0; y2 < h3; y2++) {
+        const t2 = y2 * w3, b3 = (height - y2 - 1) * w3;
         temp.set(pixels.subarray(t2, t2 + w3)), pixels.copyWithin(t2, b3, b3 + w3), pixels.set(temp, b3);
       }
     }
@@ -29912,16 +30198,16 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   var buildCircle = {
     build(graphicsData) {
       const points = graphicsData.points;
-      let x3, y3, dx, dy, rx, ry;
+      let x3, y2, dx, dy, rx, ry;
       if (graphicsData.type === SHAPES.CIRC) {
         const circle = graphicsData.shape;
-        x3 = circle.x, y3 = circle.y, rx = ry = circle.radius, dx = dy = 0;
+        x3 = circle.x, y2 = circle.y, rx = ry = circle.radius, dx = dy = 0;
       } else if (graphicsData.type === SHAPES.ELIP) {
         const ellipse = graphicsData.shape;
-        x3 = ellipse.x, y3 = ellipse.y, rx = ellipse.width, ry = ellipse.height, dx = dy = 0;
+        x3 = ellipse.x, y2 = ellipse.y, rx = ellipse.width, ry = ellipse.height, dx = dy = 0;
       } else {
         const roundedRect = graphicsData.shape, halfWidth = roundedRect.width / 2, halfHeight = roundedRect.height / 2;
-        x3 = roundedRect.x + halfWidth, y3 = roundedRect.y + halfHeight, rx = ry = Math.max(0, Math.min(roundedRect.radius, Math.min(halfWidth, halfHeight))), dx = halfWidth - rx, dy = halfHeight - ry;
+        x3 = roundedRect.x + halfWidth, y2 = roundedRect.y + halfHeight, rx = ry = Math.max(0, Math.min(roundedRect.radius, Math.min(halfWidth, halfHeight))), dx = halfWidth - rx, dy = halfHeight - ry;
       }
       if (!(rx >= 0 && ry >= 0 && dx >= 0 && dy >= 0)) {
         points.length = 0;
@@ -29931,23 +30217,23 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       if (points.length = m3, m3 === 0)
         return;
       if (n2 === 0) {
-        points.length = 8, points[0] = points[6] = x3 + dx, points[1] = points[3] = y3 + dy, points[2] = points[4] = x3 - dx, points[5] = points[7] = y3 - dy;
+        points.length = 8, points[0] = points[6] = x3 + dx, points[1] = points[3] = y2 + dy, points[2] = points[4] = x3 - dx, points[5] = points[7] = y2 - dy;
         return;
       }
       let j1 = 0, j22 = n2 * 4 + (dx ? 2 : 0) + 2, j3 = j22, j4 = m3;
       {
-        const x0 = dx + rx, y0 = dy, x1 = x3 + x0, x22 = x3 - x0, y1 = y3 + y0;
+        const x0 = dx + rx, y0 = dy, x1 = x3 + x0, x22 = x3 - x0, y1 = y2 + y0;
         if (points[j1++] = x1, points[j1++] = y1, points[--j22] = y1, points[--j22] = x22, dy) {
-          const y22 = y3 - y0;
+          const y22 = y2 - y0;
           points[j3++] = x22, points[j3++] = y22, points[--j4] = y22, points[--j4] = x1;
         }
       }
       for (let i2 = 1; i2 < n2; i2++) {
-        const a3 = Math.PI / 2 * (i2 / n2), x0 = dx + Math.cos(a3) * rx, y0 = dy + Math.sin(a3) * ry, x1 = x3 + x0, x22 = x3 - x0, y1 = y3 + y0, y22 = y3 - y0;
+        const a3 = Math.PI / 2 * (i2 / n2), x0 = dx + Math.cos(a3) * rx, y0 = dy + Math.sin(a3) * ry, x1 = x3 + x0, x22 = x3 - x0, y1 = y2 + y0, y22 = y2 - y0;
         points[j1++] = x1, points[j1++] = y1, points[--j22] = y1, points[--j22] = x22, points[j3++] = x22, points[j3++] = y22, points[--j4] = y22, points[--j4] = x1;
       }
       {
-        const x0 = dx, y0 = dy + ry, x1 = x3 + x0, x22 = x3 - x0, y1 = y3 + y0, y22 = y3 - y0;
+        const x0 = dx, y0 = dy + ry, x1 = x3 + x0, x22 = x3 - x0, y1 = y2 + y0, y22 = y2 - y0;
         points[j1++] = x1, points[j1++] = y1, points[--j4] = y22, points[--j4] = x1, dx && (points[j1++] = x22, points[j1++] = y1, points[--j4] = y22, points[--j4] = x22);
       }
     },
@@ -29957,18 +30243,18 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         return;
       let vertPos = verts.length / 2;
       const center = vertPos;
-      let x3, y3;
+      let x3, y2;
       if (graphicsData.type !== SHAPES.RREC) {
         const circle = graphicsData.shape;
-        x3 = circle.x, y3 = circle.y;
+        x3 = circle.x, y2 = circle.y;
       } else {
         const roundedRect = graphicsData.shape;
-        x3 = roundedRect.x + roundedRect.width / 2, y3 = roundedRect.y + roundedRect.height / 2;
+        x3 = roundedRect.x + roundedRect.width / 2, y2 = roundedRect.y + roundedRect.height / 2;
       }
       const matrix = graphicsData.matrix;
       verts.push(
-        graphicsData.matrix ? matrix.a * x3 + matrix.c * y3 + matrix.tx : x3,
-        graphicsData.matrix ? matrix.b * x3 + matrix.d * y3 + matrix.ty : y3
+        graphicsData.matrix ? matrix.a * x3 + matrix.c * y2 + matrix.tx : x3,
+        graphicsData.matrix ? matrix.b * x3 + matrix.d * y2 + matrix.ty : y2
       ), vertPos++, verts.push(points[0], points[1]);
       for (let i2 = 2; i2 < points.length; i2 += 2)
         verts.push(points[i2], points[i2 + 1]), indices2.push(vertPos++, center, vertPos);
@@ -29983,8 +30269,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       return;
     let area = 0;
     for (let i2 = 0, x1 = points[m3 - 2], y1 = points[m3 - 1]; i2 < m3; i2 += 2) {
-      const x22 = points[i2], y22 = points[i2 + 1];
-      area += (x22 - x1) * (y22 + y1), x1 = x22, y1 = y22;
+      const x22 = points[i2], y2 = points[i2 + 1];
+      area += (x22 - x1) * (y2 + y1), x1 = x22, y1 = y2;
     }
     if (!hole && area > 0 || hole && area <= 0) {
       const n2 = m3 / 2;
@@ -30023,16 +30309,16 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   // node_modules/.pnpm/@pixi+graphics@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/graphics/lib/utils/buildRectangle.mjs
   var buildRectangle = {
     build(graphicsData) {
-      const rectData = graphicsData.shape, x3 = rectData.x, y3 = rectData.y, width = rectData.width, height = rectData.height, points = graphicsData.points;
+      const rectData = graphicsData.shape, x3 = rectData.x, y2 = rectData.y, width = rectData.width, height = rectData.height, points = graphicsData.points;
       points.length = 0, width >= 0 && height >= 0 && points.push(
         x3,
-        y3,
+        y2,
         x3 + width,
-        y3,
+        y2,
         x3 + width,
-        y3 + height,
+        y2 + height,
         x3,
-        y3 + height
+        y2 + height
       );
     },
     triangulate(graphicsData, graphicsGeometry) {
@@ -30086,6 +30372,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       return result < this.minSegments ? result = this.minSegments : result > this.maxSegments && (result = this.maxSegments), result;
     }
   };
+  var GRAPHICS_CURVES = curves;
 
   // node_modules/.pnpm/@pixi+graphics@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/graphics/lib/utils/ArcUtils.mjs
   var ArcUtils = class {
@@ -30100,8 +30387,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param points - Collection of points to add to
      * @returns - If the arc length is valid, return center of circle, radius and other info otherwise `null`.
      */
-    static curveTo(x1, y1, x22, y22, radius, points) {
-      const fromX = points[points.length - 2], a1 = points[points.length - 1] - y1, b1 = fromX - x1, a22 = y22 - y1, b22 = x22 - x1, mm = Math.abs(a1 * b22 - b1 * a22);
+    static curveTo(x1, y1, x22, y2, radius, points) {
+      const fromX = points[points.length - 2], a1 = points[points.length - 1] - y1, b1 = fromX - x1, a22 = y2 - y1, b22 = x22 - x1, mm = Math.abs(a1 * b22 - b1 * a22);
       if (mm < 1e-8 || radius === 0)
         return (points[points.length - 2] !== x1 || points[points.length - 1] !== y1) && points.push(x1, y1), null;
       const dd = a1 * a1 + b1 * b1, cc = a22 * a22 + b22 * b22, tt = a1 * a22 + b1 * b22, k1 = radius * Math.sqrt(dd) / mm, k22 = radius * Math.sqrt(cc) / mm, j1 = k1 * tt / dd, j22 = k22 * tt / cc, cx = k1 * b22 + k22 * b1, cy = k1 * a22 + k22 * a1, px = b1 * (k22 + j1), py = a1 * (k22 + j1), qx = b22 * (k1 + j22), qy = a22 * (k1 + j22), startAngle = Math.atan2(py - cy, px - cx), endAngle = Math.atan2(qy - cy, qx - cx);
@@ -30136,10 +30423,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         Math.ceil(Math.abs(sweep) / PI_2) * 40
       ), theta = sweep / (n2 * 2), theta2 = theta * 2, cTheta = Math.cos(theta), sTheta = Math.sin(theta), segMinus = n2 - 1, remainder = segMinus % 1 / segMinus;
       for (let i2 = 0; i2 <= segMinus; ++i2) {
-        const real = i2 + remainder * i2, angle = theta + startAngle + theta2 * real, c3 = Math.cos(angle), s2 = -Math.sin(angle);
+        const real = i2 + remainder * i2, angle = theta + startAngle + theta2 * real, c3 = Math.cos(angle), s3 = -Math.sin(angle);
         points.push(
-          (cTheta * c3 + sTheta * s2) * radius + cx,
-          (cTheta * -s2 + sTheta * c3) * radius + cy
+          (cTheta * c3 + sTheta * s3) * radius + cx,
+          (cTheta * -s3 + sTheta * c3) * radius + cy
         );
       }
     }
@@ -30190,9 +30477,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @returns - Length of bezier curve
      */
     static curveLength(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY) {
-      let result = 0, t2 = 0, t22 = 0, t3 = 0, nt = 0, nt2 = 0, nt3 = 0, x3 = 0, y3 = 0, dx = 0, dy = 0, prevX = fromX, prevY = fromY;
+      let result = 0, t2 = 0, t22 = 0, t3 = 0, nt = 0, nt2 = 0, nt3 = 0, x3 = 0, y2 = 0, dx = 0, dy = 0, prevX = fromX, prevY = fromY;
       for (let i2 = 1; i2 <= 10; ++i2)
-        t2 = i2 / 10, t22 = t2 * t2, t3 = t22 * t2, nt = 1 - t2, nt2 = nt * nt, nt3 = nt2 * nt, x3 = nt3 * fromX + 3 * nt2 * t2 * cpX + 3 * nt * t22 * cpX2 + t3 * toX, y3 = nt3 * fromY + 3 * nt2 * t2 * cpY + 3 * nt * t22 * cpY2 + t3 * toY, dx = prevX - x3, dy = prevY - y3, prevX = x3, prevY = y3, result += Math.sqrt(dx * dx + dy * dy);
+        t2 = i2 / 10, t22 = t2 * t2, t3 = t22 * t2, nt = 1 - t2, nt2 = nt * nt, nt3 = nt2 * nt, x3 = nt3 * fromX + 3 * nt2 * t2 * cpX + 3 * nt * t22 * cpX2 + t3 * toX, y2 = nt3 * fromY + 3 * nt2 * t2 * cpY + 3 * nt * t22 * cpY2 + t3 * toY, dx = prevX - x3, dy = prevY - y2, prevX = x3, prevY = y2, result += Math.sqrt(dx * dx + dy * dy);
       return result;
     }
     /**
@@ -30214,19 +30501,19 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       const n2 = curves._segmentsCount(
         BezierUtils.curveLength(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY)
       );
-      let dt = 0, dt2 = 0, dt3 = 0, t2 = 0, t3 = 0;
+      let dt2 = 0, dt22 = 0, dt3 = 0, t2 = 0, t3 = 0;
       points.push(fromX, fromY);
       for (let i2 = 1, j3 = 0; i2 <= n2; ++i2)
-        j3 = i2 / n2, dt = 1 - j3, dt2 = dt * dt, dt3 = dt2 * dt, t2 = j3 * j3, t3 = t2 * j3, points.push(
-          dt3 * fromX + 3 * dt2 * j3 * cpX + 3 * dt * t2 * cpX2 + t3 * toX,
-          dt3 * fromY + 3 * dt2 * j3 * cpY + 3 * dt * t2 * cpY2 + t3 * toY
+        j3 = i2 / n2, dt2 = 1 - j3, dt22 = dt2 * dt2, dt3 = dt22 * dt2, t2 = j3 * j3, t3 = t2 * j3, points.push(
+          dt3 * fromX + 3 * dt22 * j3 * cpX + 3 * dt2 * t2 * cpX2 + t3 * toX,
+          dt3 * fromY + 3 * dt22 * j3 * cpY + 3 * dt2 * t2 * cpY2 + t3 * toY
         );
     }
   };
 
   // node_modules/.pnpm/@pixi+graphics@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/graphics/lib/utils/buildLine.mjs
-  function square(x3, y3, nx, ny, innerWeight, outerWeight, clockwise, verts) {
-    const ix = x3 - nx * innerWeight, iy = y3 - ny * innerWeight, ox = x3 + nx * outerWeight, oy = y3 + ny * outerWeight;
+  function square(x3, y2, nx, ny, innerWeight, outerWeight, clockwise, verts) {
+    const ix = x3 - nx * innerWeight, iy = y2 - ny * innerWeight, ox = x3 + nx * outerWeight, oy = y2 + ny * outerWeight;
     let exx, eyy;
     clockwise ? (exx = ny, eyy = -nx) : (exx = -ny, eyy = nx);
     const eix = ix + exx, eiy = iy + eyy, eox = ox + exx, eoy = oy + eyy;
@@ -30301,7 +30588,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     const verts = graphicsGeometry.points, length = points.length / 2;
     let indexCount = points.length;
     const indexStart = verts.length / 2, width = style.width / 2, widthSquared = width * width, miterLimitSquared = style.miterLimit * style.miterLimit;
-    let x0 = points[0], y0 = points[1], x1 = points[2], y1 = points[3], x22 = 0, y22 = 0, perpx = -(y0 - y1), perpy = x0 - x1, perp1x = 0, perp1y = 0, dist = Math.sqrt(perpx * perpx + perpy * perpy);
+    let x0 = points[0], y0 = points[1], x1 = points[2], y1 = points[3], x22 = 0, y2 = 0, perpx = -(y0 - y1), perpy = x0 - x1, perp1x = 0, perp1y = 0, dist = Math.sqrt(perpx * perpx + perpy * perpy);
     perpx /= dist, perpy /= dist, perpx *= width, perpy *= width;
     const ratio = style.alignment, innerWeight = (1 - ratio) * 2, outerWeight = ratio * 2;
     closedShape || (style.cap === LINE_CAP.ROUND ? indexCount += round(
@@ -30320,8 +30607,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       y0 + perpy * outerWeight
     );
     for (let i2 = 1; i2 < length - 1; ++i2) {
-      x0 = points[(i2 - 1) * 2], y0 = points[(i2 - 1) * 2 + 1], x1 = points[i2 * 2], y1 = points[i2 * 2 + 1], x22 = points[(i2 + 1) * 2], y22 = points[(i2 + 1) * 2 + 1], perpx = -(y0 - y1), perpy = x0 - x1, dist = Math.sqrt(perpx * perpx + perpy * perpy), perpx /= dist, perpy /= dist, perpx *= width, perpy *= width, perp1x = -(y1 - y22), perp1y = x1 - x22, dist = Math.sqrt(perp1x * perp1x + perp1y * perp1y), perp1x /= dist, perp1y /= dist, perp1x *= width, perp1y *= width;
-      const dx0 = x1 - x0, dy0 = y0 - y1, dx1 = x1 - x22, dy1 = y22 - y1, dot = dx0 * dx1 + dy0 * dy1, cross = dy0 * dx1 - dy1 * dx0, clockwise = cross < 0;
+      x0 = points[(i2 - 1) * 2], y0 = points[(i2 - 1) * 2 + 1], x1 = points[i2 * 2], y1 = points[i2 * 2 + 1], x22 = points[(i2 + 1) * 2], y2 = points[(i2 + 1) * 2 + 1], perpx = -(y0 - y1), perpy = x0 - x1, dist = Math.sqrt(perpx * perpx + perpy * perpy), perpx /= dist, perpy /= dist, perpx *= width, perpy *= width, perp1x = -(y1 - y2), perp1y = x1 - x22, dist = Math.sqrt(perp1x * perp1x + perp1y * perp1y), perp1x /= dist, perp1y /= dist, perp1x *= width, perp1y *= width;
+      const dx0 = x1 - x0, dy0 = y0 - y1, dx1 = x1 - x22, dy1 = y2 - y1, dot = dx0 * dx1 + dy0 * dy1, cross = dy0 * dx1 - dy1 * dx0, clockwise = cross < 0;
       if (Math.abs(cross) < 1e-3 * Math.abs(dot)) {
         verts.push(
           x1 - perpx * innerWeight,
@@ -30345,7 +30632,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         ));
         continue;
       }
-      const c1 = (-perpx + x0) * (-perpy + y1) - (-perpx + x1) * (-perpy + y0), c22 = (-perp1x + x22) * (-perp1y + y1) - (-perp1x + x1) * (-perp1y + y22), px = (dx0 * c22 - dx1 * c1) / cross, py = (dy1 * c1 - dy0 * c22) / cross, pdist = (px - x1) * (px - x1) + (py - y1) * (py - y1), imx = x1 + (px - x1) * innerWeight, imy = y1 + (py - y1) * innerWeight, omx = x1 - (px - x1) * outerWeight, omy = y1 - (py - y1) * outerWeight, smallerInsideSegmentSq = Math.min(dx0 * dx0 + dy0 * dy0, dx1 * dx1 + dy1 * dy1), insideWeight = clockwise ? innerWeight : outerWeight, smallerInsideDiagonalSq = smallerInsideSegmentSq + insideWeight * insideWeight * widthSquared, insideMiterOk = pdist <= smallerInsideDiagonalSq;
+      const c1 = (-perpx + x0) * (-perpy + y1) - (-perpx + x1) * (-perpy + y0), c22 = (-perp1x + x22) * (-perp1y + y1) - (-perp1x + x1) * (-perp1y + y2), px = (dx0 * c22 - dx1 * c1) / cross, py = (dy1 * c1 - dy0 * c22) / cross, pdist = (px - x1) * (px - x1) + (py - y1) * (py - y1), imx = x1 + (px - x1) * innerWeight, imy = y1 + (py - y1) * innerWeight, omx = x1 - (px - x1) * outerWeight, omy = y1 - (py - y1) * outerWeight, smallerInsideSegmentSq = Math.min(dx0 * dx0 + dy0 * dy0, dx1 * dx1 + dy1 * dy1), insideWeight = clockwise ? innerWeight : outerWeight, smallerInsideDiagonalSq = smallerInsideSegmentSq + insideWeight * insideWeight * widthSquared, insideMiterOk = pdist <= smallerInsideDiagonalSq;
       let join = style.join;
       if (join === LINE_JOIN.MITER && pdist / widthSquared > miterLimitSquared && (join = LINE_JOIN.BEVEL), insideMiterOk)
         switch (join) {
@@ -30502,7 +30789,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     ) + 2 : style.cap === LINE_CAP.SQUARE && (indexCount += square(x1, y1, perpx, perpy, innerWeight, outerWeight, false, verts)));
     const indices2 = graphicsGeometry.indices, eps2 = curves.epsilon * curves.epsilon;
     for (let i2 = indexStart; i2 < indexCount + indexStart - 2; ++i2)
-      x0 = verts[i2 * 2], y0 = verts[i2 * 2 + 1], x1 = verts[(i2 + 1) * 2], y1 = verts[(i2 + 1) * 2 + 1], x22 = verts[(i2 + 2) * 2], y22 = verts[(i2 + 2) * 2 + 1], !(Math.abs(x0 * (y1 - y22) + x1 * (y22 - y0) + x22 * (y0 - y1)) < eps2) && indices2.push(i2, i2 + 1, i2 + 2);
+      x0 = verts[i2 * 2], y0 = verts[i2 * 2 + 1], x1 = verts[(i2 + 1) * 2], y1 = verts[(i2 + 1) * 2 + 1], x22 = verts[(i2 + 2) * 2], y2 = verts[(i2 + 2) * 2 + 1], !(Math.abs(x0 * (y1 - y2) + x1 * (y2 - y0) + x22 * (y0 - y1)) < eps2) && indices2.push(i2, i2 + 1, i2 + 2);
   }
   function buildNativeLine(graphicsData, graphicsGeometry) {
     let i2 = 0;
@@ -30535,8 +30822,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @returns - Length of quadratic curve
      */
     static curveLength(fromX, fromY, cpX, cpY, toX, toY) {
-      const ax = fromX - 2 * cpX + toX, ay = fromY - 2 * cpY + toY, bx = 2 * cpX - 2 * fromX, by = 2 * cpY - 2 * fromY, a3 = 4 * (ax * ax + ay * ay), b3 = 4 * (ax * bx + ay * by), c3 = bx * bx + by * by, s2 = 2 * Math.sqrt(a3 + b3 + c3), a22 = Math.sqrt(a3), a32 = 2 * a3 * a22, c22 = 2 * Math.sqrt(c3), ba = b3 / a22;
-      return (a32 * s2 + a22 * b3 * (s2 - c22) + (4 * c3 * a3 - b3 * b3) * Math.log((2 * a22 + ba + s2) / (ba + c22))) / (4 * a32);
+      const ax = fromX - 2 * cpX + toX, ay = fromY - 2 * cpY + toY, bx = 2 * cpX - 2 * fromX, by = 2 * cpY - 2 * fromY, a3 = 4 * (ax * ax + ay * ay), b3 = 4 * (ax * bx + ay * by), c3 = bx * bx + by * by, s3 = 2 * Math.sqrt(a3 + b3 + c3), a22 = Math.sqrt(a3), a32 = 2 * a3 * a22, c22 = 2 * Math.sqrt(c3), ba = b3 / a22;
+      return (a32 * s3 + a22 * b3 * (s3 - c22) + (4 * c3 * a3 - b3 * b3) * Math.log((2 * a22 + ba + s3) / (ba + c22))) / (4 * a32);
     }
     /**
      * Calculate the points for a quadratic bezier curve and then draws it.
@@ -30840,8 +31127,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      */
     transformPoints(points, matrix) {
       for (let i2 = 0; i2 < points.length / 2; i2++) {
-        const x3 = points[i2 * 2], y3 = points[i2 * 2 + 1];
-        points[i2 * 2] = matrix.a * x3 + matrix.c * y3 + matrix.tx, points[i2 * 2 + 1] = matrix.b * x3 + matrix.d * y3 + matrix.ty;
+        const x3 = points[i2 * 2], y2 = points[i2 * 2 + 1];
+        points[i2 * 2] = matrix.a * x3 + matrix.c * y2 + matrix.tx, points[i2 * 2 + 1] = matrix.b * x3 + matrix.d * y2 + matrix.ty;
       }
     }
     /**
@@ -30883,12 +31170,12 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       let index = 0;
       const uvsStart = uvs.length, frame = texture.frame;
       for (; index < size; ) {
-        let x3 = verts[(start + index) * 2], y3 = verts[(start + index) * 2 + 1];
+        let x3 = verts[(start + index) * 2], y2 = verts[(start + index) * 2 + 1];
         if (matrix) {
-          const nx = matrix.a * x3 + matrix.c * y3 + matrix.tx;
-          y3 = matrix.b * x3 + matrix.d * y3 + matrix.ty, x3 = nx;
+          const nx = matrix.a * x3 + matrix.c * y2 + matrix.tx;
+          y2 = matrix.b * x3 + matrix.d * y2 + matrix.ty, x3 = nx;
         }
-        index++, uvs.push(x3 / frame.width, y3 / frame.height);
+        index++, uvs.push(x3 / frame.width, y2 / frame.height);
       }
       const baseTexture = texture.baseTexture;
       (frame.width < baseTexture.width || frame.height < baseTexture.height) && this.adjustUvs(uvs, texture, uvsStart, size);
@@ -31075,8 +31362,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param y - the Y coordinate to move to
      * @returns - This Graphics object. Good for chaining method calls
      */
-    moveTo(x3, y3) {
-      return this.startPoly(), this.currentPath.points[0] = x3, this.currentPath.points[1] = y3, this;
+    moveTo(x3, y2) {
+      return this.startPoly(), this.currentPath.points[0] = x3, this.currentPath.points[1] = y2, this;
     }
     /**
      * Draws a line using the current line style from the current drawing position to (x, y);
@@ -31085,18 +31372,18 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param y - the Y coordinate to draw to
      * @returns - This Graphics object. Good for chaining method calls
      */
-    lineTo(x3, y3) {
+    lineTo(x3, y2) {
       this.currentPath || this.moveTo(0, 0);
       const points = this.currentPath.points, fromX = points[points.length - 2], fromY = points[points.length - 1];
-      return (fromX !== x3 || fromY !== y3) && points.push(x3, y3), this;
+      return (fromX !== x3 || fromY !== y2) && points.push(x3, y2), this;
     }
     /**
      * Initialize the curve
      * @param x
      * @param y
      */
-    _initCurve(x3 = 0, y3 = 0) {
-      this.currentPath ? this.currentPath.points.length === 0 && (this.currentPath.points = [x3, y3]) : this.moveTo(x3, y3);
+    _initCurve(x3 = 0, y2 = 0) {
+      this.currentPath ? this.currentPath.points.length === 0 && (this.currentPath.points = [x3, y2]) : this.moveTo(x3, y2);
     }
     /**
      * Calculate the points for a quadratic bezier curve and then draws it.
@@ -31139,9 +31426,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param radius - The radius of the arc
      * @returns - This Graphics object. Good for chaining method calls
      */
-    arcTo(x1, y1, x22, y22, radius) {
+    arcTo(x1, y1, x22, y2, radius) {
       this._initCurve(x1, y1);
-      const points = this.currentPath.points, result = ArcUtils.curveTo(x1, y1, x22, y22, radius, points);
+      const points = this.currentPath.points, result = ArcUtils.curveTo(x1, y1, x22, y2, radius, points);
       if (result) {
         const { cx, cy, radius: radius2, startAngle, endAngle, anticlockwise } = result;
         this.arc(cx, cy, radius2, startAngle, endAngle, anticlockwise);
@@ -31228,8 +31515,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param height - The height of the rectangle
      * @returns - This Graphics object. Good for chaining method calls
      */
-    drawRect(x3, y3, width, height) {
-      return this.drawShape(new Rectangle(x3, y3, width, height));
+    drawRect(x3, y2, width, height) {
+      return this.drawShape(new Rectangle(x3, y2, width, height));
     }
     /**
      * Draw a rectangle shape with rounded/beveled corners.
@@ -31240,8 +31527,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param radius - Radius of the rectangle corners
      * @returns - This Graphics object. Good for chaining method calls
      */
-    drawRoundedRect(x3, y3, width, height, radius) {
-      return this.drawShape(new RoundedRectangle(x3, y3, width, height, radius));
+    drawRoundedRect(x3, y2, width, height, radius) {
+      return this.drawShape(new RoundedRectangle(x3, y2, width, height, radius));
     }
     /**
      * Draws a circle.
@@ -31250,8 +31537,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param radius - The radius of the circle
      * @returns - This Graphics object. Good for chaining method calls
      */
-    drawCircle(x3, y3, radius) {
-      return this.drawShape(new Circle(x3, y3, radius));
+    drawCircle(x3, y2, radius) {
+      return this.drawShape(new Circle(x3, y2, radius));
     }
     /**
      * Draws an ellipse.
@@ -31261,8 +31548,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
      * @param height - The half height of the ellipse
      * @returns - This Graphics object. Good for chaining method calls
      */
-    drawEllipse(x3, y3, width, height) {
-      return this.drawShape(new Ellipse(x3, y3, width, height));
+    drawEllipse(x3, y2, width, height) {
+      return this.drawShape(new Ellipse(x3, y2, width, height));
     }
     /**
      * Draws a polygon using the given path.
@@ -31441,8 +31728,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       const wt = this.transform.worldTransform, a3 = wt.a, b3 = wt.b, c3 = wt.c, d3 = wt.d, tx = wt.tx, ty = wt.ty, data = this._geometry.points, vertexData = this.vertexData;
       let count = 0;
       for (let i2 = 0; i2 < data.length; i2 += 2) {
-        const x3 = data[i2], y3 = data[i2 + 1];
-        vertexData[count++] = a3 * x3 + c3 * y3 + tx, vertexData[count++] = d3 * y3 + b3 * x3 + ty;
+        const x3 = data[i2], y2 = data[i2 + 1];
+        vertexData[count++] = a3 * x3 + c3 * y2 + tx, vertexData[count++] = d3 * y2 + b3 * x3 + ty;
       }
     }
     /**
@@ -31500,6 +31787,22 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   */
   _Graphics._TEMP_POINT = new Point();
   var Graphics = _Graphics;
+
+  // node_modules/.pnpm/@pixi+graphics@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/graphics/lib/index.mjs
+  var graphicsUtils = {
+    buildPoly,
+    buildCircle,
+    buildRectangle,
+    buildRoundedRectangle,
+    buildLine,
+    ArcUtils,
+    BezierUtils,
+    QuadraticUtils,
+    BatchPart,
+    FILL_COMMANDS,
+    BATCH_POOL,
+    DRAW_CALL_POOL
+  };
 
   // node_modules/.pnpm/@pixi+mesh@7.3.2_utq3ojpxynf5a5tcmndjval2ha/node_modules/@pixi/mesh/lib/MeshBatchUvs.mjs
   var MeshBatchUvs = class {
@@ -31655,8 +31958,8 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       this._transformID = this.transform._worldID, this.vertexData.length !== vertices.length && (this.vertexData = new Float32Array(vertices.length));
       const wt = this.transform.worldTransform, a3 = wt.a, b3 = wt.b, c3 = wt.c, d3 = wt.d, tx = wt.tx, ty = wt.ty, vertexData = this.vertexData;
       for (let i2 = 0; i2 < vertexData.length / 2; i2++) {
-        const x3 = vertices[i2 * 2], y3 = vertices[i2 * 2 + 1];
-        vertexData[i2 * 2] = a3 * x3 + c3 * y3 + tx, vertexData[i2 * 2 + 1] = b3 * x3 + d3 * y3 + ty;
+        const x3 = vertices[i2 * 2], y2 = vertices[i2 * 2 + 1];
+        vertexData[i2 * 2] = a3 * x3 + c3 * y2 + tx, vertexData[i2 * 2 + 1] = b3 * x3 + d3 * y2 + ty;
       }
       if (this._roundPixels) {
         const resolution = settings.RESOLUTION;
@@ -31819,6 +32122,379 @@ void main(void)
         Color.shared.setValue(this._tintColor).premultiply(this._alpha, applyToChannels).toArray(this.uniforms.uColor);
       }
       this.uvMatrix.update() && (this.uniforms.uTextureMatrix = this.uvMatrix.mapCoord);
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs
+  var PlaneGeometry = class extends MeshGeometry {
+    /**
+     * @param width - The width of the plane.
+     * @param height - The height of the plane.
+     * @param segWidth - Number of horizontal segments.
+     * @param segHeight - Number of vertical segments.
+     */
+    constructor(width = 100, height = 100, segWidth = 10, segHeight = 10) {
+      super(), this.segWidth = segWidth, this.segHeight = segHeight, this.width = width, this.height = height, this.build();
+    }
+    /**
+     * Refreshes plane coordinates
+     * @private
+     */
+    build() {
+      const total = this.segWidth * this.segHeight, verts = [], uvs = [], indices2 = [], segmentsX = this.segWidth - 1, segmentsY = this.segHeight - 1, sizeX = this.width / segmentsX, sizeY = this.height / segmentsY;
+      for (let i2 = 0; i2 < total; i2++) {
+        const x3 = i2 % this.segWidth, y2 = i2 / this.segWidth | 0;
+        verts.push(x3 * sizeX, y2 * sizeY), uvs.push(x3 / segmentsX, y2 / segmentsY);
+      }
+      const totalSub = segmentsX * segmentsY;
+      for (let i2 = 0; i2 < totalSub; i2++) {
+        const xpos = i2 % segmentsX, ypos = i2 / segmentsX | 0, value = ypos * this.segWidth + xpos, value2 = ypos * this.segWidth + xpos + 1, value3 = (ypos + 1) * this.segWidth + xpos, value4 = (ypos + 1) * this.segWidth + xpos + 1;
+        indices2.push(
+          value,
+          value2,
+          value3,
+          value2,
+          value4,
+          value3
+        );
+      }
+      this.buffers[0].data = new Float32Array(verts), this.buffers[1].data = new Float32Array(uvs), this.indexBuffer.data = new Uint16Array(indices2), this.buffers[0].update(), this.buffers[1].update(), this.indexBuffer.update();
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs
+  var RopeGeometry = class extends MeshGeometry {
+    /**
+     * @param width - The width (i.e., thickness) of the rope.
+     * @param points - An array of {@link PIXI.Point} objects to construct this rope.
+     * @param textureScale - By default the rope texture will be stretched to match
+     *     rope length. If textureScale is positive this value will be treated as a scaling
+     *     factor and the texture will preserve its aspect ratio instead. To create a tiling rope
+     *     set baseTexture.wrapMode to {@link PIXI.WRAP_MODES.REPEAT} and use a power of two texture,
+     *     then set textureScale=1 to keep the original texture pixel size.
+     *     In order to reduce alpha channel artifacts provide a larger texture and downsample -
+     *     i.e. set textureScale=0.5 to scale it down twice.
+     */
+    constructor(width = 200, points, textureScale = 0) {
+      super(
+        new Float32Array(points.length * 4),
+        new Float32Array(points.length * 4),
+        new Uint16Array((points.length - 1) * 6)
+      ), this.points = points, this._width = width, this.textureScale = textureScale, this.build();
+    }
+    /**
+     * The width (i.e., thickness) of the rope.
+     * @readonly
+     */
+    get width() {
+      return this._width;
+    }
+    /** Refreshes Rope indices and uvs */
+    build() {
+      const points = this.points;
+      if (!points)
+        return;
+      const vertexBuffer = this.getBuffer("aVertexPosition"), uvBuffer = this.getBuffer("aTextureCoord"), indexBuffer = this.getIndex();
+      if (points.length < 1)
+        return;
+      vertexBuffer.data.length / 4 !== points.length && (vertexBuffer.data = new Float32Array(points.length * 4), uvBuffer.data = new Float32Array(points.length * 4), indexBuffer.data = new Uint16Array((points.length - 1) * 6));
+      const uvs = uvBuffer.data, indices2 = indexBuffer.data;
+      uvs[0] = 0, uvs[1] = 0, uvs[2] = 0, uvs[3] = 1;
+      let amount = 0, prev = points[0];
+      const textureWidth = this._width * this.textureScale, total = points.length;
+      for (let i2 = 0; i2 < total; i2++) {
+        const index = i2 * 4;
+        if (this.textureScale > 0) {
+          const dx = prev.x - points[i2].x, dy = prev.y - points[i2].y, distance = Math.sqrt(dx * dx + dy * dy);
+          prev = points[i2], amount += distance / textureWidth;
+        } else
+          amount = i2 / (total - 1);
+        uvs[index] = amount, uvs[index + 1] = 0, uvs[index + 2] = amount, uvs[index + 3] = 1;
+      }
+      let indexCount = 0;
+      for (let i2 = 0; i2 < total - 1; i2++) {
+        const index = i2 * 2;
+        indices2[indexCount++] = index, indices2[indexCount++] = index + 1, indices2[indexCount++] = index + 2, indices2[indexCount++] = index + 2, indices2[indexCount++] = index + 1, indices2[indexCount++] = index + 3;
+      }
+      uvBuffer.update(), indexBuffer.update(), this.updateVertices();
+    }
+    /** refreshes vertices of Rope mesh */
+    updateVertices() {
+      const points = this.points;
+      if (points.length < 1)
+        return;
+      let lastPoint = points[0], nextPoint, perpX = 0, perpY = 0;
+      const vertices = this.buffers[0].data, total = points.length, halfWidth = this.textureScale > 0 ? this.textureScale * this._width / 2 : this._width / 2;
+      for (let i2 = 0; i2 < total; i2++) {
+        const point = points[i2], index = i2 * 4;
+        i2 < points.length - 1 ? nextPoint = points[i2 + 1] : nextPoint = point, perpY = -(nextPoint.x - lastPoint.x), perpX = nextPoint.y - lastPoint.y;
+        let ratio = (1 - i2 / (total - 1)) * 10;
+        ratio > 1 && (ratio = 1);
+        const perpLength = Math.sqrt(perpX * perpX + perpY * perpY);
+        perpLength < 1e-6 ? (perpX = 0, perpY = 0) : (perpX /= perpLength, perpY /= perpLength, perpX *= halfWidth, perpY *= halfWidth), vertices[index] = point.x + perpX, vertices[index + 1] = point.y + perpY, vertices[index + 2] = point.x - perpX, vertices[index + 3] = point.y - perpY, lastPoint = point;
+      }
+      this.buffers[0].update();
+    }
+    update() {
+      this.textureScale > 0 ? this.build() : this.updateVertices();
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs
+  var SimplePlane = class extends Mesh {
+    /**
+     * @param texture - The texture to use on the SimplePlane.
+     * @param verticesX - The number of vertices in the x-axis
+     * @param verticesY - The number of vertices in the y-axis
+     */
+    constructor(texture, verticesX, verticesY) {
+      const planeGeometry = new PlaneGeometry(texture.width, texture.height, verticesX, verticesY), meshMaterial = new MeshMaterial(Texture.WHITE);
+      super(planeGeometry, meshMaterial), this.texture = texture, this.autoResize = true;
+    }
+    /**
+     * Method used for overrides, to do something in case texture frame was changed.
+     * Meshes based on plane can override it and change more details based on texture.
+     */
+    textureUpdated() {
+      this._textureID = this.shader.texture._updateID;
+      const geometry = this.geometry, { width, height } = this.shader.texture;
+      this.autoResize && (geometry.width !== width || geometry.height !== height) && (geometry.width = this.shader.texture.width, geometry.height = this.shader.texture.height, geometry.build());
+    }
+    set texture(value) {
+      this.shader.texture !== value && (this.shader.texture = value, this._textureID = -1, value.baseTexture.valid ? this.textureUpdated() : value.once("update", this.textureUpdated, this));
+    }
+    get texture() {
+      return this.shader.texture;
+    }
+    _render(renderer) {
+      this._textureID !== this.shader.texture._updateID && this.textureUpdated(), super._render(renderer);
+    }
+    destroy(options) {
+      this.shader.texture.off("update", this.textureUpdated, this), super.destroy(options);
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs
+  var DEFAULT_BORDER_SIZE = 10;
+  var NineSlicePlane = class extends SimplePlane {
+    /**
+     * @param texture - The texture to use on the NineSlicePlane.
+     * @param {number} [leftWidth=10] - size of the left vertical bar (A)
+     * @param {number} [topHeight=10] - size of the top horizontal bar (C)
+     * @param {number} [rightWidth=10] - size of the right vertical bar (B)
+     * @param {number} [bottomHeight=10] - size of the bottom horizontal bar (D)
+     */
+    constructor(texture, leftWidth, topHeight, rightWidth, bottomHeight) {
+      super(Texture.WHITE, 4, 4), this._origWidth = texture.orig.width, this._origHeight = texture.orig.height, this._width = this._origWidth, this._height = this._origHeight, this._leftWidth = leftWidth ?? texture.defaultBorders?.left ?? DEFAULT_BORDER_SIZE, this._rightWidth = rightWidth ?? texture.defaultBorders?.right ?? DEFAULT_BORDER_SIZE, this._topHeight = topHeight ?? texture.defaultBorders?.top ?? DEFAULT_BORDER_SIZE, this._bottomHeight = bottomHeight ?? texture.defaultBorders?.bottom ?? DEFAULT_BORDER_SIZE, this.texture = texture;
+    }
+    textureUpdated() {
+      this._textureID = this.shader.texture._updateID, this._refresh();
+    }
+    get vertices() {
+      return this.geometry.getBuffer("aVertexPosition").data;
+    }
+    set vertices(value) {
+      this.geometry.getBuffer("aVertexPosition").data = value;
+    }
+    /** Updates the horizontal vertices. */
+    updateHorizontalVertices() {
+      const vertices = this.vertices, scale = this._getMinScale();
+      vertices[9] = vertices[11] = vertices[13] = vertices[15] = this._topHeight * scale, vertices[17] = vertices[19] = vertices[21] = vertices[23] = this._height - this._bottomHeight * scale, vertices[25] = vertices[27] = vertices[29] = vertices[31] = this._height;
+    }
+    /** Updates the vertical vertices. */
+    updateVerticalVertices() {
+      const vertices = this.vertices, scale = this._getMinScale();
+      vertices[2] = vertices[10] = vertices[18] = vertices[26] = this._leftWidth * scale, vertices[4] = vertices[12] = vertices[20] = vertices[28] = this._width - this._rightWidth * scale, vertices[6] = vertices[14] = vertices[22] = vertices[30] = this._width;
+    }
+    /**
+     * Returns the smaller of a set of vertical and horizontal scale of nine slice corners.
+     * @returns Smaller number of vertical and horizontal scale.
+     */
+    _getMinScale() {
+      const w3 = this._leftWidth + this._rightWidth, scaleW = this._width > w3 ? 1 : this._width / w3, h3 = this._topHeight + this._bottomHeight, scaleH = this._height > h3 ? 1 : this._height / h3;
+      return Math.min(scaleW, scaleH);
+    }
+    /** The width of the NineSlicePlane, setting this will actually modify the vertices and UV's of this plane. */
+    get width() {
+      return this._width;
+    }
+    set width(value) {
+      this._width = value, this._refresh();
+    }
+    /** The height of the NineSlicePlane, setting this will actually modify the vertices and UV's of this plane. */
+    get height() {
+      return this._height;
+    }
+    set height(value) {
+      this._height = value, this._refresh();
+    }
+    /** The width of the left column. */
+    get leftWidth() {
+      return this._leftWidth;
+    }
+    set leftWidth(value) {
+      this._leftWidth = value, this._refresh();
+    }
+    /** The width of the right column. */
+    get rightWidth() {
+      return this._rightWidth;
+    }
+    set rightWidth(value) {
+      this._rightWidth = value, this._refresh();
+    }
+    /** The height of the top row. */
+    get topHeight() {
+      return this._topHeight;
+    }
+    set topHeight(value) {
+      this._topHeight = value, this._refresh();
+    }
+    /** The height of the bottom row. */
+    get bottomHeight() {
+      return this._bottomHeight;
+    }
+    set bottomHeight(value) {
+      this._bottomHeight = value, this._refresh();
+    }
+    /** Refreshes NineSlicePlane coords. All of them. */
+    _refresh() {
+      const texture = this.texture, uvs = this.geometry.buffers[1].data;
+      this._origWidth = texture.orig.width, this._origHeight = texture.orig.height;
+      const _uvw = 1 / this._origWidth, _uvh = 1 / this._origHeight;
+      uvs[0] = uvs[8] = uvs[16] = uvs[24] = 0, uvs[1] = uvs[3] = uvs[5] = uvs[7] = 0, uvs[6] = uvs[14] = uvs[22] = uvs[30] = 1, uvs[25] = uvs[27] = uvs[29] = uvs[31] = 1, uvs[2] = uvs[10] = uvs[18] = uvs[26] = _uvw * this._leftWidth, uvs[4] = uvs[12] = uvs[20] = uvs[28] = 1 - _uvw * this._rightWidth, uvs[9] = uvs[11] = uvs[13] = uvs[15] = _uvh * this._topHeight, uvs[17] = uvs[19] = uvs[21] = uvs[23] = 1 - _uvh * this._bottomHeight, this.updateHorizontalVertices(), this.updateVerticalVertices(), this.geometry.buffers[0].update(), this.geometry.buffers[1].update();
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs
+  var SimpleMesh = class extends Mesh {
+    /**
+     * @param texture - The texture to use
+     * @param {Float32Array} [vertices] - if you want to specify the vertices
+     * @param {Float32Array} [uvs] - if you want to specify the uvs
+     * @param {Uint16Array} [indices] - if you want to specify the indices
+     * @param drawMode - the drawMode, can be any of the Mesh.DRAW_MODES consts
+     */
+    constructor(texture = Texture.EMPTY, vertices, uvs, indices2, drawMode) {
+      const geometry = new MeshGeometry(vertices, uvs, indices2);
+      geometry.getBuffer("aVertexPosition").static = false;
+      const meshMaterial = new MeshMaterial(texture);
+      super(geometry, meshMaterial, null, drawMode), this.autoUpdate = true;
+    }
+    /**
+     * Collection of vertices data.
+     * @type {Float32Array}
+     */
+    get vertices() {
+      return this.geometry.getBuffer("aVertexPosition").data;
+    }
+    set vertices(value) {
+      this.geometry.getBuffer("aVertexPosition").data = value;
+    }
+    _render(renderer) {
+      this.autoUpdate && this.geometry.getBuffer("aVertexPosition").update(), super._render(renderer);
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs
+  var SimpleRope = class extends Mesh {
+    /**
+     * Note: The wrap mode of the texture is set to REPEAT if `textureScale` is positive.
+     * @param texture - The texture to use on the rope.
+     * @param points - An array of {@link PIXI.Point} objects to construct this rope.
+     * @param {number} textureScale - Optional. Positive values scale rope texture
+     * keeping its aspect ratio. You can reduce alpha channel artifacts by providing a larger texture
+     * and downsampling here. If set to zero, texture will be stretched instead.
+     */
+    constructor(texture, points, textureScale = 0) {
+      const ropeGeometry = new RopeGeometry(texture.height, points, textureScale), meshMaterial = new MeshMaterial(texture);
+      textureScale > 0 && (texture.baseTexture.wrapMode = WRAP_MODES.REPEAT), super(ropeGeometry, meshMaterial), this.autoUpdate = true;
+    }
+    _render(renderer) {
+      const geometry = this.geometry;
+      (this.autoUpdate || geometry._width !== this.shader.texture.height) && (geometry._width = this.shader.texture.height, geometry.update()), super._render(renderer);
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+particle-container@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs
+  var ParticleContainer = class extends Container {
+    /**
+     * @param maxSize - The maximum number of particles that can be rendered by the container.
+     *  Affects size of allocated buffers.
+     * @param properties - The properties of children that should be uploaded to the gpu and applied.
+     * @param {boolean} [properties.vertices=false] - When true, vertices be uploaded and applied.
+     *                  if sprite's ` scale/anchor/trim/frame/orig` is dynamic, please set `true`.
+     * @param {boolean} [properties.position=true] - When true, position be uploaded and applied.
+     * @param {boolean} [properties.rotation=false] - When true, rotation be uploaded and applied.
+     * @param {boolean} [properties.uvs=false] - When true, uvs be uploaded and applied.
+     * @param {boolean} [properties.tint=false] - When true, alpha and tint be uploaded and applied.
+     * @param {number} [batchSize=16384] - Number of particles per batch. If less than maxSize, it uses maxSize instead.
+     * @param {boolean} [autoResize=false] - If true, container allocates more batches in case
+     *  there are more than `maxSize` particles.
+     */
+    constructor(maxSize = 1500, properties, batchSize = 16384, autoResize = false) {
+      super();
+      const maxBatchSize = 16384;
+      batchSize > maxBatchSize && (batchSize = maxBatchSize), this._properties = [false, true, false, false, false], this._maxSize = maxSize, this._batchSize = batchSize, this._buffers = null, this._bufferUpdateIDs = [], this._updateID = 0, this.interactiveChildren = false, this.blendMode = BLEND_MODES.NORMAL, this.autoResize = autoResize, this.roundPixels = true, this.baseTexture = null, this.setProperties(properties), this._tintColor = new Color(0), this.tintRgb = new Float32Array(3), this.tint = 16777215;
+    }
+    /**
+     * Sets the private properties array to dynamic / static based on the passed properties object
+     * @param properties - The properties to be uploaded
+     */
+    setProperties(properties) {
+      properties && (this._properties[0] = "vertices" in properties || "scale" in properties ? !!properties.vertices || !!properties.scale : this._properties[0], this._properties[1] = "position" in properties ? !!properties.position : this._properties[1], this._properties[2] = "rotation" in properties ? !!properties.rotation : this._properties[2], this._properties[3] = "uvs" in properties ? !!properties.uvs : this._properties[3], this._properties[4] = "tint" in properties || "alpha" in properties ? !!properties.tint || !!properties.alpha : this._properties[4]);
+    }
+    updateTransform() {
+      this.displayObjectUpdateTransform();
+    }
+    /**
+     * The tint applied to the container. This is a hex value.
+     * A value of 0xFFFFFF will remove any tint effect.
+     * IMPORTANT: This is a WebGL only feature and will be ignored by the canvas renderer.
+     * @default 0xFFFFFF
+     */
+    get tint() {
+      return this._tintColor.value;
+    }
+    set tint(value) {
+      this._tintColor.setValue(value), this._tintColor.toRgbArray(this.tintRgb);
+    }
+    /**
+     * Renders the container using the WebGL renderer.
+     * @param renderer - The WebGL renderer.
+     */
+    render(renderer) {
+      !this.visible || this.worldAlpha <= 0 || !this.children.length || !this.renderable || (this.baseTexture || (this.baseTexture = this.children[0]._texture.baseTexture, this.baseTexture.valid || this.baseTexture.once("update", () => this.onChildrenChange(0))), renderer.batch.setObjectRenderer(renderer.plugins.particle), renderer.plugins.particle.render(this));
+    }
+    /**
+     * Set the flag that static data should be updated to true
+     * @param smallestChildIndex - The smallest child index.
+     */
+    onChildrenChange(smallestChildIndex) {
+      const bufferIndex = Math.floor(smallestChildIndex / this._batchSize);
+      for (; this._bufferUpdateIDs.length < bufferIndex; )
+        this._bufferUpdateIDs.push(0);
+      this._bufferUpdateIDs[bufferIndex] = ++this._updateID;
+    }
+    dispose() {
+      if (this._buffers) {
+        for (let i2 = 0; i2 < this._buffers.length; ++i2)
+          this._buffers[i2].destroy();
+        this._buffers = null;
+      }
+    }
+    /**
+     * Destroys the container
+     * @param options - Options parameter. A boolean will act as if all options
+     *  have been set to that value
+     * @param {boolean} [options.children=false] - if set to true, all the children will have their
+     *  destroy method called as well. 'options' will be passed on to those calls.
+     * @param {boolean} [options.texture=false] - Only used for child Sprites if options.children is set to true
+     *  Should it destroy the texture of the child sprite
+     * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true
+     *  Should it destroy the base texture of the child sprite
+     */
+    destroy(options) {
+      super.destroy(options), this.dispose(), this._properties = null, this._buffers = null, this._bufferUpdateIDs = null;
     }
   };
 
@@ -32523,9 +33199,9 @@ void main(void){
   _TextMetrics.graphemeSegmenter = (() => {
     if (typeof Intl?.Segmenter == "function") {
       const segmenter = new Intl.Segmenter();
-      return (s2) => [...segmenter.segment(s2)].map((x3) => x3.segment);
+      return (s3) => [...segmenter.segment(s3)].map((x3) => x3.segment);
     }
-    return (s2) => [...s2];
+    return (s3) => [...s3];
   })(), /**
   * New rendering behavior for letter-spacing which uses Chrome's new native API. This will
   * lead to more accurate letter-spacing results because it does not try to manually draw
@@ -33106,11 +33782,11 @@ void main(void){
      * @param isStroke - Is this drawing for the outside stroke of the
      *  text? If not, it's for the inside fill
      */
-    drawLetterSpacing(text, x3, y3, isStroke = false) {
+    drawLetterSpacing(text, x3, y2, isStroke = false) {
       const letterSpacing = this._style.letterSpacing;
       let useExperimentalLetterSpacing = false;
       if (TextMetrics.experimentalLetterSpacingSupported && (TextMetrics.experimentalLetterSpacing ? (this.context.letterSpacing = `${letterSpacing}px`, this.context.textLetterSpacing = `${letterSpacing}px`, useExperimentalLetterSpacing = true) : (this.context.letterSpacing = "0px", this.context.textLetterSpacing = "0px")), letterSpacing === 0 || useExperimentalLetterSpacing) {
-        isStroke ? this.context.strokeText(text, x3, y3) : this.context.fillText(text, x3, y3);
+        isStroke ? this.context.strokeText(text, x3, y2) : this.context.fillText(text, x3, y2);
         return;
       }
       let currentPosition = x3;
@@ -33118,7 +33794,7 @@ void main(void){
       let previousWidth = this.context.measureText(text).width, currentWidth = 0;
       for (let i2 = 0; i2 < stringArray.length; ++i2) {
         const currentChar = stringArray[i2];
-        isStroke ? this.context.strokeText(currentChar, currentPosition, y3) : this.context.fillText(currentChar, currentPosition, y3);
+        isStroke ? this.context.strokeText(currentChar, currentPosition, y2) : this.context.fillText(currentChar, currentPosition, y2);
         let textStr = "";
         for (let j3 = i2 + 1; j3 < stringArray.length; ++j3)
           textStr += stringArray[j3];
@@ -33235,8 +33911,8 @@ void main(void){
     }
     set width(value) {
       this.updateText(true);
-      const s2 = lib_exports.sign(this.scale.x) || 1;
-      this.scale.x = s2 * value / this._texture.orig.width, this._width = value;
+      const s3 = lib_exports.sign(this.scale.x) || 1;
+      this.scale.x = s3 * value / this._texture.orig.width, this._width = value;
     }
     /** The height of the Text, setting this will actually modify the scale to achieve the value set. */
     get height() {
@@ -33244,8 +33920,8 @@ void main(void){
     }
     set height(value) {
       this.updateText(true);
-      const s2 = lib_exports.sign(this.scale.y) || 1;
-      this.scale.y = s2 * value / this._texture.orig.height, this._height = value;
+      const s3 = lib_exports.sign(this.scale.y) || 1;
+      this.scale.y = s3 * value / this._texture.orig.height, this._height = value;
     }
     /**
      * Set the style of the text.
@@ -33501,8 +34177,292 @@ void main(void){
   };
   extensions.add(Prepare);
 
+  // node_modules/.pnpm/@pixi+prepare@7.3.2_3fbtbomg5m3pq3c7az66naijxy/node_modules/@pixi/prepare/lib/TimeLimiter.mjs
+  var TimeLimiter = class {
+    /** @param maxMilliseconds - The maximum milliseconds that can be spent preparing items each frame. */
+    constructor(maxMilliseconds) {
+      this.maxMilliseconds = maxMilliseconds, this.frameStart = 0;
+    }
+    /** Resets any counting properties to start fresh on a new frame. */
+    beginFrame() {
+      this.frameStart = Date.now();
+    }
+    /**
+     * Checks to see if another item can be uploaded. This should only be called once per item.
+     * @returns - If the item is allowed to be uploaded.
+     */
+    allowedToUpload() {
+      return Date.now() - this.frameStart < this.maxMilliseconds;
+    }
+  };
+
+  // node_modules/.pnpm/@pixi+sprite-animated@7.3.2_artivhucobxgltjjxdbpredwxe/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs
+  var AnimatedSprite = class extends Sprite {
+    /**
+     * @param textures - An array of {@link PIXI.Texture} or frame
+     *  objects that make up the animation.
+     * @param {boolean} [autoUpdate=true] - Whether to use Ticker.shared to auto update animation time.
+     */
+    constructor(textures, autoUpdate = true) {
+      super(textures[0] instanceof Texture ? textures[0] : textures[0].texture), this._textures = null, this._durations = null, this._autoUpdate = autoUpdate, this._isConnectedToTicker = false, this.animationSpeed = 1, this.loop = true, this.updateAnchor = false, this.onComplete = null, this.onFrameChange = null, this.onLoop = null, this._currentTime = 0, this._playing = false, this._previousFrame = null, this.textures = textures;
+    }
+    /** Stops the AnimatedSprite. */
+    stop() {
+      this._playing && (this._playing = false, this._autoUpdate && this._isConnectedToTicker && (Ticker.shared.remove(this.update, this), this._isConnectedToTicker = false));
+    }
+    /** Plays the AnimatedSprite. */
+    play() {
+      this._playing || (this._playing = true, this._autoUpdate && !this._isConnectedToTicker && (Ticker.shared.add(this.update, this, UPDATE_PRIORITY.HIGH), this._isConnectedToTicker = true));
+    }
+    /**
+     * Stops the AnimatedSprite and goes to a specific frame.
+     * @param frameNumber - Frame index to stop at.
+     */
+    gotoAndStop(frameNumber) {
+      this.stop(), this.currentFrame = frameNumber;
+    }
+    /**
+     * Goes to a specific frame and begins playing the AnimatedSprite.
+     * @param frameNumber - Frame index to start at.
+     */
+    gotoAndPlay(frameNumber) {
+      this.currentFrame = frameNumber, this.play();
+    }
+    /**
+     * Updates the object transform for rendering.
+     * @param deltaTime - Time since last tick.
+     */
+    update(deltaTime) {
+      if (!this._playing)
+        return;
+      const elapsed = this.animationSpeed * deltaTime, previousFrame = this.currentFrame;
+      if (this._durations !== null) {
+        let lag = this._currentTime % 1 * this._durations[this.currentFrame];
+        for (lag += elapsed / 60 * 1e3; lag < 0; )
+          this._currentTime--, lag += this._durations[this.currentFrame];
+        const sign2 = Math.sign(this.animationSpeed * deltaTime);
+        for (this._currentTime = Math.floor(this._currentTime); lag >= this._durations[this.currentFrame]; )
+          lag -= this._durations[this.currentFrame] * sign2, this._currentTime += sign2;
+        this._currentTime += lag / this._durations[this.currentFrame];
+      } else
+        this._currentTime += elapsed;
+      this._currentTime < 0 && !this.loop ? (this.gotoAndStop(0), this.onComplete && this.onComplete()) : this._currentTime >= this._textures.length && !this.loop ? (this.gotoAndStop(this._textures.length - 1), this.onComplete && this.onComplete()) : previousFrame !== this.currentFrame && (this.loop && this.onLoop && (this.animationSpeed > 0 && this.currentFrame < previousFrame || this.animationSpeed < 0 && this.currentFrame > previousFrame) && this.onLoop(), this.updateTexture());
+    }
+    /** Updates the displayed texture to match the current frame index. */
+    updateTexture() {
+      const currentFrame = this.currentFrame;
+      this._previousFrame !== currentFrame && (this._previousFrame = currentFrame, this._texture = this._textures[currentFrame], this._textureID = -1, this._textureTrimmedID = -1, this._cachedTint = 16777215, this.uvs = this._texture._uvs.uvsFloat32, this.updateAnchor && this._anchor.copyFrom(this._texture.defaultAnchor), this.onFrameChange && this.onFrameChange(this.currentFrame));
+    }
+    /**
+     * Stops the AnimatedSprite and destroys it.
+     * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
+     *  have been set to that value.
+     * @param {boolean} [options.children=false] - If set to true, all the children will have their destroy
+     *      method called as well. 'options' will be passed on to those calls.
+     * @param {boolean} [options.texture=false] - Should it destroy the current texture of the sprite as well.
+     * @param {boolean} [options.baseTexture=false] - Should it destroy the base texture of the sprite as well.
+     */
+    destroy(options) {
+      this.stop(), super.destroy(options), this.onComplete = null, this.onFrameChange = null, this.onLoop = null;
+    }
+    /**
+     * A short hand way of creating an AnimatedSprite from an array of frame ids.
+     * @param frames - The array of frames ids the AnimatedSprite will use as its texture frames.
+     * @returns - The new animated sprite with the specified frames.
+     */
+    static fromFrames(frames) {
+      const textures = [];
+      for (let i2 = 0; i2 < frames.length; ++i2)
+        textures.push(Texture.from(frames[i2]));
+      return new AnimatedSprite(textures);
+    }
+    /**
+     * A short hand way of creating an AnimatedSprite from an array of image ids.
+     * @param images - The array of image urls the AnimatedSprite will use as its texture frames.
+     * @returns The new animate sprite with the specified images as frames.
+     */
+    static fromImages(images) {
+      const textures = [];
+      for (let i2 = 0; i2 < images.length; ++i2)
+        textures.push(Texture.from(images[i2]));
+      return new AnimatedSprite(textures);
+    }
+    /**
+     * The total number of frames in the AnimatedSprite. This is the same as number of textures
+     * assigned to the AnimatedSprite.
+     * @readonly
+     * @default 0
+     */
+    get totalFrames() {
+      return this._textures.length;
+    }
+    /** The array of textures used for this AnimatedSprite. */
+    get textures() {
+      return this._textures;
+    }
+    set textures(value) {
+      if (value[0] instanceof Texture)
+        this._textures = value, this._durations = null;
+      else {
+        this._textures = [], this._durations = [];
+        for (let i2 = 0; i2 < value.length; i2++)
+          this._textures.push(value[i2].texture), this._durations.push(value[i2].time);
+      }
+      this._previousFrame = null, this.gotoAndStop(0), this.updateTexture();
+    }
+    /** The AnimatedSprite's current frame index. */
+    get currentFrame() {
+      let currentFrame = Math.floor(this._currentTime) % this._textures.length;
+      return currentFrame < 0 && (currentFrame += this._textures.length), currentFrame;
+    }
+    set currentFrame(value) {
+      if (value < 0 || value > this.totalFrames - 1)
+        throw new Error(`[AnimatedSprite]: Invalid frame index value ${value}, expected to be between 0 and totalFrames ${this.totalFrames}.`);
+      const previousFrame = this.currentFrame;
+      this._currentTime = value, previousFrame !== this.currentFrame && this.updateTexture();
+    }
+    /**
+     * Indicates if the AnimatedSprite is currently playing.
+     * @readonly
+     */
+    get playing() {
+      return this._playing;
+    }
+    /** Whether to use Ticker.shared to auto update animation time. */
+    get autoUpdate() {
+      return this._autoUpdate;
+    }
+    set autoUpdate(value) {
+      value !== this._autoUpdate && (this._autoUpdate = value, !this._autoUpdate && this._isConnectedToTicker ? (Ticker.shared.remove(this.update, this), this._isConnectedToTicker = false) : this._autoUpdate && !this._isConnectedToTicker && this._playing && (Ticker.shared.add(this.update, this), this._isConnectedToTicker = true));
+    }
+  };
+
   // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs
   var tempPoint3 = new Point();
+  var TilingSprite = class extends Sprite {
+    /**
+     * Note: The wrap mode of the texture is forced to REPEAT on render if the size of the texture
+     * is a power of two, the texture's wrap mode is CLAMP, and the texture hasn't been bound yet.
+     * @param texture - The texture of the tiling sprite.
+     * @param width - The width of the tiling sprite.
+     * @param height - The height of the tiling sprite.
+     */
+    constructor(texture, width = 100, height = 100) {
+      super(texture), this.tileTransform = new Transform(), this._width = width, this._height = height, this.uvMatrix = this.texture.uvMatrix || new TextureMatrix(texture), this.pluginName = "tilingSprite", this.uvRespectAnchor = false;
+    }
+    /**
+     * Changes frame clamping in corresponding textureTransform, shortcut
+     * Change to -0.5 to add a pixel to the edge, recommended for transparent trimmed textures in atlas
+     * @default 0.5
+     * @member {number}
+     */
+    get clampMargin() {
+      return this.uvMatrix.clampMargin;
+    }
+    set clampMargin(value) {
+      this.uvMatrix.clampMargin = value, this.uvMatrix.update(true);
+    }
+    /** The scaling of the image that is being tiled. */
+    get tileScale() {
+      return this.tileTransform.scale;
+    }
+    set tileScale(value) {
+      this.tileTransform.scale.copyFrom(value);
+    }
+    /** The offset of the image that is being tiled. */
+    get tilePosition() {
+      return this.tileTransform.position;
+    }
+    set tilePosition(value) {
+      this.tileTransform.position.copyFrom(value);
+    }
+    /**
+     * @protected
+     */
+    _onTextureUpdate() {
+      this.uvMatrix && (this.uvMatrix.texture = this._texture), this._cachedTint = 16777215;
+    }
+    /**
+     * Renders the object using the WebGL renderer
+     * @param renderer - The renderer
+     */
+    _render(renderer) {
+      const texture = this._texture;
+      !texture || !texture.valid || (this.tileTransform.updateLocalTransform(), this.uvMatrix.update(), renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]), renderer.plugins[this.pluginName].render(this));
+    }
+    /** Updates the bounds of the tiling sprite. */
+    _calculateBounds() {
+      const minX = this._width * -this._anchor._x, minY = this._height * -this._anchor._y, maxX = this._width * (1 - this._anchor._x), maxY = this._height * (1 - this._anchor._y);
+      this._bounds.addFrame(this.transform, minX, minY, maxX, maxY);
+    }
+    /**
+     * Gets the local bounds of the sprite object.
+     * @param rect - Optional output rectangle.
+     * @returns The bounds.
+     */
+    getLocalBounds(rect) {
+      return this.children.length === 0 ? (this._bounds.minX = this._width * -this._anchor._x, this._bounds.minY = this._height * -this._anchor._y, this._bounds.maxX = this._width * (1 - this._anchor._x), this._bounds.maxY = this._height * (1 - this._anchor._y), rect || (this._localBoundsRect || (this._localBoundsRect = new Rectangle()), rect = this._localBoundsRect), this._bounds.getRectangle(rect)) : super.getLocalBounds.call(this, rect);
+    }
+    /**
+     * Checks if a point is inside this tiling sprite.
+     * @param point - The point to check.
+     * @returns Whether or not the sprite contains the point.
+     */
+    containsPoint(point) {
+      this.worldTransform.applyInverse(point, tempPoint3);
+      const width = this._width, height = this._height, x1 = -width * this.anchor._x;
+      if (tempPoint3.x >= x1 && tempPoint3.x < x1 + width) {
+        const y1 = -height * this.anchor._y;
+        if (tempPoint3.y >= y1 && tempPoint3.y < y1 + height)
+          return true;
+      }
+      return false;
+    }
+    /**
+     * Destroys this sprite and optionally its texture and children
+     * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
+     *  have been set to that value
+     * @param {boolean} [options.children=false] - if set to true, all the children will have their destroy
+     *      method called as well. 'options' will be passed on to those calls.
+     * @param {boolean} [options.texture=false] - Should it destroy the current texture of the sprite as well
+     * @param {boolean} [options.baseTexture=false] - Should it destroy the base texture of the sprite as well
+     */
+    destroy(options) {
+      super.destroy(options), this.tileTransform = null, this.uvMatrix = null;
+    }
+    /**
+     * Helper function that creates a new tiling sprite based on the source you provide.
+     * The source can be - frame id, image url, video url, canvas element, video element, base texture
+     * @static
+     * @param {string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source - Source to create texture from
+     * @param {object} options - See {@link PIXI.BaseTexture}'s constructor for options.
+     * @param {number} options.width - required width of the tiling sprite
+     * @param {number} options.height - required height of the tiling sprite
+     * @returns {PIXI.TilingSprite} The newly created texture
+     */
+    static from(source, options) {
+      const texture = source instanceof Texture ? source : Texture.from(source, options);
+      return new TilingSprite(
+        texture,
+        options.width,
+        options.height
+      );
+    }
+    /** The width of the sprite, setting this will actually modify the scale to achieve the value set. */
+    get width() {
+      return this._width;
+    }
+    set width(value) {
+      this._width = value;
+    }
+    /** The height of the TilingSprite, setting this will actually modify the scale to achieve the value set. */
+    get height() {
+      return this._height;
+    }
+    set height(value) {
+      this._height = value;
+    }
+  };
 
   // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.frag.mjs
   var gl2FragmentSrc = `#version 300 es
@@ -33657,17 +34617,17 @@ void main(void)
       vertices[0] = vertices[6] = ts._width * -ts.anchor.x, vertices[1] = vertices[3] = ts._height * -ts.anchor.y, vertices[2] = vertices[4] = ts._width * (1 - ts.anchor.x), vertices[5] = vertices[7] = ts._height * (1 - ts.anchor.y);
       const anchorX = ts.uvRespectAnchor ? ts.anchor.x : 0, anchorY = ts.uvRespectAnchor ? ts.anchor.y : 0;
       vertices = quad.uvs, vertices[0] = vertices[6] = -anchorX, vertices[1] = vertices[3] = -anchorY, vertices[2] = vertices[4] = 1 - anchorX, vertices[5] = vertices[7] = 1 - anchorY, quad.invalidate();
-      const tex = ts._texture, baseTex = tex.baseTexture, premultiplied = baseTex.alphaMode > 0, lt = ts.tileTransform.localTransform, uv = ts.uvMatrix;
+      const tex = ts._texture, baseTex = tex.baseTexture, premultiplied = baseTex.alphaMode > 0, lt2 = ts.tileTransform.localTransform, uv = ts.uvMatrix;
       let isSimple = baseTex.isPowerOfTwo && tex.frame.width === baseTex.width && tex.frame.height === baseTex.height;
       isSimple && (baseTex._glTextures[renderer.CONTEXT_UID] ? isSimple = baseTex.wrapMode !== WRAP_MODES.CLAMP : baseTex.wrapMode === WRAP_MODES.CLAMP && (baseTex.wrapMode = WRAP_MODES.REPEAT));
       const shader = isSimple ? this.simpleShader : this.shader, w3 = tex.width, h3 = tex.height, W2 = ts._width, H3 = ts._height;
       tempMat2.set(
-        lt.a * w3 / W2,
-        lt.b * w3 / H3,
-        lt.c * h3 / W2,
-        lt.d * h3 / H3,
-        lt.tx / W2,
-        lt.ty / H3
+        lt2.a * w3 / W2,
+        lt2.b * w3 / H3,
+        lt2.c * h3 / W2,
+        lt2.d * h3 / H3,
+        lt2.tx / W2,
+        lt2.ty / H3
       ), tempMat2.invert(), isSimple ? tempMat2.prepend(uv.mapCoord) : (shader.uniforms.uMapCoord = uv.mapCoord.toArray(true), shader.uniforms.uClampFrame = uv.uClampFrame, shader.uniforms.uClampOffset = uv.uClampOffset), shader.uniforms.uTransform = tempMat2.toArray(true), shader.uniforms.uColor = Color.shared.setValue(ts.tint).premultiply(ts.worldAlpha, premultiplied).toArray(shader.uniforms.uColor), shader.uniforms.translationMatrix = ts.transform.worldTransform.toArray(true), shader.uniforms.uSampler = tex, renderer.shader.bind(shader), renderer.geometry.bind(quad), this.state.blendMode = lib_exports.correctBlendMode(ts.blendMode, premultiplied), renderer.state.set(this.state), renderer.geometry.draw(this.renderer.gl.TRIANGLES, 6, 0);
     }
   };
@@ -34094,9 +35054,9 @@ void main(void)
   }
 
   // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_a3nvz2nrxsjxnafwmmfzvgv7gm/node_modules/@pixi/text-bitmap/lib/utils/drawGlyph.mjs
-  function drawGlyph(canvas, context2, metrics, x3, y3, resolution, style) {
+  function drawGlyph(canvas, context2, metrics, x3, y2, resolution, style) {
     const char = metrics.text, fontProperties = metrics.fontProperties;
-    context2.translate(x3, y3), context2.scale(resolution, resolution);
+    context2.translate(x3, y2), context2.scale(resolution, resolution);
     const tx = style.strokeThickness / 2, ty = -(style.strokeThickness / 2);
     if (context2.font = style.toFontString(), context2.lineWidth = style.strokeThickness, context2.textBaseline = style.textBaseline, context2.lineJoin = style.lineJoin, context2.miterLimit = style.miterLimit, context2.fillStyle = generateFillStyle(canvas, context2, style, resolution, [char], metrics), context2.strokeStyle = style.stroke, style.dropShadow) {
       const dropShadowColor = style.dropShadowColor, dropShadowBlur = style.dropShadowBlur * resolution, dropShadowDistance = style.dropShadowDistance * resolution;
@@ -34155,11 +35115,11 @@ void main(void)
       }
       for (let i2 = 0; i2 < data.char.length; i2++) {
         const { id, page: page2 } = data.char[i2];
-        let { x: x3, y: y3, width, height, xoffset, yoffset, xadvance } = data.char[i2];
-        x3 /= res, y3 /= res, width /= res, height /= res, xoffset /= res, yoffset /= res, xadvance /= res;
+        let { x: x3, y: y2, width, height, xoffset, yoffset, xadvance } = data.char[i2];
+        x3 /= res, y2 /= res, width /= res, height /= res, xoffset /= res, yoffset /= res, xadvance /= res;
         const rect = new Rectangle(
           x3 + pageTextures[page2].frame.x / res,
-          y3 + pageTextures[page2].frame.y / res,
+          y2 + pageTextures[page2].frame.y / res,
           width,
           height
         );
@@ -34735,6 +35695,7 @@ void main(void)\r
     maxWidth: 0,
     letterSpacing: 0
   };
+  var BitmapText = _BitmapText;
 
   // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_a3nvz2nrxsjxnafwmmfzvgv7gm/node_modules/@pixi/text-bitmap/lib/loadBitmapFont.mjs
   var validExtensions = [".xml", ".fnt"];
@@ -34916,9 +35877,9 @@ void main(void)\r
     /** Convert the internal drop-shadow settings to CSS text-shadow */
     dropShadowToCSS() {
       let color = this.normalizeColor(this.dropShadowColor);
-      const alpha = this.dropShadowAlpha, x3 = Math.round(Math.cos(this.dropShadowAngle) * this.dropShadowDistance), y3 = Math.round(Math.sin(this.dropShadowAngle) * this.dropShadowDistance);
+      const alpha = this.dropShadowAlpha, x3 = Math.round(Math.cos(this.dropShadowAngle) * this.dropShadowDistance), y2 = Math.round(Math.sin(this.dropShadowAngle) * this.dropShadowDistance);
       color.startsWith("#") && alpha < 1 && (color += (alpha * 255 | 0).toString(16).padStart(2, "0"));
-      const position3 = `${x3}px ${y3}px`;
+      const position3 = `${x3}px ${y2}px`;
       return this.dropShadowBlur > 0 ? `text-shadow: ${position3} ${this.dropShadowBlur}px ${color}` : `text-shadow: ${position3} ${color}`;
     }
     /** Resets all properties to the defaults specified in TextStyle.prototype._default */
@@ -35180,8 +36141,8 @@ void main(void)\r
     }
     set width(value) {
       this.updateText(true);
-      const s2 = lib_exports.sign(this.scale.x) || 1;
-      this.scale.x = s2 * value / this._image.width / this.resolution, this._width = value;
+      const s3 = lib_exports.sign(this.scale.x) || 1;
+      this.scale.x = s3 * value / this._image.width / this.resolution, this._width = value;
     }
     /**
      * Get the height in pixels.
@@ -35192,8 +36153,8 @@ void main(void)\r
     }
     set height(value) {
       this.updateText(true);
-      const s2 = lib_exports.sign(this.scale.y) || 1;
-      this.scale.y = s2 * value / this._image.height / this.resolution, this._height = value;
+      const s3 = lib_exports.sign(this.scale.y) || 1;
+      this.scale.y = s3 * value / this._image.height / this.resolution, this._height = value;
     }
     /** The base style to render with text. */
     get style() {
@@ -35243,6 +36204,7 @@ void main(void)\r
   _HTMLText.defaultMaxWidth = 2024, /** Default maxHeight, set at construction */
   _HTMLText.defaultMaxHeight = 2024, /** Default autoResolution for all HTMLText objects */
   _HTMLText.defaultAutoResolution = true;
+  var HTMLText = _HTMLText;
 
   // src/engine/rendering/resize.ts
   function resize(app) {
@@ -35269,6 +36231,7 @@ void main(void)\r
     const app = world2.get(Application);
     document.body.appendChild(app.view);
     const screen = new Container();
+    screen.sortableChildren = true;
     world2.add(screen, "screen");
     app.stage.addChild(screen);
     resize(app);
@@ -35279,20 +36242,20 @@ void main(void)\r
 
   // src/engine/rendering/position.ts
   var Position = class extends Ye(
-    St({
-      x: St.number,
-      y: St.number,
-      r: St.number
+    Et({
+      x: Et.number,
+      y: Et.number,
+      r: Et.number
     }).logged()
   ) {
-    add(xOrEntity, y3, r2 = 0) {
-      if (y3 !== void 0) {
+    add(xOrEntity, y2, r2 = 0) {
+      if (y2 !== void 0) {
         this.x += xOrEntity.get(Position.x);
         this.y += xOrEntity.get(Position.y);
         this.r += xOrEntity.get(Position.r);
       } else {
         this.x += xOrEntity;
-        this.y += y3;
+        this.y += y2;
         this.r += r2;
       }
     }
@@ -35300,31 +36263,36 @@ void main(void)\r
 
   // src/engine/rendering/system.ts
   Bt(Container);
-  var GraphicsSystem = class extends $t(_(Container)) {
+  var GraphicsSystem = class extends Jt(B(Container)) {
     screen;
     screenRect = new Rectangle(0, 0, 256, 256);
     init() {
       this.screen = this.world.get(Application).stage.getChildAt(0);
     }
+    entsToRemove = [];
     update() {
-      this.entities.forEachAdded((ent) => {
-        const container = ent.get(Container);
-        this.screen.addChild(container);
-        container.name = ent.toString();
-      });
+      const currentChildren = this.screen.children.slice();
+      let ents = "";
       this.entities.forEach((ent) => {
+        ents += ent;
         const x3 = ent.get(Position.x);
-        const y3 = ent.get(Position.y);
-        if (x3 > this.screenRect.right || x3 < this.screenRect.left || y3 < this.screenRect.top || y3 > this.screenRect.bottom) {
-          ent.remove(Container);
-          return;
-        }
+        const y2 = ent.get(Position.y);
         const el = ent.get(Container);
+        const idx = currentChildren.indexOf(el);
+        if (idx < 0) {
+          this.screen.addChild(el);
+          el.name = ent;
+          console.log("Added", ent);
+        } else {
+          currentChildren.splice(idx, 1);
+        }
         el.position.set(ent.get(Position.x), ent.get(Position.y));
         el.rotation = ent.get(Position.r);
       });
-      this.entities.forEachRemoved((ent) => {
-        this.screen.getChildByName(ent.toString()).removeFromParent();
+      console.log(ents);
+      currentChildren.forEach((child) => {
+        child.removeFromParent();
+        console.log("Removing", child.name);
       });
     }
   };
@@ -35343,7 +36311,8 @@ void main(void)\r
     });
     world2.add(app);
     setupPixiCanvas(world2);
-    world2.addSystem(GraphicsSystem);
+    world2.createSchedule("render");
+    world2.addSystem(GraphicsSystem, "render");
   }
 
   // src/engine/diagnostics.ts
@@ -35363,7 +36332,7 @@ void main(void)\r
   __publicField(Diagnostics, "FPS", 0);
   __publicField(Diagnostics, "logicTick", 0);
   // Whether or not artificial lag is being applied
-  __publicField(Diagnostics, "artificialLag", false);
+  __publicField(Diagnostics, "artificialLag", true);
   // Which connection is the worst
   __publicField(Diagnostics, "worstRemoteConnection", "");
   __publicField(Diagnostics, "worstRemotePing", 0);
@@ -35403,14 +36372,14 @@ void main(void)\r
 
   // src/engine/loop.ts
   var paused = true;
-  var desiredFrameRate = 1e3 / 60;
+  var desiredFrameRate = 1e3 / 30;
   function LoopPlugin(world2) {
     let leftoverTime = 0;
     let lastPhysicsTime = performance.now();
     setInterval(() => {
       const now = performance.now();
-      const dt = now - lastPhysicsTime;
-      leftoverTime += dt;
+      const dt2 = now - lastPhysicsTime;
+      leftoverTime += dt2;
       lastPhysicsTime = now;
       if (paused)
         return;
@@ -35423,6 +36392,7 @@ void main(void)\r
     }, desiredFrameRate);
     let lastRenderingTime = performance.now();
     world2.get(Application).ticker.add(() => {
+      world2.update("render");
       const now = performance.now();
       Diagnostics.FPS = 1e3 / (now - lastRenderingTime);
       lastRenderingTime = now;
@@ -35433,8 +36403,8 @@ void main(void)\r
   }
 
   // src/engine/script.ts
-  var Scripts = Ye(St.custom());
-  var GlobalScripts = Ye(St.custom());
+  var Scripts = Ye(Et.custom());
+  var GlobalScripts = Ye(Et.custom());
   window.s = Scripts;
   c.prototype.addScript = function(script) {
     script = script.bind(this);
@@ -35472,7 +36442,7 @@ void main(void)\r
     }
     scripts?.clear();
   };
-  var ScriptSystem = class extends $t(Scripts) {
+  var ScriptSystem = class extends Jt(Scripts) {
     init() {
       const scripts = new GlobalScripts(/* @__PURE__ */ new Set());
       this.world.add(scripts);
@@ -36474,7 +37444,7 @@ void main(void)\r
         this._senders = this._senders || [];
         origRemoveStream.apply(this, [stream]);
         stream.getTracks().forEach((track) => {
-          const sender = this._senders.find((s2) => s2.track === track);
+          const sender = this._senders.find((s3) => s3.track === track);
           if (sender) {
             this._senders.splice(this._senders.indexOf(sender), 1);
           }
@@ -36615,12 +37585,12 @@ void main(void)\r
         let sender;
         let receiver;
         let err;
-        this.getSenders().forEach((s2) => {
-          if (s2.track === track) {
+        this.getSenders().forEach((s3) => {
+          if (s3.track === track) {
             if (sender) {
               err = true;
             } else {
-              sender = s2;
+              sender = s3;
             }
           }
         });
@@ -36675,7 +37645,7 @@ void main(void)\r
     window2.RTCPeerConnection.prototype.addStream = function addStream(stream) {
       this._shimmedLocalStreams = this._shimmedLocalStreams || {};
       stream.getTracks().forEach((track) => {
-        const alreadyExists = this.getSenders().find((s2) => s2.track === track);
+        const alreadyExists = this.getSenders().find((s3) => s3.track === track);
         if (alreadyExists) {
           throw new DOMException(
             "Track already exists.",
@@ -36729,7 +37699,7 @@ void main(void)\r
       this._streams = this._streams || {};
       this._reverseStreams = this._reverseStreams || {};
       stream.getTracks().forEach((track) => {
-        const alreadyExists = this.getSenders().find((s2) => s2.track === track);
+        const alreadyExists = this.getSenders().find((s3) => s3.track === track);
         if (alreadyExists) {
           throw new DOMException(
             "Track already exists.",
@@ -36767,7 +37737,7 @@ void main(void)\r
           "NotSupportedError"
         );
       }
-      const alreadyExists = this.getSenders().find((s2) => s2.track === track);
+      const alreadyExists = this.getSenders().find((s3) => s3.track === track);
       if (alreadyExists) {
         throw new DOMException(
           "Track already exists.",
@@ -36788,7 +37758,7 @@ void main(void)\r
         this._reverseStreams[newStream.id] = stream;
         this.addStream(newStream);
       }
-      return this.getSenders().find((s2) => s2.track === track);
+      return this.getSenders().find((s3) => s3.track === track);
     };
     function replaceInternalStreamId(pc, description) {
       let sdp2 = description.sdp;
@@ -40237,8 +41207,8 @@ void main(void)\r
   var THROW_ON_ITERABLE = 2048;
 
   // node_modules/.pnpm/peerjs@1.5.1/node_modules/peerjs/dist/bundler.mjs
-  function $parcel$export(e2, n2, v3, s2) {
-    Object.defineProperty(e2, n2, { get: v3, set: s2, enumerable: true, configurable: true });
+  function $parcel$export(e2, n2, v3, s3) {
+    Object.defineProperty(e2, n2, { get: v3, set: s3, enumerable: true, configurable: true });
   }
   var $fcbcc7538a6776d5$export$f1c5f4c9cb95390b = class {
     constructor() {
@@ -42047,7 +43017,7 @@ void main(void)\r
 
   // src/engine/resource.ts
   function ResourceUpdaterSystem(resource) {
-    return class ResourceUpdater extends $t({}) {
+    return class ResourceUpdater extends Jt({}) {
       update() {
         this.world.get(resource)?.update();
       }
@@ -42064,7 +43034,7 @@ void main(void)\r
   }
 
   // src/engine/multiplayer/network.ts
-  var PeerId = Ye(St.string);
+  var PeerId = Ye(Et.string);
   var _NetworkConnection = class {
     constructor(world2) {
       this.world = world2;
@@ -42384,227 +43354,87 @@ void main(void)\r
   );
 
   // src/engine/multiplayer/archetype.ts
-  var LoggedArchetype = class extends v {
-    bufferSize = u.defaultLoggedBufferSize;
-    // Gonna be used a lot, positive numbers means they was added, negative means they was removed
-    log = new Array(this.bufferSize).fill(null);
-    logInitalStateIfNotSet() {
-      if (this.log[0] === null)
-        this.log[0] = [];
+  var LoggedArchetype = class extends M {
+    log = [];
+    saveStartState() {
+      if (this.log[0] == null)
+        this.log.unshift(this.entities.slice());
     }
     addEntity(entity) {
-      this.logInitalStateIfNotSet();
-      this.log[0].push(entity);
+      this.saveStartState();
       super.addEntity(entity);
     }
     removeEntity(entity) {
-      this.logInitalStateIfNotSet();
-      this.log[0]?.push(-entity);
+      this.saveStartState();
       super.removeEntity(entity);
     }
     update() {
-      if (this.log.unshift(null) > this.bufferSize) {
+      this.log.unshift(null);
+      if (this.log.length > v) {
         this.log.pop();
       }
     }
     rollback(numFrames) {
-      if (numFrames > this.bufferSize) {
-        throw new Error("Out of bounds rollback");
-      }
-      for (let i2 = 0; i2 <= numFrames; i2++) {
-        if (this.log[i2] === null)
+      for (let i2 = numFrames; i2 >= 0; i2--) {
+        if (this.log[i2] == null)
           continue;
-        for (const id of this.log[i2]) {
-          if (id >= 0) {
-            super.removeEntity(id);
-          } else {
-            super.addEntity(-id);
-          }
-        }
+        this.entities = this.log[i2];
+        break;
       }
       this.log.splice(0, numFrames + 1);
     }
   };
-  var LoggedArchetypeManager = class {
+  var LoggedArchetypeManager = class extends P {
+    log = [];
     constructor(world2) {
-      this.world = world2;
-      this.archetypes.set(0, this.defaultArchetype);
-      this.entityArchetypes = new Int32Array(
-        new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * world2.maxEntities)
-      );
-    }
-    archetypes = /* @__PURE__ */ new Map();
-    entityArchetypes;
-    bufferSize = u.defaultLoggedBufferSize;
-    log = new Array(this.bufferSize);
-    defaultArchetype = new LoggedArchetype(
-      0,
-      /* @__PURE__ */ new Set(),
-      1
-    );
-    saveInitialStateIfNotThere() {
-      if (this.log[0] === null)
-        return;
-      this.log[0] = new Int32Array(this.entityArchetypes.length);
-      this.entityArchetypes.set(this.log[0]);
-    }
-    loadFromData(data) {
-      this.defaultArchetype = Object.create(
-        LoggedArchetype.prototype,
-        Object.getOwnPropertyDescriptors(data.defaultArchetype)
-      );
-      data.archetypes.forEach((archetype, id) => {
-        this.archetypes.set(
-          id,
-          Object.create(
-            LoggedArchetype.prototype,
-            Object.getOwnPropertyDescriptors(archetype)
-          )
-        );
-      });
-      this.entityArchetypes = data.entityArchetypes;
-    }
-    createNewArchetype(components) {
-      const sorted = [...components].sort((a3, b3) => a3 - b3);
-      let hash = 0;
-      for (let i2 = 0; i2 < sorted.length; i2++)
-        hash = Math.imul(31, hash) + sorted[i2] | 0;
-      const nextId = hash;
-      const newArchetype = new LoggedArchetype(
-        nextId,
-        components,
+      super(world2);
+      this.defaultArchetype = new LoggedArchetype(
+        0,
+        /* @__PURE__ */ new Set(),
         this.world.maxEntities
       );
-      this.world.queryManager.onNewArchetypeCreated(newArchetype);
-      this.world.workerManager.onNewArchetypeCreated(newArchetype);
-      this.archetypes.set(newArchetype.id, newArchetype);
-      return newArchetype;
+      this.archetypes.set(0, this.defaultArchetype);
     }
-    getOrCreateArchetype(components) {
-      for (const [_2, archetype] of this.archetypes) {
-        if (archetype.components.size !== components.size)
-          continue;
-        let hasAll = true;
-        for (const needed of components) {
-          if (!archetype.components.has(needed)) {
-            hasAll = false;
-            break;
-          }
-        }
-        if (hasAll)
-          return archetype;
-      }
-      return this.createNewArchetype(components);
+    saveStartState() {
+      if (this.log[0] == null)
+        this.log.unshift(this.entityArchetypes.slice());
     }
-    moveWithoutGraph(entity, from, to) {
-      this.saveInitialStateIfNotThere();
-      from.removeEntity(entity);
-      to.addEntity(entity);
-      this.entityArchetypes[entity] = to.id;
-    }
-    addEntity(entity) {
-      this.saveInitialStateIfNotThere();
-      this.entityArchetypes[entity] = 0;
-      this.defaultArchetype.addEntity(entity);
-    }
-    removeEntity(entity) {
-      this.saveInitialStateIfNotThere();
-      this.moveWithoutGraph(
-        entity,
-        this.archetypes.get(this.entityArchetypes[entity]),
-        this.defaultArchetype
-      );
-      this.defaultArchetype.removeEntity(entity);
+    createNewArchetype(components) {
+      const newId = [...components].sort((a3, b3) => a3 - b3).reduce((hash, component) => Math.imul(31, hash) + component | 0, 0);
+      const result = new LoggedArchetype(newId, components, 10);
+      this.world.queryManager.onNewArchetypeCreated(result);
+      this.world.workerManager.onNewArchetypeCreated(result);
+      this.archetypes.set(newId, result);
+      return result;
     }
     entityAddComponent(entity, component) {
-      if (entity.has(component)) {
-        throw new Error(
-          "Entity" + entity + "tried to add component (ID:" + component + ") which it already had"
-        );
-      }
-      this.saveInitialStateIfNotThere();
-      const firstArchetype = this.archetypes.get(this.entityArchetypes[entity]);
-      firstArchetype.removeEntity(entity);
-      if (!firstArchetype.graph.added.has(component)) {
-        for (const [id, candidateArchetype] of this.archetypes.entries()) {
-          if (candidateArchetype.components.size == firstArchetype.components.size + 1) {
-            if (candidateArchetype.components.has(component) && firstArchetype.components.every(
-              (c3) => candidateArchetype.components.has(c3)
-            )) {
-              firstArchetype.graph.added.set(
-                component,
-                candidateArchetype
-              );
-              break;
-            }
-          }
-        }
-        if (!firstArchetype.graph.added.has(component)) {
-          const newArchetype2 = this.createNewArchetype(
-            firstArchetype.components.concat(component)
-          );
-          firstArchetype.graph.added.set(component, newArchetype2);
-        }
-      }
-      const newArchetype = firstArchetype.graph.added.get(component);
-      newArchetype.addEntity(entity);
-      this.entityArchetypes[entity] = newArchetype.id;
+      this.saveStartState();
+      super.entityAddComponent(entity, component);
     }
     entityRemoveComponent(entity, component) {
-      if (!entity.has(component)) {
-        throw new Error(
-          "Entity" + entity + "tried to remove component (ID:" + component + ") which it didn't have"
-        );
-      }
-      this.saveInitialStateIfNotThere();
-      const firstArchetype = this.archetypes.get(this.entityArchetypes[entity]);
-      firstArchetype.removeEntity(entity);
-      if (!firstArchetype.graph.removed.has(component)) {
-        for (const [id, candidateArchetype] of this.archetypes) {
-          if (candidateArchetype.components.size == firstArchetype.components.size - 1) {
-            if (candidateArchetype.components.every(
-              (c3) => c3 !== component && firstArchetype.components.has(c3)
-            )) {
-              firstArchetype.graph.removed.set(
-                component,
-                candidateArchetype
-              );
-              break;
-            }
-          }
-        }
-        if (!firstArchetype.graph.removed.has(component)) {
-          const newArchetype2 = this.createNewArchetype(
-            firstArchetype.components.filter((x3) => x3 !== component)
-          );
-          firstArchetype.graph.removed.set(component, newArchetype2);
-        }
-      }
-      const newArchetype = firstArchetype.graph.removed.get(component);
-      newArchetype.addEntity(entity);
-      this.entityArchetypes[entity] = newArchetype.id;
+      this.saveStartState();
+      super.entityRemoveComponent(entity, component);
     }
-    resize(maxEnts) {
-      for (const [_2, archetype] of this.archetypes) {
-        archetype.resize(maxEnts);
-      }
+    addEntity(entity) {
+      this.saveStartState();
+      super.addEntity(entity);
+    }
+    moveWithoutGraph(entity, from, to) {
+      this.saveStartState();
+      super.moveWithoutGraph(entity, from, to);
     }
     update() {
-      if (this.log.unshift(null) > this.bufferSize) {
+      this.log.unshift(null);
+      if (this.log.length > v) {
         this.log.pop();
       }
-      for (const [_2, archetype] of this.archetypes) {
-        archetype.update();
-      }
+      this.archetypes.forEach((archetype) => archetype.update());
     }
     rollback(numFrames) {
-      if (numFrames > this.bufferSize) {
-        throw new Error("Out of bounds rollback");
-      }
-      for (let i2 = numFrames; i2 > -1; i2--) {
-        if (this.log[i2] === null)
+      for (let i2 = numFrames; i2 >= 0; i2--) {
+        if (this.log[i2] == null)
           continue;
-        this.log[i2].set(this.entityArchetypes);
+        this.entityArchetypes = this.log[i2];
         break;
       }
       this.log.splice(0, numFrames + 1);
@@ -42612,67 +43442,43 @@ void main(void)\r
     }
   };
 
-  // src/engine/multiplayer/world.ts
-  var _MultiplayerEntityManager = class {
-    constructor(world2) {
-      this.world = world2;
-    }
-    entities = /* @__PURE__ */ new Set();
+  // src/engine/multiplayer/entities.ts
+  var MultiplayerEntityManager = class extends Y {
     log = [];
     update() {
-      if (this.log.unshift(null) > _MultiplayerEntityManager.bufferSize) {
+      if (this.log.unshift(null) > v) {
         this.log.pop();
       }
     }
     saveInitialState() {
       if (this.log[0] === null) {
         this.log[0] = new Set(this.entities);
+      } else {
+        console.log(this.log[0]);
       }
     }
     rollback(numFrames) {
       for (let i2 = numFrames; i2 >= 0; i2--) {
-        if (this.log[i2] === null)
+        if (!this.log[i2])
           continue;
+        console.log("Entity manager rollback ", this.log[i2]);
         this.entities = this.log[i2];
         break;
       }
       this.log.splice(0, numFrames + 1);
     }
-    spawn() {
+    spawn(...components) {
       this.saveInitialState();
-      for (let i2 = 1; i2 <= this.entities.size + 1; i2++) {
-        if (!this.entities.has(i2)) {
-          const result = i2;
-          this.entities.add(result);
-          this.world.archetypeManager.addEntity(result);
-          return result;
-        }
-      }
-      throw new Error("Shouldn't have gotten here");
+      return super.spawn(...components);
     }
     destroy(ent) {
       this.saveInitialState();
-      this.entities.delete(ent);
-      this.world.archetypeManager.removeEntity(ent);
+      super.destroy(ent);
+      console.trace("Removed " + ent);
     }
   };
-  var MultiplayerEntityManager = _MultiplayerEntityManager;
-  __publicField(MultiplayerEntityManager, "bufferSize", u.defaultLoggedBufferSize);
   function patchWorldMethods(world2) {
-    const $oldSpawn = world2.spawn.bind(world2);
-    const $oldDestroy = world2.destroy.bind(world2);
-    const $oldTick = world2.tick.bind(world2);
     world2.entityManager = new MultiplayerEntityManager(world2);
-    world2.spawn = function() {
-      return this.entityManager.spawn();
-    };
-    world2.destroy = function(ent) {
-      return this.entityManager.destroy(ent);
-    };
-    world2.tick = function(schedule) {
-      this.entityManager.update();
-      return $oldTick(schedule);
-    };
   }
 
   // src/engine/multiplayer/rollback.ts
@@ -42683,18 +43489,43 @@ void main(void)\r
     }
     currentlyInRollback = false;
     currentFramesBack = 0;
+    logger = new m("Rollback");
     startRollback(numFramesAgo) {
       this.currentlyInRollback = true;
       this.currentFramesBack = numFramesAgo;
-      const storages = this.world.storageManager.getAllByType(y.logged);
+      if (numFramesAgo > this.world.get(NetworkConnection).framesConnected) {
+        this.logger.warn(
+          "Tried to rollback",
+          numFramesAgo,
+          "frames, while we have only been connected ",
+          this.world.get(NetworkConnection).framesConnected,
+          "frames",
+          "Will only roll back that many frames, so desync could occur "
+        );
+        numFramesAgo = this.world.get(NetworkConnection).framesConnected;
+      }
+      if (numFramesAgo > v) {
+        this.logger.warn(
+          "Tried to rollback",
+          numFramesAgo,
+          "frames, while the max buffer size is",
+          v,
+          "Will only roll back that many frames, so desync could occur "
+        );
+        numFramesAgo = v;
+      }
+      this.logger.log(
+        "Rolling back",
+        numFramesAgo,
+        "frames to frame",
+        this.world.get(NetworkConnection).framesConnected - numFramesAgo
+      );
+      const storages = this.world.storageManager.getAllByType(s.logged);
       storages.forEach((storage) => storage.rollback(numFramesAgo));
       this.world.archetypeManager.rollback(numFramesAgo);
       this.world.entityManager.rollback(numFramesAgo);
       while (this.currentFramesBack >= 0) {
-        this.world.storageManager.update();
-        this.world.archetypeManager.update();
-        this.world.entityManager.update();
-        this.world.update("rollback");
+        this.world.tick("rollback");
         this.currentFramesBack--;
       }
       this.currentFramesBack = 0;
@@ -43055,9 +43886,9 @@ void main(void)\r
       window.addEventListener("joystickconnected", (e2) => {
         e2.detail.joystick.addEventListener(
           "inputchange",
-          ({ detail: { x: x3, y: y3, angle } }) => {
+          ({ detail: { x: x3, y: y2, angle } }) => {
             this.setAnalog(`Joystick${e2.detail.joystickId}-X`, x3);
-            this.setAnalog(`Joystick${e2.detail.joystickId}-Y`, y3);
+            this.setAnalog(`Joystick${e2.detail.joystickId}-Y`, y2);
             this.setAnalog(`Joystick${e2.detail.joystickId}-Angle`, angle);
           }
         );
@@ -43450,11 +44281,11 @@ void main(void)\r
 
   // src/game/components/velocity.ts
   var Velocity = class extends Ye(
-    St({ x: St.number, y: St.number }).logged()
+    Et({ x: Et.number, y: Et.number }).logged()
   ) {
-    add(x3, y3) {
+    add(x3, y2) {
       this.x += x3;
-      this.y += y3;
+      this.y += y2;
     }
     mult(n2) {
       this.x *= n2;
@@ -43463,7 +44294,7 @@ void main(void)\r
   };
 
   // src/game/systems/movement.ts
-  var MovementSystem = class extends $t(_(Position, Velocity)) {
+  var MovementSystem = class extends Jt(B(Position, Velocity)) {
     update() {
       let xPos = "";
       this.entities.forEach((entity) => {
@@ -43484,7 +44315,7 @@ void main(void)\r
     new Position({ x: 0, y: 0, r: 0 }),
     Container
   );
-  var GraphicsEnt = Be2(
+  var GraphicsEnt = Pe2(
     graphicsBlueprint,
     [Position.x, Position.y],
     function(options, methodName, ...args) {
@@ -43501,13 +44332,12 @@ void main(void)\r
         graphics[methodName](...args);
       }
       graphics.position.set(this.get(Position.x), this.get(Position.y));
-      this.world.get(Application).stage.addChild(graphics);
       this.update(graphics);
     }
   );
 
   // src/game/components/timed.ts
-  var TimedAlive = Ye(St.number.logged());
+  var TimedAlive = Ye(Et.number.logged());
   console.log(TimedAlive.id);
 
   // src/game/blueprints/bullet.ts
@@ -43515,25 +44345,25 @@ void main(void)\r
     Position,
     Velocity,
     Graphics,
-    new TimedAlive(1e3)
+    new TimedAlive(100)
   );
-  var BulletEnt = Be2(
+  var BulletEnt = Pe2(
     bulletBlueprint,
     [Position.x, Position.y, Velocity.x, Velocity.y],
     function(fillColor) {
       this.update(Position.r, 0);
       const graphics = new Graphics();
       graphics.beginFill(fillColor);
-      graphics.arc(0, 0, 5, 0, Math.PI * 2);
+      graphics.arc(0, 0, 3, 0, Math.PI * 2);
       this.update(graphics);
     }
   );
 
   // src/game/scripts/movement.ts
   var PlayerInfo = Ye(
-    St({
-      shootTimer: St.number,
-      dashTimer: St.number
+    Et({
+      shootTimer: Et.number,
+      dashTimer: Et.number
     }).ranged(2)
   );
   var movementScript = function() {
@@ -43547,7 +44377,6 @@ void main(void)\r
       this.mult(Velocity.x, 3);
     }
     if (input.is("shoot", "JUST_PRESSED", id)) {
-      console.log(input.get("aim"));
       BulletEnt(
         this.get(Position.x),
         this.get(Position.y),
@@ -43561,7 +44390,7 @@ void main(void)\r
   };
 
   // src/game/systems/timed.ts
-  var RemoveDeadEntities = class extends $t(_(TimedAlive)) {
+  var RemoveDeadEntities = class extends Jt(B(TimedAlive)) {
     update() {
       this.entities.forEach((ent) => {
         ent.inc(TimedAlive, -1);
@@ -43572,109 +44401,29 @@ void main(void)\r
     }
   };
 
+  // src/engine/rendering/blueprints/sprite.ts
+  var SpriteBlueprint = new a(new Position({ x: 0, y: 0, r: 0 }), Sprite);
+  var SpriteEnt = Pe2(
+    SpriteBlueprint,
+    [Position.x, Position.y],
+    function(source) {
+      const sprite = new Sprite(Texture.from(source));
+      this.update(sprite);
+      sprite.position.set(this.get(Position.x), this.get(Position.y));
+    }
+  );
+
   // src/game/levels/maps/1.ts
   async function loadLevel1Map(world2) {
     const app = world2.get(Application);
     app.renderer.background.backgroundColor.setValue("#06011f");
-    const sprite = new Sprite(Texture.from("assets/map1bg.png"));
-    console.log(sprite);
+    const ent = SpriteEnt(0, 0, "assets/map1bg.png");
+    const sprite = ent.get(Sprite);
     sprite.texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
-    world2.get("screen").addChild(sprite);
-    console.log(sprite.texture.baseTexture);
+    sprite.zIndex = -1;
     setTimeout(() => {
       resize(app);
     }, 100);
-  }
-
-  // src/game/states/multiplayer.ts
-  var MultiplayerGameState = class extends State2 {
-    async onEnter(payload, from) {
-      this.world.addSystem(RemoveDeadEntities);
-      this.world.addSystem(RemoveDeadEntities, "rollback");
-      loadLevel1Map(this.world);
-      const localX = this.world.get(NetworkConnection).id === "A" ? 16 * 2 : 16 * 13;
-      const remoteX = this.world.get(NetworkConnection).id === "A" ? 16 * 13 : 16 * 2;
-      const localColor = localX === 16 * 2 ? "blue" : "red";
-      const remoteColor = localX !== 16 * 2 ? "blue" : "red";
-      const localPlayer = GraphicsEnt(
-        localX,
-        16 * 2,
-        { fillStyle: localColor },
-        "drawRect",
-        0,
-        0,
-        16,
-        16
-      );
-      localPlayer.add(new PeerId(this.world.get(NetworkConnection).id));
-      localPlayer.addScript(movementScript);
-      localPlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
-      localPlayer.add(new Velocity({ x: 0, y: 0 }));
-      this.world.add(localPlayer, "local_player");
-      const remotePlayer = GraphicsEnt(
-        remoteX,
-        16 * 2,
-        {
-          fillStyle: remoteColor
-        },
-        "drawRect",
-        0,
-        0,
-        16,
-        16
-      );
-      remotePlayer.add(new PeerId(this.world.get(NetworkConnection).remoteId));
-      remotePlayer.addScript(movementScript);
-      remotePlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
-      remotePlayer.add(new Velocity({ x: 0, y: 0 }));
-      monitor(localPlayer, Position.x, "Local X");
-      monitor(remotePlayer, Position.x, "Remote X");
-    }
-    update() {
-    }
-    async onLeave(to) {
-      return;
-    }
-  };
-
-  // src/game/setup/init_bindings.ts
-  var zero = new Point(0, 0);
-  function initializeBindings(world2) {
-    const input = world2.get(Input);
-    input.addInputMethod("KBM", {
-      x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
-      y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
-      aim: new AdvancedAngleBinding({
-        originX: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(new Point(0, 0)).x : 0,
-        originY: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(new Point(0, 0)).y : 0,
-        targetX: "MouseX",
-        targetY: "MouseY"
-      }),
-      shoot: new AnyBinding("MouseLeft", "Space")
-    });
-    input.addInputMethod("GAMEPAD", {
-      x: new DirectAnalogBinding("DefaultGamepad-LeftStickX"),
-      y: new DirectAnalogBinding("DefaultGamepad-LeftStickY"),
-      aim: new AngleBinding(
-        "DefaultGamepad-RightStickX",
-        "DefaultGamepad-RightStickY"
-      ),
-      shoot: new DirectDigitalBinding("DefaultGamepad-A")
-    });
-    input.addInputMethod("MOBILE", {
-      x: new DirectAnalogBinding("JoystickMovement-X"),
-      y: new DirectAnalogBinding("JoystickMovement-Y"),
-      aim: new DirectAnalogBinding("JoystickShoot-Angle"),
-      shoot: new DirectDigitalBinding("DefaultGamepad-A")
-    });
-  }
-
-  // src/game/movement.ts
-  async function MovementPlugin(world2) {
-    const input = world2.get(MultiplayerInput);
-    initializeBindings(world2);
-    world2.addSystem(MovementSystem);
-    world2.addToSchedule(MovementSystem, "rollback");
   }
 
   // src/game/hud/components/joystick.tsx
@@ -43738,48 +44487,209 @@ void main(void)\r
     }
   };
 
-  // src/game/states/menu.ts
+  // src/game/states/multiplayer.ts
+  window.pixi = lib_exports2;
+  var MultiplayerGameState = class extends State2 {
+    async onEnter(payload, from) {
+      this.world.addSystem(RemoveDeadEntities);
+      this.world.addSystem(RemoveDeadEntities, "rollback");
+      await loadLevel1Map(this.world);
+      resize(this.world.get(Application));
+      const localX = this.world.get(NetworkConnection).id === "A" ? 16 * 2 : 16 * 13;
+      const remoteX = this.world.get(NetworkConnection).id === "A" ? 16 * 13 : 16 * 2;
+      const localColor = localX === 16 * 2 ? "blue" : "red";
+      const remoteColor = localX !== 16 * 2 ? "blue" : "red";
+      const localPlayer = GraphicsEnt(
+        localX,
+        16 * 2,
+        { fillStyle: localColor },
+        "drawRect",
+        0,
+        0,
+        16,
+        16
+      );
+      localPlayer.add(new PeerId(this.world.get(NetworkConnection).id));
+      localPlayer.addScript(movementScript);
+      localPlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
+      localPlayer.add(new Velocity({ x: 0, y: 0 }));
+      this.world.add(localPlayer, "local_player");
+      const remotePlayer = GraphicsEnt(
+        remoteX,
+        16 * 2,
+        {
+          fillStyle: remoteColor
+        },
+        "drawRect",
+        0,
+        0,
+        16,
+        16
+      );
+      console.log(remotePlayer);
+      remotePlayer.add(new PeerId(this.world.get(NetworkConnection).remoteId));
+      remotePlayer.addScript(movementScript);
+      remotePlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
+      remotePlayer.add(new Velocity({ x: 0, y: 0 }));
+      monitor(localPlayer, Position.x, "Local X");
+      monitor(remotePlayer, Position.x, "Remote X");
+      if (InputMethod.isMobile()) {
+        document.body.append(
+          Joystick({ side: "left", id: "Movement" }),
+          Joystick({ side: "right", id: "Shoot" })
+        );
+      }
+    }
+    update() {
+    }
+    async onLeave(to) {
+      return;
+    }
+  };
+
+  // src/game/setup/init_bindings.ts
+  var zero = new Point(0, 0);
+  function initializeBindings(world2) {
+    const input = world2.get(Input);
+    input.addInputMethod("KBM", {
+      x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
+      y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
+      aim: new AdvancedAngleBinding({
+        originX: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(zero).x : 0,
+        originY: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(zero).y : 0,
+        targetX: "MouseX",
+        targetY: "MouseY"
+      }),
+      shoot: new AnyBinding("MouseLeft", "Space")
+    });
+    input.addInputMethod("GAMEPAD", {
+      x: new DirectAnalogBinding("DefaultGamepad-LeftStickX"),
+      y: new DirectAnalogBinding("DefaultGamepad-LeftStickY"),
+      aim: new AngleBinding(
+        "DefaultGamepad-RightStickX",
+        "DefaultGamepad-RightStickY"
+      ),
+      shoot: new DirectDigitalBinding("DefaultGamepad-A")
+    });
+    input.addInputMethod("MOBILE", {
+      x: new DirectAnalogBinding("JoystickMovement-X"),
+      y: new DirectAnalogBinding("JoystickMovement-Y"),
+      aim: new DirectAnalogBinding("JoystickShoot-Angle"),
+      shoot: new DirectDigitalBinding("DefaultGamepad-A")
+    });
+  }
+
+  // src/game/movement.ts
+  async function MovementPlugin(world2) {
+    const input = world2.get(MultiplayerInput);
+    initializeBindings(world2);
+    world2.addSystem(MovementSystem);
+    world2.addToSchedule(MovementSystem, "rollback");
+  }
+
+  // src/game/hud/components/button.tsx
+  var StyledButton = function(props) {
+    return /* @__PURE__ */ window.jsx(
+      "button",
+      {
+        ...props,
+        className: `rounded h-9 min-w-[100px] border-none focus:brightness-90 hover:brightness-90 font-default uppercase text-center text-lg tracking-wider text-white m-2 pl-2 pr-2 ` + props.className || ""
+      },
+      props.children
+    );
+  };
+  var ColoredButtonFactory = (color) => (props) => /* @__PURE__ */ window.jsx(StyledButton, { ...props, className: color + " " + props.className || "" }, props.children);
+  var PrimaryButton = ColoredButtonFactory("bg-primary");
+  var AccentButton = ColoredButtonFactory("bg-accent");
+  var SuccessButton = ColoredButtonFactory("bg-green-500");
+  var FailButton = ColoredButtonFactory("bg-red-600");
+
+  // src/game/hud/components/dialogs.tsx
+  function closeOpenModal() {
+    document.querySelector("dialog[open]").close();
+  }
+  var DialogPopup = function(props) {
+    return /* @__PURE__ */ window.jsx("dialog", { className: "bg-base w-5/12 h-1/2 overflow-hidden rounded backdrop:bg-secondary/80 open:flex flex-col justify-betweens" }, /* @__PURE__ */ window.jsx("div", { className: "w-auto h-16  p-4" }, /* @__PURE__ */ window.jsx("h1", { className: "text-white text-center text-4xl" }, props.title)), /* @__PURE__ */ window.jsx("p", { className: "text-white  m-4" }, " ", props.message || ""), props.children, /* @__PURE__ */ window.jsx("div", { className: "bottom-0 h-16 mt-auto items-center flex" }, /* @__PURE__ */ window.jsx(
+      FailButton,
+      {
+        className: "ml-auto",
+        onclick: function(e2) {
+          closeOpenModal();
+          props.oncancel?.(e2);
+        },
+        hidden: !!props.hideCancelButton
+      },
+      "Exit"
+    ), /* @__PURE__ */ window.jsx(
+      SuccessButton,
+      {
+        className: "float-right mr-8 default-close-button",
+        onclick: function(e2) {
+          closeOpenModal();
+          props.onok?.(e2);
+        }
+      },
+      "Ok"
+    )));
+  };
+  function showDialog(options) {
+    const el = options instanceof Node ? options : /* @__PURE__ */ window.jsx(DialogPopup, { ...options });
+    document.body.appendChild(el);
+    el.showModal();
+    el.querySelector(".default-close-button").focus();
+  }
+
+  // src/game/setup/load_textures.ts
+  async function loadAllTextures() {
+    await Assets.load("assets/map1bg.png");
+  }
+
+  // src/game/states/menu.tsx
   var Menu = class extends State2 {
     connectionFolder;
     async onEnter() {
       const pane = this.world.get(Pane);
       const nc = this.world.get(NetworkConnection);
+      document.body.append(this.getHTML());
       await nc.waitForServerConnection;
-      this.connectionFolder = pane.addFolder({ title: "Setup Connection" });
-      const connectToRemote = { id: "" };
-      const localId = this.connectionFolder.addBinding(nc, "id", {
-        disabled: true,
-        title: "Local ID"
-      });
-      const remoteId = this.connectionFolder.addBinding(connectToRemote, "id", {
-        label: "Remote ID"
-      });
-      const connect = this.connectionFolder.addButton({
-        title: "Connect",
-        disabled: true
-      });
-      remoteId.on("change", function() {
-        connect.disabled = false;
-      });
-      connect.on("click", async () => {
-        try {
-          await nc.connect(connectToRemote.id);
-        } catch (e2) {
-          console.error(e2);
-        }
-      });
+      await loadAllTextures();
       nc.waitForConnection.then(() => {
         this.world.get(StateManager).moveTo(MultiplayerGameState, null);
       });
-      document.body.append(
-        Joystick({ side: "left", id: "Movement" }),
-        Joystick({ side: "right", id: "Shoot" })
-      );
+      console.log("appended");
     }
     async onLeave() {
-      this.world.get(Pane).remove(this.connectionFolder);
+      console.log("left");
+      document.querySelector("#menu")?.remove();
     }
     update() {
+    }
+    getHTML() {
+      console.log("Called");
+      const lastCommitHash = "cddec57";
+      const devMode = true;
+      const buildTime = sessionStorage.getItem("buildTime")?.split("%").map((n2) => parseFloat(n2))[0] ?? sessionStorage.setItem("buildTime", Date.now().toString()) ?? Date.now();
+      const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
+      return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0" }, /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-screen h-screen" }, /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build" : "Production build", " @", lastCommitHash, " (Built", " ", timeAgo > 60 ? Math.round(timeAgo / 60) + " min" : timeAgo + " seconds ", "ago)"), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, null, " Friendly Fight "), /* @__PURE__ */ window.jsx(PrimaryButton, { onclick: () => this.connectToRemote() }, "PLAY"))));
+    }
+    connectToRemote() {
+      const input = /* @__PURE__ */ window.jsx(
+        "input",
+        {
+          type: "text",
+          className: "capitalize"
+        }
+      );
+      const dialog = /* @__PURE__ */ window.jsx(
+        DialogPopup,
+        {
+          title: "Enter Remote ID",
+          message: `The remote ID should be 5 capital letters. Your ID is ${this.world.get(NetworkConnection).id}`,
+          onok: () => this.world.get(NetworkConnection).connect(input.value)
+        },
+        input
+      );
+      showDialog(dialog);
     }
   };
 
@@ -43847,12 +44757,12 @@ void main(void)\r
   window.jsxFrag = Fragment;
 
   // src/index.ts
-  u.defaultLoggedBufferSize = 300;
+  mt(100);
   console.dont = {
     log: () => {
     }
   };
-  var world = new c(1e3);
+  var world = new c(100);
   window.world = world;
   async function init2() {
     for (const plugins of [editorPlugins, enginePlugins, gamePlugins]) {

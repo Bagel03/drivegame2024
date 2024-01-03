@@ -4,7 +4,7 @@ import { Pane } from "tweakpane";
 (Symbol as any).metadata ??= Symbol.for("Symbol.metadata");
 
 const unit = (unit: string) => (target: any, name: string) => {
-    if (!target[Symbol.metadata]) {
+    if (!target[(Symbol as any).metadata]) {
         Object.defineProperty(target, Symbol.metadata, {
             value: {},
             enumerable: false,
@@ -23,7 +23,7 @@ export class Diagnostics {
     static logicTick = 0;
 
     // Whether or not artificial lag is being applied
-    static artificialLag = false;
+    static artificialLag = true;
 
     // Which connection is the worst
     static worstRemoteConnection = "";

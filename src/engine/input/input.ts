@@ -40,7 +40,7 @@ export class InputMethod {
         public readonly isAvailable: (input: Input) => boolean
     ) {}
 
-    private static readonly isMobile = () =>
+    static readonly isMobile = () =>
         /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     static readonly KMB = new InputMethod(

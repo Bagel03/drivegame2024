@@ -39,7 +39,6 @@ export const movementScript: Script = function () {
     // }
 
     if (input.is("shoot", "JUST_PRESSED", id)) {
-        console.log(input.get("aim"));
         BulletEnt(
             this.get(Position.x),
             this.get(Position.y),

@@ -13,6 +13,6 @@ export const SpriteEnt = AdvancedBlueprintFactory(
 
         sprite.position.set(this.get(Position.x), this.get(Position.y));
 
-        this.world.get(Application).stage.addChild(sprite);
+        // this.world.get(Application).stage.addChild(sprite);
     }
 );

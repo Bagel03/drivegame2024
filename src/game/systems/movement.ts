@@ -1,9 +1,9 @@
 import { System, With } from "bagelecs";
 import { Position } from "../../engine/rendering/position";
 import { Velocity } from "../components/velocity";
-import { NetworkConnection } from "engine/multiplayer/network";
-import { RollbackManager } from "engine/multiplayer/rollback";
-import { MultiplayerInput } from "engine/multiplayer/multiplayer_input";
+import { NetworkConnection } from "../../engine/multiplayer/network";
+import { RollbackManager } from "../../engine/multiplayer/rollback";
+import { MultiplayerInput } from "../../engine/multiplayer/multiplayer_input";
 
 export class MovementSystem extends System(With(Position, Velocity)) {
     update(): void {

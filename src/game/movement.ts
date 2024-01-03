@@ -1,13 +1,7 @@
 import { System, With, World } from "bagelecs";
 
-import { Entity } from "bagelecs";
 import { MultiplayerInput } from "../engine/multiplayer/multiplayer_input";
-import { Component } from "bagelecs";
-import { Type } from "bagelecs";
-import { RollbackManager, rollbackPlugin } from "../engine/multiplayer/rollback";
 import { MovementSystem } from "./systems/movement";
-import { Position } from "engine/rendering/position";
-import { Graphics, Point } from "pixi.js";
 import { initializeBindings } from "./setup/init_bindings";
 
 // declare module "../engine/multiplayer/multiplayer_input" {

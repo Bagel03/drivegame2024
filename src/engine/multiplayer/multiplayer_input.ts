@@ -10,8 +10,8 @@ import {
 import { NetworkConnection } from "./network";
 import { RollbackManager } from "./rollback";
 import { ResourceUpdaterPlugin, ResourceUpdaterSystem } from "../resource";
-import { Diagnostics } from "engine/diagnostics";
-import { DigitalBinding } from "engine/input/input_bindings";
+import { Diagnostics } from "../diagnostics";
+import { DigitalBinding } from "../input/input_bindings";
 
 export type InputState = Record<string, number | ButtonState> & {
     __HASH__: number;

@@ -17,5 +17,6 @@ export function RenderPlugin(world: World) {
     world.add(app);
     setupPixiCanvas(world);
 
-    world.addSystem(GraphicsSystem);
+    world.createSchedule("render");
+    world.addSystem(GraphicsSystem, "render");
 }

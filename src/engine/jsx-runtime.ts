@@ -108,6 +108,12 @@ declare global {
             props: U,
             ...children: JSX.ReactNode[]
         ): JSX.ReactElement;
+        jsx<P extends {}, T extends keyof HTMLElementTagNameMap>(
+            type: T,
+            props?: P,
+            ...children: JSX.ReactNode[]
+        ): HTMLElementTagNameMap[T];
+
         jsxFrag(props: { children: JSX.ReactNode }): JSX.ReactNode;
     }
 }

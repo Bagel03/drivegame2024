@@ -8,7 +8,7 @@ export const StyledButton: JSX.FC<ButtonProps> = function (props) {
         <button
             {...props}
             className={
-                `rounded h-9 min-w-[100px] border-none focus:brightness-90 hover:brightness-90 font-default uppercase text-center text-lg tracking-wider text-white m-2` +
+                `rounded h-9 min-w-[100px] border-none focus:brightness-90 hover:brightness-90 font-default uppercase text-center text-lg tracking-wider text-white m-2 pl-2 pr-2` +
                     " " +
                     props.className || ""
             }

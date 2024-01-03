@@ -1,5 +1,5 @@
 import "./engine/polyfills";
-import { NetworkConnection } from "engine/multiplayer/network";
+import { NetworkConnection } from "./engine/multiplayer/network";
 
 declare global {
     interface Window {

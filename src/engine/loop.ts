@@ -3,7 +3,7 @@ import { Application } from "pixi.js";
 import { Diagnostics } from "./diagnostics";
 
 export let paused = true;
-export const desiredFrameRate = 1000 / 60;
+export const desiredFrameRate = 1000 / 30;
 
 export function LoopPlugin(world: World) {
     let leftoverTime = 0;
@@ -32,6 +32,7 @@ export function LoopPlugin(world: World) {
 
     let lastRenderingTime = performance.now();
     world.get(Application).ticker.add(() => {
+        world.update("render");
         const now = performance.now();
 
         Diagnostics.FPS = 1000 / (now - lastRenderingTime);
