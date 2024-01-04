@@ -46,7 +46,7 @@ export class GraphicsSystem extends System(With(Container)) {
 
             if (idx < 0) {
                 this.screen.addChild(el);
-                el.name = ent;
+                el.name = ent as any;
                 console.log("Added", ent);
                 // console.log(idx);
             } else {

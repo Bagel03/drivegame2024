@@ -77,7 +77,6 @@ export class Menu extends State<never> {
             sessionStorage.setItem("buildTime", Date.now().toString()) ??
             Date.now();
         const timeAgo = Math.round((Date.now() - buildTime) / 1000);
-
         return (
             <div id="menu" className="absolute top-0 left-0">
                 {/* background */}

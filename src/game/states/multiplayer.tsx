@@ -13,18 +13,27 @@ import { resize } from "../../engine/rendering/resize";
 import { Application } from "pixi.js";
 
 import * as PIXI from "pixi.js";
-import { MultiplayerInput } from "../../engine/multiplayer/multiplayer_input";
-import { PODCConstructor } from "bagelecs";
+import { initializeBindings } from "../setup/init_bindings";
+import { MovementSystem } from "../systems/movement";
+import { enablePixiRendering } from "../../engine/rendering/plugin";
+import { startMultiplayerInput } from "../../engine/multiplayer/multiplayer_input";
 //@ts-expect-error
 window.pixi = PIXI;
 
 export class MultiplayerGameState extends State<never> {
     async onEnter<From extends StateClass<any>>(payload: never, from: From) {
+        enablePixiRendering(this.world);
+        startMultiplayerInput(this.world);
+        initializeBindings(this.world);
+
+        this.world.addSystem(MovementSystem);
+        this.world.addSystem(MovementSystem, "rollback");
+
         this.world.addSystem(RemoveDeadEntities);
         this.world.addSystem(RemoveDeadEntities, "rollback");
 
+        console.log("here");
         await loadLevel1Map(this.world);
-
         resize(this.world.get(Application));
 
         const localX =

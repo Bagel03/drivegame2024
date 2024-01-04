@@ -50,7 +50,7 @@ declare global {
     }
 }
 
-export function diagnosticsPlugin(world: World) {
+export function showDiagnostics(world: World) {
     const pane = world.get(Pane);
 
     const folder = pane.addFolder({ title: "Stats" });

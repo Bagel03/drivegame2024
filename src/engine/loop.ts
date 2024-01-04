@@ -30,14 +30,14 @@ export function LoopPlugin(world: World) {
         // Diagnostics.FPS = 1000 / dt;
     }, desiredFrameRate);
 
-    let lastRenderingTime = performance.now();
-    world.get(Application).ticker.add(() => {
-        world.update("render");
-        const now = performance.now();
+    // let lastRenderingTime = performance.now();
+    // world.get(Application).ticker.add(() => {
+    //     world.update("render");
+    //     const now = performance.now();
 
-        Diagnostics.FPS = 1000 / (now - lastRenderingTime);
-        lastRenderingTime = now;
-    });
+    //     Diagnostics.FPS = 1000 / (now - lastRenderingTime);
+    //     lastRenderingTime = now;
+    // });
 
     // world.get(Application).ticker.add(
     //     // This is kinda weird, but dt isn't the number of ms since the last frame, its "realTime / expected"

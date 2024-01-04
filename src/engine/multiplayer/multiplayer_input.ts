@@ -313,7 +313,7 @@ export class MultiplayerInput {
 }
 
 export const MultiplayerInputSystem = ResourceUpdaterSystem(MultiplayerInput);
-export const MultiplayerInputPlugin = async (world: World) => {
+export const startMultiplayerInput = async (world: World) => {
     world.add(new MultiplayerInput(world));
     world.addSystem(MultiplayerInputSystem);
 };

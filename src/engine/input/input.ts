@@ -10,7 +10,6 @@ import {
     GamepadKey,
     INPUT_ALIASES,
 } from "./input_types";
-import EventEmitter from "events";
 
 export type ButtonState = "PRESSED" | "RELEASED" | "JUST_PRESSED" | "JUST_RELEASED";
 
@@ -442,4 +441,4 @@ export class Input {
     }
 }
 
-export const InputPlugin = ResourceUpdaterPlugin(Input, true);
+// export const InputPlugin = ResourceUpdaterPlugin(Input, true);
