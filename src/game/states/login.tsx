@@ -14,21 +14,24 @@ export class Login extends State<void> {
     ) as HTMLElement;
 
     onEnter<From extends StateClass<any>>(payload: void, from: From): Promise<void> {
-        // document.addEventListener("load", (e) => {
-        google.accounts.id.initialize({
-            client_id:
-                "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
-            callback: this.signIn.bind(this),
-            auto_select: true,
-            context: "use",
-            itp_support: true,
+        document.addEventListener("readystatechange", (e) => {
+            if (document.readyState !== "complete") return;
+            //     document.body.innerHTML = "hello";
+            google.accounts.id.initialize({
+                client_id:
+                    "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
+                callback: this.signIn.bind(this),
+                auto_select: true,
+                context: "use",
+                itp_support: true,
+            });
+
+            // google.accounts.id.prompt((n) => console.log(n.isDisplayed()));
+            google.accounts.id.renderButton(this.googleBtn, {
+                theme: "filled_blue",
+            });
+            document.body.appendChild(this.googleBtn);
         });
-        // google.accounts.id.prompt((n) => console.log(n.isDisplayed()));
-        google.accounts.id.renderButton(this.googleBtn, {
-            theme: "filled_blue",
-        });
-        document.body.appendChild(this.googleBtn);
-        // });
         return Promise.resolve();
     }
 
@@ -47,7 +50,8 @@ export class Login extends State<void> {
     }
 
     private signIn(response: CredentialResponse) {
+        const data = JSON.parse(atob(response.credential.split(".")[1]));
         this.world.get(StateManager).moveTo(Menu, null);
-        console.log(response);
+        console.log(data);
     }
 }

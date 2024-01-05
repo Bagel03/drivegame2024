@@ -25,9 +25,7 @@ export class GraphicsSystem extends System(With(Container)) {
         // console.log(this.entities);
         const currentChildren = this.screen.children.slice();
 
-        let ents = "";
         this.entities.forEach((ent) => {
-            ents += ent;
             const x = ent.get(Position.x);
             const y = ent.get(Position.y);
 
@@ -47,7 +45,6 @@ export class GraphicsSystem extends System(With(Container)) {
             if (idx < 0) {
                 this.screen.addChild(el);
                 el.name = ent as any;
-                console.log("Added", ent);
                 // console.log(idx);
             } else {
                 currentChildren.splice(idx, 1);
@@ -57,12 +54,8 @@ export class GraphicsSystem extends System(With(Container)) {
             el.rotation = ent.get(Position.r);
         });
 
-        console.log(ents);
-
         currentChildren.forEach((child) => {
             child.removeFromParent();
-
-            console.log("Removing", child.name);
         });
 
         // this.entities.forEachRemoved((ent) => {

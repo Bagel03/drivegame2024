@@ -62,7 +62,7 @@ export function initializeBindings(world: World) {
         x: new DirectAnalogBinding("JoystickMovement-X"),
         y: new DirectAnalogBinding("JoystickMovement-Y"),
         aim: new DirectAnalogBinding("JoystickShoot-Angle"),
-        shoot: new DirectDigitalBinding("DefaultGamepad-A"),
+        shoot: new DirectDigitalBinding("JoystickShoot-Full"),
     });
 }
 

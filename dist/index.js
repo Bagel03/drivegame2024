@@ -12671,7 +12671,7 @@
   __publicField(Diagnostics, "FPS", 0);
   __publicField(Diagnostics, "logicTick", 0);
   // Whether or not artificial lag is being applied
-  __publicField(Diagnostics, "artificialLag", true);
+  __publicField(Diagnostics, "artificialLag", false);
   // Which connection is the worst
   __publicField(Diagnostics, "worstRemoteConnection", "");
   __publicField(Diagnostics, "worstRemotePing", 0);
@@ -19788,7 +19788,6 @@
     destroy(ent) {
       this.saveInitialState();
       super.destroy(ent);
-      console.trace("Removed " + ent);
     }
   };
   function patchWorldMethods(world2) {
@@ -43553,9 +43552,7 @@ void main(void)\r
     entsToRemove = [];
     update() {
       const currentChildren = this.screen.children.slice();
-      let ents = "";
       this.entities.forEach((ent) => {
-        ents += ent;
         const x3 = ent.get(Position.x);
         const y2 = ent.get(Position.y);
         const el = ent.get(Container);
@@ -43563,17 +43560,14 @@ void main(void)\r
         if (idx < 0) {
           this.screen.addChild(el);
           el.name = ent;
-          console.log("Added", ent);
         } else {
           currentChildren.splice(idx, 1);
         }
         el.position.set(ent.get(Position.x), ent.get(Position.y));
         el.rotation = ent.get(Position.r);
       });
-      console.log(ents);
       currentChildren.forEach((child) => {
         child.removeFromParent();
-        console.log("Removing", child.name);
       });
     }
   };
@@ -44004,10 +43998,26 @@ void main(void)\r
       window.addEventListener("joystickconnected", (e2) => {
         e2.detail.joystick.addEventListener(
           "inputchange",
-          ({ detail: { x: x3, y: y2, angle } }) => {
+          ({ detail: { x: x3, y: y2, angle, full } }) => {
             this.setAnalog(`Joystick${e2.detail.joystickId}-X`, x3);
             this.setAnalog(`Joystick${e2.detail.joystickId}-Y`, y2);
             this.setAnalog(`Joystick${e2.detail.joystickId}-Angle`, angle);
+            if (this.isRaw(
+              `Joystick${e2.detail.joystickId}-Full`,
+              "RELEASED"
+            ) && full) {
+              this.digitalInputPressed(
+                `Joystick${e2.detail.joystickId}-Full`
+              );
+              console.log("pressed");
+            } else if (this.isRaw(
+              `Joystick${e2.detail.joystickId}-Full`,
+              "PRESSED"
+            ) && !full) {
+              this.digitalInputReleased(
+                `Joystick${e2.detail.joystickId}-Full`
+              );
+            }
           }
         );
       });
@@ -44493,7 +44503,7 @@ void main(void)\r
     const container = /* @__PURE__ */ window.jsx(
       "div",
       {
-        className: `fixed bottom-0 mb-4 mr-4 ml-4  w-16 h-16 ${props.side === "left" ? "left-0" : "right-0"}`
+        className: `fixed bottom-0 mb-6 mr-4 ml-4  w-16 h-16 ${props.side === "left" ? "left-0" : "right-0"}`
       },
       /* @__PURE__ */ window.jsx("div", { className: "rounded-full border-gray-600 border-2 w-16 h-16 bg-gray-400 bg-opacity-40 flex items-center justify-center" }, thumb)
     );
@@ -44521,7 +44531,7 @@ void main(void)\r
         thumb.style.transform = "";
         container.dispatchEvent(
           new CustomEvent("inputchange", {
-            detail: { x: 0, y: 0, angle: 0 }
+            detail: { x: 0, y: 0, angle: 0, full: false }
           })
         );
       }
@@ -44533,16 +44543,23 @@ void main(void)\r
       let diffY = (elPos.top + elPos.bottom) / 2 - event.clientY;
       const radius = elPos.width / 2;
       const theta = Math.atan2(diffY, diffX);
+      let full = false;
       if (diffX ** 2 + diffY ** 2 > radius ** 2) {
         diffX = Math.cos(theta) * radius;
         diffY = Math.sin(theta) * radius;
+        full = true;
       }
       thumb.style.transform = `translate(${-diffX}px,${-diffY}px)`;
       container.dataset.x = diffX / radius + "";
       container.dataset.y = diffY / radius + "";
       container.dispatchEvent(
         new CustomEvent("inputchange", {
-          detail: { x: -diffX / radius, y: -diffY / radius, angle: theta }
+          detail: {
+            x: -diffX / radius,
+            y: -diffY / radius,
+            angle: theta + Math.PI,
+            full
+          }
         })
       );
     }
@@ -44576,7 +44593,7 @@ void main(void)\r
       x: new DirectAnalogBinding("JoystickMovement-X"),
       y: new DirectAnalogBinding("JoystickMovement-Y"),
       aim: new DirectAnalogBinding("JoystickShoot-Angle"),
-      shoot: new DirectDigitalBinding("DefaultGamepad-A")
+      shoot: new DirectDigitalBinding("JoystickShoot-Full")
     });
   }
 
@@ -44694,7 +44711,7 @@ void main(void)\r
       const devMode = true;
       const buildTime = sessionStorage.getItem("buildTime")?.split("%").map((n2) => parseFloat(n2))[0] ?? sessionStorage.setItem("buildTime", Date.now().toString()) ?? Date.now();
       const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
-      return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0" }, /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-screen h-screen" }, /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build" : "Production build", " @", lastCommitHash, " (Built", " ", timeAgo > 60 ? Math.round(timeAgo / 60) + " min" : timeAgo + " seconds ", "ago)"), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, null, " Friendly Fight "), /* @__PURE__ */ window.jsx(PrimaryButton, { onclick: () => this.connectToRemote() }, "PLAY"))));
+      return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build" : "Production build", " @", lastCommitHash, " (Built", " ", timeAgo > 60 ? Math.round(timeAgo / 60) + " min" : timeAgo + " seconds ", "ago)"), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, null, " Friendly Fight "), /* @__PURE__ */ window.jsx(PrimaryButton, { onclick: () => this.connectToRemote() }, "PLAY"))));
     }
     connectToRemote() {
       const input = /* @__PURE__ */ window.jsx(
@@ -44721,17 +44738,21 @@ void main(void)\r
   var Login = class extends State {
     googleBtn = /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 z-10" });
     onEnter(payload, from) {
-      google.accounts.id.initialize({
-        client_id: "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
-        callback: this.signIn.bind(this),
-        auto_select: true,
-        context: "use",
-        itp_support: true
+      document.addEventListener("readystatechange", (e2) => {
+        if (document.readyState !== "complete")
+          return;
+        google.accounts.id.initialize({
+          client_id: "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
+          callback: this.signIn.bind(this),
+          auto_select: true,
+          context: "use",
+          itp_support: true
+        });
+        google.accounts.id.renderButton(this.googleBtn, {
+          theme: "filled_blue"
+        });
+        document.body.appendChild(this.googleBtn);
       });
-      google.accounts.id.renderButton(this.googleBtn, {
-        theme: "filled_blue"
-      });
-      document.body.appendChild(this.googleBtn);
       return Promise.resolve();
     }
     onLeave(to) {
@@ -44745,16 +44766,15 @@ void main(void)\r
       return /* @__PURE__ */ window.jsx("div", null);
     }
     signIn(response) {
+      const data = JSON.parse(atob(response.credential.split(".")[1]));
       this.world.get(StateManager).moveTo(Menu, null);
-      console.log(response);
+      console.log(data);
     }
   };
 
   // src/index.ts
   mt(100);
-  if (typeof SharedArrayBuffer === "undefined") {
-    window.SharedArrayBuffer = ArrayBuffer;
-  }
+  window.SharedArrayBuffer = ArrayBuffer;
   window.addEventListener("error", (e2) => {
     document.body.innerHTML = `<pre>${JSON.stringify(e2)}</pre>`;
   });

@@ -157,7 +157,8 @@ export type GamepadButton =
     | `DefaultGamepad-${number}`
     | `DefaultGamepad-${GamepadKey}`;
 
-export type DigitalInput = Key | MouseButton | GamepadButton;
+export type JoystickFull = `Joystick${string}-Full`;
+export type DigitalInput = Key | MouseButton | GamepadButton | JoystickFull;
 
 // Analog
 

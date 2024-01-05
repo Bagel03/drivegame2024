@@ -23,7 +23,7 @@ export class Diagnostics {
     static logicTick = 0;
 
     // Whether or not artificial lag is being applied
-    static artificialLag = true;
+    static artificialLag = false;
 
     // Which connection is the worst
     static worstRemoteConnection = "";

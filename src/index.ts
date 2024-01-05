@@ -17,10 +17,10 @@ import { Login } from "./game/states/login";
 setDefaultLoggedStorageBufferSize(100);
 // Logger.prototype.log = function () {};
 
-if (typeof SharedArrayBuffer === "undefined") {
-    //@ts-ignore
-    window.SharedArrayBuffer = ArrayBuffer;
-}
+// if (typeof SharedArrayBuffer === "undefined") {
+//@ts-ignore
+window.SharedArrayBuffer = ArrayBuffer;
+// }
 
 window.addEventListener("error", (e) => {
     document.body.innerHTML = `<pre>${JSON.stringify(e)}</pre>`;

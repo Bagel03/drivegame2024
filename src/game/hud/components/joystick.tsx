@@ -12,6 +12,7 @@ export type JoystickInputChangeEvent = CustomEvent<{
     x: number;
     y: number;
     angle: number;
+    full: boolean;
 }>;
 
 declare global {
@@ -28,7 +29,7 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
 
     const container = (
         <div
-            className={`fixed bottom-0 mb-4 mr-4 ml-4  w-16 h-16 ${
+            className={`fixed bottom-0 mb-6 mr-4 ml-4  w-16 h-16 ${
                 props.side === "left" ? "left-0" : "right-0"
             }`}
         >
@@ -64,7 +65,7 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
             thumb.style.transform = "";
             container.dispatchEvent(
                 new CustomEvent("inputchange", {
-                    detail: { x: 0, y: 0, angle: 0 },
+                    detail: { x: 0, y: 0, angle: 0, full: false },
                 }) satisfies JoystickInputChangeEvent
             );
         }
@@ -82,9 +83,11 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
         const radius = elPos.width / 2;
         const theta = Math.atan2(diffY, diffX);
 
+        let full = false;
         if (diffX ** 2 + diffY ** 2 > radius ** 2) {
             diffX = Math.cos(theta) * radius;
             diffY = Math.sin(theta) * radius;
+            full = true;
         }
 
         thumb.style.transform = `translate(${-diffX}px,${-diffY}px)`;
@@ -93,7 +96,12 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
 
         container.dispatchEvent(
             new CustomEvent("inputchange", {
-                detail: { x: -diffX / radius, y: -diffY / radius, angle: theta },
+                detail: {
+                    x: -diffX / radius,
+                    y: -diffY / radius,
+                    angle: theta + Math.PI,
+                    full,
+                },
             }) satisfies JoystickInputChangeEvent
         );
         // container.dispatchEvent()

@@ -77,10 +77,11 @@ export class Menu extends State<never> {
             sessionStorage.setItem("buildTime", Date.now().toString()) ??
             Date.now();
         const timeAgo = Math.round((Date.now() - buildTime) / 1000);
+
         return (
-            <div id="menu" className="absolute top-0 left-0">
+            <div id="menu" className="absolute top-0 left-0  w-full h-full">
                 {/* background */}
-                <div className="bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-screen h-screen">
+                <div className="bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full">
                     <div className="absolute left-0 bottom-0 m-2 text-white">
                         {devMode ? "Development Build" : "Production build"} @
                         {lastCommitHash} (Built{" "}

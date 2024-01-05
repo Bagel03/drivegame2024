@@ -31,7 +31,7 @@
         <script src="https://accounts.google.com/gsi/client" async></script>
     </head>
     <body
-        class="w-screen h-screen overflow-hidden m-0 font-default select-none touch-none"
+        class="w-screen h-[100dvh] overflow-hidden m-0 font-default select-none touch-none pb-"
     >
         <!-- <div
             id="g_id_onload"
@@ -51,12 +51,6 @@
             data-size="large"
             data-logo_alignment="left"
         ></div> -->
-
-        <script>
-            function handleCredentialResponse(response) {
-                console.log("Got credential response:", response);
-            }
-        </script>
 
         <script src="./dist/index.js" type="module"></script>
         <!-- <script src="./dist/test.js" type="module"></script> -->

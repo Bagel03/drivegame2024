@@ -53,7 +53,6 @@ export class MultiplayerEntityManager extends EntityManager {
         //     this.world.archetypeManager.defaultArchetype
         // );
         super.destroy(ent);
-        console.trace("Removed " + ent);
     }
 }
 

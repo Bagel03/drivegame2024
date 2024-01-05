@@ -39,6 +39,7 @@ if (typeof window === "undefined") {
         const headers = new Headers(r.headers);
         headers.set("Cross-Origin-Embedder-Policy", "require-corp"); // or: require-corp
         headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+        headers.set("Referrer-Policy", "no-referrer-when-downgrade");
 
         return new Response(r.body, {
             status: r.status,

@@ -206,10 +206,33 @@ export class Input {
         window.addEventListener("joystickconnected", (e) => {
             e.detail.joystick.addEventListener(
                 "inputchange",
-                ({ detail: { x, y, angle } }) => {
+                ({ detail: { x, y, angle, full } }) => {
                     this.setAnalog(`Joystick${e.detail.joystickId}-X`, x);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Y`, y);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Angle`, angle);
+
+                    if (
+                        this.isRaw(
+                            `Joystick${e.detail.joystickId}-Full`,
+                            "RELEASED"
+                        ) &&
+                        full
+                    ) {
+                        this.digitalInputPressed(
+                            `Joystick${e.detail.joystickId}-Full`
+                        );
+                        console.log("pressed");
+                    } else if (
+                        this.isRaw(
+                            `Joystick${e.detail.joystickId}-Full`,
+                            "PRESSED"
+                        ) &&
+                        !full
+                    ) {
+                        this.digitalInputReleased(
+                            `Joystick${e.detail.joystickId}-Full`
+                        );
+                    }
                 }
             );
         });
