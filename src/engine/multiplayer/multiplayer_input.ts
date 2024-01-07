@@ -12,6 +12,7 @@ import { RollbackManager } from "./rollback";
 import { ResourceUpdaterPlugin, ResourceUpdaterSystem } from "../resource";
 import { Diagnostics } from "../diagnostics";
 import { DigitalBinding } from "../input/input_bindings";
+import { runOffSchedulePhysicsUpdate } from "../loop";
 
 export type InputState = Record<string, number | ButtonState> & {
     __HASH__: number;
@@ -202,16 +203,26 @@ export class MultiplayerInput {
         this.localInput.update();
 
         if (this.networkConnection.isConnected) {
-            const newRemoteState = this.knownFutureInputs.has(
-                this.networkConnection.framesConnected
-            )
-                ? this.knownFutureInputs.get(this.networkConnection.framesConnected)!
-                : this.predictNextState(
-                      this.buffers[this.networkConnection.remoteId][0]
-                  );
+            let newRemoteState: InputState;
+            // if (this.knownFutureInputs.has(this.networkConnection.framesConnected)) {
+            //     newRemoteState = this.knownFutureInputs.get(
+            //         this.networkConnection.framesConnected
+            //     )!;
+            //     console.log(
+            //         "Using future input frame",
+            //         this.networkConnection.framesConnected,
+            //         newRemoteState.x
+            //     );
+            // } else {
+            newRemoteState = this.predictNextState(
+                this.buffers[this.networkConnection.remoteId][0]
+            );
+            // }
+
             this.buffers[this.networkConnection.remoteId].unshift(newRemoteState);
             this.buffers[this.networkConnection.remoteId].pop();
         }
+
         // We store what the state was at the start of the frame, bc inputsystem is run first
         const newLocalState = {} as InputState;
         this.buffers[this.localPeerId].unshift(newLocalState);
@@ -250,6 +261,11 @@ export class MultiplayerInput {
             this.oldHash !== newLocalState.__HASH__ &&
             this.networkConnection.isConnected
         ) {
+            console.log(
+                "Input change on frame",
+                this.networkConnection.framesConnected,
+                newLocalState.x
+            );
             this.networkConnection.send("input", {
                 frame: this.networkConnection.framesConnected,
                 inputState: newLocalState,
@@ -280,12 +296,20 @@ export class MultiplayerInput {
         this.networkConnection.on<{ frame: number; inputState: InputState }>(
             "input",
             ({ frame, inputState }) => {
-                const framesBack = this.networkConnection.framesConnected - frame;
+                let framesBack = this.networkConnection.framesConnected - frame;
                 Diagnostics.worstRemoteLatency = framesBack;
                 // Handle future inputs
                 if (framesBack < 0) {
-                    this.knownFutureInputs.set(frame, inputState);
-                    return;
+                    for (let i = 0; i < -framesBack; i++) {
+                        console.log("Running panic/catchup frame");
+                        // runOffSchedulePhysicsUpdate(this.world, -framesBack);
+                        this.world.tick();
+                    }
+                    // this.world.tick();
+                    // this.knownFutureInputs.set(frame, inputState);
+                    // console.log("Got future input", frame);
+                    // return;
+                    framesBack = 0;
                 }
 
                 // If the hashes match, do nothing
@@ -307,8 +331,6 @@ export class MultiplayerInput {
                 this.rollbackManager.startRollback(framesBack);
             }
         );
-
-        return;
     }
 }
 

@@ -12693,26 +12693,29 @@
 
   // src/engine/loop.ts
   var paused = true;
-  var desiredFrameRate = 1e3 / 30;
-  function LoopPlugin(world2) {
-    let leftoverTime = 0;
-    let lastPhysicsTime = performance.now();
-    setInterval(() => {
-      const now = performance.now();
-      const dt2 = now - lastPhysicsTime;
-      leftoverTime += dt2;
-      lastPhysicsTime = now;
-      if (paused)
-        return;
-      while (leftoverTime >= desiredFrameRate) {
-        const start = performance.now();
-        world2.tick();
-        Diagnostics.logicTick = performance.now() - start;
-        leftoverTime -= desiredFrameRate;
-      }
-    }, desiredFrameRate);
+  var DESIRED_FPS = 30;
+  var DESIRED_FRAME_TIME = 1e3 / DESIRED_FPS;
+  var lastPhysicsTime = performance.now();
+  var leftOverTime = 0;
+  var cancelTimeoutId = 0;
+  function runPhysicsUpdate(world2) {
+    cancelTimeoutId = setTimeout(() => runPhysicsUpdate(world2), DESIRED_FRAME_TIME);
+    const now = performance.now();
+    const dt2 = now - lastPhysicsTime;
+    leftOverTime += dt2;
+    lastPhysicsTime = now;
+    while (leftOverTime >= DESIRED_FRAME_TIME) {
+      const start = performance.now();
+      world2.tick();
+      Diagnostics.logicTick = performance.now() - start;
+      leftOverTime -= DESIRED_FRAME_TIME;
+    }
   }
-  function resume() {
+  function LoopPlugin(world2) {
+  }
+  function resume(world2) {
+    lastPhysicsTime = performance.now();
+    window.setTimeout(() => runPhysicsUpdate(world2), DESIRED_FRAME_TIME);
     paused = false;
   }
 
@@ -19555,8 +19558,7 @@
       this.remoteConnection.on("data", wrapper);
     }
     async send(eventName, data) {
-      if (Diagnostics.artificialLag)
-        await Promise.timeout(60);
+      await Promise.timeout(Diagnostics.artificialLag ? 60 : 0);
       this.remoteConnection.send({
         event: 4 /* DATA */,
         subEvent: eventName,
@@ -44307,9 +44309,8 @@ void main(void)\r
         return;
       this.localInput.update();
       if (this.networkConnection.isConnected) {
-        const newRemoteState = this.knownFutureInputs.has(
-          this.networkConnection.framesConnected
-        ) ? this.knownFutureInputs.get(this.networkConnection.framesConnected) : this.predictNextState(
+        let newRemoteState;
+        newRemoteState = this.predictNextState(
           this.buffers[this.networkConnection.remoteId][0]
         );
         this.buffers[this.networkConnection.remoteId].unshift(newRemoteState);
@@ -44341,6 +44342,11 @@ void main(void)\r
       }
       this.hashState(newLocalState);
       if (this.oldHash !== newLocalState.__HASH__ && this.networkConnection.isConnected) {
+        console.log(
+          "Input change on frame",
+          this.networkConnection.framesConnected,
+          newLocalState.x
+        );
         this.networkConnection.send("input", {
           frame: this.networkConnection.framesConnected,
           inputState: newLocalState
@@ -44365,11 +44371,14 @@ void main(void)\r
       this.networkConnection.on(
         "input",
         ({ frame, inputState }) => {
-          const framesBack = this.networkConnection.framesConnected - frame;
+          let framesBack = this.networkConnection.framesConnected - frame;
           Diagnostics.worstRemoteLatency = framesBack;
           if (framesBack < 0) {
-            this.knownFutureInputs.set(frame, inputState);
-            return;
+            for (let i2 = 0; i2 < -framesBack; i2++) {
+              console.log("Running panic/catchup frame");
+              this.world.tick();
+            }
+            framesBack = 0;
           }
           if (inputState.__HASH__ === this.buffers[this.networkConnection.remoteId][0].__HASH__) {
             return;
@@ -44382,7 +44391,6 @@ void main(void)\r
           this.rollbackManager.startRollback(framesBack);
         }
       );
-      return;
     }
   };
   var MultiplayerInput = _MultiplayerInput;
@@ -44573,11 +44581,35 @@ void main(void)\r
       x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
       y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
       aim: new AdvancedAngleBinding({
-        originX: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(zero).x : 0,
-        originY: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(zero).y : 0,
-        targetX: "MouseX",
-        targetY: "MouseY"
+        originX: () => 0,
+        // world.get(StateManager).currentState === MultiplayerGameState
+        //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+        //           .x
+        //     : 0,
+        originY: () => 0,
+        // world.get(StateManager).currentState === MultiplayerGameState
+        //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+        //           .y
+        //     : 0,
+        targetX: () => 1,
+        // "MouseX",
+        targetY: () => 1
+        //"MouseY",
       }),
+      // aim: new AdvancedAngleBinding({
+      //     originX: () =>
+      //         world.get(StateManager).currentState === MultiplayerGameState
+      //             ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+      //                   .x
+      //             : 0,
+      //     originY: () =>
+      //         world.get(StateManager).currentState === MultiplayerGameState
+      //             ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+      //                   .y
+      //             : 0,
+      //     targetX: "MouseX",
+      //     targetY: "MouseY",
+      // }),
       shoot: new AnyBinding("MouseLeft", "Space")
     });
     input.addInputMethod("GAMEPAD", {
@@ -44734,44 +44766,6 @@ void main(void)\r
     }
   };
 
-  // src/game/states/login.tsx
-  var Login = class extends State {
-    googleBtn = /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 z-10" });
-    onEnter(payload, from) {
-      document.addEventListener("readystatechange", (e2) => {
-        if (document.readyState !== "complete")
-          return;
-        google.accounts.id.initialize({
-          client_id: "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
-          callback: this.signIn.bind(this),
-          auto_select: true,
-          context: "use",
-          itp_support: true
-        });
-        google.accounts.id.renderButton(this.googleBtn, {
-          theme: "filled_blue"
-        });
-        document.body.appendChild(this.googleBtn);
-      });
-      return Promise.resolve();
-    }
-    onLeave(to) {
-      console.log("left");
-      this.googleBtn.remove();
-      return Promise.resolve();
-    }
-    update() {
-    }
-    getHTML() {
-      return /* @__PURE__ */ window.jsx("div", null);
-    }
-    signIn(response) {
-      const data = JSON.parse(atob(response.credential.split(".")[1]));
-      this.world.get(StateManager).moveTo(Menu, null);
-      console.log(data);
-    }
-  };
-
   // src/index.ts
   mt(100);
   window.SharedArrayBuffer = ArrayBuffer;
@@ -44786,8 +44780,8 @@ void main(void)\r
         await plugin(world);
       }
     }
-    world.get(StateManager).moveTo(Login, null);
-    resume();
+    world.get(StateManager).moveTo(Menu, null);
+    resume(world);
   }
   init2();
 })();

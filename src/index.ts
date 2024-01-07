@@ -12,6 +12,7 @@ import { resume } from "./engine/loop";
 import "./engine/jsx-runtime";
 import { StateManager } from "./engine/state_managment";
 import { Login } from "./game/states/login";
+import { Menu } from "./game/states/menu";
 // import { debug } from "console";
 
 setDefaultLoggedStorageBufferSize(100);
@@ -36,7 +37,7 @@ async function init() {
             await plugin(world);
         }
     }
-    world.get(StateManager).moveTo(Login, null);
-    resume();
+    world.get(StateManager).moveTo(Menu, null);
+    resume(world);
 }
 init();

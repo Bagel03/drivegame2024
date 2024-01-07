@@ -285,7 +285,9 @@ export class NetworkConnection {
     }
 
     async send(eventName: string, data: any) {
-        if (Diagnostics.artificialLag) await Promise.timeout(60);
+        await Promise.timeout(Diagnostics.artificialLag ? 60 : 0);
+
+        // if (Diagnostics.artificialLag) await Promise.timeout(60);
 
         this.remoteConnection.send({
             event: NetworkEvent.DATA,
