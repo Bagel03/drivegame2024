@@ -157,8 +157,8 @@ export type GamepadButton =
     | `DefaultGamepad-${number}`
     | `DefaultGamepad-${GamepadKey}`;
 
-export type JoystickFull = `Joystick${string}-Full`;
-export type DigitalInput = Key | MouseButton | GamepadButton | JoystickFull;
+export type JoystickFire = `Joystick${string}-Fire`;
+export type DigitalInput = Key | MouseButton | GamepadButton | JoystickFire;
 
 // Analog
 
@@ -173,7 +173,7 @@ export type AnalogGamepad =
     | "LeftStickY"
     | "RightStickX"
     | "RightStickY";
-export type AnalogJoystick = "X" | "Y" | "Angle";
+export type AnalogJoystick = "X" | "Y" | "Angle" | "FireX" | "FireY" | "FireAngle";
 
 // Gamepad buttons are both analog and digital
 export type AnalogInput =

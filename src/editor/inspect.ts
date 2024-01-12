@@ -6,8 +6,12 @@ import { Pane, BindingParams } from "tweakpane";
 export function InspectPlugin(world: World) {
     const pane = new Pane();
     world.add(pane);
-
+    pane.element.style.display = "none";
     pane.element.parentElement!.style.width = "355px";
+}
+
+export function enableInspect(world: World) {
+    world.get(Pane).element.style.display = "block";
 }
 
 export function inspect(

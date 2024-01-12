@@ -13,48 +13,35 @@ import { MultiplayerGameState } from "./multiplayer";
 import { Joystick } from "../hud/components/joystick";
 import { AccentButton, PrimaryButton } from "../hud/components/button";
 import { loadAllTextures } from "../setup/load_textures";
+import { ChooseGameMode } from "./choose";
+import { awaitFrame } from "../../engine/utils";
 
-export class Menu extends State<never> {
+export class Menu extends State<{
+    gameMode: "solo" | "battle" | "co-op";
+    map: string;
+}> {
     private connectionFolder!: FolderApi;
 
-    async onEnter(): Promise<void> {
+    async onEnter<From extends StateClass<any>>(
+        payload: { gameMode: "solo" | "battle" | "co-op"; map: string },
+        from: From
+    ): Promise<void> {
         const pane = this.world.get(Pane);
         const nc = this.world.get(NetworkConnection);
-        document.body.append(this.getHTML());
+        document.body.append(this.getHTML(payload.gameMode));
 
         await nc.waitForServerConnection;
         await loadAllTextures();
+        this.idSpan.textContent = nc.id;
 
-        // this.connectionFolder = pane.addFolder({ title: "Setup Connection" });
-
-        // const connectToRemote = { id: "" };
-
-        // const localId = this.connectionFolder.addBinding(nc, "id", {
-        //     disabled: true,
-        //     title: "Local ID",
-        // });
-        // const remoteId = this.connectionFolder.addBinding(connectToRemote, "id", {
-        //     label: "Remote ID",
-        // });
-
-        nc.waitForConnection.then(() => {
+        nc.on("start_game", async (frame: number) => {
+            await awaitFrame(this.world, frame);
             this.world.get(StateManager).moveTo(MultiplayerGameState, null);
         });
 
-        // nc.newConnectionListeners.add(() => {
+        // nc.waitForConnection.then(() => {
         //     this.world.get(StateManager).moveTo(MultiplayerGameState, null);
-        //     // startGame(world);
         // });
-
-        // showDialog({
-        //     title: "Test Notification",
-        //     message:
-        //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        //     onok: () => {
-        //         this.world.get(StateManager).moveTo(Game, null);
-        //     },
-        // });
-        console.log("appended");
     }
 
     async onLeave() {
@@ -64,18 +51,12 @@ export class Menu extends State<never> {
     }
 
     update() {}
-
-    private getHTML() {
+    private idSpan = (<span></span>);
+    private getHTML(gameMode: "solo" | "battle" | "co-op" = "solo") {
         console.log("Called");
         const lastCommitHash = "cddec57";
         const devMode = true;
-        const buildTime =
-            sessionStorage
-                .getItem("buildTime")
-                ?.split("%")
-                .map((n) => parseFloat(n))[0] ??
-            sessionStorage.setItem("buildTime", Date.now().toString()) ??
-            Date.now();
+        const buildTime = 1704911624295;
         const timeAgo = Math.round((Date.now() - buildTime) / 1000);
 
         return (
@@ -83,17 +64,30 @@ export class Menu extends State<never> {
                 {/* background */}
                 <div className="bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full">
                     <div className="absolute left-0 bottom-0 m-2 text-white">
+                        ID: {this.idSpan}
+                        {" - "}
                         {devMode ? "Development Build" : "Production build"} @
-                        {lastCommitHash} (Built{" "}
-                        {timeAgo > 60
-                            ? Math.round(timeAgo / 60) + " min"
-                            : timeAgo + " seconds "}
+                        {lastCommitHash} (Built {Math.round(timeAgo / 60) + " min "}
                         ago)
                     </div>
 
-                    <div className="absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md">
-                        <AccentButton> Friendly Fight </AccentButton>
+                    <div className="absolute right-0 top-0 m-2 text-white">
                         <PrimaryButton onclick={() => this.connectToRemote()}>
+                            Invite to party
+                        </PrimaryButton>
+                    </div>
+
+                    <div className="absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md">
+                        <AccentButton
+                            onclick={() =>
+                                this.world
+                                    .get(StateManager)
+                                    .moveTo(ChooseGameMode, null)
+                            }
+                        >
+                            {" " + gameMode + " "}
+                        </AccentButton>
+                        <PrimaryButton onclick={() => this.queueGameStart()}>
                             PLAY
                         </PrimaryButton>
                     </div>
@@ -129,5 +123,13 @@ export class Menu extends State<never> {
         );
 
         showDialog(dialog);
+    }
+
+    private async queueGameStart() {
+        const startFrame = this.world.get(NetworkConnection).framesConnected + 10;
+
+        this.world.get(NetworkConnection).send("start_game", startFrame);
+        await awaitFrame(this.world, startFrame);
+        this.world.get(StateManager).moveTo(MultiplayerGameState, null);
     }
 }

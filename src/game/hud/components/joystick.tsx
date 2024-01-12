@@ -12,13 +12,19 @@ export type JoystickInputChangeEvent = CustomEvent<{
     x: number;
     y: number;
     angle: number;
-    full: boolean;
+}>;
+
+export type JoystickFireEvent = CustomEvent<{
+    x: number;
+    y: number;
+    angle: number;
 }>;
 
 declare global {
     interface GlobalEventHandlersEventMap {
         joystickconnected: JoystickConnectedEvent;
         inputchange: JoystickInputChangeEvent;
+        fire: JoystickFireEvent;
     }
 }
 
@@ -64,6 +70,18 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
             pointerId = null;
             thumb.style.transform = "";
             container.dispatchEvent(
+                new CustomEvent("fire", {
+                    detail: {
+                        x: parseFloat(container.dataset.x!),
+                        y: parseFloat(container.dataset.y!),
+                        angle: parseFloat(container.dataset.angle!),
+                    },
+                }) satisfies JoystickFireEvent
+            );
+            container.dataset.x = "0";
+            container.dataset.y = "0";
+            container.dataset.angle = "0";
+            container.dispatchEvent(
                 new CustomEvent("inputchange", {
                     detail: { x: 0, y: 0, angle: 0, full: false },
                 }) satisfies JoystickInputChangeEvent
@@ -93,6 +111,7 @@ export const Joystick: JSX.FC<JoystickProps> = (props) => {
         thumb.style.transform = `translate(${-diffX}px,${-diffY}px)`;
         container.dataset.x = diffX / radius + "";
         container.dataset.y = diffY / radius + "";
+        container.dataset.angle = theta + Math.PI + "";
 
         container.dispatchEvent(
             new CustomEvent("inputchange", {

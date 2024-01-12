@@ -2,6 +2,8 @@ import { Class, System, World } from "bagelecs";
 
 export function ResourceUpdaterSystem(resource: Class<{ update(): any }>) {
     return class ResourceUpdater extends System({}) {
+        private readonly targetedResource = resource;
+
         update(): void {
             this.world.get(resource)?.update();
         }
@@ -15,9 +17,7 @@ export function ResourceUpdaterPlugin<
 >(
     resource: T,
     addNew?: boolean,
-    ...args: ConstructorParameters<T> extends [World, ...infer rest]
-        ? rest
-        : never
+    ...args: ConstructorParameters<T> extends [World, ...infer rest] ? rest : never
 ) {
     return async function (world: World) {
         if (addNew) {

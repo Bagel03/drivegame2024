@@ -12631,7 +12631,11 @@
   function InspectPlugin(world2) {
     const pane = new Pane();
     world2.add(pane);
+    pane.element.style.display = "none";
     pane.element.parentElement.style.width = "355px";
+  }
+  function enableInspect(world2) {
+    world2.get(Pane).element.style.display = "block";
   }
   function monitor(entity, component, title) {
     const pane = entity.world.get(Pane);
@@ -19335,6 +19339,7 @@
   // src/engine/resource.ts
   function ResourceUpdaterSystem(resource) {
     return class ResourceUpdater extends Jt({}) {
+      targetedResource = resource;
       update() {
         this.world.get(resource)?.update();
       }
@@ -19373,12 +19378,28 @@
     peer;
     id;
     waitForServerConnection;
+    cachedCredentials = null;
+    fetchCredentials() {
+      if (this.cachedCredentials)
+        return Promise.resolve(this.cachedCredentials);
+      return fetch(
+        `https://eddiebadel.metered.live/api/v1/turn/credentials?apiKey=${_NetworkConnection.API_KEY}`
+      ).then((res) => res.json()).then((res) => {
+        this.cachedCredentials = res;
+        return res;
+      });
+    }
     //#region Server Connection
-    tryFindId() {
+    async tryFindId() {
+      const iceServers = await this.fetchCredentials();
       const id = _NetworkConnection.generateId();
-      const peer = new $416260bce337df90$export$ecd1fc136c422448(_NetworkConnection.idPrefix + id);
+      const peer = new $416260bce337df90$export$ecd1fc136c422448(_NetworkConnection.idPrefix + id, {
+        config: {
+          iceServers
+        }
+      });
       this.logger.log("Trying to connect with id", id);
-      return new Promise((res, rej) => {
+      return await new Promise((res, rej) => {
         peer.on("open", () => {
           res({ id, peer });
         });
@@ -19405,6 +19426,19 @@
     dummyConnection = new DummyDataConnection();
     remoteConnection = this.dummyConnection;
     remoteId;
+    // These are the same between clients
+    player1;
+    player2;
+    loadPlayerIds() {
+      if (this.id < this.remoteId) {
+        this.player1 = this.id;
+        this.player2 = this.remoteId;
+      } else {
+        this.player1 = this.remoteId;
+        this.player2 = this.id;
+      }
+      console.log("Player 1:", this.player1, "Player 2:", this.player2);
+    }
     resolvePromisesWaitingForConnection;
     waitForConnection = new Promise((res) => {
       this.resolvePromisesWaitingForConnection = res;
@@ -19418,6 +19452,7 @@
         _NetworkConnection.idPrefix,
         ""
       );
+      this.loadPlayerIds();
       this.framesConnected = 0;
       this.remoteConnection.on("close", this.onClose);
       this.logger.log("Connection opened to", this.remoteId);
@@ -19472,7 +19507,6 @@
             remoteConnection.close();
             rej("timeout");
           });
-          this.logger.log("Ping accepted, yell at edward to implement this");
         }, timeout);
         remoteConnection.on("open", () => {
           const tempStartTime = Date.now();
@@ -19607,8 +19641,10 @@
     }
     setupPing(connection) {
       connection.on("data", (packet) => {
-        if (packet.event == 0 /* PING */)
+        if (packet.event == 0 /* PING */) {
+          this.logger.log("Got ping, sending response...");
           connection.send({ event: 1 /* PING_RESPONSE */ });
+        }
       });
     }
     ping(timeout, connection) {
@@ -19617,6 +19653,7 @@
         Promise.timeout(timeout).then(rej);
         const fn = (packet) => {
           if (packet.event === 1 /* PING_RESPONSE */) {
+            this.logger.log("Got ping response");
             res();
             connection.off("data", fn);
           }
@@ -19634,6 +19671,7 @@
   __publicField(NetworkConnection, "idPrefix", "drivegame-beta-");
   // "drivegame-prod-"
   __publicField(NetworkConnection, "idLength", 1);
+  __publicField(NetworkConnection, "API_KEY", "9c3aa91517dfabf12ca01813bfc59b74be79");
   var DummyDataConnection = class {
     cbs = [];
     on(ev, cb) {
@@ -19840,34 +19878,14 @@
       this.world.archetypeManager.rollback(numFramesAgo);
       this.world.entityManager.rollback(numFramesAgo);
       while (this.currentFramesBack >= 0) {
-        this.world.tick("rollback");
+        this.world.storageManager.update();
+        this.world.archetypeManager.update();
+        this.world.entityManager.update();
+        this.world.update("rollback");
         this.currentFramesBack--;
       }
       this.currentFramesBack = 0;
       this.currentlyInRollback = false;
-    }
-    // APIS for resources and entities
-    watchedResources = [];
-    resourceLogs = [];
-    registerRollbackResource(id) {
-      if (typeof id !== "number")
-        id = id.getId();
-      this.watchedResources.push(id);
-      this.resourceLogs.push([]);
-    }
-    justAddedEntities = [];
-    justRemovedEntities = [];
-    registerNewEntity(entity) {
-      if (this.justAddedEntities[0] === null) {
-        this.justAddedEntities[0] = [entity];
-      } else
-        this.justAddedEntities[0].push(entity);
-    }
-    registerRemovedEntity(entity) {
-      if (this.justRemovedEntities[0] === null) {
-        this.justRemovedEntities[0] = [entity];
-      } else
-        this.justRemovedEntities[0].push(entity);
     }
     update() {
     }
@@ -43595,146 +43613,6 @@ void main(void)\r
     });
   }
 
-  // src/engine/engine.ts
-  var enginePlugins = [
-    LoopPlugin,
-    networkConnectionPlugin,
-    rollbackPlugin,
-    // MultiplayerInputPlugin,
-    // InputPlugin,
-    ScriptPlugin,
-    StateManagementPlugin
-  ];
-
-  // src/engine/jsx-runtime.ts
-  function assertType(param) {
-  }
-  function jsx(tag, props, ...children) {
-    props ??= {};
-    props.children = children;
-    if (typeof tag === "function")
-      return tag(props);
-    assertType(tag);
-    assertType(props);
-    const element = document.createElement(tag);
-    Object.entries(props).forEach(([key, value]) => {
-      if (key == "className") {
-        element.className = value;
-        return;
-      }
-      if (key == "children")
-        return;
-      if (key === "style") {
-        element.style.cssText = Object.entries(value).reduce(
-          (prev, [key2, val]) => prev + `${key2}: ${val};`,
-          ""
-        );
-        return;
-      }
-      switch (typeof value) {
-        case "function":
-          return element.addEventListener(key.slice(2), value);
-        case "boolean":
-          if (!value)
-            return;
-          return element.setAttribute(key, "");
-        case "number":
-        case "string":
-          return element.setAttribute(key, `${value}`);
-      }
-      throw new TypeError("JSX element attribute assigned invalid type");
-    });
-    element.append(
-      ...children.flat().filter(
-        (node) => typeof node !== "boolean" && node != null
-      ).map(
-        (node) => typeof node == "string" || typeof node == "number" ? document.createTextNode(node.toString()) : node
-      )
-    );
-    return element;
-  }
-  var Fragment = (props) => props.children;
-  window.jsx = jsx;
-  window.jsxFrag = Fragment;
-
-  // src/game/hud/components/button.tsx
-  var StyledButton = function(props) {
-    return /* @__PURE__ */ window.jsx(
-      "button",
-      {
-        ...props,
-        className: `rounded h-9 min-w-[100px] border-none focus:brightness-90 hover:brightness-90 font-default uppercase text-center text-lg tracking-wider text-white m-2 pl-2 pr-2 ` + props.className || ""
-      },
-      props.children
-    );
-  };
-  var ColoredButtonFactory = (color) => (props) => /* @__PURE__ */ window.jsx(StyledButton, { ...props, className: color + " " + props.className || "" }, props.children);
-  var PrimaryButton = ColoredButtonFactory("bg-primary");
-  var AccentButton = ColoredButtonFactory("bg-accent");
-  var SuccessButton = ColoredButtonFactory("bg-green-500");
-  var FailButton = ColoredButtonFactory("bg-red-600");
-
-  // src/game/hud/components/dialogs.tsx
-  function closeOpenModal() {
-    document.querySelector("dialog[open]").close();
-  }
-  var DialogPopup = function(props) {
-    return /* @__PURE__ */ window.jsx("dialog", { className: "bg-base w-5/12 h-1/2 overflow-hidden rounded backdrop:bg-secondary/80 open:flex flex-col justify-betweens" }, /* @__PURE__ */ window.jsx("div", { className: "w-auto h-16  p-4" }, /* @__PURE__ */ window.jsx("h1", { className: "text-white text-center text-4xl" }, props.title)), /* @__PURE__ */ window.jsx("p", { className: "text-white  m-4" }, " ", props.message || ""), props.children, /* @__PURE__ */ window.jsx("div", { className: "bottom-0 h-16 mt-auto items-center flex" }, /* @__PURE__ */ window.jsx(
-      FailButton,
-      {
-        className: "ml-auto",
-        onclick: function(e2) {
-          closeOpenModal();
-          props.oncancel?.(e2);
-        },
-        hidden: !!props.hideCancelButton
-      },
-      "Exit"
-    ), /* @__PURE__ */ window.jsx(
-      SuccessButton,
-      {
-        className: "float-right mr-8 default-close-button",
-        onclick: function(e2) {
-          closeOpenModal();
-          props.onok?.(e2);
-        }
-      },
-      "Ok"
-    )));
-  };
-  function showDialog(options) {
-    const el = options instanceof Node ? options : /* @__PURE__ */ window.jsx(DialogPopup, { ...options });
-    document.body.appendChild(el);
-    el.showModal();
-    el.querySelector(".default-close-button").focus();
-  }
-
-  // src/engine/rendering/blueprints/graphics.ts
-  var graphicsBlueprint = new a(
-    new Position({ x: 0, y: 0, r: 0 }),
-    Container
-  );
-  var GraphicsEnt = Pe2(
-    graphicsBlueprint,
-    [Position.x, Position.y],
-    function(options, methodName, ...args) {
-      const graphics = new Graphics();
-      if (options.fillStyle) {
-        graphics.beginFill(options.fillStyle);
-      }
-      if (options.lineStyle) {
-        graphics.lineStyle(options.lineStyle);
-      }
-      if (typeof methodName === "function") {
-        methodName(graphics);
-      } else {
-        graphics[methodName](...args);
-      }
-      graphics.position.set(this.get(Position.x), this.get(Position.y));
-      this.update(graphics);
-    }
-  );
-
   // src/engine/input/input_bindings.ts
   var DigitalBinding = class {
   };
@@ -43929,7 +43807,9 @@ void main(void)\r
       queue: {
         PRESSED: /* @__PURE__ */ new Set(),
         RELEASED: /* @__PURE__ */ new Set()
-      }
+      },
+      // Pressed events that only last one frame
+      ephemeral: /* @__PURE__ */ new Set()
     };
     analog = /* @__PURE__ */ new Map();
     connectedGamepads = [];
@@ -43944,8 +43824,10 @@ void main(void)\r
       this.digital.queue.PRESSED.delete(input);
       this.digital.queue.RELEASED.delete(input);
     }
-    digitalInputPressed(input) {
+    digitalInputPressed(input, ephemeral = false) {
       this.clearDigitalState(input);
+      if (ephemeral)
+        this.digital.ephemeral.add(input);
       this.digital.queue.PRESSED.add(input);
     }
     digitalInputReleased(input) {
@@ -44000,26 +43882,25 @@ void main(void)\r
       window.addEventListener("joystickconnected", (e2) => {
         e2.detail.joystick.addEventListener(
           "inputchange",
-          ({ detail: { x: x3, y: y2, angle, full } }) => {
+          ({ detail: { x: x3, y: y2, angle } }) => {
             this.setAnalog(`Joystick${e2.detail.joystickId}-X`, x3);
             this.setAnalog(`Joystick${e2.detail.joystickId}-Y`, y2);
             this.setAnalog(`Joystick${e2.detail.joystickId}-Angle`, angle);
-            if (this.isRaw(
-              `Joystick${e2.detail.joystickId}-Full`,
-              "RELEASED"
-            ) && full) {
-              this.digitalInputPressed(
-                `Joystick${e2.detail.joystickId}-Full`
-              );
-              console.log("pressed");
-            } else if (this.isRaw(
-              `Joystick${e2.detail.joystickId}-Full`,
-              "PRESSED"
-            ) && !full) {
-              this.digitalInputReleased(
-                `Joystick${e2.detail.joystickId}-Full`
-              );
-            }
+          }
+        );
+        e2.detail.joystick.addEventListener(
+          "fire",
+          ({ detail: { x: x3, y: y2, angle } }) => {
+            this.digitalInputPressed(
+              `Joystick${e2.detail.joystickId}-Fire`,
+              true
+            );
+            this.setAnalog(`Joystick${e2.detail.joystickId}-FireX`, x3);
+            this.setAnalog(`Joystick${e2.detail.joystickId}-FireY`, y2);
+            this.setAnalog(
+              `Joystick${e2.detail.joystickId}-FireAngle`,
+              angle
+            );
           }
         );
       });
@@ -44039,6 +43920,13 @@ void main(void)\r
         (b3) => this.digital.JUST_RELEASED.add(b3)
       );
       this.digital.queue.RELEASED.clear();
+      this.digital.ephemeral.forEach((button) => {
+        if (this.digital.PRESSED.has(button)) {
+          this.digital.PRESSED.delete(button);
+          this.digital.JUST_RELEASED.add(button);
+          this.digital.ephemeral.delete(button);
+        }
+      });
       this.analog.set("MouseXDelta", 0);
       this.analog.set("MouseYDelta", 0);
       this.analog.set("MouseScrollDelta", 0);
@@ -44232,7 +44120,6 @@ void main(void)\r
     ready = false;
     async init() {
       await this.networkConnection.waitForServerConnection;
-      console.log("Connected");
       this.localPeerId = this.networkConnection.id;
       this.buffers[this.localPeerId] = new Array(_MultiplayerInput.bufferSize).fill(
         {}
@@ -44310,9 +44197,20 @@ void main(void)\r
       this.localInput.update();
       if (this.networkConnection.isConnected) {
         let newRemoteState;
-        newRemoteState = this.predictNextState(
-          this.buffers[this.networkConnection.remoteId][0]
-        );
+        if (this.knownFutureInputs.has(this.networkConnection.framesConnected)) {
+          newRemoteState = this.knownFutureInputs.get(
+            this.networkConnection.framesConnected
+          );
+          console.log(
+            "Using future input frame",
+            this.networkConnection.framesConnected,
+            newRemoteState.x
+          );
+        } else {
+          newRemoteState = this.predictNextState(
+            this.buffers[this.networkConnection.remoteId][0]
+          );
+        }
         this.buffers[this.networkConnection.remoteId].unshift(newRemoteState);
         this.buffers[this.networkConnection.remoteId].pop();
       }
@@ -44332,7 +44230,9 @@ void main(void)\r
           for (const binding of event.relatedBindings) {
             if (binding in newLocalState)
               continue;
-            if (this.watchedBindings.digital.has(binding)) {
+            if (this.watchedBindings.digital.has(
+              binding
+            )) {
               newLocalState[binding] = this.localInput.get(binding);
             } else {
               newLocalState[binding] = this.localInput.state(binding);
@@ -44367,20 +44267,24 @@ void main(void)\r
       }
       state.__HASH__ = hash;
     }
+    awaitFrame(frame) {
+      return new Promise((resolve2) => {
+        const interval = setInterval(() => {
+          if (this.networkConnection.framesConnected > frame) {
+            clearInterval(interval);
+            resolve2();
+          }
+        }, DESIRED_FRAME_TIME);
+      });
+    }
     handleRemotePackets() {
       this.networkConnection.on(
         "input",
-        ({ frame, inputState }) => {
+        async ({ frame, inputState }) => {
           let framesBack = this.networkConnection.framesConnected - frame;
           Diagnostics.worstRemoteLatency = framesBack;
           if (framesBack < 0) {
-            for (let i2 = 0; i2 < -framesBack; i2++) {
-              console.log("Running panic/catchup frame");
-              this.world.tick();
-            }
-            framesBack = 0;
-          }
-          if (inputState.__HASH__ === this.buffers[this.networkConnection.remoteId][0].__HASH__) {
+            this.knownFutureInputs.set(frame, inputState);
             return;
           }
           let state = inputState;
@@ -44396,10 +44300,155 @@ void main(void)\r
   var MultiplayerInput = _MultiplayerInput;
   __publicField(MultiplayerInput, "bufferSize", 120);
   var MultiplayerInputSystem = ResourceUpdaterSystem(MultiplayerInput);
-  var startMultiplayerInput = async (world2) => {
+  var MultiplayerInputPlugin = (world2) => {
     world2.add(new MultiplayerInput(world2));
-    world2.addSystem(MultiplayerInputSystem);
+    world2.addSystem(MultiplayerInputSystem, "DEFAULT", false);
+    world2.addSystem(MultiplayerInputSystem, "rollback", false);
   };
+  var startMultiplayerInput = async (world2) => {
+    world2.enable(MultiplayerInputSystem, "DEFAULT");
+    world2.enable(MultiplayerInputSystem, "rollback");
+  };
+
+  // src/engine/engine.ts
+  var enginePlugins = [
+    LoopPlugin,
+    networkConnectionPlugin,
+    rollbackPlugin,
+    MultiplayerInputPlugin,
+    // InputPlugin,
+    ScriptPlugin,
+    StateManagementPlugin
+  ];
+
+  // src/engine/jsx-runtime.ts
+  function assertType(param) {
+  }
+  function jsx(tag, props, ...children) {
+    props ??= {};
+    props.children = children;
+    if (typeof tag === "function")
+      return tag(props);
+    assertType(tag);
+    assertType(props);
+    const element = document.createElement(tag);
+    Object.entries(props).forEach(([key, value]) => {
+      if (key == "className") {
+        element.className = value;
+        return;
+      }
+      if (key == "children")
+        return;
+      if (key === "style") {
+        element.style.cssText = Object.entries(value).reduce(
+          (prev, [key2, val]) => prev + `${key2}: ${val};`,
+          ""
+        );
+        return;
+      }
+      switch (typeof value) {
+        case "function":
+          return element.addEventListener(key.slice(2), value);
+        case "boolean":
+          if (!value)
+            return;
+          return element.setAttribute(key, "");
+        case "number":
+        case "string":
+          return element.setAttribute(key, `${value}`);
+      }
+      throw new TypeError("JSX element attribute assigned invalid type");
+    });
+    element.append(
+      ...children.flat().filter(
+        (node) => typeof node !== "boolean" && node != null
+      ).map(
+        (node) => typeof node == "string" || typeof node == "number" ? document.createTextNode(node.toString()) : node
+      )
+    );
+    return element;
+  }
+  var Fragment = (props) => props.children;
+  window.jsx = jsx;
+  window.jsxFrag = Fragment;
+
+  // src/game/hud/components/button.tsx
+  var StyledButton = function(props) {
+    return /* @__PURE__ */ window.jsx(
+      "button",
+      {
+        ...props,
+        className: `rounded h-9 min-w-[100px] border-none focus:brightness-90 hover:brightness-90 font-default uppercase text-center text-lg tracking-wider text-white m-2 pl-2 pr-2 ` + props.className || ""
+      },
+      props.children
+    );
+  };
+  var ColoredButtonFactory = (color) => (props) => /* @__PURE__ */ window.jsx(StyledButton, { ...props, className: color + " " + props.className || "" }, props.children);
+  var PrimaryButton = ColoredButtonFactory("bg-primary");
+  var AccentButton = ColoredButtonFactory("bg-accent");
+  var SuccessButton = ColoredButtonFactory("bg-green-500");
+  var FailButton = ColoredButtonFactory("bg-red-600");
+
+  // src/game/hud/components/dialogs.tsx
+  function closeOpenModal() {
+    document.querySelector("dialog[open]").close();
+  }
+  var DialogPopup = function(props) {
+    return /* @__PURE__ */ window.jsx("dialog", { className: "bg-base w-5/12 h-1/2 overflow-hidden rounded backdrop:bg-secondary/80 open:flex flex-col justify-betweens" }, /* @__PURE__ */ window.jsx("div", { className: "w-auto h-16  p-4" }, /* @__PURE__ */ window.jsx("h1", { className: "text-white text-center text-4xl" }, props.title)), /* @__PURE__ */ window.jsx("p", { className: "text-white  m-4" }, " ", props.message || ""), props.children, /* @__PURE__ */ window.jsx("div", { className: "bottom-0 h-16 mt-auto items-center flex" }, /* @__PURE__ */ window.jsx(
+      FailButton,
+      {
+        className: "ml-auto",
+        onclick: function(e2) {
+          closeOpenModal();
+          props.oncancel?.(e2);
+        },
+        hidden: !!props.hideCancelButton
+      },
+      "Exit"
+    ), /* @__PURE__ */ window.jsx(
+      SuccessButton,
+      {
+        className: "float-right mr-8 default-close-button",
+        onclick: function(e2) {
+          closeOpenModal();
+          props.onok?.(e2);
+        }
+      },
+      "Ok"
+    )));
+  };
+  function showDialog(options) {
+    const el = options instanceof Node ? options : /* @__PURE__ */ window.jsx(DialogPopup, { ...options });
+    document.body.appendChild(el);
+    el.showModal();
+    el.querySelector(".default-close-button").focus();
+  }
+
+  // src/engine/rendering/blueprints/graphics.ts
+  var graphicsBlueprint = new a(
+    new Position({ x: 0, y: 0, r: 0 }),
+    Container
+  );
+  var GraphicsEnt = Pe2(
+    graphicsBlueprint,
+    [Position.x, Position.y],
+    function(options, methodName, ...args) {
+      const graphics = new Graphics();
+      if (options.fillStyle) {
+        graphics.beginFill(options.fillStyle);
+      }
+      if (options.lineStyle) {
+        graphics.lineStyle(options.lineStyle);
+      }
+      if (typeof methodName === "function") {
+        methodName(graphics);
+      } else {
+        graphics[methodName](...args);
+      }
+      graphics.position.set(this.get(Position.x), this.get(Position.y));
+      this.update(graphics);
+    }
+  );
 
   // src/game/components/velocity.ts
   var Velocity = class extends Ye(
@@ -44538,6 +44587,18 @@ void main(void)\r
         pointerId = null;
         thumb.style.transform = "";
         container.dispatchEvent(
+          new CustomEvent("fire", {
+            detail: {
+              x: parseFloat(container.dataset.x),
+              y: parseFloat(container.dataset.y),
+              angle: parseFloat(container.dataset.angle)
+            }
+          })
+        );
+        container.dataset.x = "0";
+        container.dataset.y = "0";
+        container.dataset.angle = "0";
+        container.dispatchEvent(
           new CustomEvent("inputchange", {
             detail: { x: 0, y: 0, angle: 0, full: false }
           })
@@ -44560,6 +44621,7 @@ void main(void)\r
       thumb.style.transform = `translate(${-diffX}px,${-diffY}px)`;
       container.dataset.x = diffX / radius + "";
       container.dataset.y = diffY / radius + "";
+      container.dataset.angle = theta + Math.PI + "";
       container.dispatchEvent(
         new CustomEvent("inputchange", {
           detail: {
@@ -44580,36 +44642,26 @@ void main(void)\r
     input.addInputMethod("KBM", {
       x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
       y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
-      aim: new AdvancedAngleBinding({
-        originX: () => 0,
-        // world.get(StateManager).currentState === MultiplayerGameState
-        //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
-        //           .x
-        //     : 0,
-        originY: () => 0,
-        // world.get(StateManager).currentState === MultiplayerGameState
-        //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
-        //           .y
-        //     : 0,
-        targetX: () => 1,
-        // "MouseX",
-        targetY: () => 1
-        //"MouseY",
-      }),
       // aim: new AdvancedAngleBinding({
-      //     originX: () =>
-      //         world.get(StateManager).currentState === MultiplayerGameState
-      //             ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
-      //                   .x
-      //             : 0,
-      //     originY: () =>
-      //         world.get(StateManager).currentState === MultiplayerGameState
-      //             ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
-      //                   .y
-      //             : 0,
-      //     targetX: "MouseX",
-      //     targetY: "MouseY",
+      //     originX: () => 0,
+      //     // world.get(StateManager).currentState === MultiplayerGameState
+      //     //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+      //     //           .x
+      //     //     : 0,
+      //     originY: () => 0,
+      //     // world.get(StateManager).currentState === MultiplayerGameState
+      //     //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
+      //     //           .y
+      //     //     : 0,
+      //     targetX: () => 1, // "MouseX",
+      //     targetY: () => 1, //"MouseY",
       // }),
+      aim: new AdvancedAngleBinding({
+        originX: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(zero).x : 0,
+        originY: () => world2.get(StateManager).currentState === MultiplayerGameState ? world2.get("local_player").get(Container).toGlobal(zero).y : 0,
+        targetX: "MouseX",
+        targetY: "MouseY"
+      }),
       shoot: new AnyBinding("MouseLeft", "Space")
     });
     input.addInputMethod("GAMEPAD", {
@@ -44624,8 +44676,8 @@ void main(void)\r
     input.addInputMethod("MOBILE", {
       x: new DirectAnalogBinding("JoystickMovement-X"),
       y: new DirectAnalogBinding("JoystickMovement-Y"),
-      aim: new DirectAnalogBinding("JoystickShoot-Angle"),
-      shoot: new DirectDigitalBinding("JoystickShoot-Full")
+      aim: new DirectAnalogBinding("JoystickShoot-FireAngle"),
+      shoot: new DirectDigitalBinding("JoystickShoot-Fire")
     });
   }
 
@@ -44653,6 +44705,7 @@ void main(void)\r
       enablePixiRendering(this.world);
       startMultiplayerInput(this.world);
       initializeBindings(this.world);
+      enableInspect(this.world);
       this.world.addSystem(MovementSystem);
       this.world.addSystem(MovementSystem, "rollback");
       this.world.addSystem(RemoveDeadEntities);
@@ -44660,30 +44713,26 @@ void main(void)\r
       console.log("here");
       await loadLevel1Map(this.world);
       resize(this.world.get(Application));
-      const localX = this.world.get(NetworkConnection).id === "A" ? 16 * 2 : 16 * 13;
-      const remoteX = this.world.get(NetworkConnection).id === "A" ? 16 * 13 : 16 * 2;
-      const localColor = localX === 16 * 2 ? "blue" : "red";
-      const remoteColor = localX !== 16 * 2 ? "blue" : "red";
-      const localPlayer = GraphicsEnt(
-        localX,
+      const networkConn = this.world.get(NetworkConnection);
+      const player1 = GraphicsEnt(
         16 * 2,
-        { fillStyle: localColor },
+        16 * 2,
+        { fillStyle: "blue" },
         "drawRect",
         0,
         0,
         16,
         16
       );
-      localPlayer.add(new PeerId(this.world.get(NetworkConnection).id));
-      localPlayer.addScript(movementScript);
-      localPlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
-      localPlayer.add(new Velocity({ x: 0, y: 0 }));
-      this.world.add(localPlayer, "local_player");
-      const remotePlayer = GraphicsEnt(
-        remoteX,
+      player1.add(new PeerId(networkConn.player1));
+      player1.addScript(movementScript);
+      player1.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
+      player1.add(new Velocity({ x: 0, y: 0 }));
+      const player2 = GraphicsEnt(
+        16 * 13,
         16 * 2,
         {
-          fillStyle: remoteColor
+          fillStyle: "red"
         },
         "drawRect",
         0,
@@ -44691,20 +44740,42 @@ void main(void)\r
         16,
         16
       );
-      console.log(remotePlayer);
-      remotePlayer.add(new PeerId(this.world.get(NetworkConnection).remoteId));
-      remotePlayer.addScript(movementScript);
-      remotePlayer.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
-      remotePlayer.add(new Velocity({ x: 0, y: 0 }));
-      monitor(localPlayer, Position.x, "Local X");
-      monitor(remotePlayer, Position.x, "Remote X");
+      player2.add(new PeerId(networkConn.player2));
+      player2.addScript(movementScript);
+      player2.add(new PlayerInfo({ shootTimer: 0, dashTimer: 0 }));
+      player2.add(new Velocity({ x: 0, y: 0 }));
+      if (networkConn.id === networkConn.player1)
+        this.world.add(player1, "local_player");
+      else
+        this.world.add(player2, "local_player");
+      monitor(player1, Position.x, "P1 X");
+      monitor(player2, Position.x, "P2 X");
       if (InputMethod.isMobile()) {
         document.body.append(
           Joystick({ side: "left", id: "Movement" }),
           Joystick({ side: "right", id: "Shoot" })
         );
       }
+      window.inputLog = this.inputLog;
+      const nc = networkConn;
+      const rb = this.world.get(RollbackManager);
+      const ip = this.world.get(MultiplayerInput);
+      const inputLogger = class extends Jt({}) {
+        update() {
+          window.inputLog[nc.framesConnected - rb.currentFramesBack] = // console.log(
+          // rb.currentlyInRollback,
+          // "Frame: ",
+          // nc.framesConnected - rb.currentFramesBack,
+          // "x:",
+          // player1.get(Position.x)
+          // );
+          ip.get("x", nc.player1) + " " + ip.get("x", nc.player2);
+        }
+      };
+      this.world.addSystem(inputLogger);
+      this.world.addSystem(inputLogger, "rollback");
     }
+    inputLog = {};
     update() {
     }
     async onLeave(to) {
@@ -44717,19 +44788,101 @@ void main(void)\r
     await Assets.load("assets/map1bg.png");
   }
 
+  // src/game/hud/background.tsx
+  var MenuBackground = (props) => {
+    return /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full" }, ...props.children);
+  };
+
+  // src/game/states/choose.tsx
+  var ChooseGameMode = class extends State {
+    element = /* @__PURE__ */ window.jsx(
+      "div",
+      {
+        id: "game-state-chooser",
+        className: "absolute top-0 left-0 w-full h-full"
+      }
+    );
+    selectedMode;
+    async onEnter(payload, from) {
+      document.body.append(this.element);
+      if (this.world.get(NetworkConnection).isConnected) {
+        this.element.appendChild(this.getMainHTML());
+      } else {
+        this.selectedMode = "solo";
+        this.element.appendChild(this.getMapHTML());
+      }
+    }
+    async onLeave() {
+    }
+    update() {
+    }
+    getMainHTML() {
+      return /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-3 p-2" }, ["Solo", "Friendly Battle", "CO - OP"].map((name) => /* @__PURE__ */ window.jsx(
+        "div",
+        {
+          className: "bg-menuBackgroundAccent border-white m-3 p-1 h-auto cursor-pointer",
+          onclick: () => {
+            this.selectedMode = name.toLowerCase();
+            this.element.replaceChild(
+              this.element.firstChild,
+              this.getMapHTML()
+            );
+          }
+        },
+        /* @__PURE__ */ window.jsx("h1", { className: "w-full text-center text-white text-3xl mt-4" }, name)
+      ))), /* @__PURE__ */ window.jsx("div", null));
+    }
+    getMapHTML() {
+      return /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-3 p-2 h-full" }, [
+        "Lunchroom",
+        "Gym",
+        "The Elm",
+        "USA Hokey Arena",
+        "Room 127",
+        "The Halls"
+      ].map((name) => this.smallTile(name))));
+    }
+    smallTile(name) {
+      return /* @__PURE__ */ window.jsx(
+        "div",
+        {
+          className: "bg-menuBackground border-white m-3 p-1 h-auto rounded-md bg-opacity-30 cursor-pointer",
+          onclick: () => this.world.get(StateManager).moveTo(Menu, {
+            gameMode: this.selectedMode,
+            map: name
+          })
+        },
+        /* @__PURE__ */ window.jsx("h1", { className: "w-full text-center text-white text-3xl mt-4 opacity-100" }, name)
+      );
+    }
+  };
+
+  // src/engine/utils.ts
+  function awaitFrame(world2, frame) {
+    return new Promise((resolve2) => {
+      const id = setInterval(() => {
+        if (world2.get(NetworkConnection).framesConnected >= frame) {
+          clearInterval(id);
+          resolve2();
+        }
+      }, DESIRED_FRAME_TIME / 2);
+    });
+  }
+
   // src/game/states/menu.tsx
   var Menu = class extends State {
     connectionFolder;
-    async onEnter() {
+    async onEnter(payload, from) {
       const pane = this.world.get(Pane);
       const nc = this.world.get(NetworkConnection);
-      document.body.append(this.getHTML());
+      document.body.append(this.getHTML(payload.gameMode));
       await nc.waitForServerConnection;
       await loadAllTextures();
-      nc.waitForConnection.then(() => {
+      this.idSpan.textContent = nc.id;
+      nc.on("start_game", async (frame) => {
+        await awaitFrame(this.world, frame);
         this.world.get(StateManager).moveTo(MultiplayerGameState, null);
       });
-      console.log("appended");
     }
     async onLeave() {
       console.log("left");
@@ -44737,13 +44890,20 @@ void main(void)\r
     }
     update() {
     }
-    getHTML() {
+    idSpan = /* @__PURE__ */ window.jsx("span", null);
+    getHTML(gameMode = "solo") {
       console.log("Called");
       const lastCommitHash = "cddec57";
       const devMode = true;
-      const buildTime = sessionStorage.getItem("buildTime")?.split("%").map((n2) => parseFloat(n2))[0] ?? sessionStorage.setItem("buildTime", Date.now().toString()) ?? Date.now();
+      const buildTime = 1704911624295;
       const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
-      return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build" : "Production build", " @", lastCommitHash, " (Built", " ", timeAgo > 60 ? Math.round(timeAgo / 60) + " min" : timeAgo + " seconds ", "ago)"), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, null, " Friendly Fight "), /* @__PURE__ */ window.jsx(PrimaryButton, { onclick: () => this.connectToRemote() }, "PLAY"))));
+      return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, "ID: ", this.idSpan, " - ", devMode ? "Development Build" : "Production build", " @", lastCommitHash, " (Built ", Math.round(timeAgo / 60) + " min ", "ago)"), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 top-0 m-2 text-white" }, /* @__PURE__ */ window.jsx(PrimaryButton, { onclick: () => this.connectToRemote() }, "Invite to party")), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(
+        AccentButton,
+        {
+          onclick: () => this.world.get(StateManager).moveTo(ChooseGameMode, null)
+        },
+        " " + gameMode + " "
+      ), /* @__PURE__ */ window.jsx(PrimaryButton, { onclick: () => this.queueGameStart() }, "PLAY"))));
     }
     connectToRemote() {
       const input = /* @__PURE__ */ window.jsx(
@@ -44764,6 +44924,59 @@ void main(void)\r
       );
       showDialog(dialog);
     }
+    async queueGameStart() {
+      const startFrame = this.world.get(NetworkConnection).framesConnected + 10;
+      this.world.get(NetworkConnection).send("start_game", startFrame);
+      await awaitFrame(this.world, startFrame);
+      this.world.get(StateManager).moveTo(MultiplayerGameState, null);
+    }
+  };
+
+  // src/game/states/login.tsx
+  var Login = class extends State {
+    googleBtn = /* @__PURE__ */ window.jsx("div", null);
+    onEnter(payload, from) {
+      document.addEventListener("readystatechange", (e2) => {
+        if (document.readyState !== "complete")
+          return;
+        google.accounts.id.initialize({
+          client_id: "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
+          callback: this.signIn.bind(this),
+          auto_select: true,
+          context: "use",
+          itp_support: true
+        });
+        google.accounts.id.renderButton(this.googleBtn, {
+          theme: "filled_blue"
+        });
+      });
+      document.body.append(this.getHTML());
+      return Promise.resolve();
+    }
+    onLeave(to) {
+      document.querySelector("#login")?.remove();
+      console.log("Removed it");
+      return Promise.resolve();
+    }
+    update() {
+    }
+    getHTML() {
+      return /* @__PURE__ */ window.jsx("div", { id: "login", className: "w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "w-full h-full flex justify-center items-center" }, /* @__PURE__ */ window.jsx("div", { className: "w-72 h-32" }, /* @__PURE__ */ window.jsx("h1", { className: "text-center text-white text-3xl mb-2" }, "Please Login"), this.googleBtn)), /* @__PURE__ */ window.jsx(
+        "a",
+        {
+          className: "text-gray-300 underline text-center w-full block absolute bottom-0 pb-3 cursor-pointer",
+          onclick: () => {
+            this.world.get(StateManager).moveTo(Menu, { gameMode: "solo", map: "test" });
+          }
+        },
+        "Continue as Guest"
+      )));
+    }
+    signIn(response) {
+      const data = JSON.parse(atob(response.credential.split(".")[1]));
+      this.world.get(StateManager).moveTo(Menu, { gameMode: "solo", map: "test" });
+      console.log(data);
+    }
   };
 
   // src/index.ts
@@ -44775,12 +44988,12 @@ void main(void)\r
   var world = new c(100);
   window.world = world;
   async function init2() {
-    for (const plugins of [editorPlugins, enginePlugins]) {
-      for (const plugin of plugins) {
+    for await (const plugins of [editorPlugins, enginePlugins]) {
+      for await (const plugin of plugins) {
         await plugin(world);
       }
     }
-    world.get(StateManager).moveTo(Menu, null);
+    world.get(StateManager).moveTo(Login, null);
     resume(world);
   }
   init2();

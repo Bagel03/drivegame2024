@@ -60,12 +60,33 @@ export class NetworkConnection {
         this.onClose = this.onClose.bind(this);
     }
 
+    private static readonly API_KEY = "9c3aa91517dfabf12ca01813bfc59b74be79";
+    private cachedCredentials: any = null;
+    private fetchCredentials() {
+        if (this.cachedCredentials) return Promise.resolve(this.cachedCredentials);
+
+        return fetch(
+            `https://eddiebadel.metered.live/api/v1/turn/credentials?apiKey=${NetworkConnection.API_KEY}`
+        )
+            .then((res) => res.json())
+            .then((res) => {
+                this.cachedCredentials = res;
+                return res;
+            });
+    }
+
     //#region Server Connection
-    private tryFindId() {
+    private async tryFindId() {
+        const iceServers = await this.fetchCredentials();
         const id = NetworkConnection.generateId();
-        const peer = new Peer(NetworkConnection.idPrefix + id);
+        const peer = new Peer(NetworkConnection.idPrefix + id, {
+            config: {
+                iceServers,
+            },
+        });
+
         this.logger.log("Trying to connect with id", id);
-        return new Promise<{ id: string; peer: Peer }>((res, rej) => {
+        return await new Promise<{ id: string; peer: Peer }>((res, rej) => {
             peer.on("open", () => {
                 res({ id, peer });
             });
@@ -75,7 +96,6 @@ export class NetworkConnection {
                     this.logger.log("Failed to connect with id", id);
                     res(await this.tryFindId());
                     return;
-                    // testssffasd
                 }
                 this.logger.error(error);
                 // This shouldn't happen (really shouldn't get any other errors than in-use id)
@@ -99,6 +119,24 @@ export class NetworkConnection {
     private remoteConnection: DataConnection = this.dummyConnection as any;
 
     public readonly remoteId!: string;
+    // These are the same between clients
+    public readonly player1!: string;
+    public readonly player2!: string;
+    private loadPlayerIds() {
+        if (this.id < this.remoteId) {
+            //@ts-expect-error
+            this.player1 = this.id;
+            //@ts-expect-error
+            this.player2 = this.remoteId;
+        } else {
+            //@ts-expect-error
+            this.player1 = this.remoteId;
+            //@ts-expect-error
+            this.player2 = this.id;
+        }
+
+        console.log("Player 1:", this.player1, "Player 2:", this.player2);
+    }
 
     private resolvePromisesWaitingForConnection!: (remoteId: string) => void;
     public waitForConnection: Promise<string> = new Promise((res) => {
@@ -118,6 +156,8 @@ export class NetworkConnection {
             NetworkConnection.idPrefix,
             ""
         );
+
+        this.loadPlayerIds();
 
         this.framesConnected = 0;
 
@@ -179,12 +219,12 @@ export class NetworkConnection {
                 this.logger.log(
                     "Normal connection timed out, attempting to ping..."
                 );
+
                 await this.ping(timeout, remoteConnection).catch(() => {
                     this.logger.log("Ping also failed after", timeout, "ms");
                     remoteConnection.close();
                     rej("timeout");
                 });
-                this.logger.log("Ping accepted, yell at edward to implement this");
             }, timeout);
 
             remoteConnection.on("open", () => {
@@ -350,8 +390,10 @@ export class NetworkConnection {
 
     private setupPing(connection: DataConnection) {
         connection.on("data", ((packet: RawNetworkPacket) => {
-            if (packet.event == NetworkEvent.PING)
+            if (packet.event == NetworkEvent.PING) {
+                this.logger.log("Got ping, sending response...");
                 connection.send({ event: NetworkEvent.PING_RESPONSE });
+            }
         }) as any);
     }
 
@@ -361,6 +403,7 @@ export class NetworkConnection {
             Promise.timeout(timeout).then(rej);
             const fn = (packet: RawNetworkPacket) => {
                 if (packet.event === NetworkEvent.PING_RESPONSE) {
+                    this.logger.log("Got ping response");
                     res();
                     connection.off("data", fn as any);
                 }

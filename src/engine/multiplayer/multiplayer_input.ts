@@ -12,7 +12,7 @@ import { RollbackManager } from "./rollback";
 import { ResourceUpdaterPlugin, ResourceUpdaterSystem } from "../resource";
 import { Diagnostics } from "../diagnostics";
 import { DigitalBinding } from "../input/input_bindings";
-import { runOffSchedulePhysicsUpdate } from "../loop";
+import { DESIRED_FRAME_TIME, runOffSchedulePhysicsUpdate } from "../loop";
 
 export type InputState = Record<string, number | ButtonState> & {
     __HASH__: number;
@@ -23,10 +23,14 @@ class InputEvent {
     constructor(
         public readonly name: string,
         public fire: (inputState: InputState) => boolean,
-        public readonly relatedBindings: string[]
+        public readonly relatedBindings: AnalogBindingKey[]
     ) {}
 
-    static onPress(name: string, binding: string, ...relatedBindings: string[]) {
+    static onPress(
+        name: string,
+        binding: string,
+        ...relatedBindings: (keyof Bindings)[]
+    ) {
         return new InputEvent(
             name,
             (input) => input[binding] === "JUST_PRESSED",
@@ -34,7 +38,11 @@ class InputEvent {
         );
     }
 
-    static onRelease(name: string, binding: string, ...relatedBindings: string[]) {
+    static onRelease(
+        name: string,
+        binding: string,
+        ...relatedBindings: (keyof Bindings)[]
+    ) {
         return new InputEvent(
             name,
             (input) => input[binding] === "JUST_RELEASED",
@@ -72,8 +80,8 @@ export class MultiplayerInput {
     private static readonly bufferSize = 120;
 
     private readonly watchedBindings = {
-        digital: new Set<string>(),
-        analog: new Set<string>(),
+        digital: new Set<DigitalBindingKey>(),
+        analog: new Set<AnalogBindingKey>(),
     };
 
     private readonly buffers: Record<string, InputState[]> = {};
@@ -90,7 +98,6 @@ export class MultiplayerInput {
     private ready: boolean = false;
     async init() {
         await this.networkConnection.waitForServerConnection;
-        console.log("Connected");
         //@ts-expect-error
         this.localPeerId = this.networkConnection.id;
         this.buffers[this.localPeerId] = new Array(MultiplayerInput.bufferSize).fill(
@@ -172,7 +179,7 @@ export class MultiplayerInput {
 
         for (const [key, val] of Object.entries(bindings)) {
             if (val instanceof DigitalBinding) {
-                this.watchedBindings.digital.add(key);
+                this.watchedBindings.digital.add(key as DigitalBindingKey);
             } else {
                 this.watchedBindings.analog.add(key);
             }
@@ -204,26 +211,26 @@ export class MultiplayerInput {
 
         if (this.networkConnection.isConnected) {
             let newRemoteState: InputState;
-            // if (this.knownFutureInputs.has(this.networkConnection.framesConnected)) {
-            //     newRemoteState = this.knownFutureInputs.get(
-            //         this.networkConnection.framesConnected
-            //     )!;
-            //     console.log(
-            //         "Using future input frame",
-            //         this.networkConnection.framesConnected,
-            //         newRemoteState.x
-            //     );
-            // } else {
-            newRemoteState = this.predictNextState(
-                this.buffers[this.networkConnection.remoteId][0]
-            );
-            // }
+            if (this.knownFutureInputs.has(this.networkConnection.framesConnected)) {
+                newRemoteState = this.knownFutureInputs.get(
+                    this.networkConnection.framesConnected
+                )!;
+                console.log(
+                    "Using future input frame",
+                    this.networkConnection.framesConnected,
+                    newRemoteState.x
+                );
+            } else {
+                newRemoteState = this.predictNextState(
+                    this.buffers[this.networkConnection.remoteId][0]
+                );
+            }
 
             this.buffers[this.networkConnection.remoteId].unshift(newRemoteState);
             this.buffers[this.networkConnection.remoteId].pop();
         }
 
-        // We store what the state was at the start of the frame, bc inputsystem is run first
+        // We store what the state was at the start of the frame, bc input system is run first
         const newLocalState = {} as InputState;
         this.buffers[this.localPeerId].unshift(newLocalState);
         this.buffers[this.localPeerId].pop();
@@ -246,7 +253,11 @@ export class MultiplayerInput {
                 for (const binding of event.relatedBindings) {
                     if (binding in newLocalState) continue;
 
-                    if (this.watchedBindings.digital.has(binding)) {
+                    if (
+                        this.watchedBindings.digital.has(
+                            binding as DigitalBindingKey
+                        )
+                    ) {
                         newLocalState[binding] = this.localInput.get(binding);
                     } else {
                         newLocalState[binding] = this.localInput.state(binding);
@@ -292,33 +303,47 @@ export class MultiplayerInput {
         state.__HASH__ = hash;
     }
 
+    private awaitFrame(frame: number) {
+        return new Promise<void>((resolve) => {
+            const interval = setInterval(() => {
+                if (this.networkConnection.framesConnected > frame) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, DESIRED_FRAME_TIME);
+        });
+    }
+
     private handleRemotePackets() {
         this.networkConnection.on<{ frame: number; inputState: InputState }>(
             "input",
-            ({ frame, inputState }) => {
+            async ({ frame, inputState }) => {
+                // Lets try this one :)
+                // await this.awaitFrame(frame);
+
                 let framesBack = this.networkConnection.framesConnected - frame;
                 Diagnostics.worstRemoteLatency = framesBack;
                 // Handle future inputs
                 if (framesBack < 0) {
-                    for (let i = 0; i < -framesBack; i++) {
-                        console.log("Running panic/catchup frame");
-                        // runOffSchedulePhysicsUpdate(this.world, -framesBack);
-                        this.world.tick();
-                    }
-                    // this.world.tick();
-                    // this.knownFutureInputs.set(frame, inputState);
-                    // console.log("Got future input", frame);
-                    // return;
-                    framesBack = 0;
+                    //     for (let i = 0; i < -framesBack; i++) {
+                    //         console.log("Running panic/catchup frame");
+                    //         // runOffSchedulePhysicsUpdate(this.world, -framesBack);
+                    //         this.world.tick();
+                    //     }
+                    //     // this.world.tick();
+                    this.knownFutureInputs.set(frame, inputState);
+                    //     // console.log("Got future input", frame);
+                    return;
+                    // framesBack = 0;
                 }
 
                 // If the hashes match, do nothing
-                if (
-                    inputState.__HASH__ ===
-                    this.buffers[this.networkConnection.remoteId][0].__HASH__
-                ) {
-                    return;
-                }
+                // if (
+                //     inputState.__HASH__ ===
+                //     this.buffers[this.networkConnection.remoteId][0].__HASH__
+                // ) {
+                //     return;
+                // }
 
                 // At this point, theres an input mismatch and were gonna rollback
                 // But first ima correct the buffer
@@ -335,7 +360,13 @@ export class MultiplayerInput {
 }
 
 export const MultiplayerInputSystem = ResourceUpdaterSystem(MultiplayerInput);
-export const startMultiplayerInput = async (world: World) => {
+export const MultiplayerInputPlugin = (world: World) => {
     world.add(new MultiplayerInput(world));
-    world.addSystem(MultiplayerInputSystem);
+    world.addSystem(MultiplayerInputSystem, "DEFAULT", false);
+    world.addSystem(MultiplayerInputSystem, "rollback", false);
+};
+
+export const startMultiplayerInput = async (world: World) => {
+    world.enable(MultiplayerInputSystem, "DEFAULT");
+    world.enable(MultiplayerInputSystem, "rollback");
 };

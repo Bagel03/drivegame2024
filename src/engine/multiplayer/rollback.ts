@@ -64,11 +64,11 @@ export class RollbackManager {
         // What are some issues here?
 
         while (this.currentFramesBack >= 0) {
-            this.world.tick("rollback");
-            // this.world.storageManager.update();
-            // this.world.archetypeManager.update();
-            // this.world.entityManager.update();
-            // this.world.update("rollback");
+            // this.world.tick("rollback");
+            this.world.storageManager.update();
+            this.world.archetypeManager.update();
+            this.world.entityManager.update();
+            this.world.update("rollback");
 
             this.currentFramesBack--;
         }
@@ -76,32 +76,6 @@ export class RollbackManager {
         this.currentFramesBack = 0;
 
         this.currentlyInRollback = false;
-    }
-
-    // APIS for resources and entities
-    private watchedResources: number[] = [];
-    private resourceLogs: any[][] = [];
-
-    registerRollbackResource(id: intoID) {
-        if (typeof id !== "number") id = id.getId();
-
-        this.watchedResources.push(id);
-        this.resourceLogs.push([]);
-    }
-
-    private justAddedEntities: Entity[][] = [];
-    private justRemovedEntities: Entity[][] = [];
-
-    registerNewEntity(entity: Entity) {
-        if (this.justAddedEntities[0] === null) {
-            this.justAddedEntities[0] = [entity];
-        } else this.justAddedEntities[0].push(entity);
-    }
-
-    registerRemovedEntity(entity: Entity) {
-        if (this.justRemovedEntities[0] === null) {
-            this.justRemovedEntities[0] = [entity];
-        } else this.justRemovedEntities[0].push(entity);
     }
 
     update() {}

@@ -105,6 +105,9 @@ export class Input {
             PRESSED: new Set(),
             RELEASED: new Set(),
         },
+
+        // Pressed events that only last one frame
+        ephemeral: new Set(),
     };
 
     protected readonly analog: Map<AnalogInput, number> = new Map();
@@ -124,8 +127,9 @@ export class Input {
         this.digital.queue.RELEASED.delete(input);
     }
 
-    protected digitalInputPressed(input: string) {
+    protected digitalInputPressed(input: string, ephemeral = false) {
         this.clearDigitalState(input);
+        if (ephemeral) this.digital.ephemeral.add(input);
         this.digital.queue.PRESSED.add(input);
     }
 
@@ -206,33 +210,26 @@ export class Input {
         window.addEventListener("joystickconnected", (e) => {
             e.detail.joystick.addEventListener(
                 "inputchange",
-                ({ detail: { x, y, angle, full } }) => {
+                ({ detail: { x, y, angle } }) => {
                     this.setAnalog(`Joystick${e.detail.joystickId}-X`, x);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Y`, y);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Angle`, angle);
+                }
+            );
 
-                    if (
-                        this.isRaw(
-                            `Joystick${e.detail.joystickId}-Full`,
-                            "RELEASED"
-                        ) &&
-                        full
-                    ) {
-                        this.digitalInputPressed(
-                            `Joystick${e.detail.joystickId}-Full`
-                        );
-                        console.log("pressed");
-                    } else if (
-                        this.isRaw(
-                            `Joystick${e.detail.joystickId}-Full`,
-                            "PRESSED"
-                        ) &&
-                        !full
-                    ) {
-                        this.digitalInputReleased(
-                            `Joystick${e.detail.joystickId}-Full`
-                        );
-                    }
+            e.detail.joystick.addEventListener(
+                "fire",
+                ({ detail: { x, y, angle } }) => {
+                    this.digitalInputPressed(
+                        `Joystick${e.detail.joystickId}-Fire`,
+                        true
+                    );
+                    this.setAnalog(`Joystick${e.detail.joystickId}-FireX`, x);
+                    this.setAnalog(`Joystick${e.detail.joystickId}-FireY`, y);
+                    this.setAnalog(
+                        `Joystick${e.detail.joystickId}-FireAngle`,
+                        angle
+                    );
                 }
             );
         });
@@ -258,6 +255,15 @@ export class Input {
             this.digital.JUST_RELEASED.add(b)
         );
         this.digital.queue.RELEASED.clear();
+
+        // Remove any ephemeral strokes
+        this.digital.ephemeral.forEach((button) => {
+            if (this.digital.PRESSED.has(button)) {
+                this.digital.PRESSED.delete(button);
+                this.digital.JUST_RELEASED.add(button);
+                this.digital.ephemeral.delete(button);
+            }
+        });
 
         this.analog.set("MouseXDelta", 0);
         this.analog.set("MouseYDelta", 0);
@@ -383,7 +389,7 @@ export class Input {
         return "RELEASED";
     }
 
-    is(bindingName: string, state: ButtonState) {
+    is(bindingName: DigitalBindingKey, state: ButtonState) {
         return this.digitalBindings.get(bindingName)?.is(this, state) ?? false;
     }
 
@@ -420,7 +426,7 @@ export class Input {
         return this.isGamepad(this.defaultGamepad!, button, state);
     }
 
-    get(bindingName: string) {
+    get(bindingName: AnalogBindingKey) {
         const analog = this.analogBindings.get(bindingName);
         if (analog) return analog.get(this);
         const digital = this.digitalBindings.get(bindingName);

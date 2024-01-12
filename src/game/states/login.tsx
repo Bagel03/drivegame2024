@@ -7,16 +7,15 @@ import {
 } from "../../engine/state_managment";
 import { MultiplayerGameState } from "./multiplayer";
 import { Menu } from "./menu";
+import { MenuBackground } from "../hud/background";
 
 export class Login extends State<void> {
-    private googleBtn = (
-        <div className="absolute top-0 left-0 z-10"></div>
-    ) as HTMLElement;
+    private googleBtn = (<div></div>) as HTMLElement;
 
     onEnter<From extends StateClass<any>>(payload: void, from: From): Promise<void> {
         document.addEventListener("readystatechange", (e) => {
             if (document.readyState !== "complete") return;
-            //     document.body.innerHTML = "hello";
+
             google.accounts.id.initialize({
                 client_id:
                     "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
@@ -26,32 +25,56 @@ export class Login extends State<void> {
                 itp_support: true,
             });
 
-            // google.accounts.id.prompt((n) => console.log(n.isDisplayed()));
             google.accounts.id.renderButton(this.googleBtn, {
                 theme: "filled_blue",
             });
-            document.body.appendChild(this.googleBtn);
         });
+
+        document.body.append(this.getHTML());
         return Promise.resolve();
     }
 
     onLeave<Into extends StateClass<any>>(
         to: Into
     ): Promise<void> | Promise<ExtractPayload<Into>> {
-        console.log("left");
-        this.googleBtn.remove();
+        document.querySelector("#login")?.remove();
+        console.log("Removed it");
+
         return Promise.resolve();
     }
 
     update(): void {}
 
     private getHTML() {
-        return <div></div>;
+        return (
+            <div id="login" className="w-full h-full">
+                <MenuBackground>
+                    <div className="w-full h-full flex justify-center items-center">
+                        <div className="w-72 h-32">
+                            <h1 className="text-center text-white text-3xl mb-2">
+                                Please Login
+                            </h1>
+                            {this.googleBtn}
+                        </div>
+                    </div>
+                    <a
+                        className="text-gray-300 underline text-center w-full block absolute bottom-0 pb-3 cursor-pointer"
+                        onclick={() => {
+                            this.world
+                                .get(StateManager)
+                                .moveTo(Menu, { gameMode: "solo", map: "test" });
+                        }}
+                    >
+                        Continue as Guest
+                    </a>
+                </MenuBackground>
+            </div>
+        );
     }
 
     private signIn(response: CredentialResponse) {
         const data = JSON.parse(atob(response.credential.split(".")[1]));
-        this.world.get(StateManager).moveTo(Menu, null);
+        this.world.get(StateManager).moveTo(Menu, { gameMode: "solo", map: "test" });
         console.log(data);
     }
 }
