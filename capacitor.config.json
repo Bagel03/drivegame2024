@@ -1,0 +1,8 @@
+{
+  "appId": "project.b",
+  "appName": "project-b",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

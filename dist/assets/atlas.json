@@ -1,0 +1,89 @@
+{
+	"meta": {
+		"image": "atlas.png",
+		"size": {"w":1126,"h":1016},
+		"scale": "1"
+	},
+	"frames": {
+		"walk_00.png":
+		{
+			"frame": {"x":0,"y":0,"w":175,"h":514},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":229,"y":83,"w":175,"h":514},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"walk_01.png":
+		{
+			"frame": {"x":175,"y":0,"w":247,"h":512},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":219,"y":84,"w":247,"h":512},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"walk_07.png":
+		{
+			"frame": {"x":422,"y":0,"w":177,"h":509},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":239,"y":84,"w":177,"h":509},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"walk_04.png":
+		{
+			"frame": {"x":599,"y":0,"w":157,"h":507},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":247,"y":81,"w":157,"h":507},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"walk_03.png":
+		{
+			"frame": {"x":756,"y":0,"w":168,"h":506},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":243,"y":85,"w":168,"h":506},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"walk_06.png":
+		{
+			"frame": {"x":924,"y":0,"w":202,"h":504},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":231,"y":90,"w":202,"h":504},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"walk_05.png":
+		{
+			"frame": {"x":0,"y":514,"w":178,"h":502},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":240,"y":88,"w":178,"h":502},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"walk_02.png":
+		{
+			"frame": {"x":178,"y":514,"w":233,"h":495},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":212,"y":90,"w":233,"h":495},
+			"sourceSize": {"w":650,"h":650}
+		},
+		"map1bg.png":
+		{
+			"frame": {"x":411,"y":514,"w":256,"h":256},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
+			"sourceSize": {"w":256,"h":256}
+		},
+		"ticket.png":
+		{
+			"frame": {"x":667,"y":514,"w":32,"h":16},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":32,"h":16},
+			"sourceSize": {"w":32,"h":16}
+		}
+	}
+}

@@ -18,6 +18,16 @@
         "titleBar.inactiveBackground": "#08725b99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        // "**/node_modules": true,
+        "pnpm-lock.yaml": true
+    },
     "peacock.color": "#08725b",
     "cSpell.words": ["Pixi"]
 }
