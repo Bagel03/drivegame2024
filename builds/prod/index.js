@@ -44951,7 +44951,6 @@ void main(void)\r
   // src/ts/game/setup/load_textures.ts
   async function loadAllTextures() {
     await Assets.load(window.DIST_URL + "/assets/atlas.json");
-    await Assets.load(window.DIST_URL + "/assets/map1bg.png");
   }
 
   // src/ts/game/hud/background.tsx
@@ -45142,7 +45141,6 @@ void main(void)\r
       this.gameMode = payload.gameMode;
       this.map = payload.map;
       await nc.waitForServerConnection;
-      await loadAllTextures();
       this.idSpan.textContent = nc.id;
       nc.on("start_game", async (frame) => {
         await awaitFrame(this.world, frame);
