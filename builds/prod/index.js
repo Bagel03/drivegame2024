@@ -45277,7 +45277,7 @@ void main(void)\r
       this.world.get(StateManager).moveTo(Login);
     }
     async loadAssets() {
-      await Assets.load("./dist/assets/atlas.json");
+      await Assets.load(window.DIST_URL + "/assets/atlas.json");
     }
     initBindings() {
       const input = this.world.get(Input);
