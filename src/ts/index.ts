@@ -48,8 +48,11 @@ const world = new World(100);
 //@ts-ignore
 window.world = world;
 
-type Platform = "web" | "android" | "ios" | "windows" | "mac" | "linux";
-world.add("platform", "web" satisfies Platform);
+declare global {
+    interface Window {
+        readonly DIST_URL: string;
+    }
+}
 
 async function init() {
     for await (const plugins of [editorPlugins, enginePlugins]) {

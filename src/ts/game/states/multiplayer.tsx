@@ -12,7 +12,6 @@ import { resize } from "../../engine/rendering/resize";
 import { Application } from "pixi.js";
 
 import * as PIXI from "pixi.js";
-import { initializeBindings } from "../setup/init_bindings";
 import { MovementSystem } from "../systems/movement";
 import { enablePixiRendering } from "../../engine/rendering/plugin";
 import {

@@ -44466,61 +44466,6 @@ void main(void)\r
     }
   };
 
-  // src/ts/game/setup/init_bindings.ts
-  var zero = new Point(0, 0);
-  function initializeBindings(world3) {
-    const input = world3.get(Input);
-    input.addInputMethod("KBM", {
-      x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
-      y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
-      // aim: new AdvancedAngleBinding({
-      //     originX: () => 0,
-      //     // world.get(StateManager).currentState === MultiplayerGameState
-      //     //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
-      //     //           .x
-      //     //     : 0,
-      //     originY: () => 0,
-      //     // world.get(StateManager).currentState === MultiplayerGameState
-      //     //     ? world.get<Entity>("local_player").get(Container).toGlobal(zero)
-      //     //           .y
-      //     //     : 0,
-      //     targetX: () => 1, // "MouseX",
-      //     targetY: () => 1, //"MouseY",
-      // }),
-      aim: new AdvancedAngleBinding({
-        originX: () => {
-          let res = world3.get(StateManager).currentStateInstance instanceof Game ? world3.get("local_player").get(Container).toGlobal(zero).x : 0;
-          return res;
-        },
-        originY: () => {
-          let res = world3.get(StateManager).currentStateInstance instanceof Game ? world3.get("local_player").get(Container).toGlobal(zero).y : 0;
-          return res;
-        },
-        targetX: "MouseX",
-        targetY: "MouseY"
-      }),
-      shoot: new AnyBinding("MouseLeft"),
-      ult: new AnyBinding("KeyE", "KeyF")
-    });
-    input.addInputMethod("GAMEPAD", {
-      x: new DirectAnalogBinding("DefaultGamepad-LeftStickX"),
-      y: new DirectAnalogBinding("DefaultGamepad-LeftStickY"),
-      aim: new AngleBinding(
-        "DefaultGamepad-RightStickX",
-        "DefaultGamepad-RightStickY"
-      ),
-      shoot: new DirectDigitalBinding("DefaultGamepad-A"),
-      ult: new DirectDigitalBinding("DefaultGamepad-B")
-    });
-    input.addInputMethod("MOBILE", {
-      x: new DirectAnalogBinding("JoystickMovement-X"),
-      y: new DirectAnalogBinding("JoystickMovement-Y"),
-      aim: new DirectAnalogBinding("JoystickShoot-FireAngle"),
-      shoot: new DirectDigitalBinding("JoystickShoot-Fire"),
-      ult: new DirectDigitalBinding("JoystickShoot-Fire")
-    });
-  }
-
   // src/ts/game/components/velocity.ts
   var Velocity = class extends Ye(
     Et({ x: Et.number, y: Et.number }).logged()
@@ -44651,7 +44596,6 @@ void main(void)\r
     async onEnter(payload, from) {
       enablePixiRendering(this.world);
       startMultiplayerInput(this.world);
-      initializeBindings(this.world);
       enableInspect(this.world);
       this.world.addSystem(MovementSystem);
       this.world.addSystem(MovementSystem, "rollback");
@@ -44948,12 +44892,6 @@ void main(void)\r
     }
   };
 
-  // src/ts/game/setup/load_textures.ts
-  async function loadAllTextures() {
-    await Assets.load("dist/assets/atlas.json");
-    await Assets.load("src/assets/map1bg.png");
-  }
-
   // src/ts/game/hud/background.tsx
   var MenuBackground = (props) => {
     return /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full" }, ...props.children);
@@ -45086,6 +45024,23 @@ void main(void)\r
     applyDefaultShooting(this, input, id);
   };
 
+  // src/ts/game/blueprints/wall.ts
+  var wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
+  var Wall = Pe2(
+    wallBlueprint,
+    [
+      StaticPosition.x,
+      StaticPosition.y,
+      CollisionHitbox.x,
+      CollisionHitbox.y
+    ],
+    function(color) {
+      const graphics = new Graphics();
+      graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
+      this.set(graphics);
+    }
+  );
+
   // src/ts/game/states/solo.tsx
   var SoloGame = class extends Game {
     async onEnter(payload, from) {
@@ -45128,6 +45083,9 @@ void main(void)\r
         })
       );
       this.world.add(player, "local_player");
+      Wall(0, 230, 300, 20, "red");
+      Wall(50, 170, 50, 10, "red");
+      Wall(256 - 50, 170, 50, 10, "red");
     }
   };
 
@@ -45142,11 +45100,10 @@ void main(void)\r
       this.gameMode = payload.gameMode;
       this.map = payload.map;
       await nc.waitForServerConnection;
-      await loadAllTextures();
       this.idSpan.textContent = nc.id;
       nc.on("start_game", async (frame) => {
         await awaitFrame(this.world, frame);
-        this.world.get(StateManager).moveTo(MultiplayerGame, null);
+        this.world.get(StateManager).moveTo(MultiplayerGame);
       });
     }
     async onLeave() {
@@ -45180,7 +45137,7 @@ void main(void)\r
                 this.queueMultiplayerGameStart();
                 break;
               case "solo":
-                this.world.get(StateManager).moveTo(SoloGame, null);
+                this.world.get(StateManager).moveTo(SoloGame);
                 break;
             }
           }
@@ -45211,7 +45168,7 @@ void main(void)\r
       const startFrame = this.world.get(NetworkConnection).framesConnected + 10;
       this.world.get(NetworkConnection).send("start_game", startFrame);
       await awaitFrame(this.world, startFrame);
-      this.world.get(StateManager).moveTo(MultiplayerGame, null);
+      this.world.get(StateManager).moveTo(MultiplayerGame);
     }
   };
 
@@ -45281,7 +45238,7 @@ void main(void)\r
     }
     initBindings() {
       const input = this.world.get(Input);
-      const zero2 = new Point(0, 0);
+      const zero = new Point(0, 0);
       input.addInputMethod("KBM", {
         x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
         y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
@@ -45301,11 +45258,11 @@ void main(void)\r
         // }),
         aim: new AdvancedAngleBinding({
           originX: () => {
-            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player").get(Container).toGlobal(zero2).x : 0;
+            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player").get(Container).toGlobal(zero).x : 0;
             return res;
           },
           originY: () => {
-            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player").get(Container).toGlobal(zero2).y : 0;
+            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player").get(Container).toGlobal(zero).y : 0;
             return res;
           },
           targetX: "MouseX",
@@ -45356,7 +45313,6 @@ void main(void)\r
   });
   var world2 = new c(100);
   window.world = world2;
-  world2.add("platform", "web");
   async function init2() {
     for await (const plugins of [editorPlugins, enginePlugins]) {
       for await (const plugin of plugins) {

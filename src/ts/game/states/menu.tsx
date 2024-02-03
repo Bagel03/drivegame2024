@@ -12,7 +12,6 @@ import { DialogPopup, showDialog } from "../hud/components/dialogs";
 import { MultiplayerGame } from "./multiplayer";
 import { Joystick } from "../hud/components/joystick";
 import { AccentButton, PrimaryButton } from "../hud/components/button";
-import { loadAllTextures } from "../setup/load_textures";
 import { ChooseGameMode } from "./choose";
 import { awaitFrame } from "../../engine/utils";
 import { SoloGame } from "./solo";
@@ -35,12 +34,11 @@ export class Menu extends State<{
         this.map = payload.map;
 
         await nc.waitForServerConnection;
-        await loadAllTextures();
         this.idSpan.textContent = nc.id;
 
         nc.on("start_game", async (frame: number) => {
             await awaitFrame(this.world, frame);
-            this.world.get(StateManager).moveTo(MultiplayerGame, null);
+            this.world.get(StateManager).moveTo(MultiplayerGame);
         });
 
         // nc.waitForConnection.then(() => {
@@ -81,6 +79,7 @@ export class Menu extends State<{
                         </PrimaryButton>
                     </div>
 
+                    {/* Play Button */}
                     <div className="absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md">
                         <AccentButton
                             onclick={() =>
@@ -103,7 +102,7 @@ export class Menu extends State<{
                                     case "solo":
                                         this.world
                                             .get(StateManager)
-                                            .moveTo(SoloGame, null);
+                                            .moveTo(SoloGame);
                                         break;
                                 }
                             }}
@@ -150,6 +149,6 @@ export class Menu extends State<{
 
         this.world.get(NetworkConnection).send("start_game", startFrame);
         await awaitFrame(this.world, startFrame);
-        this.world.get(StateManager).moveTo(MultiplayerGame, null);
+        this.world.get(StateManager).moveTo(MultiplayerGame);
     }
 }

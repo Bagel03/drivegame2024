@@ -11,6 +11,7 @@ import { MrCarrierPlayer } from "../scripts/players/carrier";
 import { MrGriffinPlayer } from "../scripts/players/griffin";
 import { LaserPlayer } from "../scripts/players/laser";
 import { Game } from "./game";
+import { Wall } from "../blueprints/wall";
 
 export class SoloGame extends Game {
     async onEnter<From extends StateClass<any>>(
@@ -58,5 +59,9 @@ export class SoloGame extends Game {
         );
 
         this.world.add(player, "local_player");
+
+        Wall(0, 230, 300, 20, "red");
+        Wall(50, 170, 50, 10, "red");
+        Wall(256 - 50, 170, 50, 10, "red");
     }
 }

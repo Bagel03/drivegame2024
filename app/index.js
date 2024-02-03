@@ -7,6 +7,8 @@ const PROD_URL = "https://bagel03.github.io/drivegame2024/builds/prod";
 const LOCAL_URL = "./dist";
 const DIST_URL = localStorage.getItem("dev-env") ? LOCAL_URL : PROD_URL;
 
+window.DIST_URL = DIST_URL;
+
 const BUNDLE_URL = DIST_URL + "/index.js";
 const CSS_URL = DIST_URL + "/index.css";
 
