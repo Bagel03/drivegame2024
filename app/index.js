@@ -4,10 +4,19 @@
 // apps auto reload all the new content on demand.
 
 const PROD_URL = "https://bagel03.github.io/drivegame2024/builds/prod";
-const LOCAL_URL = "./dist";
+const LOCAL_URL = "http://localhost:5500/dist";
 const DIST_URL = localStorage.getItem("dev-env") ? LOCAL_URL : PROD_URL;
 
 window.DIST_URL = DIST_URL;
+
+window.google = {
+    accounts: {
+        id: {
+            renderButton() {},
+            initialize() {},
+        },
+    },
+};
 
 const BUNDLE_URL = DIST_URL + "/index.js";
 const CSS_URL = DIST_URL + "/index.css";

@@ -59,7 +59,7 @@ export class Preload extends State {
     }
 
     async loadAssets() {
-        await Assets.load("./dist/assets/atlas.json");
+        await Assets.load(window.DIST_URL + "/assets/atlas.json");
     }
 
     initBindings() {
