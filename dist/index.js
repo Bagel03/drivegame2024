@@ -43,10 +43,23 @@
     __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
     return value;
   };
+  var __accessCheck = (obj, member, msg) => {
+    if (!member.has(obj))
+      throw TypeError("Cannot " + msg);
+  };
+  var __privateGet = (obj, member, getter) => {
+    __accessCheck(obj, member, "read from private field");
+    return getter ? getter.call(obj) : member.get(obj);
+  };
   var __privateAdd = (obj, member, value) => {
     if (member.has(obj))
       throw TypeError("Cannot add the same private member more than once");
     member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+  };
+  var __privateSet = (obj, member, value, setter) => {
+    __accessCheck(obj, member, "write to private field");
+    setter ? setter.call(obj, value) : member.set(obj, value);
+    return value;
   };
 
   // node_modules/.pnpm/sdp@3.2.0/node_modules/sdp/sdp.js
@@ -3962,9 +3975,9 @@
   var d = (r2, e2, t2) => (Le(r2, typeof e2 != "symbol" ? e2 + "" : e2, t2), t2);
   var Ne = typeof importScripts == "function";
   var m = class {
-    context;
-    color;
     constructor(...e2) {
+      __publicField(this, "context");
+      __publicField(this, "color");
       this.context = typeof e2 == "string" ? e2 : e2.join(" > "), this.color = `hsl(${JSON.stringify(e2).split("").reduce((t2, n2) => n2.charCodeAt(0) + ((t2 << 5) - t2), 0) % 360}, 70%, 60%)`;
     }
     group(...e2) {
@@ -4019,13 +4032,13 @@
   var U = new m("Archetype Manager");
   var M = class {
     constructor(e2, t2, n2) {
+      __publicField(this, "graph", { added: /* @__PURE__ */ new Map(), removed: /* @__PURE__ */ new Map() });
+      __publicField(this, "entities");
+      __publicField(this, "lastModified");
       this.id = e2;
       this.components = t2;
       this.entities = new Int32Array(new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * (n2 + 1))), this.lastModified = performance.now();
     }
-    graph = { added: /* @__PURE__ */ new Map(), removed: /* @__PURE__ */ new Map() };
-    entities;
-    lastModified;
     addEntity(e2) {
       this.entities[++this.entities[0]] = e2, this.lastModified = performance.now();
     }
@@ -4044,13 +4057,13 @@
   };
   var P = class {
     constructor(e2) {
+      __publicField(this, "archetypes", /* @__PURE__ */ new Map());
+      __publicField(this, "entityArchetypes");
+      __publicField(this, "nextArchetypeId", 1);
+      __publicField(this, "defaultArchetype", new M(0, /* @__PURE__ */ new Set(), 10));
       this.world = e2;
       this.archetypes.set(0, this.defaultArchetype), this.entityArchetypes = new Int32Array(new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * e2.maxEntities));
     }
-    archetypes = /* @__PURE__ */ new Map();
-    entityArchetypes;
-    nextArchetypeId = 1;
-    defaultArchetype = new M(0, /* @__PURE__ */ new Set(), 10);
     loadFromData(e2) {
       U.log("Loading from data dump:", e2), this.defaultArchetype = Object.create(M.prototype, Object.getOwnPropertyDescriptors(e2.defaultArchetype)), e2.archetypes.forEach((t2, n2) => {
         this.archetypes.set(n2, Object.create(M.prototype, Object.getOwnPropertyDescriptors(t2)));
@@ -4154,11 +4167,11 @@
   var Se = new m("Component Storage");
   var W = class {
     constructor(e2) {
+      __publicField(this, "storages", []);
+      __publicField(this, "updateQueue", []);
+      __publicField(this, "storagesByType", /* @__PURE__ */ new Map());
       this.world = e2;
     }
-    storages = [];
-    updateQueue = [];
-    storagesByType = /* @__PURE__ */ new Map();
     loadFromData(e2) {
       Se.log("Loading from data dump:", e2), e2.forEach((t2, n2) => {
         this.storages[n2] = Object.create(l.get(t2.id).prototype, Object.getOwnPropertyDescriptors(t2));
@@ -4199,10 +4212,10 @@
   h("bool", 9);
   var O = class {
     constructor(e2, t2) {
+      __publicField(this, "internalArray");
+      __publicField(this, "needsUpdate", false);
       this.id = e2;
     }
-    internalArray;
-    needsUpdate = false;
     link(e2, t2, n2, o2 = false) {
       if (o2) {
         let i2 = Te(e2, t2), a3 = be(e2, t2);
@@ -4212,9 +4225,12 @@
     }
   };
   var J = class extends O {
-    internalArray = [];
-    id = s.any;
-    kind = s.any;
+    constructor() {
+      super(...arguments);
+      __publicField(this, "internalArray", []);
+      __publicField(this, "id", s.any);
+      __publicField(this, "kind", s.any);
+    }
     getEnt(e2) {
       return this.internalArray[e2];
     }
@@ -4230,11 +4246,12 @@
   Object.defineProperty(Object.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: s.any });
   function A(r2, e2) {
     return class Ee extends O {
-      internalArray;
-      id = r2;
-      kind = r2;
       constructor(n2, o2) {
-        super(n2, o2), this.internalArray = new e2(new SharedArrayBuffer(e2.BYTES_PER_ELEMENT * o2));
+        super(n2, o2);
+        __publicField(this, "internalArray");
+        __publicField(this, "id", r2);
+        __publicField(this, "kind", r2);
+        this.internalArray = new e2(new SharedArrayBuffer(e2.BYTES_PER_ELEMENT * o2));
         let i2 = new.target;
         i2 !== Ee && !i2.patchedByNCS && (new.target.prototype.inc = function(a3, y2 = 1) {
           this.addOrSetEnt(a3, this.getEnt(a3) + y2);
@@ -4277,11 +4294,12 @@
   var Qe = A(s.u32, Uint32Array);
   Object.defineProperty(Number.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: s.f64 });
   var Z = class extends O {
-    internalArray;
-    id = s.bool;
-    kind = s.bool;
     constructor(e2, t2) {
-      super(e2, t2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * t2));
+      super(e2, t2);
+      __publicField(this, "internalArray");
+      __publicField(this, "id", s.bool);
+      __publicField(this, "kind", s.bool);
+      this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * t2));
     }
     getEnt(e2) {
       return !!this.internalArray[e2];
@@ -4329,11 +4347,14 @@
   function je(r2, { backingStorageId: e2 }) {
     let t2 = l.get(e2);
     return class extends t2 {
-      needsUpdate = true;
-      id = r2;
-      kind = s.logged;
-      log = new Array(v);
-      writeableLog = this.log;
+      constructor() {
+        super(...arguments);
+        __publicField(this, "needsUpdate", true);
+        __publicField(this, "id", r2);
+        __publicField(this, "kind", s.logged);
+        __publicField(this, "log", new Array(v));
+        __publicField(this, "writeableLog", this.log);
+      }
       addOrSetEnt(o2, i2) {
         this.log[0] || (this.writeableLog[0] = /* @__PURE__ */ new Map());
         let a3 = this.writeableLog[0];
@@ -4353,14 +4374,15 @@
     };
   }
   function ze(r2, { options: e2 }) {
-    class t2 extends O {
-      internalArray;
-      internalMap;
-      id = r2;
-      kind = s.enum;
-      options = e2;
+    return class t extends O {
       constructor(o2, i2) {
-        super(o2, i2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * i2)), e2.length > 20;
+        super(o2, i2);
+        __publicField(this, "internalArray");
+        __publicField(this, "internalMap");
+        __publicField(this, "id", r2);
+        __publicField(this, "kind", s.enum);
+        __publicField(this, "options", e2);
+        this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * i2)), e2.length > 20;
       }
       getEnt(o2) {
         return e2[this.internalArray[o2]];
@@ -4374,14 +4396,17 @@
         let i2 = this.internalArray;
         this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * o2)), this.internalArray.set(i2);
       }
-    }
+    };
   }
   function Fe(r2, e2) {
     let t2 = l.get(e2.backingStorageId);
     return class extends t2 {
-      nullValues = /* @__PURE__ */ new Set();
-      id = r2;
-      kind = s.nullable;
+      constructor() {
+        super(...arguments);
+        __publicField(this, "nullValues", /* @__PURE__ */ new Set());
+        __publicField(this, "id", r2);
+        __publicField(this, "kind", s.nullable);
+      }
       addOrSetEnt(o2, i2) {
         i2 == null ? this.nullValues.add(o2) : super.addOrSetEnt(o2, i2);
       }
@@ -4399,10 +4424,10 @@
   function Ge(r2, { backingStorageId: e2, capacity: t2 }) {
     let n2 = l.get(e2);
     return class extends n2 {
-      first;
-      kind = s.ranged;
       constructor() {
         super(r2, t2);
+        __publicField(this, "first");
+        __publicField(this, "kind", s.ranged);
       }
       addOrSetEnt(i2, a3) {
         return this.first === void 0 && (this.first = i2), super.addOrSetEnt(i2 - this.first, a3);
@@ -4440,15 +4465,16 @@
       return new f(new Array(e2).fill(0).map((t2) => new p(this.id)));
     }
   };
-  var f = class {
-    #e;
+  var _e2, _a;
+  var f = (_a = class {
     constructor(e2) {
-      if (this.#e = e2, !(typeof this.#e == "number" || this.#e instanceof f || this.#e instanceof p))
+      __privateAdd(this, _e2, void 0);
+      if (__privateSet(this, _e2, e2), !(typeof __privateGet(this, _e2) == "number" || __privateGet(this, _e2) instanceof f || __privateGet(this, _e2) instanceof p))
         for (let [t2, n2] of Object.entries(e2))
           this[t2] = n2;
     }
     toTypeTree() {
-      return this.#e;
+      return __privateGet(this, _e2);
     }
     static nullableRaw(e2) {
       if (e2 instanceof p)
@@ -4461,7 +4487,7 @@
       return t2;
     }
     nullable() {
-      return new f(f.nullableRaw(this.#e));
+      return new f(f.nullableRaw(__privateGet(this, _e2)));
     }
     static loggedRaw(e2) {
       if (e2 instanceof p)
@@ -4474,7 +4500,7 @@
       return t2;
     }
     logged() {
-      return new f(f.loggedRaw(this.#e));
+      return new f(f.loggedRaw(__privateGet(this, _e2)));
     }
     static rangedRaw(e2, t2) {
       if (e2 instanceof p)
@@ -4487,9 +4513,9 @@
       return n2;
     }
     ranged(e2) {
-      return new f(f.rangedRaw(this.#e, e2));
+      return new f(f.rangedRaw(__privateGet(this, _e2), e2));
     }
-  };
+  }, _e2 = new WeakMap(), _a);
   function _(r2) {
     return new f(r2);
   }
@@ -4537,7 +4563,8 @@
         break;
       case "CONSTRUCTOR NAME":
         Function.prototype.getId = function() {
-          return w[this.name] ??= b();
+          var _a2;
+          return w[_a2 = this.name] ?? (w[_a2] = b());
         };
     }
   }
@@ -4549,7 +4576,7 @@
   }
   function Bt() {
     He("CONSTRUCTOR NAME"), String.prototype.getId = function() {
-      return w[this] ??= b();
+      return w[this] ?? (w[this] = b());
     }, we.log("Patched Object prototype, 3rd party external components are now available");
   }
   var T = class {
@@ -4624,19 +4651,19 @@
     let e2 = ae(r2);
     if (typeof e2 == "number") {
       class n2 extends ne {
-        static id = b();
       }
+      __publicField(n2, "id", b());
       return n2.__init__(e2), n2;
     }
     if ($e(e2)) {
       class n2 extends oe {
-        static id = b();
       }
+      __publicField(n2, "id", b());
       return n2.__init__(e2), n2;
     }
     class t2 extends ie {
-      static id = b();
     }
+    __publicField(t2, "id", b());
     return t2.__init__(e2), t2;
   }
   function qe(r2) {
@@ -4696,17 +4723,20 @@
   var j = (r2) => typeof r2 == "function" && r2.toString().startsWith("class");
   var x = class {
     constructor(e2) {
+      __publicField(this, "targetedArchetypes", []);
+      __publicField(this, "offset", 0);
+      __publicField(this, "stepSize", 1);
+      __publicField(this, "lastCheckedArchetypes", /* @__PURE__ */ new Map());
+      __publicField(this, "entityNarrower");
+      __publicField(this, "addedState", /* @__PURE__ */ new Set());
+      __publicField(this, "removedState", /* @__PURE__ */ new Set());
+      __publicField(this, "NO_OP", new Function());
       this.componentTester = e2;
       typeof e2.narrower == "function" && (this[Symbol.iterator] = this.iterator_narrower, this.forEach = this.forEach_narrower), this.entityNarrower = e2.narrower;
     }
-    targetedArchetypes = [];
-    offset = 0;
-    stepSize = 1;
-    lastCheckedArchetypes = /* @__PURE__ */ new Map();
     setStepSizeAndOffset(e2, t2) {
       this.stepSize = e2, this.offset = t2;
     }
-    entityNarrower;
     ignoreMultithreadingFragmentation() {
       this.offset = 0, this.stepSize = 1;
     }
@@ -4737,9 +4767,6 @@
           this.entityNarrower(n2) && (yield n2);
         }
     }
-    addedState = /* @__PURE__ */ new Set();
-    removedState = /* @__PURE__ */ new Set();
-    NO_OP = new Function();
     forEach_state(e2, t2, n2) {
       let o2 = new Set(e2);
       for (let i2 = this.targetedArchetypes.length - 1; i2 >= 0; i2--) {
@@ -4766,9 +4793,9 @@
   };
   var z = class {
     constructor(e2) {
+      __publicField(this, "queries", []);
       this.world = e2;
     }
-    queries = [];
     query(...e2) {
       let t2 = new x(se(...e2));
       for (let [n2, o2] of this.world.archetypeManager.archetypes)
@@ -4820,9 +4847,12 @@
   function Jt(r2) {
     let e2 = ye(r2);
     class t2 extends C {
-      entities = e2;
-      static id = C.nextSystemId++;
+      constructor() {
+        super(...arguments);
+        __publicField(this, "entities", e2);
+      }
     }
+    __publicField(t2, "id", C.nextSystemId++);
     return t2;
   }
   function Ze(r2) {
@@ -4844,13 +4874,13 @@
   var F = { LOCAL: 0, REMOTE: 1 };
   var G = class {
     constructor(e2) {
+      __publicField(this, "localSystems", []);
+      __publicField(this, "systemLocations", new Uint8Array(100));
+      __publicField(this, "schedules", {});
+      __publicField(this, "enabledSchedules", {});
       this.world = e2;
       this.createSchedule("DEFAULT");
     }
-    localSystems = [];
-    systemLocations = new Uint8Array(100);
-    schedules = {};
-    enabledSchedules = {};
     reorderEnabled(e2) {
       let t2 = this.enabledSchedules[e2].slice(), n2 = this.enabledSchedules[e2];
       n2.length = 0;
@@ -4864,7 +4894,8 @@
       this.schedules[e2] = { first: [], standard: t2, last: [] }, this.enabledSchedules[e2] = [];
     }
     addToSchedule(e2, t2, n2, o2) {
-      let i2 = this.schedules[t2] ??= { first: [], standard: [], last: [] }, { first: a3, standard: y2, last: S2 } = i2;
+      var _a2;
+      let i2 = (_a2 = this.schedules)[t2] ?? (_a2[t2] = { first: [], standard: [], last: [] }), { first: a3, standard: y2, last: S2 } = i2;
       if (n2 === "STANDARD" || n2 === "LAST" || n2 === "FIRST")
         i2[n2.toLowerCase()].push(e2);
       else if ("position" in n2)
@@ -4918,10 +4949,10 @@
   var pe = new m("Worker Manager");
   var ue = class {
     constructor(e2, t2) {
+      __publicField(this, "workers", []);
       this.url = e2;
       this.numThreads = t2;
     }
-    workers = [];
     postMessage(e2) {
       for (let t2 = this.workers.length - 1; t2 >= 0; t2--)
         this.workers[t2].postMessage(e2);
@@ -4935,10 +4966,10 @@
   };
   var H = class {
     constructor(e2) {
+      __publicField(this, "workers", []);
+      __publicField(this, "triggerArrays", []);
       this.world = e2;
     }
-    workers = [];
-    triggerArrays = [];
     async loadWorkerSystem(e2, t2 = 1) {
       let n2, o2, i2 = new Int32Array(new SharedArrayBuffer(t2 * Int32Array.BYTES_PER_ELEMENT));
       return t2 === 1 ? (pe.log("Loading remote system..."), n2 = new Worker(e2, { type: "module" }), n2.postMessage({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: 1, offset: 0, triggerArray: i2 }), o2 = await de(n2, 0)) : (pe.log(`Loading remote system with ${t2} threads`), n2 = new ue(e2, t2), o2 = (await n2.initAndEmitData({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: t2, triggerArray: i2 }, 0, "offset"))[0]), this.workers[o2.id] = n2, this.triggerArrays[o2.id] = i2, pe.logOk(`Remote system ${o2.name} (${o2.id}) is ready`), o2.id;
@@ -4991,9 +5022,9 @@
   });
   var Y = class {
     constructor(e2) {
+      __publicField(this, "entities", /* @__PURE__ */ new Set());
       this.world = e2;
     }
-    entities = /* @__PURE__ */ new Set();
     spawn(...e2) {
       for (let t2 = 1; t2 <= this.entities.size + 1; t2++) {
         let n2 = t2;
@@ -5016,16 +5047,19 @@
   var q = new m("World");
   var V = class {
     constructor(e2) {
+      __publicField(this, "storageManager");
+      __publicField(this, "queryManager");
+      __publicField(this, "workerManager");
+      __publicField(this, "systemManager");
+      __publicField(this, "archetypeManager");
+      __publicField(this, "entityManager");
+      __publicField(this, "reservedEntity", 0);
+      __publicField(this, "components", /* @__PURE__ */ new Set());
+      __publicField(this, "get", this.reservedEntity.get.bind(this.reservedEntity));
+      __publicField(this, "set", this.reservedEntity.set.bind(this.reservedEntity));
       this.internalMaxEntities = e2;
       q.group("Creating world with", e2, "entities"), this.storageManager = new W(this), this.queryManager = new z(this), this.workerManager = new H(this), this.systemManager = new G(this), this.archetypeManager = new P(this), this.entityManager = new Y(this), V.GLOBAL_WORLD = this, q.groupEnd(), q.logOk("Created world with max capacity of", e2, "entities");
     }
-    storageManager;
-    queryManager;
-    workerManager;
-    systemManager;
-    archetypeManager;
-    entityManager;
-    reservedEntity = 0;
     get maxEntities() {
       return this.internalMaxEntities;
     }
@@ -5044,7 +5078,7 @@
     addSystem(e2, t2 = "DEFAULT", n2 = true, o2) {
       e2 instanceof C || (e2 = new e2(this));
       let i2 = e2.constructor;
-      return o2 ??= i2.runOrder, this.systemManager.addSystem(e2), e2.init(), t2 === false ? this : (this.systemManager.addToSchedule(i2.id, t2, o2, n2), this);
+      return o2 ?? (o2 = i2.runOrder), this.systemManager.addSystem(e2), e2.init(), t2 === false ? this : (this.systemManager.addToSchedule(i2.id, t2, o2, n2), this);
     }
     async addRemoteSystem(e2, t2) {
       let n2 = await this.workerManager.loadWorkerSystem(e2, t2);
@@ -5072,7 +5106,6 @@
         typeof e2[t2] != "number" && (e2[t2] = e2[t2].id);
       return this.systemManager.update(e2);
     }
-    components = /* @__PURE__ */ new Set();
     add(e2, t2 = e2.constructor.getId()) {
       if (this.components.add(typeof t2 == "number" ? t2 : t2.getId()), e2 instanceof T) {
         e2.copyIntoStorage(this, this.reservedEntity);
@@ -5080,8 +5113,6 @@
       }
       typeof t2 != "number" && (t2 = t2.getId()), V.GLOBAL_WORLD.storageManager.getOrCreateStorage(t2, e2.storageKind).addOrSetEnt(this.reservedEntity, e2);
     }
-    get = this.reservedEntity.get.bind(this.reservedEntity);
-    set = this.reservedEntity.set.bind(this.reservedEntity);
     has(e2) {
       return this.components.has(typeof e2 == "number" ? e2 : e2.getId());
     }
@@ -5134,12 +5165,12 @@
 
   // node_modules/.pnpm/file+..+BagelECS+bagelecs-0.0.3.tgz/node_modules/bagelecs/dist/bundle.js
   var a = class {
-    archetype;
-    defaultData = /* @__PURE__ */ new Map();
-    targetedComponents = /* @__PURE__ */ new Set();
-    neededPropertyIds = [];
-    neededPropertyStorageKinds = [];
     constructor(...e2) {
+      __publicField(this, "archetype");
+      __publicField(this, "defaultData", /* @__PURE__ */ new Map());
+      __publicField(this, "targetedComponents", /* @__PURE__ */ new Set());
+      __publicField(this, "neededPropertyIds", []);
+      __publicField(this, "neededPropertyStorageKinds", []);
       for (let t2 of e2)
         if (t2 instanceof T) {
           this.targetedComponents.add(t2.constructor.getId());
@@ -5275,8 +5306,8 @@
       return new TpError({ type: "shouldneverhappen" });
     }
     constructor(config) {
-      var _a;
-      this.message = (_a = CREATE_MESSAGE_MAP[config.type](forceCast(config.context))) !== null && _a !== void 0 ? _a : "Unexpected error";
+      var _a2;
+      this.message = (_a2 = CREATE_MESSAGE_MAP[config.type](forceCast(config.context))) !== null && _a2 !== void 0 ? _a2 : "Unexpected error";
       this.name = this.constructor.name;
       this.stack = new Error(this.message).stack;
       this.type = config.type;
@@ -5351,9 +5382,9 @@
   };
   var ComplexValue = class {
     constructor(initialValue, config) {
-      var _a;
+      var _a2;
       this.constraint_ = config === null || config === void 0 ? void 0 : config.constraint;
-      this.equals_ = (_a = config === null || config === void 0 ? void 0 : config.equals) !== null && _a !== void 0 ? _a : (v1, v22) => v1 === v22;
+      this.equals_ = (_a2 = config === null || config === void 0 ? void 0 : config.equals) !== null && _a2 !== void 0 ? _a2 : (v1, v22) => v1 === v22;
       this.emitter = new Emitter();
       this.rawValue_ = initialValue;
     }
@@ -5623,18 +5654,18 @@
     };
   }
   function readWhitespace(text, cursor) {
-    var _a;
+    var _a2;
     const m3 = text.substr(cursor).match(/^\s+/);
-    return (_a = m3 && m3[0]) !== null && _a !== void 0 ? _a : "";
+    return (_a2 = m3 && m3[0]) !== null && _a2 !== void 0 ? _a2 : "";
   }
   function readNonZeroDigit(text, cursor) {
     const ch = text.substr(cursor, 1);
     return ch.match(/^[1-9]$/) ? ch : "";
   }
   function readDecimalDigits(text, cursor) {
-    var _a;
+    var _a2;
     const m3 = text.substr(cursor).match(/^[0-9]+/);
-    return (_a = m3 && m3[0]) !== null && _a !== void 0 ? _a : "";
+    return (_a2 = m3 && m3[0]) !== null && _a2 !== void 0 ? _a2 : "";
   }
   function readSignedInteger(text, cursor) {
     const ds = readDecimalDigits(text, cursor);
@@ -5718,9 +5749,9 @@
     readDecimalLiteral3
   ]);
   function parseBinaryDigits(text, cursor) {
-    var _a;
+    var _a2;
     const m3 = text.substr(cursor).match(/^[01]+/);
-    return (_a = m3 && m3[0]) !== null && _a !== void 0 ? _a : "";
+    return (_a2 = m3 && m3[0]) !== null && _a2 !== void 0 ? _a2 : "";
   }
   function readBinaryIntegerLiteral(text, cursor) {
     const prefix = text.substr(cursor, 2);
@@ -5735,9 +5766,9 @@
     return prefix + bds;
   }
   function readOctalDigits(text, cursor) {
-    var _a;
+    var _a2;
     const m3 = text.substr(cursor).match(/^[0-7]+/);
-    return (_a = m3 && m3[0]) !== null && _a !== void 0 ? _a : "";
+    return (_a2 = m3 && m3[0]) !== null && _a2 !== void 0 ? _a2 : "";
   }
   function readOctalIntegerLiteral(text, cursor) {
     const prefix = text.substr(cursor, 2);
@@ -5752,9 +5783,9 @@
     return prefix + ods;
   }
   function readHexDigits(text, cursor) {
-    var _a;
+    var _a2;
     const m3 = text.substr(cursor).match(/^[0-9a-f]+/i);
-    return (_a = m3 && m3[0]) !== null && _a !== void 0 ? _a : "";
+    return (_a2 = m3 && m3[0]) !== null && _a2 !== void 0 ? _a2 : "";
   }
   function readHexIntegerLiteral(text, cursor) {
     const prefix = text.substr(cursor, 2);
@@ -5811,8 +5842,8 @@
     };
   }
   function parsePrimaryExpression(text, cursor) {
-    var _a;
-    return (_a = parseLiteral(text, cursor)) !== null && _a !== void 0 ? _a : parseParenthesizedExpression(text, cursor);
+    var _a2;
+    return (_a2 = parseLiteral(text, cursor)) !== null && _a2 !== void 0 ? _a2 : parseParenthesizedExpression(text, cursor);
   }
   function parseUnaryExpression(text, cursor) {
     const expr = parsePrimaryExpression(text, cursor);
@@ -5901,9 +5932,9 @@
     return expr.evaluable;
   }
   function parseNumber(text) {
-    var _a;
+    var _a2;
     const r2 = parseEcmaNumberExpression(text);
-    return (_a = r2 === null || r2 === void 0 ? void 0 : r2.evaluate()) !== null && _a !== void 0 ? _a : null;
+    return (_a2 = r2 === null || r2 === void 0 ? void 0 : r2.evaluate()) !== null && _a2 !== void 0 ? _a2 : null;
   }
   function numberFromUnknown(value) {
     if (typeof value === "number") {
@@ -5944,12 +5975,12 @@
     return !isEmpty(params.step) ? getDecimalDigits(params.step) : Math.max(getDecimalDigits(rawValue), 2);
   }
   function getSuitableKeyScale(params) {
-    var _a;
-    return (_a = params.step) !== null && _a !== void 0 ? _a : 1;
+    var _a2;
+    return (_a2 = params.step) !== null && _a2 !== void 0 ? _a2 : 1;
   }
   function getSuitablePointerScale(params, rawValue) {
-    var _a;
-    const base = Math.abs((_a = params.step) !== null && _a !== void 0 ? _a : rawValue);
+    var _a2;
+    const base = Math.abs((_a2 = params.step) !== null && _a2 !== void 0 ? _a2 : rawValue);
     return base === 0 ? 0.1 : Math.pow(10, Math.floor(Math.log10(base)) - 1);
   }
   function createStepConstraint(params, initialValue) {
@@ -5974,9 +6005,9 @@
     return null;
   }
   function createNumberTextPropsObject(params, initialValue) {
-    var _a, _b, _c;
+    var _a2, _b, _c;
     return {
-      formatter: (_a = params.format) !== null && _a !== void 0 ? _a : createNumberFormatter(getSuitableDecimalDigits(params, initialValue)),
+      formatter: (_a2 = params.format) !== null && _a2 !== void 0 ? _a2 : createNumberFormatter(getSuitableDecimalDigits(params, initialValue)),
       keyScale: (_b = params.keyScale) !== null && _b !== void 0 ? _b : getSuitableKeyScale(params),
       pointerScale: (_c = params.pointerScale) !== null && _c !== void 0 ? _c : getSuitablePointerScale(params, initialValue)
     };
@@ -6221,8 +6252,8 @@
     return result ? callback(result) : false;
   }
   function exportBladeState(superExport, thisState) {
-    var _a;
-    return deepMerge((_a = superExport === null || superExport === void 0 ? void 0 : superExport()) !== null && _a !== void 0 ? _a : {}, thisState);
+    var _a2;
+    return deepMerge((_a2 = superExport === null || superExport === void 0 ? void 0 : superExport()) !== null && _a2 !== void 0 ? _a2 : {}, thisState);
   }
   function isValueBladeController(bc) {
     return "value" in bc;
@@ -6458,8 +6489,8 @@
     }
     importState(state) {
       return importBladeState(state, (s3) => {
-        var _a, _b, _c;
-        return super.importState(s3) && this.labelController.importProps(s3) && ((_c = (_b = (_a = this.valueController).importProps) === null || _b === void 0 ? void 0 : _b.call(_a, state)) !== null && _c !== void 0 ? _c : true);
+        var _a2, _b, _c;
+        return super.importState(s3) && this.labelController.importProps(s3) && ((_c = (_b = (_a2 = this.valueController).importProps) === null || _b === void 0 ? void 0 : _b.call(_a2, state)) !== null && _c !== void 0 ? _c : true);
       }, (p3) => ({
         value: p3.optional.raw
       }), (result) => {
@@ -6470,8 +6501,8 @@
       });
     }
     exportState() {
-      var _a, _b, _c;
-      return exportBladeState(() => super.exportState(), Object.assign(Object.assign({ value: this.value.rawValue }, this.labelController.exportProps()), (_c = (_b = (_a = this.valueController).exportProps) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : {}));
+      var _a2, _b, _c;
+      return exportBladeState(() => super.exportState(), Object.assign(Object.assign({ value: this.value.rawValue }, this.labelController.exportProps()), (_c = (_b = (_a2 = this.valueController).exportProps) === null || _b === void 0 ? void 0 : _b.call(_a2)) !== null && _c !== void 0 ? _c : {}));
     }
   };
   function excludeValue(state) {
@@ -6612,8 +6643,8 @@
       this.controller.labelController.props.set("label", label);
     }
     get title() {
-      var _a;
-      return (_a = this.controller.buttonController.props.get("title")) !== null && _a !== void 0 ? _a : "";
+      var _a2;
+      return (_a2 = this.controller.buttonController.props.get("title")) !== null && _a2 !== void 0 ? _a2 : "";
     }
     set title(title) {
       this.controller.buttonController.props.set("title", title);
@@ -6989,7 +7020,7 @@
   }
   var Rack = class {
     constructor(config) {
-      var _a, _b;
+      var _a2, _b;
       this.emitter = new Emitter();
       this.onBladePositionsChange_ = this.onBladePositionsChange_.bind(this);
       this.onSetAdd_ = this.onSetAdd_.bind(this);
@@ -7000,7 +7031,7 @@
       this.onChildViewPropsChange_ = this.onChildViewPropsChange_.bind(this);
       this.onRackLayout_ = this.onRackLayout_.bind(this);
       this.onRackValueChange_ = this.onRackValueChange_.bind(this);
-      this.blade_ = (_a = config.blade) !== null && _a !== void 0 ? _a : null;
+      this.blade_ = (_a2 = config.blade) !== null && _a2 !== void 0 ? _a2 : null;
       (_b = this.blade_) === null || _b === void 0 ? void 0 : _b.value("positions").emitter.on("change", this.onBladePositionsChange_);
       this.viewProps = config.viewProps;
       this.bcSet_ = new NestedOrderedSet(findSubBladeControllerSet);
@@ -7011,8 +7042,8 @@
       return this.bcSet_.items;
     }
     add(bc, opt_index) {
-      var _a;
-      (_a = bc.parent) === null || _a === void 0 ? void 0 : _a.remove(bc);
+      var _a2;
+      (_a2 = bc.parent) === null || _a2 === void 0 ? void 0 : _a2.remove(bc);
       bc.parent = this;
       this.bcSet_.add(bc, opt_index);
     }
@@ -7198,8 +7229,8 @@
       return new Foldable(core);
     }
     get styleExpanded() {
-      var _a;
-      return (_a = this.get("temporaryExpanded")) !== null && _a !== void 0 ? _a : this.get("expanded");
+      var _a2;
+      return (_a2 = this.get("temporaryExpanded")) !== null && _a2 !== void 0 ? _a2 : this.get("expanded");
     }
     get styleHeight() {
       if (!this.styleExpanded) {
@@ -7325,8 +7356,8 @@
   var bladeContainerClassName = ClassName("cnt");
   var FolderView = class {
     constructor(doc, config) {
-      var _a;
-      this.className_ = ClassName((_a = config.viewName) !== null && _a !== void 0 ? _a : "fld");
+      var _a2;
+      this.className_ = ClassName((_a2 = config.viewName) !== null && _a2 !== void 0 ? _a2 : "fld");
       this.element = doc.createElement("div");
       this.element.classList.add(this.className_(), bladeContainerClassName());
       config.viewProps.bindClassModifiers(this.element);
@@ -7364,8 +7395,8 @@
   };
   var FolderController = class extends ContainerBladeController {
     constructor(doc, config) {
-      var _a;
-      const foldable = Foldable.create((_a = config.expanded) !== null && _a !== void 0 ? _a : true);
+      var _a2;
+      const foldable = Foldable.create((_a2 = config.expanded) !== null && _a2 !== void 0 ? _a2 : true);
       const view = new FolderView(doc, {
         foldable,
         props: config.props,
@@ -7447,7 +7478,7 @@
   }
   var ViewProps = class extends ValueMap {
     constructor(valueMap) {
-      var _a;
+      var _a2;
       super(valueMap);
       this.onDisabledChange_ = this.onDisabledChange_.bind(this);
       this.onParentChange_ = this.onParentChange_.bind(this);
@@ -7455,13 +7486,13 @@
       [this.globalDisabled_, this.setGlobalDisabled_] = createReadonlyValue(createValue(this.getGlobalDisabled_()));
       this.value("disabled").emitter.on("change", this.onDisabledChange_);
       this.value("parent").emitter.on("change", this.onParentChange_);
-      (_a = this.get("parent")) === null || _a === void 0 ? void 0 : _a.globalDisabled.emitter.on("change", this.onParentGlobalDisabledChange_);
+      (_a2 = this.get("parent")) === null || _a2 === void 0 ? void 0 : _a2.globalDisabled.emitter.on("change", this.onParentGlobalDisabledChange_);
     }
     static create(opt_initialValue) {
-      var _a, _b, _c;
+      var _a2, _b, _c;
       const initialValue = opt_initialValue !== null && opt_initialValue !== void 0 ? opt_initialValue : {};
       return new ViewProps(ValueMap.createCore({
-        disabled: (_a = initialValue.disabled) !== null && _a !== void 0 ? _a : false,
+        disabled: (_a2 = initialValue.disabled) !== null && _a2 !== void 0 ? _a2 : false,
         disposed: false,
         hidden: (_b = initialValue.hidden) !== null && _b !== void 0 ? _b : false,
         parent: (_c = initialValue.parent) !== null && _c !== void 0 ? _c : null
@@ -7516,10 +7547,10 @@
       this.updateGlobalDisabled_();
     }
     onParentChange_(ev) {
-      var _a;
+      var _a2;
       const prevParent = ev.previousRawValue;
       prevParent === null || prevParent === void 0 ? void 0 : prevParent.globalDisabled.emitter.off("change", this.onParentGlobalDisabledChange_);
-      (_a = this.get("parent")) === null || _a === void 0 ? void 0 : _a.globalDisabled.emitter.on("change", this.onParentGlobalDisabledChange_);
+      (_a2 = this.get("parent")) === null || _a2 === void 0 ? void 0 : _a2.globalDisabled.emitter.on("change", this.onParentGlobalDisabledChange_);
       this.updateGlobalDisabled_();
     }
   };
@@ -7669,8 +7700,8 @@
   };
   var TabPageApi = class extends ContainerBladeApi {
     get title() {
-      var _a;
-      return (_a = this.controller.itemController.props.get("title")) !== null && _a !== void 0 ? _a : "";
+      var _a2;
+      return (_a2 = this.controller.itemController.props.get("title")) !== null && _a2 !== void 0 ? _a2 : "";
     }
     set title(title) {
       this.controller.itemController.props.set("title", title);
@@ -8014,15 +8045,15 @@
     }
   };
   function parseListOptions(value) {
-    var _a;
+    var _a2;
     const p3 = MicroParsers;
     if (Array.isArray(value)) {
-      return (_a = parseRecord({ items: value }, (p4) => ({
+      return (_a2 = parseRecord({ items: value }, (p4) => ({
         items: p4.required.array(p4.required.object({
           text: p4.required.string,
           value: p4.required.raw
         }))
-      }))) === null || _a === void 0 ? void 0 : _a.items;
+      }))) === null || _a2 === void 0 ? void 0 : _a2.items;
     }
     if (typeof value === "object") {
       return p3.required.raw(value).value;
@@ -8274,11 +8305,11 @@
     return isVerticalArrowKey(key) || key === "ArrowLeft" || key === "ArrowRight";
   }
   function computeOffset$1(ev, elem) {
-    var _a, _b;
+    var _a2, _b;
     const win = elem.ownerDocument.defaultView;
     const rect = elem.getBoundingClientRect();
     return {
-      x: ev.pageX - (((_a = win && win.scrollX) !== null && _a !== void 0 ? _a : 0) + rect.left),
+      x: ev.pageX - (((_a2 = win && win.scrollX) !== null && _a2 !== void 0 ? _a2 : 0) + rect.left),
       y: ev.pageY - (((_b = win && win.scrollY) !== null && _b !== void 0 ? _b : 0) + rect.top)
     };
   }
@@ -8316,9 +8347,9 @@
       };
     }
     onMouseDown_(ev) {
-      var _a;
+      var _a2;
       ev.preventDefault();
-      (_a = ev.currentTarget) === null || _a === void 0 ? void 0 : _a.focus();
+      (_a2 = ev.currentTarget) === null || _a2 === void 0 ? void 0 : _a2.focus();
       const doc = this.elem_.ownerDocument;
       doc.addEventListener("mousemove", this.onDocumentMouseMove_);
       doc.addEventListener("mouseup", this.onDocumentMouseUp_);
@@ -8378,8 +8409,8 @@
       this.lastTouch_ = touch;
     }
     onTouchEnd_(ev) {
-      var _a;
-      const touch = (_a = ev.targetTouches.item(0)) !== null && _a !== void 0 ? _a : this.lastTouch_;
+      var _a2;
+      const touch = (_a2 = ev.targetTouches.item(0)) !== null && _a2 !== void 0 ? _a2 : this.lastTouch_;
       const rect = this.elem_.getBoundingClientRect();
       this.emitter.emit("up", {
         altKey: ev.altKey,
@@ -8463,7 +8494,7 @@
   };
   var NumberTextController = class {
     constructor(doc, config) {
-      var _a;
+      var _a2;
       this.originRawValue_ = 0;
       this.onInputChange_ = this.onInputChange_.bind(this);
       this.onInputKeyDown_ = this.onInputKeyDown_.bind(this);
@@ -8473,7 +8504,7 @@
       this.onPointerUp_ = this.onPointerUp_.bind(this);
       this.parser_ = config.parser;
       this.props = config.props;
-      this.sliderProps_ = (_a = config.sliderProps) !== null && _a !== void 0 ? _a : null;
+      this.sliderProps_ = (_a2 = config.sliderProps) !== null && _a2 !== void 0 ? _a2 : null;
       this.value = config.value;
       this.viewProps = config.viewProps;
       this.dragging_ = createValue(null);
@@ -8493,8 +8524,8 @@
       ph.emitter.on("up", this.onPointerUp_);
     }
     constrainValue_(value) {
-      var _a, _b;
-      const min = (_a = this.sliderProps_) === null || _a === void 0 ? void 0 : _a.get("min");
+      var _a2, _b;
+      const min = (_a2 = this.sliderProps_) === null || _a2 === void 0 ? void 0 : _a2.get("min");
       const max = (_b = this.sliderProps_) === null || _b === void 0 ? void 0 : _b.get("max");
       let v3 = value;
       if (min !== void 0) {
@@ -9050,13 +9081,13 @@
     return hue === max ? max : loopRange(hue, max);
   }
   function constrainColorComponents(components, mode, type) {
-    var _a;
+    var _a2;
     const ms = getColorMaxComponents(mode, type);
     return [
       mode === "rgb" ? constrainRange(components[0], 0, ms[0]) : loopHueRange(components[0], ms[0]),
       constrainRange(components[1], 0, ms[1]),
       constrainRange(components[2], 0, ms[2]),
-      constrainRange((_a = components[3]) !== null && _a !== void 0 ? _a : 1, 0, 1)
+      constrainRange((_a2 = components[3]) !== null && _a2 !== void 0 ? _a2 : 1, 0, 1)
     ];
   }
   function convertColorType(comps, mode, from, to) {
@@ -9165,8 +9196,8 @@
     return forAlpha ? 0.1 : 1;
   }
   function extractColorType(params) {
-    var _a;
-    return (_a = params.color) === null || _a === void 0 ? void 0 : _a.type;
+    var _a2;
+    return (_a2 = params.color) === null || _a2 === void 0 ? void 0 : _a2.type;
   }
   var FloatColor = class {
     constructor(comps, mode) {
@@ -10535,8 +10566,8 @@
     };
   }
   function shouldSupportAlpha$1(inputParams) {
-    var _a;
-    if ((_a = inputParams === null || inputParams === void 0 ? void 0 : inputParams.color) === null || _a === void 0 ? void 0 : _a.alpha) {
+    var _a2;
+    if ((_a2 = inputParams === null || inputParams === void 0 ? void 0 : inputParams.color) === null || _a2 === void 0 ? void 0 : _a2.alpha) {
       return true;
     }
     return false;
@@ -10579,10 +10610,10 @@
       }
     },
     controller: (args) => {
-      var _a, _b;
+      var _a2, _b;
       return new ColorController(args.document, {
         colorType: "int",
-        expanded: (_a = args.params.expanded) !== null && _a !== void 0 ? _a : false,
+        expanded: (_a2 = args.params.expanded) !== null && _a2 !== void 0 ? _a2 : false,
         formatter: createFormatter$1(args.params.supportsAlpha),
         parser: createColorStringParser("int"),
         pickerLayout: (_b = args.params.picker) !== null && _b !== void 0 ? _b : "popup",
@@ -10627,14 +10658,14 @@
     id: "input-color-object",
     type: "input",
     accept: (value, params) => {
-      var _a;
+      var _a2;
       if (!isColorObject(value)) {
         return null;
       }
       const result = parseColorInputParams(params);
       return result ? {
         initialValue: value,
-        params: Object.assign(Object.assign({}, result), { colorType: (_a = extractColorType(params)) !== null && _a !== void 0 ? _a : "int" })
+        params: Object.assign(Object.assign({}, result), { colorType: (_a2 = extractColorType(params)) !== null && _a2 !== void 0 ? _a2 : "int" })
       } : null;
     },
     binding: {
@@ -10643,11 +10674,11 @@
       writer: (args) => createColorObjectWriter(shouldSupportAlpha(args.initialValue), args.params.colorType)
     },
     controller: (args) => {
-      var _a, _b;
+      var _a2, _b;
       const supportsAlpha = isRgbaColorObject(args.initialValue);
       return new ColorController(args.document, {
         colorType: args.params.colorType,
-        expanded: (_a = args.params.expanded) !== null && _a !== void 0 ? _a : false,
+        expanded: (_a2 = args.params.expanded) !== null && _a2 !== void 0 ? _a2 : false,
         formatter: createColorObjectFormatter(supportsAlpha, args.params.colorType),
         parser: createColorStringParser("int"),
         pickerLayout: (_b = args.params.picker) !== null && _b !== void 0 ? _b : "popup",
@@ -10693,10 +10724,10 @@
       }
     },
     controller: (args) => {
-      var _a, _b;
+      var _a2, _b;
       return new ColorController(args.document, {
         colorType: args.params.format.type,
-        expanded: (_a = args.params.expanded) !== null && _a !== void 0 ? _a : false,
+        expanded: (_a2 = args.params.expanded) !== null && _a2 !== void 0 ? _a2 : false,
         formatter: args.params.stringifier,
         parser: createColorStringParser("int"),
         pickerLayout: (_b = args.params.picker) !== null && _b !== void 0 ? _b : "popup",
@@ -10713,8 +10744,8 @@
     }
     constrain(value) {
       const comps = this.asm_.toComponents(value).map((comp, index) => {
-        var _a, _b;
-        return (_b = (_a = this.components[index]) === null || _a === void 0 ? void 0 : _a.constrain(comp)) !== null && _b !== void 0 ? _b : comp;
+        var _a2, _b;
+        return (_b = (_a2 = this.components[index]) === null || _a2 === void 0 ? void 0 : _a2.constrain(comp)) !== null && _b !== void 0 ? _b : comp;
       });
       return this.asm_.fromComponents(comps);
     }
@@ -11075,7 +11106,7 @@
   };
   var Point2dController = class {
     constructor(doc, config) {
-      var _a, _b;
+      var _a2, _b;
       this.onPopupChildBlur_ = this.onPopupChildBlur_.bind(this);
       this.onPopupChildKeydown_ = this.onPopupChildKeydown_.bind(this);
       this.onPadButtonBlur_ = this.onPadButtonBlur_.bind(this);
@@ -11115,7 +11146,7 @@
         viewProps: this.viewProps
       });
       this.view.textElement.appendChild(this.textC_.view.element);
-      (_a = this.view.buttonElement) === null || _a === void 0 ? void 0 : _a.addEventListener("blur", this.onPadButtonBlur_);
+      (_a2 = this.view.buttonElement) === null || _a2 === void 0 ? void 0 : _a2.addEventListener("blur", this.onPadButtonBlur_);
       (_b = this.view.buttonElement) === null || _b === void 0 ? void 0 : _b.addEventListener("click", this.onPadButtonClick_);
       if (this.popC_) {
         this.view.element.appendChild(this.popC_.view.element);
@@ -11193,16 +11224,16 @@
     });
   }
   function getSuitableMaxDimensionValue(params, rawValue) {
-    var _a, _b;
+    var _a2, _b;
     if (!isEmpty(params.min) || !isEmpty(params.max)) {
-      return Math.max(Math.abs((_a = params.min) !== null && _a !== void 0 ? _a : 0), Math.abs((_b = params.max) !== null && _b !== void 0 ? _b : 0));
+      return Math.max(Math.abs((_a2 = params.min) !== null && _a2 !== void 0 ? _a2 : 0), Math.abs((_b = params.max) !== null && _b !== void 0 ? _b : 0));
     }
     const step = getSuitableKeyScale(params);
     return Math.max(Math.abs(step) * 10, Math.abs(rawValue) * 10);
   }
   function getSuitableMax(params, initialValue) {
-    var _a, _b;
-    const xr = getSuitableMaxDimensionValue(deepMerge(params, (_a = params.x) !== null && _a !== void 0 ? _a : {}), initialValue.x);
+    var _a2, _b;
+    const xr = getSuitableMaxDimensionValue(deepMerge(params, (_a2 = params.x) !== null && _a2 !== void 0 ? _a2 : {}), initialValue.x);
     const yr = getSuitableMaxDimensionValue(deepMerge(params, (_b = params.y) !== null && _b !== void 0 ? _b : {}), initialValue.y);
     return Math.max(xr, yr);
   }
@@ -11236,21 +11267,21 @@
       writer: () => writePoint2d
     },
     controller: (args) => {
-      var _a, _b;
+      var _a2, _b;
       const doc = args.document;
       const value = args.value;
       const c3 = args.constraint;
       const dParams = [args.params.x, args.params.y];
       return new Point2dController(doc, {
         axes: value.rawValue.getComponents().map((comp, i2) => {
-          var _a2;
+          var _a3;
           return createPointAxis({
             constraint: c3.components[i2],
             initialValue: comp,
-            params: deepMerge(args.params, (_a2 = dParams[i2]) !== null && _a2 !== void 0 ? _a2 : {})
+            params: deepMerge(args.params, (_a3 = dParams[i2]) !== null && _a3 !== void 0 ? _a3 : {})
           });
         }),
-        expanded: (_a = args.params.expanded) !== null && _a !== void 0 ? _a : false,
+        expanded: (_a2 = args.params.expanded) !== null && _a2 !== void 0 ? _a2 : false,
         invertsY: shouldInvertY(args.params),
         max: getSuitableMax(args.params, value.rawValue),
         parser: parseNumber,
@@ -11340,11 +11371,11 @@
       return new PointNdTextController(args.document, {
         assembly: Point3dAssembly,
         axes: value.rawValue.getComponents().map((comp, i2) => {
-          var _a;
+          var _a2;
           return createPointAxis({
             constraint: c3.components[i2],
             initialValue: comp,
-            params: deepMerge(args.params, (_a = dParams[i2]) !== null && _a !== void 0 ? _a : {})
+            params: deepMerge(args.params, (_a2 = dParams[i2]) !== null && _a2 !== void 0 ? _a2 : {})
           });
         }),
         parser: parseNumber,
@@ -11443,11 +11474,11 @@
       return new PointNdTextController(args.document, {
         assembly: Point4dAssembly,
         axes: value.rawValue.getComponents().map((comp, i2) => {
-          var _a;
+          var _a2;
           return createPointAxis({
             constraint: c3.components[i2],
             initialValue: comp,
-            params: deepMerge(args.params, (_a = dParams[i2]) !== null && _a !== void 0 ? _a : {})
+            params: deepMerge(args.params, (_a2 = dParams[i2]) !== null && _a2 !== void 0 ? _a2 : {})
           });
         }),
         parser: parseNumber,
@@ -11632,7 +11663,7 @@
       reader: (_args) => boolFromUnknown
     },
     controller: (args) => {
-      var _a;
+      var _a2;
       if (args.value.rawValue.length === 1) {
         return new SingleLogController(args.document, {
           formatter: BooleanFormatter,
@@ -11642,7 +11673,7 @@
       }
       return new MultiLogController(args.document, {
         formatter: BooleanFormatter,
-        rows: (_a = args.params.rows) !== null && _a !== void 0 ? _a : Constants.monitor.defaultRows,
+        rows: (_a2 = args.params.rows) !== null && _a2 !== void 0 ? _a2 : Constants.monitor.defaultRows,
         value: args.value,
         viewProps: args.viewProps
       });
@@ -11802,7 +11833,7 @@
     return !isEmpty(params.format) ? params.format : createNumberFormatter(2);
   }
   function createTextMonitor(args) {
-    var _a;
+    var _a2;
     if (args.value.rawValue.length === 1) {
       return new SingleLogController(args.document, {
         formatter: createFormatter(args.params),
@@ -11812,16 +11843,16 @@
     }
     return new MultiLogController(args.document, {
       formatter: createFormatter(args.params),
-      rows: (_a = args.params.rows) !== null && _a !== void 0 ? _a : Constants.monitor.defaultRows,
+      rows: (_a2 = args.params.rows) !== null && _a2 !== void 0 ? _a2 : Constants.monitor.defaultRows,
       value: args.value,
       viewProps: args.viewProps
     });
   }
   function createGraphMonitor(args) {
-    var _a, _b, _c;
+    var _a2, _b, _c;
     return new GraphLogController(args.document, {
       formatter: createFormatter(args.params),
-      rows: (_a = args.params.rows) !== null && _a !== void 0 ? _a : Constants.monitor.defaultRows,
+      rows: (_a2 = args.params.rows) !== null && _a2 !== void 0 ? _a2 : Constants.monitor.defaultRows,
       props: ValueMap.fromObject({
         max: (_b = args.params.max) !== null && _b !== void 0 ? _b : 100,
         min: (_c = args.params.min) !== null && _c !== void 0 ? _c : 0
@@ -11891,13 +11922,13 @@
       reader: (_args) => stringFromUnknown
     },
     controller: (args) => {
-      var _a;
+      var _a2;
       const value = args.value;
       const multiline = value.rawValue.length > 1 || args.params.multiline;
       if (multiline) {
         return new MultiLogController(args.document, {
           formatter: formatString,
-          rows: (_a = args.params.rows) !== null && _a !== void 0 ? _a : Constants.monitor.defaultRows,
+          rows: (_a2 = args.params.rows) !== null && _a2 !== void 0 ? _a2 : Constants.monitor.defaultRows,
           value,
           viewProps: args.viewProps
         });
@@ -11914,8 +11945,8 @@
       this.map_ = /* @__PURE__ */ new Map();
     }
     get(bc) {
-      var _a;
-      return (_a = this.map_.get(bc)) !== null && _a !== void 0 ? _a : null;
+      var _a2;
+      return (_a2 = this.map_.get(bc)) !== null && _a2 !== void 0 ? _a2 : null;
     }
     has(bc) {
       return this.map_.has(bc);
@@ -11945,7 +11976,7 @@
     }
   };
   function createInputBindingController(plugin, args) {
-    var _a;
+    var _a2;
     const result = plugin.accept(args.target.read(), args.params);
     if (isEmpty(result)) {
       return null;
@@ -11986,7 +12017,7 @@
     return new InputBindingController(args.document, {
       blade: createBlade(),
       props: ValueMap.fromObject({
-        label: "label" in args.params ? (_a = params === null || params === void 0 ? void 0 : params.label) !== null && _a !== void 0 ? _a : null : args.target.key
+        label: "label" in args.params ? (_a2 = params === null || params === void 0 ? void 0 : params.label) !== null && _a2 !== void 0 ? _a2 : null : args.target.key
       }),
       tag: params === null || params === void 0 ? void 0 : params.tag,
       value,
@@ -12006,7 +12037,7 @@
     return interval === 0 ? new ManualTicker() : new IntervalTicker(document2, interval !== null && interval !== void 0 ? interval : Constants.monitor.defaultInterval);
   }
   function createMonitorBindingController(plugin, args) {
-    var _a, _b, _c;
+    var _a2, _b, _c;
     const result = plugin.accept(args.target.read(), args.params);
     if (isEmpty(result)) {
       return null;
@@ -12024,7 +12055,7 @@
       label: p3.optional.string
     }));
     const reader = plugin.binding.reader(bindingArgs);
-    const bufferSize = (_b = (_a = params === null || params === void 0 ? void 0 : params.bufferSize) !== null && _a !== void 0 ? _a : plugin.binding.defaultBufferSize && plugin.binding.defaultBufferSize(result.params)) !== null && _b !== void 0 ? _b : 1;
+    const bufferSize = (_b = (_a2 = params === null || params === void 0 ? void 0 : params.bufferSize) !== null && _a2 !== void 0 ? _a2 : plugin.binding.defaultBufferSize && plugin.binding.defaultBufferSize(result.params)) !== null && _b !== void 0 ? _b : 1;
     const value = new MonitorBindingValue({
       binding: new ReadonlyBinding({
         reader,
@@ -12139,11 +12170,11 @@
     }
     createInputBindingApi_(bc) {
       const api = this.pluginsMap_.inputs.reduce((result, plugin) => {
-        var _a, _b;
+        var _a2, _b;
         if (result) {
           return result;
         }
-        return (_b = (_a = plugin.api) === null || _a === void 0 ? void 0 : _a.call(plugin, {
+        return (_b = (_a2 = plugin.api) === null || _a2 === void 0 ? void 0 : _a2.call(plugin, {
           controller: bc
         })) !== null && _b !== void 0 ? _b : null;
       }, null);
@@ -12151,11 +12182,11 @@
     }
     createMonitorBindingApi_(bc) {
       const api = this.pluginsMap_.monitors.reduce((result, plugin) => {
-        var _a, _b;
+        var _a2, _b;
         if (result) {
           return result;
         }
-        return (_b = (_a = plugin.api) === null || _a === void 0 ? void 0 : _a.call(plugin, {
+        return (_b = (_a2 = plugin.api) === null || _a2 === void 0 ? void 0 : _a2.call(plugin, {
           controller: bc
         })) !== null && _b !== void 0 ? _b : null;
       }, null);
@@ -12461,8 +12492,8 @@
       return result ? { params: result } : null;
     },
     controller(args) {
-      var _a, _b;
-      const initialValue = (_a = args.params.value) !== null && _a !== void 0 ? _a : 0;
+      var _a2, _b;
+      const initialValue = (_a2 = args.params.value) !== null && _a2 !== void 0 ? _a2 : 0;
       const drc = new DefiniteRangeConstraint({
         max: args.params.max,
         min: args.params.min
@@ -12512,12 +12543,12 @@
         return result ? { params: result } : null;
       },
       controller(args) {
-        var _a;
+        var _a2;
         const v3 = createValue(args.params.value);
         const ic = new TextController(args.document, {
           parser: args.params.parse,
           props: ValueMap.fromObject({
-            formatter: (_a = args.params.format) !== null && _a !== void 0 ? _a : (v4) => String(v4)
+            formatter: (_a2 = args.params.format) !== null && _a2 !== void 0 ? _a2 : (v4) => String(v4)
           }),
           value: v3,
           viewProps: args.viewProps
@@ -12561,9 +12592,9 @@
   }
   var Pane = class extends RootApi {
     constructor(opt_config) {
-      var _a, _b;
+      var _a2, _b;
       const config = opt_config !== null && opt_config !== void 0 ? opt_config : {};
-      const doc = (_a = config.document) !== null && _a !== void 0 ? _a : getWindowDocument();
+      const doc = (_a2 = config.document) !== null && _a2 !== void 0 ? _a2 : getWindowDocument();
       const pool = createDefaultPluginPool();
       const rootController = new RootController(doc, {
         expanded: config.expanded,
@@ -12634,9 +12665,7 @@
     world3.add(pane);
     pane.element.style.display = "none";
     pane.element.parentElement.style.width = "355px";
-  }
-  function enableInspect(world3) {
-    world3.get(Pane).element.style.display = "block";
+    window.paneEl = pane.element;
   }
 
   // src/ts/editor/editor.ts
@@ -12651,7 +12680,7 @@
   };
 
   // src/ts/engine/diagnostics.ts
-  Symbol.metadata ??= Symbol.for("Symbol.metadata");
+  Symbol.metadata ?? (Symbol.metadata = Symbol.for("Symbol.metadata"));
   var unit = (unit2) => (target2, name) => {
     if (!target2[Symbol.metadata]) {
       Object.defineProperty(target2, Symbol.metadata, {
@@ -19345,7 +19374,10 @@
   // src/ts/engine/resource.ts
   function ResourceUpdaterSystem(resource) {
     return class ResourceUpdater extends Jt({}) {
-      targetedResource = resource;
+      constructor() {
+        super(...arguments);
+        __publicField(this, "targetedResource", resource);
+      }
       update() {
         this.world.get(resource)?.update();
       }
@@ -19366,6 +19398,33 @@
   var _NetworkConnection = class {
     constructor(world3) {
       this.world = world3;
+      __publicField(this, "logger", new m("Network"));
+      __publicField(this, "peer");
+      __publicField(this, "id");
+      __publicField(this, "waitForServerConnection");
+      __publicField(this, "cachedCredentials", null);
+      //#endregion
+      //#region Connections
+      __publicField(this, "isConnected", false);
+      __publicField(this, "dummyConnection", new DummyDataConnection());
+      __publicField(this, "remoteConnection", this.dummyConnection);
+      __publicField(this, "remoteId");
+      // These are the same between clients
+      __publicField(this, "player1");
+      __publicField(this, "player2");
+      __publicField(this, "resolvePromisesWaitingForConnection");
+      __publicField(this, "waitForConnection", new Promise((res) => {
+        this.resolvePromisesWaitingForConnection = res;
+      }));
+      __publicField(this, "connectionStartTime", null);
+      __publicField(this, "framesConnected", null);
+      __publicField(this, "onConnectListeners", /* @__PURE__ */ new Map());
+      __publicField(this, "onCloseListeners", /* @__PURE__ */ new Map());
+      //#endregion
+      //#region Fetch / Response
+      __publicField(this, "nextFetchId", 0);
+      __publicField(this, "endpoints", /* @__PURE__ */ new Map());
+      __publicField(this, "nextEndpointId", 0);
       this.waitForServerConnection = this.connectToBrokageServer();
       this.waitForServerConnection.then(() => {
         this.logger.log("Connected to brokage server, id is", this.id);
@@ -19377,14 +19436,9 @@
       this.onConnect = this.onConnect.bind(this);
       this.onClose = this.onClose.bind(this);
     }
-    logger = new m("Network");
     static generateId() {
       return new Array(_NetworkConnection.idLength).fill(0).map((_2) => Math.floor(Math.random() * 26)).map((num) => String.fromCharCode("A".charCodeAt(0) + num)).join("");
     }
-    peer;
-    id;
-    waitForServerConnection;
-    cachedCredentials = null;
     fetchCredentials() {
       if (this.cachedCredentials)
         return Promise.resolve(this.cachedCredentials);
@@ -19417,6 +19471,11 @@
             return;
           }
           this.logger.error(error);
+          if (error.type === "network") {
+            this.logger.log("Reconnecting...");
+            peer.reconnect();
+            return;
+          }
           rej(error);
         });
       });
@@ -19426,15 +19485,6 @@
       this.id = id;
       this.peer = peer;
     }
-    //#endregion
-    //#region Connections
-    isConnected = false;
-    dummyConnection = new DummyDataConnection();
-    remoteConnection = this.dummyConnection;
-    remoteId;
-    // These are the same between clients
-    player1;
-    player2;
     loadPlayerIds() {
       if (this.id < this.remoteId) {
         this.player1 = this.id;
@@ -19445,12 +19495,6 @@
       }
       console.log("Player 1:", this.player1, "Player 2:", this.player2);
     }
-    resolvePromisesWaitingForConnection;
-    waitForConnection = new Promise((res) => {
-      this.resolvePromisesWaitingForConnection = res;
-    });
-    connectionStartTime = null;
-    framesConnected = null;
     onConnect(openTime) {
       this.isConnected = true;
       this.connectionStartTime = openTime;
@@ -19463,6 +19507,7 @@
       this.remoteConnection.on("close", this.onClose);
       this.logger.log("Connection opened to", this.remoteId);
       this.resolvePromisesWaitingForConnection(this.remoteId);
+      this.onConnectListeners.forEach((cb) => cb());
     }
     onClose() {
       this.remoteConnection = this.dummyConnection.fromDataConnection(
@@ -19473,6 +19518,7 @@
       this.waitForConnection = new Promise((res) => {
         this.resolvePromisesWaitingForConnection = res;
       });
+      this.onCloseListeners.forEach((cb) => cb());
       this.logger.log("Closed connection to", this.remoteId);
     }
     close() {
@@ -19609,9 +19655,6 @@
         sendTime: Date.now() - this.connectionStartTime
       });
     }
-    //#endregion
-    //#region Fetch / Response
-    nextFetchId = 0;
     fetch(endpoint) {
       const transactionId = this.nextFetchId++;
       this.remoteConnection.send({
@@ -19631,8 +19674,11 @@
         this.remoteConnection.on("data", tempFn);
       });
     }
-    addResponse(endpoint, respond) {
-      this.remoteConnection.on("data", async (packet) => {
+    post(endpoint) {
+      return this.fetch(endpoint);
+    }
+    addEndpoint(endpoint, respond) {
+      const fn = async (packet) => {
         if (packet.event !== 5 /* FETCH */ || packet.subEvent !== endpoint)
           return;
         const data = await respond();
@@ -19641,7 +19687,14 @@
           id: packet.id,
           data
         });
-      });
+      };
+      this.endpoints.set(++this.nextEndpointId, fn);
+      this.remoteConnection.on("data", fn);
+      return this.nextEndpointId;
+    }
+    removeEndpoint(id) {
+      this.remoteConnection.off("data", this.endpoints.get(id));
+      this.endpoints.delete(id);
     }
     //#region Utils
     waitForConnectionCB(connection, ev) {
@@ -19676,6 +19729,22 @@
         this.framesConnected++;
       }
     }
+    addEventListener(ev, cb) {
+      const id = ++this.nextEndpointId;
+      if (ev === "connect") {
+        this.onConnectListeners.set(id, cb);
+      } else if (ev === "close") {
+        this.onCloseListeners.set(id, cb);
+      }
+      return id;
+    }
+    removeEventListener(ev, id) {
+      if (ev === "connect") {
+        this.onConnectListeners.delete(id);
+      } else if (ev === "close") {
+        this.onCloseListeners.delete(id);
+      }
+    }
   };
   var NetworkConnection = _NetworkConnection;
   __publicField(NetworkConnection, "idPrefix", "drivegame-beta-");
@@ -19683,7 +19752,9 @@
   __publicField(NetworkConnection, "idLength", 5);
   __publicField(NetworkConnection, "API_KEY", "9c3aa91517dfabf12ca01813bfc59b74be79");
   var DummyDataConnection = class {
-    cbs = [];
+    constructor() {
+      __publicField(this, "cbs", []);
+    }
     on(ev, cb) {
       if (ev !== "data")
         console.warn(
@@ -19719,12 +19790,17 @@
 
   // src/ts/engine/multiplayer/archetype.ts
   var LoggedArchetype = class extends M {
-    log = [];
+    constructor() {
+      super(...arguments);
+      __publicField(this, "log", []);
+    }
     saveStartState() {
       if (this.log[0] == null)
         this.log.unshift(this.entities.slice());
     }
     addEntity(entity) {
+      if (this.entities.indexOf(entity) > 0 && this.entities.indexOf(entity) <= this.entities[0])
+        return;
       this.saveStartState();
       super.addEntity(entity);
     }
@@ -19749,9 +19825,9 @@
     }
   };
   var LoggedArchetypeManager = class extends P {
-    log = [];
     constructor(world3) {
       super(world3);
+      __publicField(this, "log", []);
       this.defaultArchetype = new LoggedArchetype(
         0,
         /* @__PURE__ */ new Set(),
@@ -19812,7 +19888,10 @@
 
   // src/ts/engine/multiplayer/entities.ts
   var MultiplayerEntityManager = class extends Y {
-    log = [];
+    constructor() {
+      super(...arguments);
+      __publicField(this, "log", []);
+    }
     update() {
       if (this.log.unshift(null) > v) {
         this.log.pop();
@@ -19851,14 +19930,37 @@
   var RollbackManager = class {
     constructor(world3) {
       this.world = world3;
+      __publicField(this, "currentlyInRollback", false);
+      __publicField(this, "currentFramesBack", 0);
+      __publicField(this, "logger", new m("Rollback"));
+      __publicField(this, "rollbackEnabled", false);
+      __publicField(this, "initialRollbackFrame", 0);
       world3.createSchedule("rollback");
     }
-    currentlyInRollback = false;
-    currentFramesBack = 0;
-    logger = new m("Rollback");
+    enableRollback() {
+      this.rollbackEnabled = true;
+      this.initialRollbackFrame = this.world.get(NetworkConnection).framesConnected;
+    }
+    disableRollback() {
+      this.rollbackEnabled = false;
+      this.initialRollbackFrame = 0;
+    }
     startRollback(numFramesAgo) {
+      if (!this.rollbackEnabled)
+        return;
       this.currentlyInRollback = true;
       this.currentFramesBack = numFramesAgo;
+      if (numFramesAgo > this.world.get(NetworkConnection).framesConnected - this.initialRollbackFrame) {
+        this.logger.warn(
+          "Tried to rollback",
+          numFramesAgo,
+          "frames, while rollback has only been enabled ",
+          this.world.get(NetworkConnection).framesConnected - this.initialRollbackFrame,
+          "frames",
+          "Will only roll back that many frames, so desync could occur "
+        );
+        numFramesAgo = this.world.get(NetworkConnection).framesConnected - this.initialRollbackFrame;
+      }
       if (numFramesAgo > this.world.get(NetworkConnection).framesConnected) {
         this.logger.warn(
           "Tried to rollback",
@@ -19880,12 +19982,6 @@
         );
         numFramesAgo = v;
       }
-      this.logger.log(
-        "Rolling back",
-        numFramesAgo,
-        "frames to frame",
-        this.world.get(NetworkConnection).framesConnected - numFramesAgo
-      );
       const storages = this.world.storageManager.getAllByType(s.logged);
       storages.forEach((storage) => storage.rollback(numFramesAgo));
       this.world.archetypeManager.rollback(numFramesAgo);
@@ -19933,14 +20029,14 @@
   var StateManager = class {
     constructor(world3) {
       this.world = world3;
+      __publicField(this, "states", /* @__PURE__ */ new Map());
+      __publicField(this, "currentState");
+      __publicField(this, "currentStateInstance");
+      __publicField(this, "history", []);
       this.currentState = DefaultState;
       this.currentStateInstance = new DefaultState(this.world);
       this.states.set(DefaultState, this.currentStateInstance);
     }
-    states = /* @__PURE__ */ new Map();
-    currentState;
-    currentStateInstance;
-    history = [];
     async moveTo(state, payload = void 0, useExitPayloadIfAvailable = false) {
       let stateInstance;
       if (this.states.has(state))
@@ -19972,249 +20068,6 @@
     world3.add(new StateManager(world3));
   }
 
-  // node_modules/.pnpm/pixi.js@7.3.2/node_modules/pixi.js/lib/index.mjs
-  var lib_exports2 = {};
-  __export(lib_exports2, {
-    ALPHA_MODES: () => ALPHA_MODES,
-    AbstractMultiResource: () => AbstractMultiResource,
-    AccessibilityManager: () => AccessibilityManager,
-    AlphaFilter: () => AlphaFilter,
-    AnimatedSprite: () => AnimatedSprite,
-    Application: () => Application,
-    ArrayResource: () => ArrayResource,
-    Assets: () => Assets,
-    AssetsClass: () => AssetsClass,
-    Attribute: () => Attribute,
-    BLEND_MODES: () => BLEND_MODES,
-    BUFFER_BITS: () => BUFFER_BITS,
-    BUFFER_TYPE: () => BUFFER_TYPE,
-    BackgroundSystem: () => BackgroundSystem,
-    BaseImageResource: () => BaseImageResource,
-    BasePrepare: () => BasePrepare,
-    BaseRenderTexture: () => BaseRenderTexture,
-    BaseTexture: () => BaseTexture,
-    BatchDrawCall: () => BatchDrawCall,
-    BatchGeometry: () => BatchGeometry,
-    BatchRenderer: () => BatchRenderer,
-    BatchShaderGenerator: () => BatchShaderGenerator,
-    BatchSystem: () => BatchSystem,
-    BatchTextureArray: () => BatchTextureArray,
-    BitmapFont: () => BitmapFont,
-    BitmapFontData: () => BitmapFontData,
-    BitmapText: () => BitmapText,
-    BlobResource: () => BlobResource,
-    BlurFilter: () => BlurFilter,
-    BlurFilterPass: () => BlurFilterPass,
-    Bounds: () => Bounds,
-    BrowserAdapter: () => BrowserAdapter,
-    Buffer: () => Buffer3,
-    BufferResource: () => BufferResource,
-    BufferSystem: () => BufferSystem,
-    CLEAR_MODES: () => CLEAR_MODES,
-    COLOR_MASK_BITS: () => COLOR_MASK_BITS,
-    Cache: () => Cache,
-    CanvasResource: () => CanvasResource,
-    Circle: () => Circle,
-    Color: () => Color,
-    ColorMatrixFilter: () => ColorMatrixFilter,
-    CompressedTextureResource: () => CompressedTextureResource,
-    Container: () => Container,
-    ContextSystem: () => ContextSystem,
-    CountLimiter: () => CountLimiter,
-    CubeResource: () => CubeResource,
-    DEG_TO_RAD: () => DEG_TO_RAD,
-    DRAW_MODES: () => DRAW_MODES,
-    DisplacementFilter: () => DisplacementFilter,
-    DisplayObject: () => DisplayObject,
-    ENV: () => ENV,
-    Ellipse: () => Ellipse,
-    EventBoundary: () => EventBoundary,
-    EventSystem: () => EventSystem,
-    ExtensionType: () => ExtensionType,
-    Extract: () => Extract,
-    FORMATS: () => FORMATS,
-    FORMATS_TO_COMPONENTS: () => FORMATS_TO_COMPONENTS,
-    FXAAFilter: () => FXAAFilter,
-    FederatedDisplayObject: () => FederatedDisplayObject,
-    FederatedEvent: () => FederatedEvent,
-    FederatedMouseEvent: () => FederatedMouseEvent,
-    FederatedPointerEvent: () => FederatedPointerEvent,
-    FederatedWheelEvent: () => FederatedWheelEvent,
-    FillStyle: () => FillStyle,
-    Filter: () => Filter,
-    FilterState: () => FilterState,
-    FilterSystem: () => FilterSystem,
-    Framebuffer: () => Framebuffer,
-    FramebufferSystem: () => FramebufferSystem,
-    GC_MODES: () => GC_MODES,
-    GLFramebuffer: () => GLFramebuffer,
-    GLProgram: () => GLProgram,
-    GLTexture: () => GLTexture,
-    GRAPHICS_CURVES: () => GRAPHICS_CURVES,
-    GenerateTextureSystem: () => GenerateTextureSystem,
-    Geometry: () => Geometry,
-    GeometrySystem: () => GeometrySystem,
-    Graphics: () => Graphics,
-    GraphicsData: () => GraphicsData,
-    GraphicsGeometry: () => GraphicsGeometry,
-    HTMLText: () => HTMLText,
-    HTMLTextStyle: () => HTMLTextStyle,
-    IGLUniformData: () => IGLUniformData,
-    INSTALLED: () => INSTALLED,
-    INTERNAL_FORMATS: () => INTERNAL_FORMATS,
-    INTERNAL_FORMAT_TO_BYTES_PER_PIXEL: () => INTERNAL_FORMAT_TO_BYTES_PER_PIXEL,
-    ImageBitmapResource: () => ImageBitmapResource,
-    ImageResource: () => ImageResource,
-    LINE_CAP: () => LINE_CAP,
-    LINE_JOIN: () => LINE_JOIN,
-    LineStyle: () => LineStyle,
-    LoaderParserPriority: () => LoaderParserPriority,
-    MASK_TYPES: () => MASK_TYPES,
-    MIPMAP_MODES: () => MIPMAP_MODES,
-    MSAA_QUALITY: () => MSAA_QUALITY,
-    MaskData: () => MaskData,
-    MaskSystem: () => MaskSystem,
-    Matrix: () => Matrix,
-    Mesh: () => Mesh,
-    MeshBatchUvs: () => MeshBatchUvs,
-    MeshGeometry: () => MeshGeometry,
-    MeshMaterial: () => MeshMaterial,
-    MultisampleSystem: () => MultisampleSystem,
-    NineSlicePlane: () => NineSlicePlane,
-    NoiseFilter: () => NoiseFilter,
-    ObjectRenderer: () => ObjectRenderer,
-    ObjectRendererSystem: () => ObjectRendererSystem,
-    ObservablePoint: () => ObservablePoint,
-    PI_2: () => PI_2,
-    PRECISION: () => PRECISION,
-    ParticleContainer: () => ParticleContainer,
-    ParticleRenderer: () => ParticleRenderer,
-    PlaneGeometry: () => PlaneGeometry,
-    PluginSystem: () => PluginSystem,
-    Point: () => Point,
-    Polygon: () => Polygon,
-    Prepare: () => Prepare,
-    Program: () => Program,
-    ProjectionSystem: () => ProjectionSystem,
-    Quad: () => Quad,
-    QuadUv: () => QuadUv,
-    RAD_TO_DEG: () => RAD_TO_DEG,
-    RENDERER_TYPE: () => RENDERER_TYPE,
-    Rectangle: () => Rectangle,
-    RenderTexture: () => RenderTexture,
-    RenderTexturePool: () => RenderTexturePool,
-    RenderTextureSystem: () => RenderTextureSystem,
-    Renderer: () => Renderer,
-    ResizePlugin: () => ResizePlugin,
-    Resource: () => Resource,
-    RopeGeometry: () => RopeGeometry,
-    RoundedRectangle: () => RoundedRectangle,
-    Runner: () => Runner,
-    SAMPLER_TYPES: () => SAMPLER_TYPES,
-    SCALE_MODES: () => SCALE_MODES,
-    SHAPES: () => SHAPES,
-    SVGResource: () => SVGResource,
-    ScissorSystem: () => ScissorSystem,
-    Shader: () => Shader,
-    ShaderSystem: () => ShaderSystem,
-    SimpleMesh: () => SimpleMesh,
-    SimplePlane: () => SimplePlane,
-    SimpleRope: () => SimpleRope,
-    Sprite: () => Sprite,
-    SpriteMaskFilter: () => SpriteMaskFilter,
-    Spritesheet: () => Spritesheet,
-    StartupSystem: () => StartupSystem,
-    State: () => State2,
-    StateSystem: () => StateSystem,
-    StencilSystem: () => StencilSystem,
-    SystemManager: () => SystemManager,
-    TARGETS: () => TARGETS,
-    TEXT_GRADIENT: () => TEXT_GRADIENT,
-    TYPES: () => TYPES,
-    TYPES_TO_BYTES_PER_COMPONENT: () => TYPES_TO_BYTES_PER_COMPONENT,
-    TYPES_TO_BYTES_PER_PIXEL: () => TYPES_TO_BYTES_PER_PIXEL,
-    TemporaryDisplayObject: () => TemporaryDisplayObject,
-    Text: () => Text,
-    TextFormat: () => TextFormat,
-    TextMetrics: () => TextMetrics,
-    TextStyle: () => TextStyle,
-    Texture: () => Texture,
-    TextureGCSystem: () => TextureGCSystem,
-    TextureMatrix: () => TextureMatrix,
-    TextureSystem: () => TextureSystem,
-    TextureUvs: () => TextureUvs,
-    Ticker: () => Ticker,
-    TickerPlugin: () => TickerPlugin,
-    TilingSprite: () => TilingSprite,
-    TilingSpriteRenderer: () => TilingSpriteRenderer,
-    TimeLimiter: () => TimeLimiter,
-    Transform: () => Transform,
-    TransformFeedback: () => TransformFeedback,
-    TransformFeedbackSystem: () => TransformFeedbackSystem,
-    UPDATE_PRIORITY: () => UPDATE_PRIORITY,
-    UniformGroup: () => UniformGroup,
-    VERSION: () => VERSION2,
-    VideoResource: () => VideoResource,
-    ViewSystem: () => ViewSystem,
-    ViewableBuffer: () => ViewableBuffer,
-    WRAP_MODES: () => WRAP_MODES,
-    XMLFormat: () => XMLFormat,
-    XMLStringFormat: () => XMLStringFormat,
-    accessibleTarget: () => accessibleTarget,
-    autoDetectFormat: () => autoDetectFormat,
-    autoDetectRenderer: () => autoDetectRenderer,
-    autoDetectResource: () => autoDetectResource,
-    cacheTextureArray: () => cacheTextureArray,
-    checkDataUrl: () => checkDataUrl,
-    checkExtension: () => checkExtension,
-    checkMaxIfStatementsInShader: () => checkMaxIfStatementsInShader,
-    convertToList: () => convertToList,
-    copySearchParams: () => copySearchParams,
-    createStringVariations: () => createStringVariations,
-    createTexture: () => createTexture,
-    createUBOElements: () => createUBOElements,
-    curves: () => curves,
-    defaultFilterVertex: () => defaultFilterVertex,
-    defaultVertex: () => defaultVertex4,
-    detectAvif: () => detectAvif,
-    detectCompressedTextures: () => detectCompressedTextures,
-    detectDefaults: () => detectDefaults,
-    detectMp4: () => detectMp4,
-    detectOgv: () => detectOgv,
-    detectWebm: () => detectWebm,
-    detectWebp: () => detectWebp,
-    extensions: () => extensions2,
-    filters: () => filters,
-    generateProgram: () => generateProgram,
-    generateUniformBufferSync: () => generateUniformBufferSync,
-    getFontFamilyName: () => getFontFamilyName,
-    getTestContext: () => getTestContext,
-    getUBOData: () => getUBOData,
-    graphicsUtils: () => graphicsUtils,
-    groupD8: () => groupD8,
-    isMobile: () => isMobile2,
-    isSingleItem: () => isSingleItem,
-    loadBitmapFont: () => loadBitmapFont,
-    loadDDS: () => loadDDS,
-    loadImageBitmap: () => loadImageBitmap,
-    loadJson: () => loadJson,
-    loadKTX: () => loadKTX,
-    loadSVG: () => loadSVG,
-    loadTextures: () => loadTextures,
-    loadTxt: () => loadTxt,
-    loadVideo: () => loadVideo,
-    loadWebFont: () => loadWebFont,
-    parseDDS: () => parseDDS,
-    parseKTX: () => parseKTX,
-    resolveCompressedTextureUrl: () => resolveCompressedTextureUrl,
-    resolveTextureUrl: () => resolveTextureUrl,
-    settings: () => settings,
-    spritesheetAsset: () => spritesheetAsset,
-    uniformParsers: () => uniformParsers,
-    unsafeEvalSupported: () => unsafeEvalSupported,
-    utils: () => lib_exports
-  });
-
   // node_modules/.pnpm/@pixi+constants@7.3.2/node_modules/@pixi/constants/lib/index.mjs
   var ENV = /* @__PURE__ */ ((ENV2) => (ENV2[ENV2.WEBGL_LEGACY = 0] = "WEBGL_LEGACY", ENV2[ENV2.WEBGL = 1] = "WEBGL", ENV2[ENV2.WEBGL2 = 2] = "WEBGL2", ENV2))(ENV || {});
   var RENDERER_TYPE = /* @__PURE__ */ ((RENDERER_TYPE2) => (RENDERER_TYPE2[RENDERER_TYPE2.UNKNOWN = 0] = "UNKNOWN", RENDERER_TYPE2[RENDERER_TYPE2.WEBGL = 1] = "WEBGL", RENDERER_TYPE2[RENDERER_TYPE2.CANVAS = 2] = "CANVAS", RENDERER_TYPE2))(RENDERER_TYPE || {});
@@ -20233,7 +20086,6 @@
   var GC_MODES = /* @__PURE__ */ ((GC_MODES2) => (GC_MODES2[GC_MODES2.AUTO = 0] = "AUTO", GC_MODES2[GC_MODES2.MANUAL = 1] = "MANUAL", GC_MODES2))(GC_MODES || {});
   var PRECISION = /* @__PURE__ */ ((PRECISION2) => (PRECISION2.LOW = "lowp", PRECISION2.MEDIUM = "mediump", PRECISION2.HIGH = "highp", PRECISION2))(PRECISION || {});
   var MASK_TYPES = /* @__PURE__ */ ((MASK_TYPES2) => (MASK_TYPES2[MASK_TYPES2.NONE = 0] = "NONE", MASK_TYPES2[MASK_TYPES2.SCISSOR = 1] = "SCISSOR", MASK_TYPES2[MASK_TYPES2.STENCIL = 2] = "STENCIL", MASK_TYPES2[MASK_TYPES2.SPRITE = 3] = "SPRITE", MASK_TYPES2[MASK_TYPES2.COLOR = 4] = "COLOR", MASK_TYPES2))(MASK_TYPES || {});
-  var COLOR_MASK_BITS = /* @__PURE__ */ ((COLOR_MASK_BITS2) => (COLOR_MASK_BITS2[COLOR_MASK_BITS2.RED = 1] = "RED", COLOR_MASK_BITS2[COLOR_MASK_BITS2.GREEN = 2] = "GREEN", COLOR_MASK_BITS2[COLOR_MASK_BITS2.BLUE = 4] = "BLUE", COLOR_MASK_BITS2[COLOR_MASK_BITS2.ALPHA = 8] = "ALPHA", COLOR_MASK_BITS2))(COLOR_MASK_BITS || {});
   var MSAA_QUALITY = /* @__PURE__ */ ((MSAA_QUALITY2) => (MSAA_QUALITY2[MSAA_QUALITY2.NONE = 0] = "NONE", MSAA_QUALITY2[MSAA_QUALITY2.LOW = 2] = "LOW", MSAA_QUALITY2[MSAA_QUALITY2.MEDIUM = 4] = "MEDIUM", MSAA_QUALITY2[MSAA_QUALITY2.HIGH = 8] = "HIGH", MSAA_QUALITY2))(MSAA_QUALITY || {});
   var BUFFER_TYPE = /* @__PURE__ */ ((BUFFER_TYPE2) => (BUFFER_TYPE2[BUFFER_TYPE2.ELEMENT_ARRAY_BUFFER = 34963] = "ELEMENT_ARRAY_BUFFER", BUFFER_TYPE2[BUFFER_TYPE2.ARRAY_BUFFER = 34962] = "ARRAY_BUFFER", BUFFER_TYPE2[BUFFER_TYPE2.UNIFORM_BUFFER = 35345] = "UNIFORM_BUFFER", BUFFER_TYPE2))(BUFFER_TYPE || {});
 
@@ -27627,8 +27479,6 @@ void main(void)
   extensions2.add(RenderTextureSystem);
 
   // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/shader/GLProgram.mjs
-  var IGLUniformData = class {
-  };
   var GLProgram = class {
     /**
      * Makes a new Pixi program.
@@ -30574,28 +30424,6 @@ void main(void)
     CubeResource,
     ArrayResource
   );
-
-  // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/transformFeedback/TransformFeedback.mjs
-  var TransformFeedback = class {
-    constructor() {
-      this._glTransformFeedbacks = {}, this.buffers = [], this.disposeRunner = new Runner("disposeTransformFeedback");
-    }
-    /**
-     * Bind buffer to TransformFeedback
-     * @param index - index to bind
-     * @param buffer - buffer to bind
-     */
-    bindBuffer(index, buffer) {
-      this.buffers[index] = buffer;
-    }
-    /** Destroy WebGL resources that are connected to this TransformFeedback. */
-    destroy() {
-      this.disposeRunner.emit(this, false);
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/index.mjs
-  var VERSION2 = "7.3.2";
 
   // node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/Bounds.mjs
   var Bounds = class {
@@ -37690,7 +37518,6 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       return result < this.minSegments ? result = this.minSegments : result > this.maxSegments && (result = this.maxSegments), result;
     }
   };
-  var GRAPHICS_CURVES = curves;
 
   // node_modules/.pnpm/@pixi+graphics@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/graphics/lib/utils/ArcUtils.mjs
   var ArcUtils = class {
@@ -39106,22 +38933,6 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   _Graphics._TEMP_POINT = new Point();
   var Graphics = _Graphics;
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/graphics/lib/index.mjs
-  var graphicsUtils = {
-    buildPoly,
-    buildCircle,
-    buildRectangle,
-    buildRoundedRectangle,
-    buildLine,
-    ArcUtils,
-    BezierUtils,
-    QuadraticUtils,
-    BatchPart,
-    FILL_COMMANDS,
-    BATCH_POOL,
-    DRAW_CALL_POOL
-  };
-
   // node_modules/.pnpm/@pixi+mesh@7.3.2_utq3ojpxynf5a5tcmndjval2ha/node_modules/@pixi/mesh/lib/MeshBatchUvs.mjs
   var MeshBatchUvs = class {
     /**
@@ -39440,379 +39251,6 @@ void main(void)
         Color.shared.setValue(this._tintColor).premultiply(this._alpha, applyToChannels).toArray(this.uniforms.uColor);
       }
       this.uvMatrix.update() && (this.uniforms.uTextureMatrix = this.uvMatrix.mapCoord);
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs
-  var PlaneGeometry = class extends MeshGeometry {
-    /**
-     * @param width - The width of the plane.
-     * @param height - The height of the plane.
-     * @param segWidth - Number of horizontal segments.
-     * @param segHeight - Number of vertical segments.
-     */
-    constructor(width = 100, height = 100, segWidth = 10, segHeight = 10) {
-      super(), this.segWidth = segWidth, this.segHeight = segHeight, this.width = width, this.height = height, this.build();
-    }
-    /**
-     * Refreshes plane coordinates
-     * @private
-     */
-    build() {
-      const total = this.segWidth * this.segHeight, verts = [], uvs = [], indices2 = [], segmentsX = this.segWidth - 1, segmentsY = this.segHeight - 1, sizeX = this.width / segmentsX, sizeY = this.height / segmentsY;
-      for (let i2 = 0; i2 < total; i2++) {
-        const x3 = i2 % this.segWidth, y2 = i2 / this.segWidth | 0;
-        verts.push(x3 * sizeX, y2 * sizeY), uvs.push(x3 / segmentsX, y2 / segmentsY);
-      }
-      const totalSub = segmentsX * segmentsY;
-      for (let i2 = 0; i2 < totalSub; i2++) {
-        const xpos = i2 % segmentsX, ypos = i2 / segmentsX | 0, value = ypos * this.segWidth + xpos, value2 = ypos * this.segWidth + xpos + 1, value3 = (ypos + 1) * this.segWidth + xpos, value4 = (ypos + 1) * this.segWidth + xpos + 1;
-        indices2.push(
-          value,
-          value2,
-          value3,
-          value2,
-          value4,
-          value3
-        );
-      }
-      this.buffers[0].data = new Float32Array(verts), this.buffers[1].data = new Float32Array(uvs), this.indexBuffer.data = new Uint16Array(indices2), this.buffers[0].update(), this.buffers[1].update(), this.indexBuffer.update();
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs
-  var RopeGeometry = class extends MeshGeometry {
-    /**
-     * @param width - The width (i.e., thickness) of the rope.
-     * @param points - An array of {@link PIXI.Point} objects to construct this rope.
-     * @param textureScale - By default the rope texture will be stretched to match
-     *     rope length. If textureScale is positive this value will be treated as a scaling
-     *     factor and the texture will preserve its aspect ratio instead. To create a tiling rope
-     *     set baseTexture.wrapMode to {@link PIXI.WRAP_MODES.REPEAT} and use a power of two texture,
-     *     then set textureScale=1 to keep the original texture pixel size.
-     *     In order to reduce alpha channel artifacts provide a larger texture and downsample -
-     *     i.e. set textureScale=0.5 to scale it down twice.
-     */
-    constructor(width = 200, points, textureScale = 0) {
-      super(
-        new Float32Array(points.length * 4),
-        new Float32Array(points.length * 4),
-        new Uint16Array((points.length - 1) * 6)
-      ), this.points = points, this._width = width, this.textureScale = textureScale, this.build();
-    }
-    /**
-     * The width (i.e., thickness) of the rope.
-     * @readonly
-     */
-    get width() {
-      return this._width;
-    }
-    /** Refreshes Rope indices and uvs */
-    build() {
-      const points = this.points;
-      if (!points)
-        return;
-      const vertexBuffer = this.getBuffer("aVertexPosition"), uvBuffer = this.getBuffer("aTextureCoord"), indexBuffer = this.getIndex();
-      if (points.length < 1)
-        return;
-      vertexBuffer.data.length / 4 !== points.length && (vertexBuffer.data = new Float32Array(points.length * 4), uvBuffer.data = new Float32Array(points.length * 4), indexBuffer.data = new Uint16Array((points.length - 1) * 6));
-      const uvs = uvBuffer.data, indices2 = indexBuffer.data;
-      uvs[0] = 0, uvs[1] = 0, uvs[2] = 0, uvs[3] = 1;
-      let amount = 0, prev = points[0];
-      const textureWidth = this._width * this.textureScale, total = points.length;
-      for (let i2 = 0; i2 < total; i2++) {
-        const index = i2 * 4;
-        if (this.textureScale > 0) {
-          const dx = prev.x - points[i2].x, dy = prev.y - points[i2].y, distance = Math.sqrt(dx * dx + dy * dy);
-          prev = points[i2], amount += distance / textureWidth;
-        } else
-          amount = i2 / (total - 1);
-        uvs[index] = amount, uvs[index + 1] = 0, uvs[index + 2] = amount, uvs[index + 3] = 1;
-      }
-      let indexCount = 0;
-      for (let i2 = 0; i2 < total - 1; i2++) {
-        const index = i2 * 2;
-        indices2[indexCount++] = index, indices2[indexCount++] = index + 1, indices2[indexCount++] = index + 2, indices2[indexCount++] = index + 2, indices2[indexCount++] = index + 1, indices2[indexCount++] = index + 3;
-      }
-      uvBuffer.update(), indexBuffer.update(), this.updateVertices();
-    }
-    /** refreshes vertices of Rope mesh */
-    updateVertices() {
-      const points = this.points;
-      if (points.length < 1)
-        return;
-      let lastPoint = points[0], nextPoint, perpX = 0, perpY = 0;
-      const vertices = this.buffers[0].data, total = points.length, halfWidth = this.textureScale > 0 ? this.textureScale * this._width / 2 : this._width / 2;
-      for (let i2 = 0; i2 < total; i2++) {
-        const point = points[i2], index = i2 * 4;
-        i2 < points.length - 1 ? nextPoint = points[i2 + 1] : nextPoint = point, perpY = -(nextPoint.x - lastPoint.x), perpX = nextPoint.y - lastPoint.y;
-        let ratio = (1 - i2 / (total - 1)) * 10;
-        ratio > 1 && (ratio = 1);
-        const perpLength = Math.sqrt(perpX * perpX + perpY * perpY);
-        perpLength < 1e-6 ? (perpX = 0, perpY = 0) : (perpX /= perpLength, perpY /= perpLength, perpX *= halfWidth, perpY *= halfWidth), vertices[index] = point.x + perpX, vertices[index + 1] = point.y + perpY, vertices[index + 2] = point.x - perpX, vertices[index + 3] = point.y - perpY, lastPoint = point;
-      }
-      this.buffers[0].update();
-    }
-    update() {
-      this.textureScale > 0 ? this.build() : this.updateVertices();
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs
-  var SimplePlane = class extends Mesh {
-    /**
-     * @param texture - The texture to use on the SimplePlane.
-     * @param verticesX - The number of vertices in the x-axis
-     * @param verticesY - The number of vertices in the y-axis
-     */
-    constructor(texture, verticesX, verticesY) {
-      const planeGeometry = new PlaneGeometry(texture.width, texture.height, verticesX, verticesY), meshMaterial = new MeshMaterial(Texture.WHITE);
-      super(planeGeometry, meshMaterial), this.texture = texture, this.autoResize = true;
-    }
-    /**
-     * Method used for overrides, to do something in case texture frame was changed.
-     * Meshes based on plane can override it and change more details based on texture.
-     */
-    textureUpdated() {
-      this._textureID = this.shader.texture._updateID;
-      const geometry = this.geometry, { width, height } = this.shader.texture;
-      this.autoResize && (geometry.width !== width || geometry.height !== height) && (geometry.width = this.shader.texture.width, geometry.height = this.shader.texture.height, geometry.build());
-    }
-    set texture(value) {
-      this.shader.texture !== value && (this.shader.texture = value, this._textureID = -1, value.baseTexture.valid ? this.textureUpdated() : value.once("update", this.textureUpdated, this));
-    }
-    get texture() {
-      return this.shader.texture;
-    }
-    _render(renderer) {
-      this._textureID !== this.shader.texture._updateID && this.textureUpdated(), super._render(renderer);
-    }
-    destroy(options) {
-      this.shader.texture.off("update", this.textureUpdated, this), super.destroy(options);
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs
-  var DEFAULT_BORDER_SIZE = 10;
-  var NineSlicePlane = class extends SimplePlane {
-    /**
-     * @param texture - The texture to use on the NineSlicePlane.
-     * @param {number} [leftWidth=10] - size of the left vertical bar (A)
-     * @param {number} [topHeight=10] - size of the top horizontal bar (C)
-     * @param {number} [rightWidth=10] - size of the right vertical bar (B)
-     * @param {number} [bottomHeight=10] - size of the bottom horizontal bar (D)
-     */
-    constructor(texture, leftWidth, topHeight, rightWidth, bottomHeight) {
-      super(Texture.WHITE, 4, 4), this._origWidth = texture.orig.width, this._origHeight = texture.orig.height, this._width = this._origWidth, this._height = this._origHeight, this._leftWidth = leftWidth ?? texture.defaultBorders?.left ?? DEFAULT_BORDER_SIZE, this._rightWidth = rightWidth ?? texture.defaultBorders?.right ?? DEFAULT_BORDER_SIZE, this._topHeight = topHeight ?? texture.defaultBorders?.top ?? DEFAULT_BORDER_SIZE, this._bottomHeight = bottomHeight ?? texture.defaultBorders?.bottom ?? DEFAULT_BORDER_SIZE, this.texture = texture;
-    }
-    textureUpdated() {
-      this._textureID = this.shader.texture._updateID, this._refresh();
-    }
-    get vertices() {
-      return this.geometry.getBuffer("aVertexPosition").data;
-    }
-    set vertices(value) {
-      this.geometry.getBuffer("aVertexPosition").data = value;
-    }
-    /** Updates the horizontal vertices. */
-    updateHorizontalVertices() {
-      const vertices = this.vertices, scale = this._getMinScale();
-      vertices[9] = vertices[11] = vertices[13] = vertices[15] = this._topHeight * scale, vertices[17] = vertices[19] = vertices[21] = vertices[23] = this._height - this._bottomHeight * scale, vertices[25] = vertices[27] = vertices[29] = vertices[31] = this._height;
-    }
-    /** Updates the vertical vertices. */
-    updateVerticalVertices() {
-      const vertices = this.vertices, scale = this._getMinScale();
-      vertices[2] = vertices[10] = vertices[18] = vertices[26] = this._leftWidth * scale, vertices[4] = vertices[12] = vertices[20] = vertices[28] = this._width - this._rightWidth * scale, vertices[6] = vertices[14] = vertices[22] = vertices[30] = this._width;
-    }
-    /**
-     * Returns the smaller of a set of vertical and horizontal scale of nine slice corners.
-     * @returns Smaller number of vertical and horizontal scale.
-     */
-    _getMinScale() {
-      const w3 = this._leftWidth + this._rightWidth, scaleW = this._width > w3 ? 1 : this._width / w3, h3 = this._topHeight + this._bottomHeight, scaleH = this._height > h3 ? 1 : this._height / h3;
-      return Math.min(scaleW, scaleH);
-    }
-    /** The width of the NineSlicePlane, setting this will actually modify the vertices and UV's of this plane. */
-    get width() {
-      return this._width;
-    }
-    set width(value) {
-      this._width = value, this._refresh();
-    }
-    /** The height of the NineSlicePlane, setting this will actually modify the vertices and UV's of this plane. */
-    get height() {
-      return this._height;
-    }
-    set height(value) {
-      this._height = value, this._refresh();
-    }
-    /** The width of the left column. */
-    get leftWidth() {
-      return this._leftWidth;
-    }
-    set leftWidth(value) {
-      this._leftWidth = value, this._refresh();
-    }
-    /** The width of the right column. */
-    get rightWidth() {
-      return this._rightWidth;
-    }
-    set rightWidth(value) {
-      this._rightWidth = value, this._refresh();
-    }
-    /** The height of the top row. */
-    get topHeight() {
-      return this._topHeight;
-    }
-    set topHeight(value) {
-      this._topHeight = value, this._refresh();
-    }
-    /** The height of the bottom row. */
-    get bottomHeight() {
-      return this._bottomHeight;
-    }
-    set bottomHeight(value) {
-      this._bottomHeight = value, this._refresh();
-    }
-    /** Refreshes NineSlicePlane coords. All of them. */
-    _refresh() {
-      const texture = this.texture, uvs = this.geometry.buffers[1].data;
-      this._origWidth = texture.orig.width, this._origHeight = texture.orig.height;
-      const _uvw = 1 / this._origWidth, _uvh = 1 / this._origHeight;
-      uvs[0] = uvs[8] = uvs[16] = uvs[24] = 0, uvs[1] = uvs[3] = uvs[5] = uvs[7] = 0, uvs[6] = uvs[14] = uvs[22] = uvs[30] = 1, uvs[25] = uvs[27] = uvs[29] = uvs[31] = 1, uvs[2] = uvs[10] = uvs[18] = uvs[26] = _uvw * this._leftWidth, uvs[4] = uvs[12] = uvs[20] = uvs[28] = 1 - _uvw * this._rightWidth, uvs[9] = uvs[11] = uvs[13] = uvs[15] = _uvh * this._topHeight, uvs[17] = uvs[19] = uvs[21] = uvs[23] = 1 - _uvh * this._bottomHeight, this.updateHorizontalVertices(), this.updateVerticalVertices(), this.geometry.buffers[0].update(), this.geometry.buffers[1].update();
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs
-  var SimpleMesh = class extends Mesh {
-    /**
-     * @param texture - The texture to use
-     * @param {Float32Array} [vertices] - if you want to specify the vertices
-     * @param {Float32Array} [uvs] - if you want to specify the uvs
-     * @param {Uint16Array} [indices] - if you want to specify the indices
-     * @param drawMode - the drawMode, can be any of the Mesh.DRAW_MODES consts
-     */
-    constructor(texture = Texture.EMPTY, vertices, uvs, indices2, drawMode) {
-      const geometry = new MeshGeometry(vertices, uvs, indices2);
-      geometry.getBuffer("aVertexPosition").static = false;
-      const meshMaterial = new MeshMaterial(texture);
-      super(geometry, meshMaterial, null, drawMode), this.autoUpdate = true;
-    }
-    /**
-     * Collection of vertices data.
-     * @type {Float32Array}
-     */
-    get vertices() {
-      return this.geometry.getBuffer("aVertexPosition").data;
-    }
-    set vertices(value) {
-      this.geometry.getBuffer("aVertexPosition").data = value;
-    }
-    _render(renderer) {
-      this.autoUpdate && this.geometry.getBuffer("aVertexPosition").update(), super._render(renderer);
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_tdgqw73sn3jwnbzj7jabcj2r5q/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs
-  var SimpleRope = class extends Mesh {
-    /**
-     * Note: The wrap mode of the texture is set to REPEAT if `textureScale` is positive.
-     * @param texture - The texture to use on the rope.
-     * @param points - An array of {@link PIXI.Point} objects to construct this rope.
-     * @param {number} textureScale - Optional. Positive values scale rope texture
-     * keeping its aspect ratio. You can reduce alpha channel artifacts by providing a larger texture
-     * and downsampling here. If set to zero, texture will be stretched instead.
-     */
-    constructor(texture, points, textureScale = 0) {
-      const ropeGeometry = new RopeGeometry(texture.height, points, textureScale), meshMaterial = new MeshMaterial(texture);
-      textureScale > 0 && (texture.baseTexture.wrapMode = WRAP_MODES.REPEAT), super(ropeGeometry, meshMaterial), this.autoUpdate = true;
-    }
-    _render(renderer) {
-      const geometry = this.geometry;
-      (this.autoUpdate || geometry._width !== this.shader.texture.height) && (geometry._width = this.shader.texture.height, geometry.update()), super._render(renderer);
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+particle-container@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs
-  var ParticleContainer = class extends Container {
-    /**
-     * @param maxSize - The maximum number of particles that can be rendered by the container.
-     *  Affects size of allocated buffers.
-     * @param properties - The properties of children that should be uploaded to the gpu and applied.
-     * @param {boolean} [properties.vertices=false] - When true, vertices be uploaded and applied.
-     *                  if sprite's ` scale/anchor/trim/frame/orig` is dynamic, please set `true`.
-     * @param {boolean} [properties.position=true] - When true, position be uploaded and applied.
-     * @param {boolean} [properties.rotation=false] - When true, rotation be uploaded and applied.
-     * @param {boolean} [properties.uvs=false] - When true, uvs be uploaded and applied.
-     * @param {boolean} [properties.tint=false] - When true, alpha and tint be uploaded and applied.
-     * @param {number} [batchSize=16384] - Number of particles per batch. If less than maxSize, it uses maxSize instead.
-     * @param {boolean} [autoResize=false] - If true, container allocates more batches in case
-     *  there are more than `maxSize` particles.
-     */
-    constructor(maxSize = 1500, properties, batchSize = 16384, autoResize = false) {
-      super();
-      const maxBatchSize = 16384;
-      batchSize > maxBatchSize && (batchSize = maxBatchSize), this._properties = [false, true, false, false, false], this._maxSize = maxSize, this._batchSize = batchSize, this._buffers = null, this._bufferUpdateIDs = [], this._updateID = 0, this.interactiveChildren = false, this.blendMode = BLEND_MODES.NORMAL, this.autoResize = autoResize, this.roundPixels = true, this.baseTexture = null, this.setProperties(properties), this._tintColor = new Color(0), this.tintRgb = new Float32Array(3), this.tint = 16777215;
-    }
-    /**
-     * Sets the private properties array to dynamic / static based on the passed properties object
-     * @param properties - The properties to be uploaded
-     */
-    setProperties(properties) {
-      properties && (this._properties[0] = "vertices" in properties || "scale" in properties ? !!properties.vertices || !!properties.scale : this._properties[0], this._properties[1] = "position" in properties ? !!properties.position : this._properties[1], this._properties[2] = "rotation" in properties ? !!properties.rotation : this._properties[2], this._properties[3] = "uvs" in properties ? !!properties.uvs : this._properties[3], this._properties[4] = "tint" in properties || "alpha" in properties ? !!properties.tint || !!properties.alpha : this._properties[4]);
-    }
-    updateTransform() {
-      this.displayObjectUpdateTransform();
-    }
-    /**
-     * The tint applied to the container. This is a hex value.
-     * A value of 0xFFFFFF will remove any tint effect.
-     * IMPORTANT: This is a WebGL only feature and will be ignored by the canvas renderer.
-     * @default 0xFFFFFF
-     */
-    get tint() {
-      return this._tintColor.value;
-    }
-    set tint(value) {
-      this._tintColor.setValue(value), this._tintColor.toRgbArray(this.tintRgb);
-    }
-    /**
-     * Renders the container using the WebGL renderer.
-     * @param renderer - The WebGL renderer.
-     */
-    render(renderer) {
-      !this.visible || this.worldAlpha <= 0 || !this.children.length || !this.renderable || (this.baseTexture || (this.baseTexture = this.children[0]._texture.baseTexture, this.baseTexture.valid || this.baseTexture.once("update", () => this.onChildrenChange(0))), renderer.batch.setObjectRenderer(renderer.plugins.particle), renderer.plugins.particle.render(this));
-    }
-    /**
-     * Set the flag that static data should be updated to true
-     * @param smallestChildIndex - The smallest child index.
-     */
-    onChildrenChange(smallestChildIndex) {
-      const bufferIndex = Math.floor(smallestChildIndex / this._batchSize);
-      for (; this._bufferUpdateIDs.length < bufferIndex; )
-        this._bufferUpdateIDs.push(0);
-      this._bufferUpdateIDs[bufferIndex] = ++this._updateID;
-    }
-    dispose() {
-      if (this._buffers) {
-        for (let i2 = 0; i2 < this._buffers.length; ++i2)
-          this._buffers[i2].destroy();
-        this._buffers = null;
-      }
-    }
-    /**
-     * Destroys the container
-     * @param options - Options parameter. A boolean will act as if all options
-     *  have been set to that value
-     * @param {boolean} [options.children=false] - if set to true, all the children will have their
-     *  destroy method called as well. 'options' will be passed on to those calls.
-     * @param {boolean} [options.texture=false] - Only used for child Sprites if options.children is set to true
-     *  Should it destroy the texture of the child sprite
-     * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true
-     *  Should it destroy the base texture of the child sprite
-     */
-    destroy(options) {
-      super.destroy(options), this.dispose(), this._properties = null, this._buffers = null, this._bufferUpdateIDs = null;
     }
   };
 
@@ -41495,292 +40933,8 @@ void main(void){
   };
   extensions2.add(Prepare);
 
-  // node_modules/.pnpm/@pixi+prepare@7.3.2_3fbtbomg5m3pq3c7az66naijxy/node_modules/@pixi/prepare/lib/TimeLimiter.mjs
-  var TimeLimiter = class {
-    /** @param maxMilliseconds - The maximum milliseconds that can be spent preparing items each frame. */
-    constructor(maxMilliseconds) {
-      this.maxMilliseconds = maxMilliseconds, this.frameStart = 0;
-    }
-    /** Resets any counting properties to start fresh on a new frame. */
-    beginFrame() {
-      this.frameStart = Date.now();
-    }
-    /**
-     * Checks to see if another item can be uploaded. This should only be called once per item.
-     * @returns - If the item is allowed to be uploaded.
-     */
-    allowedToUpload() {
-      return Date.now() - this.frameStart < this.maxMilliseconds;
-    }
-  };
-
-  // node_modules/.pnpm/@pixi+sprite-animated@7.3.2_artivhucobxgltjjxdbpredwxe/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs
-  var AnimatedSprite = class extends Sprite {
-    /**
-     * @param textures - An array of {@link PIXI.Texture} or frame
-     *  objects that make up the animation.
-     * @param {boolean} [autoUpdate=true] - Whether to use Ticker.shared to auto update animation time.
-     */
-    constructor(textures, autoUpdate = true) {
-      super(textures[0] instanceof Texture ? textures[0] : textures[0].texture), this._textures = null, this._durations = null, this._autoUpdate = autoUpdate, this._isConnectedToTicker = false, this.animationSpeed = 1, this.loop = true, this.updateAnchor = false, this.onComplete = null, this.onFrameChange = null, this.onLoop = null, this._currentTime = 0, this._playing = false, this._previousFrame = null, this.textures = textures;
-    }
-    /** Stops the AnimatedSprite. */
-    stop() {
-      this._playing && (this._playing = false, this._autoUpdate && this._isConnectedToTicker && (Ticker.shared.remove(this.update, this), this._isConnectedToTicker = false));
-    }
-    /** Plays the AnimatedSprite. */
-    play() {
-      this._playing || (this._playing = true, this._autoUpdate && !this._isConnectedToTicker && (Ticker.shared.add(this.update, this, UPDATE_PRIORITY.HIGH), this._isConnectedToTicker = true));
-    }
-    /**
-     * Stops the AnimatedSprite and goes to a specific frame.
-     * @param frameNumber - Frame index to stop at.
-     */
-    gotoAndStop(frameNumber) {
-      this.stop(), this.currentFrame = frameNumber;
-    }
-    /**
-     * Goes to a specific frame and begins playing the AnimatedSprite.
-     * @param frameNumber - Frame index to start at.
-     */
-    gotoAndPlay(frameNumber) {
-      this.currentFrame = frameNumber, this.play();
-    }
-    /**
-     * Updates the object transform for rendering.
-     * @param deltaTime - Time since last tick.
-     */
-    update(deltaTime) {
-      if (!this._playing)
-        return;
-      const elapsed = this.animationSpeed * deltaTime, previousFrame = this.currentFrame;
-      if (this._durations !== null) {
-        let lag = this._currentTime % 1 * this._durations[this.currentFrame];
-        for (lag += elapsed / 60 * 1e3; lag < 0; )
-          this._currentTime--, lag += this._durations[this.currentFrame];
-        const sign2 = Math.sign(this.animationSpeed * deltaTime);
-        for (this._currentTime = Math.floor(this._currentTime); lag >= this._durations[this.currentFrame]; )
-          lag -= this._durations[this.currentFrame] * sign2, this._currentTime += sign2;
-        this._currentTime += lag / this._durations[this.currentFrame];
-      } else
-        this._currentTime += elapsed;
-      this._currentTime < 0 && !this.loop ? (this.gotoAndStop(0), this.onComplete && this.onComplete()) : this._currentTime >= this._textures.length && !this.loop ? (this.gotoAndStop(this._textures.length - 1), this.onComplete && this.onComplete()) : previousFrame !== this.currentFrame && (this.loop && this.onLoop && (this.animationSpeed > 0 && this.currentFrame < previousFrame || this.animationSpeed < 0 && this.currentFrame > previousFrame) && this.onLoop(), this.updateTexture());
-    }
-    /** Updates the displayed texture to match the current frame index. */
-    updateTexture() {
-      const currentFrame = this.currentFrame;
-      this._previousFrame !== currentFrame && (this._previousFrame = currentFrame, this._texture = this._textures[currentFrame], this._textureID = -1, this._textureTrimmedID = -1, this._cachedTint = 16777215, this.uvs = this._texture._uvs.uvsFloat32, this.updateAnchor && this._anchor.copyFrom(this._texture.defaultAnchor), this.onFrameChange && this.onFrameChange(this.currentFrame));
-    }
-    /**
-     * Stops the AnimatedSprite and destroys it.
-     * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
-     *  have been set to that value.
-     * @param {boolean} [options.children=false] - If set to true, all the children will have their destroy
-     *      method called as well. 'options' will be passed on to those calls.
-     * @param {boolean} [options.texture=false] - Should it destroy the current texture of the sprite as well.
-     * @param {boolean} [options.baseTexture=false] - Should it destroy the base texture of the sprite as well.
-     */
-    destroy(options) {
-      this.stop(), super.destroy(options), this.onComplete = null, this.onFrameChange = null, this.onLoop = null;
-    }
-    /**
-     * A short hand way of creating an AnimatedSprite from an array of frame ids.
-     * @param frames - The array of frames ids the AnimatedSprite will use as its texture frames.
-     * @returns - The new animated sprite with the specified frames.
-     */
-    static fromFrames(frames) {
-      const textures = [];
-      for (let i2 = 0; i2 < frames.length; ++i2)
-        textures.push(Texture.from(frames[i2]));
-      return new AnimatedSprite(textures);
-    }
-    /**
-     * A short hand way of creating an AnimatedSprite from an array of image ids.
-     * @param images - The array of image urls the AnimatedSprite will use as its texture frames.
-     * @returns The new animate sprite with the specified images as frames.
-     */
-    static fromImages(images) {
-      const textures = [];
-      for (let i2 = 0; i2 < images.length; ++i2)
-        textures.push(Texture.from(images[i2]));
-      return new AnimatedSprite(textures);
-    }
-    /**
-     * The total number of frames in the AnimatedSprite. This is the same as number of textures
-     * assigned to the AnimatedSprite.
-     * @readonly
-     * @default 0
-     */
-    get totalFrames() {
-      return this._textures.length;
-    }
-    /** The array of textures used for this AnimatedSprite. */
-    get textures() {
-      return this._textures;
-    }
-    set textures(value) {
-      if (value[0] instanceof Texture)
-        this._textures = value, this._durations = null;
-      else {
-        this._textures = [], this._durations = [];
-        for (let i2 = 0; i2 < value.length; i2++)
-          this._textures.push(value[i2].texture), this._durations.push(value[i2].time);
-      }
-      this._previousFrame = null, this.gotoAndStop(0), this.updateTexture();
-    }
-    /** The AnimatedSprite's current frame index. */
-    get currentFrame() {
-      let currentFrame = Math.floor(this._currentTime) % this._textures.length;
-      return currentFrame < 0 && (currentFrame += this._textures.length), currentFrame;
-    }
-    set currentFrame(value) {
-      if (value < 0 || value > this.totalFrames - 1)
-        throw new Error(`[AnimatedSprite]: Invalid frame index value ${value}, expected to be between 0 and totalFrames ${this.totalFrames}.`);
-      const previousFrame = this.currentFrame;
-      this._currentTime = value, previousFrame !== this.currentFrame && this.updateTexture();
-    }
-    /**
-     * Indicates if the AnimatedSprite is currently playing.
-     * @readonly
-     */
-    get playing() {
-      return this._playing;
-    }
-    /** Whether to use Ticker.shared to auto update animation time. */
-    get autoUpdate() {
-      return this._autoUpdate;
-    }
-    set autoUpdate(value) {
-      value !== this._autoUpdate && (this._autoUpdate = value, !this._autoUpdate && this._isConnectedToTicker ? (Ticker.shared.remove(this.update, this), this._isConnectedToTicker = false) : this._autoUpdate && !this._isConnectedToTicker && this._playing && (Ticker.shared.add(this.update, this), this._isConnectedToTicker = true));
-    }
-  };
-
   // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs
   var tempPoint3 = new Point();
-  var TilingSprite = class extends Sprite {
-    /**
-     * Note: The wrap mode of the texture is forced to REPEAT on render if the size of the texture
-     * is a power of two, the texture's wrap mode is CLAMP, and the texture hasn't been bound yet.
-     * @param texture - The texture of the tiling sprite.
-     * @param width - The width of the tiling sprite.
-     * @param height - The height of the tiling sprite.
-     */
-    constructor(texture, width = 100, height = 100) {
-      super(texture), this.tileTransform = new Transform(), this._width = width, this._height = height, this.uvMatrix = this.texture.uvMatrix || new TextureMatrix(texture), this.pluginName = "tilingSprite", this.uvRespectAnchor = false;
-    }
-    /**
-     * Changes frame clamping in corresponding textureTransform, shortcut
-     * Change to -0.5 to add a pixel to the edge, recommended for transparent trimmed textures in atlas
-     * @default 0.5
-     * @member {number}
-     */
-    get clampMargin() {
-      return this.uvMatrix.clampMargin;
-    }
-    set clampMargin(value) {
-      this.uvMatrix.clampMargin = value, this.uvMatrix.update(true);
-    }
-    /** The scaling of the image that is being tiled. */
-    get tileScale() {
-      return this.tileTransform.scale;
-    }
-    set tileScale(value) {
-      this.tileTransform.scale.copyFrom(value);
-    }
-    /** The offset of the image that is being tiled. */
-    get tilePosition() {
-      return this.tileTransform.position;
-    }
-    set tilePosition(value) {
-      this.tileTransform.position.copyFrom(value);
-    }
-    /**
-     * @protected
-     */
-    _onTextureUpdate() {
-      this.uvMatrix && (this.uvMatrix.texture = this._texture), this._cachedTint = 16777215;
-    }
-    /**
-     * Renders the object using the WebGL renderer
-     * @param renderer - The renderer
-     */
-    _render(renderer) {
-      const texture = this._texture;
-      !texture || !texture.valid || (this.tileTransform.updateLocalTransform(), this.uvMatrix.update(), renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]), renderer.plugins[this.pluginName].render(this));
-    }
-    /** Updates the bounds of the tiling sprite. */
-    _calculateBounds() {
-      const minX = this._width * -this._anchor._x, minY = this._height * -this._anchor._y, maxX = this._width * (1 - this._anchor._x), maxY = this._height * (1 - this._anchor._y);
-      this._bounds.addFrame(this.transform, minX, minY, maxX, maxY);
-    }
-    /**
-     * Gets the local bounds of the sprite object.
-     * @param rect - Optional output rectangle.
-     * @returns The bounds.
-     */
-    getLocalBounds(rect) {
-      return this.children.length === 0 ? (this._bounds.minX = this._width * -this._anchor._x, this._bounds.minY = this._height * -this._anchor._y, this._bounds.maxX = this._width * (1 - this._anchor._x), this._bounds.maxY = this._height * (1 - this._anchor._y), rect || (this._localBoundsRect || (this._localBoundsRect = new Rectangle()), rect = this._localBoundsRect), this._bounds.getRectangle(rect)) : super.getLocalBounds.call(this, rect);
-    }
-    /**
-     * Checks if a point is inside this tiling sprite.
-     * @param point - The point to check.
-     * @returns Whether or not the sprite contains the point.
-     */
-    containsPoint(point) {
-      this.worldTransform.applyInverse(point, tempPoint3);
-      const width = this._width, height = this._height, x1 = -width * this.anchor._x;
-      if (tempPoint3.x >= x1 && tempPoint3.x < x1 + width) {
-        const y1 = -height * this.anchor._y;
-        if (tempPoint3.y >= y1 && tempPoint3.y < y1 + height)
-          return true;
-      }
-      return false;
-    }
-    /**
-     * Destroys this sprite and optionally its texture and children
-     * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
-     *  have been set to that value
-     * @param {boolean} [options.children=false] - if set to true, all the children will have their destroy
-     *      method called as well. 'options' will be passed on to those calls.
-     * @param {boolean} [options.texture=false] - Should it destroy the current texture of the sprite as well
-     * @param {boolean} [options.baseTexture=false] - Should it destroy the base texture of the sprite as well
-     */
-    destroy(options) {
-      super.destroy(options), this.tileTransform = null, this.uvMatrix = null;
-    }
-    /**
-     * Helper function that creates a new tiling sprite based on the source you provide.
-     * The source can be - frame id, image url, video url, canvas element, video element, base texture
-     * @static
-     * @param {string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source - Source to create texture from
-     * @param {object} options - See {@link PIXI.BaseTexture}'s constructor for options.
-     * @param {number} options.width - required width of the tiling sprite
-     * @param {number} options.height - required height of the tiling sprite
-     * @returns {PIXI.TilingSprite} The newly created texture
-     */
-    static from(source, options) {
-      const texture = source instanceof Texture ? source : Texture.from(source, options);
-      return new TilingSprite(
-        texture,
-        options.width,
-        options.height
-      );
-    }
-    /** The width of the sprite, setting this will actually modify the scale to achieve the value set. */
-    get width() {
-      return this._width;
-    }
-    set width(value) {
-      this._width = value;
-    }
-    /** The height of the TilingSprite, setting this will actually modify the scale to achieve the value set. */
-    get height() {
-      return this._height;
-    }
-    set height(value) {
-      this._height = value;
-    }
-  };
 
   // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_4izfjbbodqufxqe3eqprmt77na/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.frag.mjs
   var gl2FragmentSrc = `#version 300 es
@@ -43013,7 +42167,6 @@ void main(void)\r
     maxWidth: 0,
     letterSpacing: 0
   };
-  var BitmapText = _BitmapText;
 
   // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_a3nvz2nrxsjxnafwmmfzvgv7gm/node_modules/@pixi/text-bitmap/lib/loadBitmapFont.mjs
   var validExtensions = [".xml", ".fnt"];
@@ -43522,7 +42675,6 @@ void main(void)\r
   _HTMLText.defaultMaxWidth = 2024, /** Default maxHeight, set at construction */
   _HTMLText.defaultMaxHeight = 2024, /** Default autoResolution for all HTMLText objects */
   _HTMLText.defaultAutoResolution = true;
-  var HTMLText = _HTMLText;
 
   // src/ts/engine/rendering/resize.ts
   var FixedSizeContainer = class extends Container {
@@ -43595,8 +42747,11 @@ void main(void)\r
     moving: D(Container, Position),
     static: D(Container, StaticPosition)
   }) {
-    screen;
-    screenRect = new Rectangle(0, 0, 256, 256);
+    constructor() {
+      super(...arguments);
+      __publicField(this, "screen");
+      __publicField(this, "screenRect", new Rectangle(0, 0, 256, 256));
+    }
     init() {
       this.screen = this.world.get(Application).stage.getChildAt(0);
     }
@@ -43642,7 +42797,10 @@ void main(void)\r
     frameCount: Et.number
   });
   var AnimationSystem = class extends Jt(D(Container, AnimatedSprite2)) {
-    textureCache = /* @__PURE__ */ new Map();
+    constructor() {
+      super(...arguments);
+      __publicField(this, "textureCache", /* @__PURE__ */ new Map());
+    }
     update() {
       this.entities.forEach((ent) => {
         ent.inc(AnimatedSprite2.thisFrameElapsed);
@@ -43715,9 +42873,9 @@ void main(void)\r
     }
   };
   var AnyBinding = class extends DigitalBinding {
-    inputs;
     constructor(...inputs) {
       super();
+      __publicField(this, "inputs");
       this.inputs = inputs;
     }
     is(inputInstance, state) {
@@ -43729,10 +42887,10 @@ void main(void)\r
     }
   };
   var CombinedBinding = class extends AnalogBinding {
-    inputs;
-    weights;
     constructor(inputsAndWeights) {
       super();
+      __publicField(this, "inputs");
+      __publicField(this, "weights");
       this.inputs = Object.keys(inputsAndWeights);
       this.weights = Object.values(inputsAndWeights).filter(
         (n2) => n2 !== void 0
@@ -43760,6 +42918,8 @@ void main(void)\r
     constructor(getters) {
       super();
       this.getters = getters;
+      __publicField(this, "getXDiff");
+      __publicField(this, "getYDiff");
       for (const dir of ["X", "Y"]) {
         const origin = getters[`origin${dir}`];
         const target2 = getters[`target${dir}`];
@@ -43774,8 +42934,6 @@ void main(void)\r
         }
       }
     }
-    getXDiff;
-    getYDiff;
     get(input) {
       return Math.atan2(this.getYDiff(input), this.getXDiff(input));
     }
@@ -43874,26 +43032,28 @@ void main(void)\r
   var Input = class {
     constructor(world3) {
       this.world = world3;
+      __publicField(this, "digital", {
+        PRESSED: /* @__PURE__ */ new Set(),
+        JUST_PRESSED: /* @__PURE__ */ new Set(),
+        JUST_RELEASED: /* @__PURE__ */ new Set(),
+        RELEASED: /* @__PURE__ */ new Set(),
+        // Queue all events to take place after the next frame (this grantees everything happens at least once)
+        queue: {
+          PRESSED: /* @__PURE__ */ new Set(),
+          RELEASED: /* @__PURE__ */ new Set()
+        },
+        // Pressed events that only last one frame
+        ephemeral: /* @__PURE__ */ new Set()
+      });
+      __publicField(this, "analog", /* @__PURE__ */ new Map());
+      __publicField(this, "connectedGamepads", []);
+      __publicField(this, "defaultGamepad", null);
+      __publicField(this, "analogBindings", /* @__PURE__ */ new Map());
+      __publicField(this, "digitalBindings", /* @__PURE__ */ new Map());
+      __publicField(this, "inputMethods", {});
+      __publicField(this, "currentInputMethod");
       this.init();
     }
-    digital = {
-      PRESSED: /* @__PURE__ */ new Set(),
-      JUST_PRESSED: /* @__PURE__ */ new Set(),
-      JUST_RELEASED: /* @__PURE__ */ new Set(),
-      RELEASED: /* @__PURE__ */ new Set(),
-      // Queue all events to take place after the next frame (this grantees everything happens at least once)
-      queue: {
-        PRESSED: /* @__PURE__ */ new Set(),
-        RELEASED: /* @__PURE__ */ new Set()
-      },
-      // Pressed events that only last one frame
-      ephemeral: /* @__PURE__ */ new Set()
-    };
-    analog = /* @__PURE__ */ new Map();
-    connectedGamepads = [];
-    defaultGamepad = null;
-    analogBindings = /* @__PURE__ */ new Map();
-    digitalBindings = /* @__PURE__ */ new Map();
     clearDigitalState(input) {
       this.digital.PRESSED.delete(input);
       this.digital.RELEASED.delete(input);
@@ -44074,8 +43234,6 @@ void main(void)\r
       }
       return INPUT_ALIASES.get(button) || button;
     }
-    inputMethods = {};
-    currentInputMethod;
     addInputMethod(method, bindings) {
       this.inputMethods[method] = bindings;
       if (InputMethod.getMethod(method).isAvailable(this) && !this.currentInputMethod) {
@@ -44173,12 +43331,25 @@ void main(void)\r
   var _MultiplayerInput = class {
     constructor(world3) {
       this.world = world3;
+      __publicField(this, "localInput");
+      __publicField(this, "watchedBindings", {
+        digital: /* @__PURE__ */ new Set(),
+        analog: /* @__PURE__ */ new Set()
+      });
+      __publicField(this, "buffers", {});
+      // Map<Frames Connected, input state>
+      __publicField(this, "knownFutureInputs", /* @__PURE__ */ new Map());
+      __publicField(this, "localPeerId");
+      __publicField(this, "rollbackManager");
+      __publicField(this, "networkConnection");
+      __publicField(this, "events", []);
+      __publicField(this, "ready", false);
+      __publicField(this, "oldHash", null);
       this.localInput = new Input(world3);
       this.rollbackManager = world3.get(RollbackManager);
       this.networkConnection = world3.get(NetworkConnection);
       this.init();
     }
-    localInput;
     toLocalInput(replaceInWorld = true) {
       if (replaceInWorld) {
         this.world.remove(_MultiplayerInput);
@@ -44190,18 +43361,6 @@ void main(void)\r
     static getId() {
       return Input.getId();
     }
-    watchedBindings = {
-      digital: /* @__PURE__ */ new Set(),
-      analog: /* @__PURE__ */ new Set()
-    };
-    buffers = {};
-    // Map<Frames Connected, input state>
-    knownFutureInputs = /* @__PURE__ */ new Map();
-    localPeerId;
-    rollbackManager;
-    networkConnection;
-    events = [];
-    ready = false;
     async init() {
       await this.networkConnection.waitForServerConnection;
       this.localPeerId = this.networkConnection.id;
@@ -44231,7 +43390,14 @@ void main(void)\r
       return this.buffers[clientId][this.rollbackManager.currentFramesBack].__EVENTS__?.includes(event) || false;
     }
     is(bindingName, state, clientId = this.networkConnection.id) {
-      return this.buffers[clientId][this.rollbackManager.currentFramesBack][bindingName] === state;
+      const realState = this.buffers[clientId][this.rollbackManager.currentFramesBack][bindingName];
+      if (realState === state)
+        return true;
+      if (realState === "JUST_PRESSED" && state === "PRESSED")
+        return true;
+      if (realState === "JUST_RELEASED" && state === "RELEASED")
+        return true;
+      return false;
     }
     get(bindingName, clientId = this.networkConnection.id) {
       const val = this.buffers[clientId][this.rollbackManager.currentFramesBack][bindingName];
@@ -44274,7 +43440,6 @@ void main(void)\r
       this.hashState(newState);
       return newState;
     }
-    oldHash = null;
     update() {
       if (this.world.get(RollbackManager).currentlyInRollback || !this.ready)
         return;
@@ -44284,11 +43449,6 @@ void main(void)\r
         if (this.knownFutureInputs.has(this.networkConnection.framesConnected)) {
           newRemoteState = this.knownFutureInputs.get(
             this.networkConnection.framesConnected
-          );
-          console.log(
-            "Using future input frame",
-            this.networkConnection.framesConnected,
-            newRemoteState.x
           );
         } else {
           newRemoteState = this.predictNextState(
@@ -44309,7 +43469,7 @@ void main(void)\r
       }
       for (const event of this.events) {
         if (event.fire(newLocalState)) {
-          newLocalState.__EVENTS__ ??= [];
+          newLocalState.__EVENTS__ ?? (newLocalState.__EVENTS__ = []);
           newLocalState.__EVENTS__.push(event.name);
           for (const binding of event.relatedBindings) {
             if (binding in newLocalState)
@@ -44361,7 +43521,6 @@ void main(void)\r
         "input",
         async ({ frame, inputState }) => {
           let framesBack = this.networkConnection.framesConnected - frame;
-          Diagnostics.worstRemoteLatency = framesBack;
           if (framesBack < 0) {
             this.knownFutureInputs.set(frame, inputState);
             return;
@@ -44389,9 +43548,39 @@ void main(void)\r
     world3.enable(MultiplayerInputSystem, "rollback");
   };
 
+  // src/ts/engine/server.ts
+  var ServerConnection = class {
+    constructor() {
+      __publicField(this, "url", "http:localhost:8080/api/v1");
+    }
+    //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
+    fetch(path2, options) {
+      const url2 = new URL(this.url + path2);
+      if (options?.searchParams) {
+        for (const [key, value] of Object.entries(options.searchParams)) {
+          url2.searchParams.set(key, value);
+        }
+      }
+      return fetch(url2, options?.options).then((res) => res.json());
+    }
+    post(url2, body) {
+      return fetch(this.url + url2, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+    }
+  };
+  function ServerConnectionPlugin(world3) {
+    world3.add(new ServerConnection());
+  }
+
   // src/ts/engine/engine.ts
   var enginePlugins = [
     LoopPlugin,
+    ServerConnectionPlugin,
     networkConnectionPlugin,
     rollbackPlugin,
     MultiplayerInputPlugin,
@@ -44404,7 +43593,7 @@ void main(void)\r
   function assertType(param) {
   }
   function jsx(tag, props, ...children) {
-    props ??= {};
+    props ?? (props = {});
     props.children = children;
     if (typeof tag === "function")
       return tag(props);
@@ -44442,8 +43631,13 @@ void main(void)\r
       ...children.flat().filter(
         (node) => typeof node !== "boolean" && node != null
       ).map(
-        (node) => typeof node == "string" || typeof node == "number" ? document.createTextNode(node.toString()) : node
-      )
+        (node) => typeof node == "string" || typeof node == "number" ? Array.from(
+          new DOMParser().parseFromString(
+            node.toString().replaceAll("\n", ""),
+            "text/html"
+          ).body.childNodes
+        ) : node
+      ).flat()
     );
     return element;
   }
@@ -44528,7 +43722,10 @@ void main(void)\r
     static: D(StaticPosition, CollisionHitbox),
     moving: D(Position, CollisionHitbox, Velocity)
   }) {
-    queueForDestroy = /* @__PURE__ */ new Set();
+    constructor() {
+      super(...arguments);
+      __publicField(this, "queueForDestroy", /* @__PURE__ */ new Set());
+    }
     update() {
       this.entities.static.forEach((staticEntity) => {
         this.entities.moving.forEach((movingEntity) => {
@@ -44591,102 +43788,25 @@ void main(void)\r
     }
   };
 
-  // src/ts/game/states/game.tsx
-  var Game = class extends State {
-    async onEnter(payload, from) {
-      enablePixiRendering(this.world);
-      startMultiplayerInput(this.world);
-      enableInspect(this.world);
-      this.world.addSystem(MovementSystem);
-      this.world.addSystem(MovementSystem, "rollback");
-      this.world.addSystem(RemoveDeadEntities);
-      this.world.addSystem(RemoveDeadEntities, "rollback");
-      this.world.addSystem(CollisionSystem);
-      this.world.addSystem(CollisionSystem, "rollback");
-    }
-    update() {
-    }
-    async onLeave() {
-    }
-  };
-
-  // src/ts/game/hud/components/button.tsx
-  var StyledButton = function(props) {
-    return /* @__PURE__ */ window.jsx(
-      "button",
+  // src/ts/game/hud/components/health.tsx
+  var HealthBar = (props) => {
+    const innerBar = /* @__PURE__ */ window.jsx(
+      "div",
       {
-        ...props,
-        className: `rounded h-9 min-w-[100px] border-none focus:brightness-90 hover:brightness-90 font-default uppercase text-center text-lg tracking-wider text-white m-2 pl-2 pr-2 ` + props.className || ""
+        className: "bg-green-700 h-full rounded-full " + (props.growLeft ? "ml-auto" : ""),
+        style: { width: props.initialPercent + "%" }
       },
-      props.children
+      ...props.children
     );
+    props.handle.update = (percent) => {
+      innerBar.style.width = percent + "%";
+    };
+    const cleansedProps = { ...props };
+    delete cleansedProps.handle;
+    delete cleansedProps.initialPercent;
+    const el = /* @__PURE__ */ window.jsx("div", { ...cleansedProps }, /* @__PURE__ */ window.jsx("div", { className: "w-full bg-gray-200 rounded-full h-full " }, innerBar));
+    return el;
   };
-  var ColoredButtonFactory = (color) => (props) => /* @__PURE__ */ window.jsx(StyledButton, { ...props, className: color + " " + props.className || "" }, props.children);
-  var PrimaryButton = ColoredButtonFactory("bg-primary");
-  var AccentButton = ColoredButtonFactory("bg-accent");
-  var SuccessButton = ColoredButtonFactory("bg-green-500");
-  var FailButton = ColoredButtonFactory("bg-red-600");
-
-  // src/ts/game/hud/components/dialogs.tsx
-  function closeOpenModal() {
-    document.querySelector("dialog[open]").close();
-  }
-  var DialogPopup = function(props) {
-    return /* @__PURE__ */ window.jsx("dialog", { className: "bg-base w-5/12 h-1/2 overflow-hidden rounded backdrop:bg-secondary/80 open:flex flex-col justify-betweens" }, /* @__PURE__ */ window.jsx("div", { className: "w-auto h-16  p-4" }, /* @__PURE__ */ window.jsx("h1", { className: "text-white text-center text-4xl" }, props.title)), /* @__PURE__ */ window.jsx("p", { className: "text-white  m-4" }, " ", props.message || ""), props.children, /* @__PURE__ */ window.jsx("div", { className: "bottom-0 h-16 mt-auto items-center flex" }, /* @__PURE__ */ window.jsx(
-      FailButton,
-      {
-        className: "ml-auto",
-        onclick: function(e2) {
-          closeOpenModal();
-          props.oncancel?.(e2);
-        },
-        hidden: !!props.hideCancelButton
-      },
-      "Exit"
-    ), /* @__PURE__ */ window.jsx(
-      SuccessButton,
-      {
-        className: "float-right mr-8 default-close-button",
-        onclick: function(e2) {
-          closeOpenModal();
-          props.onok?.(e2);
-        }
-      },
-      "Ok"
-    )));
-  };
-  function showDialog(options) {
-    const el = options instanceof Node ? options : /* @__PURE__ */ window.jsx(DialogPopup, { ...options });
-    document.body.appendChild(el);
-    el.showModal();
-    el.querySelector(".default-close-button").focus();
-  }
-
-  // src/ts/engine/rendering/blueprints/graphics.ts
-  var graphicsBlueprint = new a(
-    new Position({ x: 0, y: 0, r: 0 }),
-    Container
-  );
-  var GraphicsEnt = Pe2(
-    graphicsBlueprint,
-    [Position.x, Position.y],
-    function(options, methodName, ...args) {
-      const graphics = new Graphics();
-      if (options.fillStyle) {
-        graphics.beginFill(options.fillStyle);
-      }
-      if (options.lineStyle) {
-        graphics.lineStyle(options.lineStyle);
-      }
-      if (typeof methodName === "function") {
-        methodName(graphics);
-      } else {
-        graphics[methodName](...args);
-      }
-      graphics.position.set(this.get(Position.x), this.get(Position.y));
-      this.update(graphics);
-    }
-  );
 
   // src/ts/game/hud/components/joystick.tsx
   var Joystick = (props) => {
@@ -44769,6 +43889,171 @@ void main(void)\r
     }
   };
 
+  // src/ts/game/states/game.tsx
+  var Game = class extends State {
+    constructor() {
+      super(...arguments);
+      __publicField(this, "hud", /* @__PURE__ */ window.jsx("div", { className: "z-10 absolute top-0 left-0 w-full h-full" }));
+    }
+    async onEnter(payload, from) {
+      enablePixiRendering(this.world);
+      startMultiplayerInput(this.world);
+      this.world.addSystem(MovementSystem);
+      this.world.addSystem(MovementSystem, "rollback");
+      this.world.addSystem(RemoveDeadEntities);
+      this.world.addSystem(RemoveDeadEntities, "rollback");
+      this.world.addSystem(CollisionSystem);
+      this.world.addSystem(CollisionSystem, "rollback");
+      this.loadHUD();
+    }
+    // Setup HUD
+    loadHUD() {
+      document.body.appendChild(this.hud);
+      const player1Handle = {};
+      const player2Handle = {};
+      const timer = /* @__PURE__ */ window.jsx("div", { className: "" }, "0:00");
+      this.hud.append(
+        /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between" }, /* @__PURE__ */ window.jsx("div", { className: "" }, /* @__PURE__ */ window.jsx(
+          HealthBar,
+          {
+            initialPercent: 50,
+            className: "w-52 h-2",
+            handle: player1Handle
+          }
+        )), timer, /* @__PURE__ */ window.jsx("div", { className: "" }, /* @__PURE__ */ window.jsx(
+          HealthBar,
+          {
+            initialPercent: 50,
+            className: "w-52 h-2",
+            growLeft: true,
+            handle: player2Handle
+          }
+        )))
+      );
+      window.handles = { player1Handle, player2Handle };
+      if (InputMethod.isMobile()) {
+        this.hud.append(
+          /* @__PURE__ */ window.jsx(Joystick, { id: "Movement", side: "left" }),
+          /* @__PURE__ */ window.jsx(Joystick, { id: "Shoot", side: "right" })
+        );
+      }
+      let time = 0;
+      setInterval(() => {
+        time += 1;
+        timer.innerText = `${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, "0")}`;
+      }, 1e3);
+    }
+    playerInfo() {
+      const handle = {};
+      return /* @__PURE__ */ window.jsx("div", null, /* @__PURE__ */ window.jsx("div", null, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-user" }), /* @__PURE__ */ window.jsx("span", null, "Player 1")), /* @__PURE__ */ window.jsx(HealthBar, { handle, initialPercent: 0 }));
+    }
+    update() {
+    }
+    async onLeave() {
+    }
+  };
+
+  // src/ts/game/hud/components/button.tsx
+  var StyledButton = function(props) {
+    return /* @__PURE__ */ window.jsx(
+      "button",
+      {
+        ...props,
+        className: `rounded h-9 min-w-[100px] border-none focus:brightness-90 hover:brightness-90 font-default uppercase text-center text-lg tracking-wider text-white m-2 pl-2 pr-2 ` + props.className || ""
+      },
+      props.children
+    );
+  };
+  var ColoredButtonFactory = (color) => (props) => /* @__PURE__ */ window.jsx(StyledButton, { ...props, className: color + " " + props.className || "" }, props.children);
+  var PrimaryButton = ColoredButtonFactory("bg-primary");
+  var AccentButton = ColoredButtonFactory("bg-accent");
+  var SuccessButton = ColoredButtonFactory("bg-green-500");
+  var FailButton = ColoredButtonFactory("bg-red-600");
+
+  // src/ts/game/hud/components/dialogs.tsx
+  function closeOpenModal() {
+    document.querySelector("dialog[open]").close();
+  }
+  var KEEP_OPEN = "KEEP_OPEN";
+  var DialogPopup = function(props) {
+    return /* @__PURE__ */ window.jsx("dialog", { className: "bg-base w-7/12 min-h-[1/2] overflow-hidden rounded backdrop:bg-secondary/80 open:flex flex-col justify-betweens" }, /* @__PURE__ */ window.jsx("div", { className: "w-auto h-16  p-4 " }, /* @__PURE__ */ window.jsx("h1", { className: "text-white text-center text-xl" }, props.title)), /* @__PURE__ */ window.jsx("p", { className: "text-white m-4 mt-0 mb-1" }, " ", props.message || ""), props.children, /* @__PURE__ */ window.jsx("div", { className: "bottom-0 h-16 mt-auto items-center flex" }, /* @__PURE__ */ window.jsx(
+      FailButton,
+      {
+        className: "ml-auto",
+        onclick: function(e2) {
+          closeOpenModal();
+          props.oncancel?.(e2);
+        },
+        hidden: !!props.hideCancelButton
+      },
+      "Exit"
+    ), /* @__PURE__ */ window.jsx(
+      SuccessButton,
+      {
+        className: "float-right mr-4 default-close-button",
+        onclick: async function(e2) {
+          if (await props.onok?.(e2) !== KEEP_OPEN)
+            closeOpenModal();
+        }
+      },
+      "Ok"
+    )));
+  };
+  function showDialog(options) {
+    const el = options instanceof Node ? options : /* @__PURE__ */ window.jsx(DialogPopup, { ...options });
+    document.body.appendChild(el);
+    el.showModal();
+    el.querySelector(".default-close-button").focus();
+  }
+
+  // src/ts/engine/rendering/blueprints/graphics.ts
+  var graphicsBlueprint = new a(
+    new Position({ x: 0, y: 0, r: 0 }),
+    Container
+  );
+  var GraphicsEnt = Pe2(
+    graphicsBlueprint,
+    [Position.x, Position.y],
+    function(options, methodName, ...args) {
+      const graphics = new Graphics();
+      if (options.fillStyle) {
+        graphics.beginFill(options.fillStyle);
+      }
+      if (options.lineStyle) {
+        graphics.lineStyle(options.lineStyle);
+      }
+      if (typeof methodName === "function") {
+        methodName(graphics);
+      } else {
+        graphics[methodName](...args);
+      }
+      graphics.position.set(this.get(Position.x), this.get(Position.y));
+      this.update(graphics);
+    }
+  );
+
+  // src/ts/game/blueprints/wall.ts
+  var wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
+  var Wall = Pe2(
+    wallBlueprint,
+    [
+      StaticPosition.x,
+      StaticPosition.y,
+      CollisionHitbox.x,
+      CollisionHitbox.y
+    ],
+    function(color) {
+      const graphics = new Graphics();
+      graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
+      this.set(graphics);
+    }
+  );
+
+  // src/ts/game/scripts/gravity.ts
+  var gravity = function() {
+    this.inc(Velocity.y, PlayerInfo.globals.gravity);
+  };
+
   // src/ts/game/blueprints/bullet.ts
   var bulletBlueprint = new a(
     Position,
@@ -44793,39 +44078,260 @@ void main(void)\r
     }
   );
 
-  // src/ts/game/scripts/players/griffin.ts
-  var MrGriffinPlayer = function() {
+  // src/ts/game/scripts/players/common.ts
+  function applyDefaultMovement(entity, input, id) {
+    entity.inc(Velocity.y, PlayerInfo.globals.gravity);
+    if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
+      entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
+      entity.set(PlayerInfo.canJump, false);
+    }
+    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+  }
+  function applyDefaultShooting(entity, input, id) {
+    if (input.is("shoot", "PRESSED", id) && entity.get(PlayerInfo.shootCooldown) <= 0) {
+      entity.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
+      BulletEnt(
+        entity.get(Position.x),
+        entity.get(Position.y),
+        Math.cos(input.get("aim", id)) * 7,
+        Math.sin(input.get("aim", id)) * 7
+      );
+    } else {
+      entity.inc(PlayerInfo.shootCooldown, -1);
+    }
+  }
+
+  // src/ts/game/scripts/players/bombs.ts
+  var BombPlayer = function() {
     const input = this.world.get(MultiplayerInput);
     const id = this.get(PeerId);
-    this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
-    this.inc(Velocity.y, PlayerInfo.globals.gravity);
-    if (this.get(PlayerInfo.canJump) && input.get("y", id) < 0) {
-      console.log("jump");
-      this.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
-      this.set(PlayerInfo.canJump, false);
+    applyDefaultMovement(this, input, id);
+    if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
+      this.set(PlayerInfo.ultPercent, 0);
+      this.set(PlayerInfo.ultTimeLeft, DESIRED_FPS * 10);
+    } else {
+      this.inc(PlayerInfo.ultPercent);
     }
-    if (input.is("shoot", "JUST_PRESSED", id)) {
-      BulletEnt(
-        this.get(Position.x),
-        this.get(Position.y),
-        Math.cos(input.get("aim", id)) * 1,
-        //+ this.get(Velocity.x),
-        Math.sin(input.get("aim", id)) * 1,
-        //+ this.get(Velocity.y),
-        "purple"
-      );
+    if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+      this.inc(PlayerInfo.ultTimeLeft, -1);
+      if (input.is("shoot", "PRESSED") && this.get(PlayerInfo.shootCooldown) <= 0) {
+        this.set(PlayerInfo.shootCooldown, 0);
+      } else {
+        this.inc(PlayerInfo.shootCooldown, -1);
+      }
+    } else {
+      if (input.is("shoot", "PRESSED", id) && this.get(PlayerInfo.shootCooldown) <= 0) {
+        this.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
+        const bomb = this.world.spawn();
+        bomb.add(
+          new Position({
+            x: this.get(Position.x),
+            y: this.get(Position.y),
+            r: 0
+          })
+        );
+        bomb.add(
+          new Velocity({
+            x: Math.cos(input.get("aim", id)) * 3,
+            y: Math.sin(input.get("aim", id)) * 10
+          })
+        );
+        bomb.add(new CollisionHitbox({ x: 20, y: 20 }));
+        bomb.addScript(gravity);
+        const graphics = new Graphics();
+        graphics.beginFill(16711680);
+        graphics.drawCircle(10, 10, 10);
+        graphics.endFill();
+        bomb.add(graphics);
+        bomb.add(new BouncinessFactor({ x: 0.5, y: 0 }));
+        bomb.add(new Friction(0.05));
+        bomb.add(new TimedAlive(60));
+      } else {
+        this.inc(PlayerInfo.shootCooldown, -1);
+      }
+    }
+  };
+
+  // src/ts/game/scripts/players/carrier.ts
+  var CARRIER_ULT_COOLDOWN = DESIRED_FPS * 10;
+  var MrCarrierPlayer = function() {
+    const input = this.world.get(MultiplayerInput);
+    const id = this.get(PeerId);
+    if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
+      this.set(PlayerInfo.ultPercent, 0);
+      this.set(PlayerInfo.ultTimeLeft, CARRIER_ULT_COOLDOWN);
+    }
+    if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+      if (input.get("y", id) >= 0) {
+        this.inc(Velocity.y, PlayerInfo.globals.gravity / 2);
+      } else {
+        this.inc(Velocity.y, input.get("y", id) / 100);
+        if (this.get(Velocity.y) < -PlayerInfo.globals.gravity) {
+          this.set(Velocity.y, -PlayerInfo.globals.gravity);
+        }
+      }
+      this.inc(Velocity.y, Math.min(input.get("y", id), 0));
+      this.inc(PlayerInfo.ultTimeLeft, -1);
+      this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+    } else {
+      this.inc(PlayerInfo.ultPercent);
+      applyDefaultMovement(this, input, id);
+    }
+    applyDefaultShooting(this, input, id);
+  };
+
+  // src/ts/game/scripts/players/laser.ts
+  var LaserPlayer = function() {
+    const input = this.world.get(MultiplayerInput);
+    const id = this.get(PeerId);
+    applyDefaultMovement(this, input, id);
+    if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
+      this.set(PlayerInfo.ultPercent, 0);
+      this.set(PlayerInfo.ultTimeLeft, 1);
+    } else {
+      this.inc(PlayerInfo.ultPercent);
+    }
+    if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+      if (input.is("shoot", "JUST_RELEASED", id)) {
+        for (let i2 = 0; i2 < 10; i2++) {
+          const velX = Math.cos(input.get("aim", id));
+          const velY = Math.sin(input.get("aim", id));
+          BulletEnt(
+            this.get(Position.x) + velX * i2 * 30,
+            this.get(Position.y) + velY * i2 * 30,
+            velX * 20,
+            velY * 20
+          );
+        }
+        this.inc(PlayerInfo.ultTimeLeft, -1 / 3);
+        this.get(Container).getChildByName("aimguide")?.removeFromParent();
+      } else if (input.is("shoot", "PRESSED", id)) {
+        const container = this.get(Container);
+        if (container.children.length == 0) {
+          const graphics = new Graphics();
+          graphics.lineStyle(5, 16711680, 0.5);
+          graphics.moveTo(0, 0);
+          graphics.lineTo(1e3, 0);
+          graphics.name = "aimguide";
+          container.addChild(graphics);
+        }
+        container.getChildByName("aimguide").rotation = input.get("aim", id);
+      }
+    } else {
+      applyDefaultShooting(this, input, id);
+    }
+  };
+
+  // src/ts/game/players.ts
+  var Players = {
+    carrier: {
+      name: "carrier",
+      displayName: "Mr. Carrier",
+      available: true,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "carrier",
+      playerScript: MrCarrierPlayer,
+      description: "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms. His primary allows him to throw 1 ticket at a time, but after finally becoming buzz lightyear with his ult, he can fly around the stadium shoot twice as fast"
+    },
+    handcock: {
+      name: "handcock",
+      displayName: "Mr. Handcock",
+      available: false,
+      menuPic: "https://freepngimg.com/save/21721-luigi-transparent-image/772x1024",
+      spriteName: "handcock",
+      playerScript: LaserPlayer,
+      description: "While normally his laser eyes are used to make kids question all of their life choices when he glaces at them, he can also use them to shoot drive tickets faster than he can give out detentions. When he ults, he becomes even more powerful, and his lasers no longer stop for disobedient objects (including walls)"
+    },
+    baker: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker1: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker2: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker3: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker4: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker5: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker6: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker7: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
+    },
+    baker8: {
+      name: "baker",
+      displayName: "Mrs. Baker",
+      available: false,
+      menuPic: "https://www.freeiconspng.com/download/49305",
+      spriteName: "baker",
+      playerScript: BombPlayer,
+      description: "Mr. Baker (hes the goat)"
     }
   };
 
   // src/ts/game/states/multiplayer.tsx
-  window.pixi = lib_exports2;
   var MultiplayerGame = class extends Game {
     async onEnter(payload, from) {
-      super.onEnter(payload, from);
-      const networkConn = this.world.get(NetworkConnection);
+      await super.onEnter(payload, from);
       const player1 = GraphicsEnt(
-        16 * 2,
-        16 * 2,
+        48,
+        32,
         { fillStyle: "blue" },
         "drawRect",
         0,
@@ -44833,108 +44339,192 @@ void main(void)\r
         16,
         16
       );
-      player1.add(new PeerId(networkConn.player1));
-      player1.addScript(MrGriffinPlayer);
-      player1.add(new PlayerInfo({ canJump: false, heath: 3, ultPercent: 0 }));
-      player1.add(new Velocity({ x: 0, y: 0 }));
-      player1.add(new CollisionHitbox({ x: 16, y: 16 }));
       const player2 = GraphicsEnt(
-        16 * 13,
-        16 * 2,
-        {
-          fillStyle: "red"
-        },
+        256 - 48 - 16,
+        32,
+        { fillStyle: "red" },
         "drawRect",
         0,
         0,
         16,
         16
       );
-      player2.add(new PeerId(networkConn.player2));
-      player2.addScript(MrGriffinPlayer);
-      player2.add(new PlayerInfo({ canJump: false, heath: 3, ultPercent: 0 }));
-      player2.add(new Velocity({ x: 0, y: 0 }));
-      player2.add(new CollisionHitbox({ x: 16, y: 16 }));
-      if (networkConn.id === networkConn.player1)
-        this.world.add(player1, "local_player");
-      else
-        this.world.add(player2, "local_player");
-      if (InputMethod.isMobile()) {
-        document.body.append(
-          Joystick({ side: "left", id: "Movement" }),
-          Joystick({ side: "right", id: "Shoot" })
+      for (const player of [player1, player2]) {
+        player.remove(Graphics);
+        console.log(player.has(Graphics), player.has(Sprite));
+        player.add(new Sprite(Texture.from("walk_00.png")));
+        player.get(Sprite).width = 40;
+        player.get(Sprite).height = 32;
+        player.add(new Velocity({ x: 0, y: 0 }));
+        player.add(
+          new PlayerInfo({
+            canJump: true,
+            heath: 100,
+            shootCooldown: 0,
+            ultPercent: 0,
+            ultTimeLeft: 0
+          })
+        );
+        player.add(new CollisionHitbox({ x: 32, y: 32 }));
+        player.add(
+          new AnimatedSprite2({
+            spriteName: "walk",
+            currentFrame: 0,
+            thisFrameElapsed: 0,
+            thisFrameTotal: 15,
+            frameCount: 8
+          })
         );
       }
-      window.inputLog = this.inputLog;
-      const nc = networkConn;
-      const rb = this.world.get(RollbackManager);
-      const ip = this.world.get(MultiplayerInput);
-      const inputLogger = class extends Jt({}) {
-        update() {
-          window.inputLog[nc.framesConnected - rb.currentFramesBack] = // console.log(
-          // rb.currentlyInRollback,
-          // "Frame: ",
-          // nc.framesConnected - rb.currentFramesBack,
-          // "x:",
-          // player1.get(Position.x)
-          // );
-          ip.get("x", nc.player1) + " " + ip.get("x", nc.player2);
-        }
-      };
-      this.world.addSystem(inputLogger);
-      this.world.addSystem(inputLogger, "rollback");
+      player1.add(new PeerId(this.world.get(NetworkConnection).player1));
+      player2.add(new PeerId(this.world.get(NetworkConnection).player2));
+      if (this.world.get(NetworkConnection).id === this.world.get(NetworkConnection).player1) {
+        player1.addScript(
+          Players[this.world.get("localPlayer")].playerScript
+        );
+        player2.addScript(
+          Players[this.world.get("remotePlayer")].playerScript
+        );
+        this.world.add(player1, "local_player_entity");
+        this.world.add(player2, "remote_player_entity");
+      } else {
+        player1.addScript(
+          Players[this.world.get("remotePlayer")].playerScript
+        );
+        player2.addScript(
+          Players[this.world.get("localPlayer")].playerScript
+        );
+        this.world.add(player1, "remote_player_entity");
+        this.world.add(player2, "local_player_entity");
+      }
+      Wall(0, 230, 256, 20, "red");
+      Wall(50, 170, 50, 10, "red");
+      Wall(256 - 50 - 50, 170, 50, 10, "red");
+      const joysticks = /* @__PURE__ */ window.jsx(window.jsxFrag, null, /* @__PURE__ */ window.jsx(Joystick, { id: "Movement", side: "left" }), /* @__PURE__ */ window.jsx(Joystick, { id: "Shoot", side: "right" }));
+      document.body.append(...joysticks);
+      setTimeout(() => {
+        this.world.get(RollbackManager).enableRollback();
+      }, 3e3);
     }
-    inputLog = {};
     update() {
     }
-    async onLeave() {
-      return;
+  };
+
+  // src/ts/game/game_modes.ts
+  var GameModes = {
+    solo: {
+      name: "Solo",
+      description: "Defeat AI enemies in different arenas to win",
+      icon: "fa-person-running",
+      getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "Party size is too large" : true
+    },
+    localPvP: {
+      name: "Friendly Battle",
+      description: "Fight against the other player in your party",
+      icon: "fa-user-group",
+      getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? true : "Party size is too small"
+    },
+    onlinePvP: {
+      name: "Online Battle",
+      description: "Fight against other players through online matchmaking",
+      icon: "fa-globe",
+      getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "Party size is too large" : true
+    },
+    COOP: {
+      name: "CO - OP",
+      description: "Work together with your party to defeat AI enemies",
+      icon: "fa-people-arrows",
+      getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "CO - OP is coming soon!" : "Party size is too small"
     }
   };
 
   // src/ts/game/hud/background.tsx
   var MenuBackground = (props) => {
-    return /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full" }, ...props.children);
-  };
-
-  // src/ts/game/states/choose.tsx
-  var ChooseGameMode = class extends State {
-    element = /* @__PURE__ */ window.jsx(
+    return /* @__PURE__ */ window.jsx(
       "div",
       {
-        id: "game-state-chooser",
-        className: "absolute top-0 left-0 w-full h-full"
-      }
+        className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full " + (props.className || ""),
+        id: props.id || "menuBackground"
+      },
+      ...props.children
     );
-    selectedMode;
+  };
+
+  // src/ts/game/states/choose_game.tsx
+  var ChooseGameMode = class extends State {
+    constructor() {
+      super(...arguments);
+      __publicField(this, "element", /* @__PURE__ */ window.jsx(
+        "div",
+        {
+          id: "game-state-chooser",
+          className: "absolute top-0 left-0 w-full h-full"
+        }
+      ));
+      __publicField(this, "selectedMode");
+    }
     async onEnter(payload, from) {
       document.body.append(this.element);
-      if (this.world.get(NetworkConnection).isConnected) {
-        this.element.appendChild(this.getMainHTML());
-      } else {
-        this.selectedMode = "solo";
-        this.element.appendChild(this.getMapHTML());
-      }
+      this.element.appendChild(this.getMainHTML());
+      document.querySelector(
+        `[data-gamemodename="${this.world.get("selectedGameMode")}"]`
+      )?.click();
     }
     async onLeave() {
+      this.element.remove();
     }
     update() {
     }
     getMainHTML() {
-      return /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-3 p-2" }, ["Solo", "Friendly Battle", "CO - OP"].map((name) => /* @__PURE__ */ window.jsx(
+      return /* @__PURE__ */ window.jsx(MenuBackground, { className: "flex flex-col" }, /* @__PURE__ */ window.jsx("div", { className: "text-4xl p-5 flex align-middle items-center" }, /* @__PURE__ */ window.jsx(
+        "i",
+        {
+          className: "fa-solid fa-arrow-left mr-5 hover:cursor-pointer",
+          onclick: () => {
+            this.world.get(StateManager).moveTo(Menu);
+          }
+        }
+      ), /* @__PURE__ */ window.jsx("span", null, "Game Modes")), /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-4 p-2 w-full flex-grow" }, Object.entries(GameModes).map(([game, info]) => /* @__PURE__ */ window.jsx(
         "div",
         {
-          className: "bg-menuBackgroundAccent border-white m-3 p-1 h-auto cursor-pointer",
-          onclick: () => {
-            this.selectedMode = name.toLowerCase();
-            this.element.replaceChild(
-              this.element.firstChild,
-              this.getMapHTML()
+          className: "bg-menuBackgroundAccent border-white p-1 relative m-3 flex flex-col justify-between rounded-md transition-transform delay-[50] " + (info.getIsAvailable(this.world) === true ? "hover:brightness-90 cursor-pointer" : ""),
+          onclick: (ev) => {
+            if (info.getIsAvailable(this.world) !== true)
+              return;
+            this.world.set("selectedGameMode", game);
+            const prev = document.querySelector(
+              "[data-selectedgamemode]"
             );
-          }
+            const target2 = ev.currentTarget;
+            const classes = [
+              "hover:brightness-90",
+              "brightness-110",
+              "scale-110",
+              "-translate-y-3"
+            ];
+            for (const el of [prev, target2]) {
+              if (!el)
+                continue;
+              for (const cls of classes) {
+                el.classList.toggle(cls);
+              }
+            }
+            if (prev)
+              delete prev.dataset.selectedgamemode;
+            target2.dataset.selectedgamemode = "true";
+            this.world.get(NetworkConnection).post("gameModeChange");
+          },
+          "data-gamemodename": game
         },
-        /* @__PURE__ */ window.jsx("h1", { className: "w-full text-center text-white text-3xl mt-4" }, name)
-      ))), /* @__PURE__ */ window.jsx("div", null));
+        /* @__PURE__ */ window.jsx(
+          "i",
+          {
+            className: `m-auto fa ${info.icon} text-5xl self-center`
+          }
+        ),
+        /* @__PURE__ */ window.jsx("div", { className: "text-center" }, /* @__PURE__ */ window.jsx("div", { className: "text-white text-3xl" }, info.name), /* @__PURE__ */ window.jsx("div", { className: "text-white text-md" }, info.description)),
+        info.getIsAvailable(this.world) !== true ? /* @__PURE__ */ window.jsx("div", { className: "top-0 left-0 w-full h-full absolute text-center bg-base bg-opacity-80 rounded-md flex flex-col justify-center" }, /* @__PURE__ */ window.jsx("span", { className: "md:text-3xl sm:text-2xl" }, "Mode not available"), /* @__PURE__ */ window.jsx("div", { className: "text-md" }, info.getIsAvailable(this.world))) : ""
+      ))));
     }
     getMapHTML() {
       return /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-3 p-2 h-full" }, [
@@ -44972,74 +44562,6 @@ void main(void)\r
       }, DESIRED_FRAME_TIME / 2);
     });
   }
-
-  // src/ts/game/scripts/players/common.ts
-  function applyDefaultMovement(entity, input, id) {
-    entity.inc(Velocity.y, PlayerInfo.globals.gravity);
-    if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
-      entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
-      entity.set(PlayerInfo.canJump, false);
-    }
-    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
-  }
-  function applyDefaultShooting(entity, input, id) {
-    if (input.is("shoot", "PRESSED", id) && entity.get(PlayerInfo.shootCooldown) <= 0) {
-      entity.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
-      BulletEnt(
-        entity.get(Position.x),
-        entity.get(Position.y),
-        Math.cos(input.get("aim", id)) * 7,
-        Math.sin(input.get("aim", id)) * 7
-      );
-    } else {
-      entity.inc(PlayerInfo.shootCooldown, -1);
-    }
-  }
-
-  // src/ts/game/scripts/players/carrier.ts
-  var CARRIER_ULT_COOLDOWN = DESIRED_FPS * 10;
-  var MrCarrierPlayer = function() {
-    const input = this.world.get(MultiplayerInput);
-    const id = this.get(PeerId);
-    if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-      this.set(PlayerInfo.ultPercent, 0);
-      this.set(PlayerInfo.ultTimeLeft, CARRIER_ULT_COOLDOWN);
-    }
-    if (this.get(PlayerInfo.ultTimeLeft) > 0) {
-      if (input.get("y", id) >= 0) {
-        this.inc(Velocity.y, PlayerInfo.globals.gravity / 2);
-      } else {
-        this.inc(Velocity.y, input.get("y", id) / 100);
-        if (this.get(Velocity.y) < -PlayerInfo.globals.gravity) {
-          this.set(Velocity.y, -PlayerInfo.globals.gravity);
-        }
-      }
-      this.inc(Velocity.y, Math.min(input.get("y", id), 0));
-      this.inc(PlayerInfo.ultTimeLeft, -1);
-      this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
-    } else {
-      this.inc(PlayerInfo.ultPercent);
-      applyDefaultMovement(this, input, id);
-    }
-    applyDefaultShooting(this, input, id);
-  };
-
-  // src/ts/game/blueprints/wall.ts
-  var wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
-  var Wall = Pe2(
-    wallBlueprint,
-    [
-      StaticPosition.x,
-      StaticPosition.y,
-      CollisionHitbox.x,
-      CollisionHitbox.y
-    ],
-    function(color) {
-      const graphics = new Graphics();
-      graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
-      this.set(graphics);
-    }
-  );
 
   // src/ts/game/states/solo.tsx
   var SoloGame = class extends Game {
@@ -45082,56 +44604,276 @@ void main(void)\r
           frameCount: 8
         })
       );
-      this.world.add(player, "local_player");
-      Wall(0, 230, 300, 20, "red");
+      this.world.add(player, "local_player_entity");
+      Wall(0, 230, 256, 20, "red");
       Wall(50, 170, 50, 10, "red");
-      Wall(256 - 50, 170, 50, 10, "red");
-    }
-  };
-
-  // src/ts/game/states/menu.tsx
-  var Menu = class extends State {
-    gameMode;
-    map;
-    async onEnter(payload, from) {
-      const pane = this.world.get(Pane);
-      const nc = this.world.get(NetworkConnection);
-      document.body.append(this.getHTML(payload.gameMode));
-      this.gameMode = payload.gameMode;
-      this.map = payload.map;
-      await nc.waitForServerConnection;
-      this.idSpan.textContent = nc.id;
-      nc.on("start_game", async (frame) => {
-        await awaitFrame(this.world, frame);
-        this.world.get(StateManager).moveTo(MultiplayerGame);
-      });
-    }
-    async onLeave() {
-      console.log("left");
-      document.querySelector("#menu")?.remove();
+      Wall(256 - 50 - 50, 170, 50, 10, "red");
     }
     update() {
     }
-    idSpan = /* @__PURE__ */ window.jsx("span", null);
-    getHTML(gameMode = "solo") {
-      console.log("Called");
+  };
+
+  // src/ts/game/states/player_select.tsx
+  var PlayerSelect = class extends State {
+    constructor() {
+      super(...arguments);
+      __publicField(this, "inManualMode", false);
+      __publicField(this, "localPlayer");
+    }
+    async onEnter() {
+      document.body.append(this.getHTML());
+      this.handleScroll();
+      const localPlayer = this.world.get("localPlayer");
+      const active = document.querySelector(
+        `div[data-playerName="${localPlayer}"]`
+      );
+      active.style.scale = "1.4";
+      active.querySelector(".description").style.opacity = "1";
+      active?.parentElement?.scroll({
+        left: active.offsetLeft - 100,
+        behavior: "smooth"
+      });
+      this.inManualMode = false;
+      setTimeout(() => {
+        this.inManualMode = true;
+      }, 100);
+    }
+    onLeave(to) {
+      document.querySelector("#playerSelect")?.remove();
+      return Promise.resolve();
+    }
+    getHTML() {
+      return /* @__PURE__ */ window.jsx(MenuBackground, { id: "playerSelect" }, /* @__PURE__ */ window.jsx("div", { className: "text-4xl p-5 flex align-middle items-center" }, /* @__PURE__ */ window.jsx(
+        "i",
+        {
+          className: "fa-solid fa-arrow-left mr-5 hover:cursor-pointer",
+          onclick: () => {
+            this.world.get(StateManager).moveTo(Menu);
+          }
+        }
+      ), /* @__PURE__ */ window.jsx("span", null, "Players")), /* @__PURE__ */ window.jsx(
+        "div",
+        {
+          id: "carousel",
+          className: "scroll-smooth overflow-x-scroll snap-mandatory snap-x w-full whitespace-nowrap overflow-y-visible mt-[-2rem] pt-8 pb-8 ::-webkit-scrollbar"
+        },
+        Object.values(Players).map((player, i2, { length }) => /* @__PURE__ */ window.jsx(
+          "div",
+          {
+            className: `w-96 inline-block snap-center ${i2 === 0 ? "ml-[calc((96rem/2))]" : i2 === length - 1 ? "mr-[calc((96rem/2))]" : ""}`,
+            "data-playerName": player.name
+          },
+          /* @__PURE__ */ window.jsx("div", { className: "w-full flex flex-col items-center" }, /* @__PURE__ */ window.jsx("img", { src: player.menuPic, className: "h-48 " }), /* @__PURE__ */ window.jsx("h1", null, player.displayName), /* @__PURE__ */ window.jsx("h4", { className: "opacity-0 w-[60vw] whitespace-normal text-xs text-center description" }, player.description))
+        ))
+      ));
+    }
+    handleScroll() {
+      const carousel = document.querySelector("#carousel");
+      carousel.lastElementChild.scrollIntoView({
+        behavior: "instant",
+        block: "center",
+        inline: "center"
+      });
+      const maxWidth = carousel.scrollLeft;
+      carousel.firstElementChild.scrollIntoView({
+        behavior: "instant",
+        block: "center",
+        inline: "center"
+      });
+      const offsetWidth = carousel.scrollLeft;
+      document.documentElement.scrollTo(0, 0);
+      const allPlayers = Array.from(carousel.children);
+      const allDescriptions = allPlayers.map(
+        (player) => player.querySelector(".description")
+      );
+      carousel.addEventListener("scroll", () => {
+        if (!this.inManualMode)
+          return;
+        const indexUnrounded = (carousel.scrollLeft - offsetWidth) / (maxWidth - offsetWidth) * (Object.values(Players).length - 1);
+        const index = Math.round(indexUnrounded);
+        if (carousel.children[index]) {
+          allPlayers.forEach(
+            (el, i2) => (el.style.scale = "1") && (allDescriptions[i2].style.opacity = "0")
+          );
+          const element = carousel.children[index];
+          const name = element.dataset.playername;
+          if (name !== this.world.get("localPlayer")) {
+            this.world.get(NetworkConnection).post("playerChange");
+            this.world.set("localPlayer", element.dataset.playername);
+          }
+          element.style.scale = 1 + 0.4 * (1 - Math.abs(indexUnrounded - index) - 0.5) + "";
+          let opacity = 2 * (1 - Math.abs(indexUnrounded - index) - 0.5);
+          if (opacity < 0.1)
+            opacity = 0;
+          if (opacity > 0.9)
+            opacity = 1;
+          element.firstElementChild.lastElementChild.style.opacity = opacity + "";
+        }
+      });
+    }
+  };
+
+  // src/ts/game/levels.ts
+  var Levels = [
+    // Level 1
+    {
+      wins: 5,
+      prevWins: 0
+    },
+    // Level 2
+    {
+      wins: 10,
+      prevWins: 5
+    },
+    // Level 3
+    {
+      wins: 10,
+      prevWins: 15
+    },
+    // Level 3
+    {
+      wins: 20,
+      prevWins: 25
+    }
+  ];
+  function totalWinsToLevel(wins) {
+    let level = Levels.findIndex((level2) => level2.wins + level2.prevWins > wins);
+    return { level, winsIntoLevel: wins - Levels[level].prevWins };
+  }
+
+  // src/ts/game/states/menu.tsx
+  var _Menu = class extends State {
+    constructor() {
+      super(...arguments);
+      __publicField(this, "eventListenerIds", []);
+    }
+    async onEnter(payload, from) {
+      this.setupEndpoints();
+      const nc = this.world.get(NetworkConnection);
+      document.body.append(this.getHTML());
+      nc.post("playerChange");
+    }
+    async fetchServerInfo() {
+      const serverResponse = await fetch("");
+      const data = await serverResponse.json();
+      console.log(data);
+    }
+    async onLeave() {
+      document.querySelector("#menu")?.remove();
+      this.eventListenerIds.forEach(
+        ([e2, id]) => this.world.get(NetworkConnection).removeEventListener(e2, id)
+      );
+    }
+    getHTML() {
       const lastCommitHash = "cddec57";
       const devMode = true;
-      const buildTime = 1704911624295;
+      const buildTime = 1707187970073;
       const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
-      return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full" }, /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, "ID: ", this.idSpan, " - ", devMode ? "Development Build" : "Production build", " @", lastCommitHash, " (Built ", Math.round(timeAgo / 60) + " min ", "ago)"), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 top-0 m-2 text-white" }, /* @__PURE__ */ window.jsx(PrimaryButton, { onclick: () => this.connectToRemote() }, "Invite to party")), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-3 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(
+      const { level, winsIntoLevel } = totalWinsToLevel(
+        this.world.get(AccountInfo.totalWins)
+      );
+      const levelTotalWins = Levels[level].wins;
+      const text = winsIntoLevel + "/" + Levels[level].wins + " Wins";
+      console.log(text);
+      return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 p-2 flex text-white bg-menuBackground bg-opacity-50 rounded-br-md w-auto h-auto" }, /* @__PURE__ */ window.jsx("div", { className: "h-12 w-60 bg-menuBackgroundAccent rounded-md pt-1" }, /* @__PURE__ */ window.jsx("div", { className: "w-full pl-4 pr-4 text-center" }, this.world.get(AccountInfo.username), ": ", /* @__PURE__ */ window.jsx("span", { className: "text-yellow-400  w-auto" }, "\u{1F3C6}", this.world.get(AccountInfo.trophies))), /* @__PURE__ */ window.jsx("div", { className: "flex" }, /* @__PURE__ */ window.jsx("div", { className: "w-3/4 h-4 ml-2 bg-menuBackground rounded-full flex" }, /* @__PURE__ */ window.jsx(
+        "div",
+        {
+          className: "h-full bg-primary rounded-full brightness-150 text-center justify-center flex items-center text-sm text-black",
+          style: {
+            width: 100 * winsIntoLevel / Levels[level].wins + "%"
+          }
+        },
+        winsIntoLevel / levelTotalWins > 0.5 ? text : ""
+      ), /* @__PURE__ */ window.jsx("div", { className: "h-full flex-grow text-white text-center justify-center flex align-middle items-center text-sm" }, winsIntoLevel / levelTotalWins < 0.5 ? text : "")), /* @__PURE__ */ window.jsx("div", { className: "flex items-center h-4 pl-2" }, "Lvl ", level + 1))), this.world.get(AccountInfo.isGuest) ? "" : /* @__PURE__ */ window.jsx("div", { className: "ml-2 h-12 w-20 bg-menuBackgroundAccent rounded-md text-center flex justify-center flex-col" }, /* @__PURE__ */ window.jsx("h1", { className: "text-xl" }, "#", this.world.get(AccountInfo.classRank)), /* @__PURE__ */ window.jsx("h5", { className: "text-sm" }, this.world.get(AccountInfo.class)))), /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build " : "Production build ", " @", lastCommitHash + " ", " (", "Built ", Math.round(timeAgo / 60) + " min ", "ago)"), /* @__PURE__ */ window.jsx(
+        "div",
+        {
+          className: "absolute pr-2 w-16 h-52 left-0 top-[50%] transform -translate-y-1/2 text-white bg-menuBackground rounded-tr-md rounded-br-md\r\n                     bg-opacity-50 flex items-center justify-center flex-col"
+        },
+        [
+          {
+            icon: "fa-solid fa-cart-shopping",
+            text: "Shop",
+            onclick: () => {
+              showDialog(
+                /* @__PURE__ */ window.jsx(
+                  DialogPopup,
+                  {
+                    title: "Vote for shop items",
+                    message: "The shop is coming soon, go <here> to cast your vote for which items we should add",
+                    hideCancelButton: true
+                  }
+                )
+              );
+            }
+          },
+          {
+            icon: "fa-regular fa-calendar",
+            text: "News",
+            onclick: () => {
+              showDialog(
+                /* @__PURE__ */ window.jsx(
+                  DialogPopup,
+                  {
+                    title: "News",
+                    message: "<h1>Drive Game Released! </h1><br>Go check out all the current characters, and play online with your friends!",
+                    hideCancelButton: true
+                  }
+                )
+              );
+            }
+          },
+          {
+            icon: "fa-solid fa-person-rifle",
+            text: "Players",
+            onclick: () => this.world.get(StateManager).moveTo(PlayerSelect)
+          }
+        ].map(({ icon, text: text2, onclick }) => /* @__PURE__ */ window.jsx(
+          "div",
+          {
+            onclick,
+            className: "w-full aspect-square text-center bg-menuBackgroundAccent rounded-md bg-opacity-75 pt-2 m-auto hover:brightness-90 cursor-pointer"
+          },
+          /* @__PURE__ */ window.jsx("i", { className: `${icon} fa-xl` }),
+          /* @__PURE__ */ window.jsx("br", null),
+          text2
+        ))
+      ), /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center" }, /* @__PURE__ */ window.jsx("div", { className: "bg-menuBackgroundAccent mr-2 rounded-md h-10 w-10 flex items-center justify-center" }, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-user-group fa-xl" })), /* @__PURE__ */ window.jsx("div", { className: "bg-menuBackgroundAccent rounded-md h-10 w-10 flex items-center justify-center" }, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-bars fa-xl" }))), /* @__PURE__ */ window.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center align-middle items-center" }, /* @__PURE__ */ window.jsx(
+        "img",
+        {
+          src: Players[this.world.get("localPlayer")].menuPic,
+          className: "h-48"
+        }
+      ), this.world.get(NetworkConnection).isConnected ? /* @__PURE__ */ window.jsx(
+        "img",
+        {
+          id: "remotePlayer",
+          src: Players[this.world.get("remotePlayer")].menuPic,
+          className: "h-36"
+        }
+      ) : /* @__PURE__ */ window.jsx(
+        "i",
+        {
+          id: "connectToRemote",
+          className: "fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100",
+          onclick: () => {
+            this.connectToRemote();
+          }
+        }
+      )), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-1 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(
         AccentButton,
         {
-          onclick: () => this.world.get(StateManager).moveTo(ChooseGameMode, null)
+          onclick: () => this.world.get(StateManager).moveTo(ChooseGameMode, null),
+          id: "gameModeButton"
         },
-        " " + gameMode + " "
+        GameModes[this.world.get("selectedGameMode")].name
       ), /* @__PURE__ */ window.jsx(
         PrimaryButton,
         {
+          id: "playButton",
           onclick: () => {
-            switch (this.gameMode) {
-              case "battle":
-                this.queueMultiplayerGameStart();
+            switch (this.world.get("selectedGameMode")) {
+              case "onlinePvP":
+                this.enterQueue();
                 break;
               case "co-op":
                 this.queueMultiplayerGameStart();
@@ -45150,7 +44892,9 @@ void main(void)\r
         "input",
         {
           type: "text",
-          className: "capitalize"
+          pattern: "[a-zA-Z]{5}",
+          className: "uppercase mt-1 w-1/2 m-auto text-center bg-secondary text-xl text-white invalid:text-gray-500",
+          placeholder: "XXXXX"
         }
       );
       const dialog = /* @__PURE__ */ window.jsx(
@@ -45158,23 +44902,149 @@ void main(void)\r
         {
           title: "Enter Remote ID",
           message: `The remote ID should be 5 capital letters. Your ID is ${this.world.get(NetworkConnection).id}`,
-          onok: () => this.world.get(NetworkConnection).connect(input.value)
+          onok: async () => {
+            const remoteId = input.value.toUpperCase();
+            try {
+              if (!input.checkValidity()) {
+                return KEEP_OPEN;
+              }
+              await this.world.get(NetworkConnection).connect(remoteId);
+              const player = await this.world.get(NetworkConnection).fetch("currentPlayer");
+              this.world.set("remotePlayer", player);
+              document.querySelector("#connectToRemote")?.replaceWith(
+                /* @__PURE__ */ window.jsx("img", { id: "remotePlayer", className: "h-36" })
+              );
+            } catch (e2) {
+              showDialog(
+                /* @__PURE__ */ window.jsx(
+                  DialogPopup,
+                  {
+                    title: "Failed To Connect",
+                    message: e2.message,
+                    hideCancelButton: true
+                  }
+                )
+              );
+            }
+          }
         },
         input
       );
       showDialog(dialog);
     }
+    enterQueue() {
+      return new Promise((res, rej) => {
+        const play = document.querySelector("#playButton");
+        this.world.get(ServerConnection).fetch("/matchmaking/enterQueue", {
+          searchParams: {
+            id: this.world.get(NetworkConnection).id
+          }
+        }).then(async (serverRes) => {
+          const { remoteId, isHost } = serverRes;
+          if (!isHost)
+            return res();
+          play.innerHTML = "Establishing Connection";
+          const nc = this.world.get(NetworkConnection);
+          try {
+            await nc.connect(remoteId);
+            this.queueMultiplayerGameStart();
+          } catch (e2) {
+            showDialog({
+              title: "Matchmaking error",
+              message: "Failed to establish connection",
+              hideCancelButton: true
+            });
+            nc.close();
+          }
+          res();
+        });
+        this.world.add(true, "inQueue");
+        play.innerHTML = "In queue (";
+        const span = /* @__PURE__ */ window.jsx("span", null, "0");
+        play.append(span, "s)");
+        let seconds = 0;
+        setInterval(() => {
+          seconds++;
+          span.innerHTML = seconds.toString();
+        }, 1e3);
+      });
+    }
     async queueMultiplayerGameStart() {
-      const startFrame = this.world.get(NetworkConnection).framesConnected + 10;
+      const startFrame = this.world.get(NetworkConnection).framesConnected + v + 10;
       this.world.get(NetworkConnection).send("start_game", startFrame);
       await awaitFrame(this.world, startFrame);
       this.world.get(StateManager).moveTo(MultiplayerGame);
     }
+    setupEndpoints() {
+      const nc = this.world.get(NetworkConnection);
+      this.eventListenerIds.push(
+        ["connect", nc.addEventListener("connect", () => {
+        })],
+        [
+          "connect",
+          nc.addEventListener("close", () => {
+            this.world.remove("remotePlayer");
+            document.querySelector("#remotePlayer")?.replaceWith(
+              /* @__PURE__ */ window.jsx(
+                "i",
+                {
+                  id: "connectToRemote",
+                  className: "fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100",
+                  onclick: () => this.connectToRemote()
+                }
+              )
+            );
+          })
+        ]
+      );
+      if (_Menu.alreadySetupEndpoints)
+        return;
+      _Menu.alreadySetupEndpoints = true;
+      nc.addEndpoint("currentPlayer", () => this.world.get("localPlayer"));
+      nc.addEndpoint("playerChange", async () => {
+        const player = await nc.fetch("currentPlayer");
+        this.world.set("remotePlayer", player);
+        document.querySelector("#connectToRemote")?.replaceWith(/* @__PURE__ */ window.jsx("img", { id: "remotePlayer", className: "h-36" }));
+        document.querySelector("#remotePlayer")?.setAttribute("src", Players[player].menuPic);
+      });
+      nc.addEventListener("connect", () => {
+        nc.post("playerChange");
+      });
+      nc.addEndpoint("currentGameMode", () => {
+        return this.world.get("selectedGameMode");
+      });
+      nc.addEndpoint("gameModeChange", async () => {
+        const mode = await nc.fetch("currentGameMode");
+        this.world.set("selectedGameMode", mode);
+        document.querySelector("#gameModeButton").innerHTML = GameModes[mode].name;
+      });
+      nc.on("start_game", async (frame) => {
+        await awaitFrame(this.world, frame);
+        this.world.get(StateManager).moveTo(MultiplayerGame);
+      });
+    }
   };
+  var Menu = _Menu;
+  __publicField(Menu, "alreadySetupEndpoints", false);
 
   // src/ts/game/states/login.tsx
+  var AccountInfo = Ye({
+    email: Et.string,
+    isGuest: Et.bool,
+    username: Et.string,
+    trophies: Et.number,
+    wins: Et.number,
+    totalWins: Et.number,
+    class: Et.enum("Freshman", "Sophomore", "Junior", "Senior"),
+    classRank: Et.number,
+    overallRank: Et.number
+  });
+  window.ai = AccountInfo;
   var Login = class extends State {
-    googleBtn = /* @__PURE__ */ window.jsx("div", null);
+    constructor() {
+      super(...arguments);
+      __publicField(this, "googleBtn", /* @__PURE__ */ window.jsx("div", null));
+    }
     onEnter(payload, from) {
       google.accounts.id.initialize({
         client_id: "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
@@ -45186,7 +45056,6 @@ void main(void)\r
       google.accounts.id.renderButton(this.googleBtn, {
         theme: "filled_blue"
       });
-      console.log("Filled bubble");
       document.body.append(this.getHTML());
       return Promise.resolve();
     }
@@ -45198,21 +45067,48 @@ void main(void)\r
     update() {
     }
     getHTML() {
-      return /* @__PURE__ */ window.jsx("div", { id: "login", className: "w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "w-full h-full flex justify-center items-center" }, /* @__PURE__ */ window.jsx("div", { className: "w-72 h-32" }, /* @__PURE__ */ window.jsx("h1", { className: "text-center text-white text-3xl mb-2" }, "Please Login"), this.googleBtn)), /* @__PURE__ */ window.jsx(
+      return /* @__PURE__ */ window.jsx("div", { id: "login", className: "w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "w-full h-full flex justify-center items-center" }, /* @__PURE__ */ window.jsx("div", { className: "" }, /* @__PURE__ */ window.jsx("h1", { className: "text-center text-white text-3xl mb-2" }, "Please Login"), this.googleBtn)), /* @__PURE__ */ window.jsx(
         "a",
         {
           className: "text-gray-300 underline text-center w-full block absolute bottom-0 pb-3 cursor-pointer",
-          onclick: () => {
-            this.world.get(StateManager).moveTo(Menu, { gameMode: "solo", map: "test" });
+          onclick: async () => {
+            this.world.get(StateManager).moveTo(Menu);
           }
         },
         "Continue as Guest"
       )));
     }
-    signIn(response) {
-      const data = JSON.parse(atob(response.credential.split(".")[1]));
-      this.world.get(StateManager).moveTo(Menu, { gameMode: "solo", map: "test" });
-      console.log(data);
+    async signIn(response) {
+      const info = await this.world.get(ServerConnection).fetch("/accounts/login", {
+        searchParams: { jwt: response.credential }
+      }).catch((e2) => {
+        console.error(e2);
+        showDialog({
+          title: "Failed to login",
+          message: "Please try again"
+        });
+        return { email: "", status: 500 };
+      });
+      this.world.add(
+        new AccountInfo({
+          email: info.email,
+          isGuest: false,
+          username: info.username,
+          trophies: info.trophies,
+          totalWins: info.wins,
+          class: info.class,
+          classRank: info.classRank,
+          overallRank: info.overallRank
+        })
+      );
+      if (!info.email.endsWith("@catholiccentral.net")) {
+        showDialog({
+          title: "Non-CC Email",
+          message: "You can still play, but none of your stats will count towards leaderboards and prizes. If you are a CC student, please use your CC email to login."
+        });
+        this.world.set(AccountInfo.isGuest, true);
+      }
+      this.world.get(StateManager).moveTo(Menu);
     }
   };
 
@@ -45225,6 +45121,10 @@ void main(void)\r
       loader.style.position = "absolute";
       await this.loadAssets();
       this.initBindings();
+      await this.world.get(NetworkConnection).waitForServerConnection;
+      this.world.set("localPlayer", Players.baker.name);
+      this.world.set("selectedMap", "map1");
+      this.world.set("selectedGameMode", "solo");
       setTimeout(() => {
         loader.style.opacity = "0";
       });
@@ -45245,12 +45145,12 @@ void main(void)\r
         // aim: new AdvancedAngleBinding({
         //     originX: () => 0,
         //     // this.world.get(StateManager).currentState === MultiplayerGameState
-        //     //     ? this.world.get<Entity>("local_player").get(Container).toGlobal(zero)
+        //     //     ? this.world.get<Entity>("local_player_entity").get(Container).toGlobal(zero)
         //     //           .x
         //     //     : 0,
         //     originY: () => 0,
         //     // this.world.get(StateManager).currentState === MultiplayerGameState
-        //     //     ? this.world.get<Entity>("local_player").get(Container).toGlobal(zero)
+        //     //     ? this.world.get<Entity>("local_player_entity").get(Container).toGlobal(zero)
         //     //           .y
         //     //     : 0,
         //     targetX: () => 1, // "MouseX",
@@ -45258,11 +45158,11 @@ void main(void)\r
         // }),
         aim: new AdvancedAngleBinding({
           originX: () => {
-            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player").get(Container).toGlobal(zero).x : 0;
+            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player_entity").get(Container).toGlobal(zero).x : 0;
             return res;
           },
           originY: () => {
-            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player").get(Container).toGlobal(zero).y : 0;
+            let res = this.world.get(StateManager).currentStateInstance instanceof Game ? this.world.get("local_player_entity").get(Container).toGlobal(zero).y : 0;
             return res;
           },
           targetX: "MouseX",
@@ -45286,8 +45186,12 @@ void main(void)\r
         y: new DirectAnalogBinding("JoystickMovement-Y"),
         aim: new DirectAnalogBinding("JoystickShoot-FireAngle"),
         shoot: new DirectDigitalBinding("JoystickShoot-Fire"),
-        ult: new DirectDigitalBinding("JoystickShoot-Fire")
+        ult: new DirectDigitalBinding("KeyE")
       });
+    }
+    update() {
+    }
+    initEndpoints() {
     }
   };
 

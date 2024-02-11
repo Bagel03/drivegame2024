@@ -16,6 +16,13 @@ export class LoggedArchetype extends Archetype {
     }
 
     addEntity(entity: Entity): void {
+        // Dont have time to address root problem, bandaid fix
+        if (
+            this.entities.indexOf(entity) > 0 &&
+            this.entities.indexOf(entity) <= this.entities[0]
+        )
+            return;
+
         this.saveStartState();
         super.addEntity(entity);
     }

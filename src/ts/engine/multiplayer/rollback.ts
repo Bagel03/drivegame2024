@@ -22,9 +22,43 @@ export class RollbackManager {
         world.createSchedule("rollback");
     }
 
+    private rollbackEnabled = false;
+    private initialRollbackFrame = 0;
+    enableRollback() {
+        this.rollbackEnabled = true;
+        this.initialRollbackFrame =
+            this.world.get(NetworkConnection).framesConnected;
+    }
+
+    disableRollback() {
+        this.rollbackEnabled = false;
+        this.initialRollbackFrame = 0;
+    }
+
     startRollback(numFramesAgo: number) {
+        if (!this.rollbackEnabled) return;
+
         this.currentlyInRollback = true;
         this.currentFramesBack = numFramesAgo;
+
+        if (
+            numFramesAgo >
+            this.world.get(NetworkConnection).framesConnected -
+                this.initialRollbackFrame
+        ) {
+            this.logger.warn(
+                "Tried to rollback",
+                numFramesAgo,
+                "frames, while rollback has only been enabled ",
+                this.world.get(NetworkConnection).framesConnected -
+                    this.initialRollbackFrame,
+                "frames",
+                "Will only roll back that many frames, so desync could occur "
+            );
+            numFramesAgo =
+                this.world.get(NetworkConnection).framesConnected -
+                this.initialRollbackFrame;
+        }
 
         if (numFramesAgo > this.world.get(NetworkConnection).framesConnected) {
             this.logger.warn(
@@ -49,12 +83,12 @@ export class RollbackManager {
             numFramesAgo = LOGGED_COMPONENT_STORAGE_BUFFER_SIZE;
         }
 
-        this.logger.log(
-            "Rolling back",
-            numFramesAgo,
-            "frames to frame",
-            this.world.get(NetworkConnection).framesConnected - numFramesAgo
-        );
+        // this.logger.log(
+        //     "Rolling back",
+        //     numFramesAgo,
+        //     "frames to frame",
+        //     this.world.get(NetworkConnection).framesConnected - numFramesAgo
+        // );
 
         const storages = this.world.storageManager.getAllByType(StorageKind.logged);
         storages.forEach((storage) => storage.rollback(numFramesAgo));

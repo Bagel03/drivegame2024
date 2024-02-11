@@ -141,11 +141,15 @@ export class MultiplayerInput {
         state: ButtonState,
         clientId: string = this.networkConnection.id
     ): boolean {
-        return (
+        const realState =
             this.buffers[clientId][this.rollbackManager.currentFramesBack][
                 bindingName
-            ] === state
-        );
+            ];
+
+        if (realState === state) return true;
+        if (realState === "JUST_PRESSED" && state === "PRESSED") return true;
+        if (realState === "JUST_RELEASED" && state === "RELEASED") return true;
+        return false;
     }
 
     get(
@@ -215,11 +219,11 @@ export class MultiplayerInput {
                 newRemoteState = this.knownFutureInputs.get(
                     this.networkConnection.framesConnected
                 )!;
-                console.log(
-                    "Using future input frame",
-                    this.networkConnection.framesConnected,
-                    newRemoteState.x
-                );
+                // console.log(
+                //     "Using future input frame",
+                //     this.networkConnection.framesConnected,
+                //     newRemoteState.x
+                // );
             } else {
                 newRemoteState = this.predictNextState(
                     this.buffers[this.networkConnection.remoteId][0]
@@ -322,7 +326,7 @@ export class MultiplayerInput {
                 // await this.awaitFrame(frame);
 
                 let framesBack = this.networkConnection.framesConnected - frame;
-                Diagnostics.worstRemoteLatency = framesBack;
+                // Diagnostics.worstRemoteLatency = framesBack;
                 // Handle future inputs
                 if (framesBack < 0) {
                     //     for (let i = 0; i < -framesBack; i++) {
@@ -352,7 +356,6 @@ export class MultiplayerInput {
                     this.buffers[this.networkConnection.remoteId][i] = state;
                     state = this.predictNextState(state);
                 }
-
                 this.rollbackManager.startRollback(framesBack);
             }
         );

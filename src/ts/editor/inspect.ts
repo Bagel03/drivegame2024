@@ -8,6 +8,8 @@ export function InspectPlugin(world: World) {
     world.add(pane);
     pane.element.style.display = "none";
     pane.element.parentElement!.style.width = "355px";
+
+    window.paneEl = pane.element;
 }
 
 export function enableInspect(world: World) {

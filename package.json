@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap --watch",
-    "build": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap",
+    "dev": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap --watch --target=es2015",
+    "build": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap --target=es5",
     "test": "esbuild ./src/ts/test.ts --bundle --outdir=./dist --sourcemap --watch",
     "css": "npx tailwindcss -i ./src/styles/index.css -o ./dist/index.css --minify --watch",
     "ionic:build": "npm run build",

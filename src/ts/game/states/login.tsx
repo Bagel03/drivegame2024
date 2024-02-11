@@ -8,6 +8,23 @@ import {
 import { MultiplayerGame } from "./multiplayer";
 import { Menu } from "./menu";
 import { MenuBackground } from "../hud/background";
+import { ServerConnection } from "../../engine/server";
+import { showDialog } from "../hud/components/dialogs";
+import { Component, Type } from "bagelecs";
+
+export const AccountInfo = Component({
+    email: Type.string,
+    isGuest: Type.bool,
+    username: Type.string,
+    trophies: Type.number,
+    wins: Type.number,
+    totalWins: Type.number,
+    class: Type.enum("Freshman", "Sophomore", "Junior", "Senior"),
+    classRank: Type.number,
+    overallRank: Type.number,
+});
+
+window.ai = AccountInfo;
 
 export class Login extends State<never> {
     private googleBtn = (<div></div>) as HTMLElement;
@@ -29,8 +46,6 @@ export class Login extends State<never> {
             theme: "filled_blue",
         });
 
-        console.log("Filled bubble");
-
         document.body.append(this.getHTML());
         return Promise.resolve();
     }
@@ -51,7 +66,7 @@ export class Login extends State<never> {
             <div id="login" className="w-full h-full">
                 <MenuBackground>
                     <div className="w-full h-full flex justify-center items-center">
-                        <div className="w-72 h-32">
+                        <div className="">
                             <h1 className="text-center text-white text-3xl mb-2">
                                 Please Login
                             </h1>
@@ -60,10 +75,8 @@ export class Login extends State<never> {
                     </div>
                     <a
                         className="text-gray-300 underline text-center w-full block absolute bottom-0 pb-3 cursor-pointer"
-                        onclick={() => {
-                            this.world
-                                .get(StateManager)
-                                .moveTo(Menu, { gameMode: "solo", map: "test" });
+                        onclick={async () => {
+                            this.world.get(StateManager).moveTo(Menu);
                         }}
                     >
                         Continue as Guest
@@ -73,9 +86,50 @@ export class Login extends State<never> {
         );
     }
 
-    private signIn(response: CredentialResponse) {
-        const data = JSON.parse(atob(response.credential.split(".")[1]));
-        this.world.get(StateManager).moveTo(Menu, { gameMode: "solo", map: "test" });
-        console.log(data);
+    private async signIn(response: CredentialResponse) {
+        // Should show some logging in animation
+        const info = await this.world
+            .get(ServerConnection)
+            .fetch("/accounts/login", {
+                searchParams: { jwt: response.credential },
+            })
+            .catch((e) => {
+                console.error(e);
+                showDialog({
+                    title: "Failed to login",
+                    message: "Please try again",
+                });
+                return { email: "", status: 500 };
+            });
+
+        // if (info.status !== 200) {
+        //     console.error(info);
+        //     showDialog({ title: "Failed to login", message: "Please try again" });
+        //     return;
+        // }
+
+        this.world.add(
+            new AccountInfo({
+                email: info.email,
+                isGuest: false,
+                username: info.username,
+                trophies: info.trophies,
+                totalWins: info.wins,
+                class: info.class,
+                classRank: info.classRank,
+                overallRank: info.overallRank,
+            })
+        );
+
+        if (!info.email.endsWith("@catholiccentral.net")) {
+            showDialog({
+                title: "Non-CC Email",
+                message:
+                    "You can still play, but none of your stats will count towards leaderboards and prizes. If you are a CC student, please use your CC email to login.",
+            });
+            this.world.set(AccountInfo.isGuest, true);
+        }
+
+        this.world.get(StateManager).moveTo(Menu);
     }
 }

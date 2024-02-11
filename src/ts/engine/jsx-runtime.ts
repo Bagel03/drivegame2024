@@ -87,9 +87,15 @@ function jsx<U extends {}>(
             )
             .map((node) =>
                 typeof node == "string" || typeof node == "number"
-                    ? document.createTextNode(node.toString())
+                    ? Array.from(
+                          new DOMParser().parseFromString(
+                              node.toString().replaceAll("\n", ""),
+                              "text/html"
+                          ).body.childNodes
+                      ) //document.createTextNode(node.toString())
                     : node
             )
+            .flat()
     );
 
     return element;

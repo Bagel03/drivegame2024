@@ -13,7 +13,7 @@ import "./engine/jsx-runtime";
 import { StateManager } from "./engine/state_managment";
 import { Login } from "./game/states/login";
 import { Menu } from "./game/states/menu";
-import { ChooseGameMode } from "./game/states/choose";
+import { ChooseGameMode } from "./game/states/choose_game";
 import { Preload } from "./game/states/preload";
 
 // Logger.prototype.log = function () {};

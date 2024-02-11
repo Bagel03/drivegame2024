@@ -2,9 +2,11 @@ import { Entity } from "bagelecs";
 import { Input } from "../../engine/input/input";
 import {
     AdvancedAngleBinding,
+    AnalogBinding,
     AngleBinding,
     AnyBinding,
     CombinedBinding,
+    DigitalBinding,
     DirectAnalogBinding,
     DirectDigitalBinding,
 } from "../../engine/input/input_bindings";
@@ -12,6 +14,20 @@ import { State, StateClass, StateManager } from "../../engine/state_managment";
 import { Assets, Container, Point } from "pixi.js";
 import { Game } from "./game";
 import { Login } from "./login";
+import { PlayerSelect } from "./player_select";
+import { Menu } from "./menu";
+import { Players } from "../players";
+import { NetworkConnection } from "../../engine/multiplayer/network";
+
+declare module "../../engine/input/input" {
+    interface Bindings {
+        x: AnalogBinding;
+        y: AnalogBinding;
+        aim: AnalogBinding;
+        shoot: DigitalBinding;
+        ult: DigitalBinding;
+    }
+}
 
 export class Preload extends State {
     async onEnter(payload: any, from: StateClass): Promise<void> {
@@ -23,6 +39,12 @@ export class Preload extends State {
 
         await this.loadAssets();
         this.initBindings();
+        await this.world.get(NetworkConnection).waitForServerConnection;
+
+        // Setup resources
+        this.world.set("localPlayer", Players.baker.name);
+        this.world.set("selectedMap", "map1");
+        this.world.set("selectedGameMode", "solo");
 
         // Just setting it doesn't work, we need to force a reflow
         setTimeout(() => {
@@ -50,12 +72,12 @@ export class Preload extends State {
             // aim: new AdvancedAngleBinding({
             //     originX: () => 0,
             //     // this.world.get(StateManager).currentState === MultiplayerGameState
-            //     //     ? this.world.get<Entity>("local_player").get(Container).toGlobal(zero)
+            //     //     ? this.world.get<Entity>("local_player_entity").get(Container).toGlobal(zero)
             //     //           .x
             //     //     : 0,
             //     originY: () => 0,
             //     // this.world.get(StateManager).currentState === MultiplayerGameState
-            //     //     ? this.world.get<Entity>("local_player").get(Container).toGlobal(zero)
+            //     //     ? this.world.get<Entity>("local_player_entity").get(Container).toGlobal(zero)
             //     //           .y
             //     //     : 0,
             //     targetX: () => 1, // "MouseX",
@@ -67,7 +89,7 @@ export class Preload extends State {
                         this.world.get(StateManager).currentStateInstance instanceof
                         Game
                             ? this.world
-                                  .get<Entity>("local_player")
+                                  .get<Entity>("local_player_entity")
                                   .get(Container)
                                   .toGlobal(zero).x
                             : 0;
@@ -78,7 +100,7 @@ export class Preload extends State {
                         this.world.get(StateManager).currentStateInstance instanceof
                         Game
                             ? this.world
-                                  .get<Entity>("local_player")
+                                  .get<Entity>("local_player_entity")
                                   .get(Container)
                                   .toGlobal(zero).y
                             : 0;
@@ -108,7 +130,11 @@ export class Preload extends State {
             y: new DirectAnalogBinding("JoystickMovement-Y"),
             aim: new DirectAnalogBinding("JoystickShoot-FireAngle"),
             shoot: new DirectDigitalBinding("JoystickShoot-Fire"),
-            ult: new DirectDigitalBinding("JoystickShoot-Fire"),
+            ult: new DirectDigitalBinding("KeyE"),
         });
     }
+
+    update(): void {}
+
+    initEndpoints() {}
 }

@@ -12,6 +12,10 @@ import { MrGriffinPlayer } from "../scripts/players/griffin";
 import { LaserPlayer } from "../scripts/players/laser";
 import { Game } from "./game";
 import { Wall } from "../blueprints/wall";
+import { Joystick } from "../hud/components/joystick";
+import { Input } from "../../engine/input/input";
+import { MultiplayerInput } from "../../engine/multiplayer/multiplayer_input";
+import "./preload";
 
 export class SoloGame extends Game {
     async onEnter<From extends StateClass<any>>(
@@ -58,10 +62,12 @@ export class SoloGame extends Game {
             })
         );
 
-        this.world.add(player, "local_player");
+        this.world.add(player, "local_player_entity");
 
-        Wall(0, 230, 300, 20, "red");
+        Wall(0, 230, 256, 20, "red");
         Wall(50, 170, 50, 10, "red");
-        Wall(256 - 50, 170, 50, 10, "red");
+        Wall(256 - 50 - 50, 170, 50, 10, "red");
     }
+
+    update(): void {}
 }

@@ -98,7 +98,14 @@ export class NetworkConnection {
                     res(await this.tryFindId());
                     return;
                 }
+
                 this.logger.error(error);
+
+                if (error.type === "network") {
+                    this.logger.log("Reconnecting...");
+                    peer.reconnect();
+                    return;
+                }
                 // This shouldn't happen (really shouldn't get any other errors than in-use id)
                 rej(error);
             });
@@ -147,6 +154,7 @@ export class NetworkConnection {
     public readonly connectionStartTime: number = null as any;
     public framesConnected: number = null as any;
 
+    private readonly onConnectListeners = new Map<number, () => void>();
     private onConnect(openTime: number) {
         //@ts-expect-error
         this.isConnected = true;
@@ -166,8 +174,10 @@ export class NetworkConnection {
 
         this.logger.log("Connection opened to", this.remoteId);
         this.resolvePromisesWaitingForConnection(this.remoteId);
+        this.onConnectListeners.forEach((cb) => cb());
     }
 
+    private readonly onCloseListeners = new Map<number, () => void>();
     private onClose() {
         //@ts-expect-error
         this.remoteConnection = this.dummyConnection.fromDataConnection(
@@ -182,6 +192,8 @@ export class NetworkConnection {
         this.waitForConnection = new Promise((res) => {
             this.resolvePromisesWaitingForConnection = res;
         });
+
+        this.onCloseListeners.forEach((cb) => cb());
         this.logger.log("Closed connection to", this.remoteId);
     }
 
@@ -368,11 +380,18 @@ export class NetworkConnection {
         });
     }
 
-    addResponse<T extends keyof NetworkFetchPoints>(
+    post<T extends keyof NetworkFetchPoints>(endpoint: T) {
+        return this.fetch(endpoint);
+    }
+
+    private endpoints: Map<number, (packet: RawNetworkPacket) => any> = new Map();
+    private nextEndpointId = 0;
+
+    addEndpoint<T extends keyof NetworkFetchPoints>(
         endpoint: T,
         respond: () => NetworkFetchPoints[T] | Promise<NetworkFetchPoints[T]>
-    ) {
-        this.remoteConnection.on("data", (async (packet: RawNetworkPacket) => {
+    ): number {
+        const fn = async (packet: RawNetworkPacket) => {
             if (packet.event !== NetworkEvent.FETCH || packet.subEvent !== endpoint)
                 return;
 
@@ -383,7 +402,15 @@ export class NetworkConnection {
                 id: packet.id!,
                 data,
             } satisfies RawNetworkPacket<any>);
-        }) as any);
+        };
+        this.endpoints.set(++this.nextEndpointId, fn);
+        this.remoteConnection.on("data", fn as any);
+        return this.nextEndpointId;
+    }
+
+    removeEndpoint(id: number) {
+        this.remoteConnection.off("data", this.endpoints.get(id) as any);
+        this.endpoints.delete(id);
     }
 
     //#region Utils
@@ -423,6 +450,25 @@ export class NetworkConnection {
     update() {
         if (this.framesConnected !== null) {
             this.framesConnected++;
+        }
+    }
+
+    addEventListener(ev: "connect" | "close", cb: () => void) {
+        const id = ++this.nextEndpointId;
+
+        if (ev === "connect") {
+            this.onConnectListeners.set(id, cb);
+        } else if (ev === "close") {
+            this.onCloseListeners.set(id, cb);
+        }
+        return id;
+    }
+
+    removeEventListener(ev: "connect" | "close", id: number) {
+        if (ev === "connect") {
+            this.onConnectListeners.delete(id);
+        } else if (ev === "close") {
+            this.onCloseListeners.delete(id);
         }
     }
 }

@@ -2,3 +2,4 @@ node_modules
 ios
 andriod
 dist
+auth_creds.json

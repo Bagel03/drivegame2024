@@ -7,9 +7,11 @@ import { rollbackPlugin } from "./multiplayer/rollback";
 import { StateManagementPlugin } from "./state_managment";
 import "./rendering/plugin";
 import { MultiplayerInputPlugin } from "./multiplayer/multiplayer_input";
+import { ServerConnectionPlugin } from "./server";
 
 export const enginePlugins = [
     LoopPlugin,
+    ServerConnectionPlugin,
     networkConnectionPlugin,
     rollbackPlugin,
     MultiplayerInputPlugin,

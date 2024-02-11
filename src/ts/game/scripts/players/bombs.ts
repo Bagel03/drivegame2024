@@ -9,6 +9,7 @@ import { PlayerInfo } from "../../components/player_info";
 import { Friction, Velocity } from "../../components/velocity";
 import { gravity } from "../gravity";
 import { applyDefaultMovement } from "./common";
+import { TimedAlive } from "../../components/timed";
 
 export const BombPlayer: Script = function () {
     const input = this.world.get(MultiplayerInput);
@@ -39,12 +40,11 @@ export const BombPlayer: Script = function () {
     } else {
         // Normal bombs
         if (
-            input.is("shoot", "PRESSED") &&
+            input.is("shoot", "PRESSED", id) &&
             this.get(PlayerInfo.shootCooldown) <= 0
         ) {
             this.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
             const bomb = this.world.spawn();
-            console.log(bomb);
             bomb.add(
                 new Position({
                     x: this.get(Position.x),
@@ -54,8 +54,8 @@ export const BombPlayer: Script = function () {
             );
             bomb.add(
                 new Velocity({
-                    x: Math.cos(input.get("aim")) * 3,
-                    y: Math.sin(input.get("aim")) * 10,
+                    x: Math.cos(input.get("aim", id)) * 3,
+                    y: Math.sin(input.get("aim", id)) * 10,
                 })
             );
             bomb.add(new CollisionHitbox({ x: 20, y: 20 }));
@@ -67,6 +67,8 @@ export const BombPlayer: Script = function () {
             bomb.add(graphics);
             bomb.add(new BouncinessFactor({ x: 0.5, y: 0 }));
             bomb.add(new Friction(0.05));
+
+            bomb.add(new TimedAlive(60));
         } else {
             this.inc(PlayerInfo.shootCooldown, -1);
         }

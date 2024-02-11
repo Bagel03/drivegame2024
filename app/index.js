@@ -15,14 +15,14 @@ const CSS_URL = DIST_URL + "/index.css";
 // Show loading screen
 document.body.innerHTML = `
     <div id="preloadScreen" style="z-index: 999; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; background-image: radial-gradient(#44403C, #171717)">
-        <img src="app/logo.png" />
+        <img src="./logo.png" />
             <h1 style="font-size: 24px; color: white" id="downloadText">Downloading Content...</h1>
     </div>
 `;
 
 const downloadText = document.querySelector("#downloadText");
 const intervalId = setInterval(() => {
-    const numPeriods = downloadText.textContent.match(/\./g)?.length || 0;
+    const numPeriods = (downloadText.textContent.match(/\./g) || {}).length || 0;
     downloadText.textContent =
         downloadText.textContent.replace(/\./g, "") +
         ".".repeat((numPeriods % 3) + 1);

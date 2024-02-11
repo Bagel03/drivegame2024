@@ -1,0 +1,15 @@
+{
+  "name": "drivegame2024-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "esbuild ./index.ts --bundle --outdir=./dist --platform=node"
+  },
+  "author": "Eddie Badel",
+  "license": "ISC",
+  "dependencies": {
+    "google-auth-library": "^9.6.3",
+    "google-spreadsheet": "^4.1.1"
+  }
+}
