@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">project-b</string>
-    <string name="title_activity_main">project-b</string>
-    <string name="package_name">project.b</string>
-    <string name="custom_url_scheme">project.b</string>
+    <string name="app_name">2024 Drive Game</string>
+    <string name="title_activity_main">2024 Drive Game</string>
+    <string name="package_name">com.drivegame2024</string>
+    <string name="custom_url_scheme">com.drivegame2024</string>
 </resources>

@@ -13,7 +13,7 @@ export type Script<T = Entity> = {
 };
 export const Scripts = Component(Type.custom<Set<Script>>());
 export const GlobalScripts = Component(Type.custom<Set<Script<World>>>());
-window.s = Scripts;
+window.s = GlobalScripts;
 
 // Global scripts
 declare module "bagelecs" {
@@ -25,7 +25,6 @@ declare module "bagelecs" {
 }
 
 World.prototype.addScript = function (this: World, script) {
-    script = script.bind(this);
     script.init?.apply(this);
 
     this.get(GlobalScripts).add(script);
@@ -56,8 +55,8 @@ Number.prototype.addScript = function (this: Entity, script: Script) {
     }
 
     if (!this.has(Scripts)) {
-        this.add(new Scripts(new Set<Script>([script.bind(this)])));
-    } else this.get(Scripts).add(script.bind(this));
+        this.add(new Scripts(new Set<Script>([script])));
+    } else this.get(Scripts).add(script);
 };
 
 //@ts-expect-error
@@ -88,12 +87,10 @@ export class ScriptSystem extends System(Scripts) {
 
     update(): void {
         this.entities.forEach((ent) => {
-            //@ts-expect-error
-            ent.get(Scripts).forEach((script) => script());
+            ent.get(Scripts).forEach((script) => script.apply(ent));
         });
 
-        //@ts-ignore
-        this.world.get(GlobalScripts).forEach((script) => script());
+        this.world.get(GlobalScripts).forEach((script) => script.apply(this.world));
     }
 }
 

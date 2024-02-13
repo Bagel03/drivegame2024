@@ -84,9 +84,9 @@ export class MultiplayerInput {
         analog: new Set<AnalogBindingKey>(),
     };
 
-    private readonly buffers: Record<string, InputState[]> = {};
+    public readonly buffers: Record<string, InputState[]> = {};
     // Map<Frames Connected, input state>
-    private readonly knownFutureInputs = new Map<number, InputState>();
+    public readonly knownFutureInputs = new Map<number, InputState>();
 
     private readonly localPeerId!: string;
 
@@ -95,7 +95,7 @@ export class MultiplayerInput {
 
     private readonly events: InputEvent[] = [];
 
-    private ready: boolean = false;
+    public ready: boolean = false;
     async init() {
         await this.networkConnection.waitForServerConnection;
         //@ts-expect-error
@@ -104,12 +104,12 @@ export class MultiplayerInput {
             {}
         );
 
-        this.networkConnection.waitForConnection.then(() => {
+        this.networkConnection.addEventListener("connect", () => {
             this.buffers[this.networkConnection.remoteId] = new Array(
                 MultiplayerInput.bufferSize
             ).fill({});
-            this.handleRemotePackets();
         });
+        this.handleRemotePackets();
 
         this.localInput.init();
         this.ready = true;

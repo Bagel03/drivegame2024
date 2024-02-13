@@ -5,11 +5,13 @@ import { Graphics, Sprite, Texture } from "pixi.js";
 import { TimedAlive } from "../components/timed";
 import { NetworkConnection } from "../../engine/multiplayer/network";
 import { CollisionHeath, CollisionHitbox } from "../components/collision";
+import { Cost } from "../components/cost";
 
 const bulletBlueprint = new Blueprint(
     Position,
     Velocity,
     Graphics,
+    Cost,
     new TimedAlive(100),
     new CollisionHeath(1),
     new CollisionHitbox({ x: 2, y: 2 })
@@ -17,7 +19,7 @@ const bulletBlueprint = new Blueprint(
 
 export const BulletEnt = AdvancedBlueprintFactory(
     bulletBlueprint,
-    [Position.x, Position.y, Velocity.x, Velocity.y],
+    [Cost.payTo, Cost.price, Position.x, Position.y, Velocity.x, Velocity.y],
     function () {
         this.update(
             Position.r,
@@ -28,4 +30,11 @@ export const BulletEnt = AdvancedBlueprintFactory(
         sprite.width = 8;
         sprite.height = 4;
     }
-) as (x: number, y: number, vx: number, vy: number) => Entity;
+) as (
+    shotFrom: Entity,
+    damage: number,
+    x: number,
+    y: number,
+    vx: number,
+    vy: number
+) => Entity;

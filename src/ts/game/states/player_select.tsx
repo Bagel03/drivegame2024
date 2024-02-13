@@ -32,9 +32,11 @@ export class PlayerSelect extends State<never> {
 
         this.inManualMode = false;
 
-        setTimeout(() => {
-            this.inManualMode = true;
-        }, 100);
+        await Promise.timeout(100);
+        this.inManualMode = true;
+        // setTimeout(() => {
+        //     this.inManualMode = true;
+        // }, 100);
     }
 
     onLeave<Into extends StateClass<any>>(
@@ -48,41 +50,60 @@ export class PlayerSelect extends State<never> {
 
     getHTML() {
         return (
-            <MenuBackground id="playerSelect">
+            <MenuBackground id="playerSelect" className="flex flex-col">
                 <div className="text-4xl p-5 flex align-middle items-center">
                     <i
                         className="fa-solid fa-arrow-left mr-5 hover:cursor-pointer"
                         onclick={() => {
-                            this.world.get(StateManager).moveTo(Menu);
+                            this.world.get(StateManager).fadeTo(Menu);
                         }}
                     ></i>
                     <span>Players</span>
                 </div>
                 {/* This should create a carousel of each player */}
-                <div
-                    id="carousel"
-                    className="scroll-smooth overflow-x-scroll snap-mandatory snap-x w-full whitespace-nowrap overflow-y-visible mt-[-2rem] pt-8 pb-8 ::-webkit-scrollbar"
-                >
-                    {Object.values(Players).map((player, i, { length }) => (
-                        <div
-                            className={`w-96 inline-block snap-center ${
-                                i === 0
-                                    ? "ml-[calc((96rem/2))]"
-                                    : i === length - 1
-                                    ? "mr-[calc((96rem/2))]"
-                                    : ""
-                            }`}
-                            data-playerName={player.name}
-                        >
-                            <div className="w-full flex flex-col items-center">
-                                <img src={player.menuPic} className="h-48 " />
-                                <h1>{player.displayName}</h1>
-                                <h4 className="opacity-0 w-[60vw] whitespace-normal text-xs text-center description">
-                                    {player.description}
-                                </h4>
+                <div className="flex align-middle justify-center items-center flex-grow">
+                    <div
+                        id="carousel"
+                        className="scroll-smooth overflow-x-scroll snap-mandatory snap-x w-full whitespace-nowrap overflow-y-visible mt-[-2rem] pt-8 pb-8 scrollbar-hidden"
+                        onmousedown={(e) => {
+                            const target = e.currentTarget as HTMLDivElement;
+                            target.dataset.dragging = "true";
+                            target.style.scrollSnapType = "none";
+                            target.style.scrollBehavior = "auto";
+                        }}
+                        onmouseup={(e) => {
+                            const target = e.currentTarget as HTMLDivElement;
+                            target.dataset.dragging = "false";
+                            target.style.scrollSnapType = "x mandatory";
+                            target.style.scrollBehavior = "smooth";
+                        }}
+                        onmousemove={function (e) {
+                            const target = e.currentTarget as HTMLDivElement;
+                            target.dataset.dragging === "true" &&
+                                (target.scrollLeft -= e.movementX);
+                        }}
+                    >
+                        {Object.values(Players).map((player, i, { length }) => (
+                            <div
+                                className={`w-96 inline-block snap-center ${
+                                    i === 0
+                                        ? "ml-[calc((96rem/2))]"
+                                        : i === length - 1
+                                        ? "mr-[calc((96rem/2))]"
+                                        : ""
+                                }`}
+                                data-playerName={player.name}
+                            >
+                                <div className="w-full flex flex-col items-center">
+                                    <img src={player.menuPic} className="h-48 " />
+                                    <h1>{player.displayName}</h1>
+                                    <h4 className="opacity-0 w-[60vw] whitespace-normal text-xs text-center description">
+                                        {player.description}
+                                    </h4>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </MenuBackground>
         );

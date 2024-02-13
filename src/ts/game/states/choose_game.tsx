@@ -47,7 +47,7 @@ export class ChooseGameMode extends State {
                     <i
                         className="fa-solid fa-arrow-left mr-5 hover:cursor-pointer"
                         onclick={() => {
-                            this.world.get(StateManager).moveTo(Menu);
+                            this.world.get(StateManager).fadeTo(Menu);
                         }}
                     ></i>
                     <span>Game Modes</span>

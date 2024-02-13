@@ -171,7 +171,7 @@ export class Menu extends State<MenuPayload> {
                                 onclick: () =>
                                     this.world
                                         .get(StateManager)
-                                        .moveTo(PlayerSelect),
+                                        .fadeTo(PlayerSelect),
                             },
                         ].map(({ icon, text, onclick }) => (
                             <div
@@ -234,7 +234,7 @@ export class Menu extends State<MenuPayload> {
                             onclick={() =>
                                 this.world
                                     .get(StateManager)
-                                    .moveTo(ChooseGameMode, null)
+                                    .fadeTo(ChooseGameMode, null)
                             }
                             id="gameModeButton"
                         >
@@ -257,7 +257,7 @@ export class Menu extends State<MenuPayload> {
                                     case "solo":
                                         this.world
                                             .get(StateManager)
-                                            .moveTo(SoloGame);
+                                            .fadeTo(SoloGame);
                                         break;
                                 }
                             }}
@@ -385,7 +385,7 @@ export class Menu extends State<MenuPayload> {
 
         this.world.get(NetworkConnection).send("start_game", startFrame);
         await awaitFrame(this.world, startFrame);
-        this.world.get(StateManager).moveTo(MultiplayerGame);
+        this.world.get(StateManager).fadeTo(MultiplayerGame);
     }
 
     static alreadySetupEndpoints = false;
@@ -446,7 +446,7 @@ export class Menu extends State<MenuPayload> {
 
         nc.on("start_game", async (frame: number) => {
             await awaitFrame(this.world, frame);
-            this.world.get(StateManager).moveTo(MultiplayerGame);
+            this.world.get(StateManager).fadeTo(MultiplayerGame);
         });
     }
 }

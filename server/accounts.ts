@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { DATABASE } from "./database.js";
 import { JWT, JWTInput } from "google-auth-library";
+import { GoogleSpreadsheetRow } from "google-spreadsheet";
 
 interface AccountInfo {
     email: string;
@@ -21,25 +22,40 @@ export async function handleAccountRequests(
 ) {
     // Login
     if (path === "/login") {
+        const email = url.searchParams.get("email");
         const jwtStr = url.searchParams.get("jwt");
-        if (!jwtStr) {
+        if (!jwtStr && !email) {
             res.statusCode = 400;
-            res.end("No JWT provided");
+            res.end("No JWT or email provided");
             return;
         }
-        // decode the JWT
-        const jwt = JSON.parse(atob(jwtStr.split(".")[1]));
-        const email: string = jwt.email;
 
         const rows = await DATABASE.accounts.getRows<AccountInfo>();
-        const userClass = ["Freshman", "Sophomore", "Junior", "Senior"].reverse()[
-            24 - parseInt(email.slice(0, 2))
-        ];
-        const row =
-            rows.find((row) => row.get("email") === email) ||
-            (await DATABASE.accounts.addRow(
-                {
-                    email,
+        let row!: GoogleSpreadsheetRow<AccountInfo>;
+
+        if (email) {
+            let foundRow = rows.find((row) => row.get("email") === email);
+            if (!foundRow) {
+                res.statusCode = 404;
+                res.end("Account not found");
+                return;
+            }
+
+            row = foundRow;
+            return;
+        } else if (jwtStr) {
+            // decode the JWT
+            const jwt = JSON.parse(atob(jwtStr.split(".")[1]));
+            let foundRow = rows.find((row) => row.get("email") === email);
+            if (!foundRow) {
+                // make a new row
+                const userClass =
+                    ["Freshman", "Sophomore", "Junior", "Senior"].reverse()[
+                        24 - parseInt(jwt.email.slice(0, 2))
+                    ] || "";
+
+                foundRow = await DATABASE.accounts.addRow({
+                    email: jwt.email,
                     "full name": jwt.name,
                     username: jwt.given_name + jwt.family_name.slice(0, 1),
                     wins: 0,
@@ -50,15 +66,16 @@ export async function handleAccountRequests(
                     class: userClass,
                     classRank: 0,
                     overallRank: 0,
-                },
-                {}
-            ));
+                });
+            }
 
-        console.log("Found row", row.rowNumber);
+            row = foundRow;
+        }
+
         res.write(
             JSON.stringify({
                 email,
-                "full name": jwt.name,
+                "full name": row.get("full name"),
                 username: row.get("username"),
                 wins: row.get("wins"),
                 "total matches": row.get("total matches"),

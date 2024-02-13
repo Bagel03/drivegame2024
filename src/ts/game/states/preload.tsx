@@ -42,9 +42,9 @@ export class Preload extends State {
         await this.world.get(NetworkConnection).waitForServerConnection;
 
         // Setup resources
-        this.world.set("localPlayer", Players.baker.name);
+        this.world.set("localPlayer", Players.handcock.name);
         this.world.set("selectedMap", "map1");
-        this.world.set("selectedGameMode", "solo");
+        this.world.set("selectedGameMode", "onlinePvP");
 
         // Just setting it doesn't work, we need to force a reflow
         setTimeout(() => {

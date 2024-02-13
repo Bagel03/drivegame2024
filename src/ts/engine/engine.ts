@@ -8,6 +8,7 @@ import { StateManagementPlugin } from "./state_managment";
 import "./rendering/plugin";
 import { MultiplayerInputPlugin } from "./multiplayer/multiplayer_input";
 import { ServerConnectionPlugin } from "./server";
+import { pixiRenderingPlugin } from "./rendering/plugin";
 
 export const enginePlugins = [
     LoopPlugin,
@@ -17,5 +18,6 @@ export const enginePlugins = [
     MultiplayerInputPlugin,
     // InputPlugin,
     ScriptPlugin,
+    pixiRenderingPlugin,
     StateManagementPlugin,
 ];

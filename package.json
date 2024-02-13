@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap --watch --target=es2015",
-    "build": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap --target=es5",
+    "dev": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap --watch",
+    "build": "esbuild ./src/ts/index.ts --bundle --outdir=./dist --sourcemap",
     "test": "esbuild ./src/ts/test.ts --bundle --outdir=./dist --sourcemap --watch",
     "css": "npx tailwindcss -i ./src/styles/index.css -o ./dist/index.css --minify --watch",
+    "build-app": "esbuild ./app/index.ts --bundle --outfile=./app/index.js --sourcemap --format=esm --watch",
     "ionic:build": "npm run build",
     "ionic:serve": "npm run dev",
     "assets": "spritesheet-js -f pixi.js -n atlas -p dist/assets --trim ./src/assets/**/*.png"
@@ -21,6 +22,7 @@
     "@capacitor/ios": "5.6.0",
     "@capacitor/keyboard": "5.0.7",
     "@capacitor/status-bar": "5.0.6",
+    "@codetrix-studio/capacitor-google-auth": "^3.3.6",
     "bagelecs": "file:C:/Dev Temp/ts/BagelECS/bagelecs-0.0.3.tgz",
     "peerjs": "^1.5.1",
     "pixi.js": "^7.3.2",

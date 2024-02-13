@@ -1,4 +1,4 @@
-import { Class, World } from "bagelecs";
+import { Class, System, With, World } from "bagelecs";
 
 export abstract class State<T = any> {
     public static readonly recordInHistory: boolean = true;
@@ -33,7 +33,7 @@ export type ExtractPayload<T extends StateClass> = T extends Class<State<infer U
     : never;
 
 export class StateManager {
-    private readonly states = new Map<StateClass, State>();
+    public readonly states = new Map<StateClass, State>();
     public currentState!: StateClass;
     public currentStateInstance!: State;
 
@@ -88,6 +88,18 @@ export class StateManager {
     }
 }
 
+class StateManagementUpdateSystem extends System(With(StateManager)) {
+    update(): void {
+        this.entities.forEach((ent) =>
+            ent.get(StateManager).currentStateInstance.update()
+        );
+        this.world.get(StateManager).currentStateInstance.update();
+    }
+}
+
 export function StateManagementPlugin(world: World) {
     world.add(new StateManager(world));
+
+    world.addSystem(StateManagementUpdateSystem);
+    world.addSystem(StateManagementUpdateSystem, "rollback");
 }

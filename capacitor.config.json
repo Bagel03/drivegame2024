@@ -1,6 +1,6 @@
 {
-  "appId": "project.b",
-  "appName": "project-b",
+  "appId": "com.drivegame2024",
+  "appName": "2024 Drive Game",
   "webDir": "app",
   "server": {
     "androidScheme": "https"

@@ -17,5 +17,6 @@ export class PlayerInfo extends Component(
         speed: 2,
         fireCooldown: DESIRED_FPS / 6,
         ultLength: DESIRED_FPS * 5,
+        targetFunds: 100,
     };
 }

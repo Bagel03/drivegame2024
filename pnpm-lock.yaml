@@ -9,6 +9,7 @@ specifiers:
   '@capacitor/ios': 5.6.0
   '@capacitor/keyboard': 5.0.7
   '@capacitor/status-bar': 5.0.6
+  '@codetrix-studio/capacitor-google-auth': ^3.3.6
   '@tweakpane/core': ^2.0.1
   '@types/google-one-tap': ^1.2.6
   '@types/node': ^18.17.15
@@ -28,6 +29,7 @@ dependencies:
   '@capacitor/ios': 5.6.0_@capacitor+core@5.6.0
   '@capacitor/keyboard': 5.0.7_@capacitor+core@5.6.0
   '@capacitor/status-bar': 5.0.6_@capacitor+core@5.6.0
+  '@codetrix-studio/capacitor-google-auth': 3.3.6_@capacitor+core@5.6.0
   bagelecs: file:../BagelECS/bagelecs-0.0.3.tgz
   peerjs: 1.5.1
   pixi.js: 7.3.2
@@ -174,6 +176,14 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@codetrix-studio/capacitor-google-auth/3.3.6_@capacitor+core@5.6.0:
+    resolution: {integrity: sha512-SiMjYq5O2rWzEdKrmu3VZQ2nmFdq6LUXPzsNbjs4Ri6WTJVCtzp1HI12t4Dcwi5YoSw8g94Iyi3Can8msj57QA==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.6.0
+    dev: false
 
   /@ionic/cli-framework-output/2.2.8:
     resolution: {integrity: sha512-TshtaFQsovB4NWRBydbNFawql6yul7d5bMiW1WYYf17hd99V6xdDdk3vtF51bw6sLkxON3bDQpWsnUc9/hVo3g==}

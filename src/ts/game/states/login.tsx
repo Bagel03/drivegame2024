@@ -11,6 +11,7 @@ import { MenuBackground } from "../hud/background";
 import { ServerConnection } from "../../engine/server";
 import { showDialog } from "../hud/components/dialogs";
 import { Component, Type } from "bagelecs";
+import "./fade";
 
 export const AccountInfo = Component({
     email: Type.string,
@@ -26,7 +27,7 @@ export const AccountInfo = Component({
 
 window.ai = AccountInfo;
 
-export class Login extends State<never> {
+export class Login extends State<{ email: string }> {
     private googleBtn = (<div></div>) as HTMLElement;
 
     onEnter<From extends StateClass<any>>(
@@ -36,7 +37,7 @@ export class Login extends State<never> {
         google.accounts.id.initialize({
             client_id:
                 "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
-            callback: this.signIn.bind(this),
+            callback: (response) => this.signIn.bind({ response }),
             auto_select: true,
             context: "use",
             itp_support: true,
@@ -47,6 +48,10 @@ export class Login extends State<never> {
         });
 
         document.body.append(this.getHTML());
+
+        if (localStorage.getItem("email")) {
+            this.signIn({ email: localStorage.getItem("email")! });
+        }
         return Promise.resolve();
     }
 
@@ -76,7 +81,31 @@ export class Login extends State<never> {
                     <a
                         className="text-gray-300 underline text-center w-full block absolute bottom-0 pb-3 cursor-pointer"
                         onclick={async () => {
-                            this.world.get(StateManager).moveTo(Menu);
+                            this.world.add(
+                                new AccountInfo({
+                                    email: "guest@guestemail.com",
+                                    isGuest: true,
+                                    username:
+                                        "Guest" +
+                                        Math.floor(Math.random() * 10000)
+                                            .toString()
+                                            .padStart(5, "0"),
+                                    trophies: 0,
+                                    totalWins: 0,
+                                    class: "Freshman",
+                                    classRank: 0,
+                                    overallRank: 0,
+                                })
+                            );
+                            await this.world.get(StateManager).fadeTo(Menu);
+
+                            // showDialog({
+                            //     title: "Guest Login",
+                            //     message:
+                            //         "You can still play, but none of your stats will save. If you are a CC student, please use your CC email to login.",
+                            //     oncancel: (e) =>
+                            //         this.world.get(StateManager).fadeTo(Login),
+                            // });
                         }}
                     >
                         Continue as Guest
@@ -86,12 +115,45 @@ export class Login extends State<never> {
         );
     }
 
-    private async signIn(response: CredentialResponse) {
+    private getLoggingInHTML() {
+        let elements = (
+            <div id="loggingIn" className="w-full h-full">
+                <MenuBackground>
+                    <div className="w-full h-full flex justify-center items-center">
+                        <div className="">
+                            <h1 className="text-center text-white text-3xl mb-2">
+                                Logging In...
+                            </h1>
+                        </div>
+                    </div>
+                </MenuBackground>
+            </div>
+        );
+
+        return elements;
+    }
+
+    private async signIn({
+        response,
+        email,
+    }: {
+        response?: CredentialResponse;
+        email?: string;
+    }) {
         // Should show some logging in animation
+        document.querySelector("#login")?.replaceWith(this.getLoggingInHTML());
+
+        const searchParams: Record<string, string> = {};
+        if (response) {
+            searchParams["jwt"] = response.credential;
+        } else if (email) {
+            searchParams["email"] = email;
+        }
+
         const info = await this.world
             .get(ServerConnection)
             .fetch("/accounts/login", {
-                searchParams: { jwt: response.credential },
+                searchParams,
             })
             .catch((e) => {
                 console.error(e);
@@ -99,7 +161,6 @@ export class Login extends State<never> {
                     title: "Failed to login",
                     message: "Please try again",
                 });
-                return { email: "", status: 500 };
             });
 
         // if (info.status !== 200) {
@@ -107,7 +168,7 @@ export class Login extends State<never> {
         //     showDialog({ title: "Failed to login", message: "Please try again" });
         //     return;
         // }
-
+        localStorage.setItem("email", info.email);
         this.world.add(
             new AccountInfo({
                 email: info.email,
