@@ -23,14 +23,23 @@
 
         <!-- Content-->
         <!-- <link href="./dist/index.css" rel="stylesheet" crossorigin="anonymous" /> -->
+        <script
+            src="https://kit.fontawesome.com/9dd570d20f.js"
+            crossorigin="anonymous"
+        ></script>
 
         <!-- Load google sign in + auth library -->
         <script src="https://accounts.google.com/gsi/client" async></script>
     </head>
     <body
-        style="margin: 0"
-        class="w-screen h-[100dvh] overflow-hidden m-0 font-default select-none touch-none pb-"
-    >
+        style="color: #EFFAFA; margin: 0; width:100vh; height: 100dvh; overflow: hidden; font-family: 'Rajdhani'; user-select: none; touch-action: none;"
+
+        >
+
+    <div id="preloadScreen" style="z-index: 999; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; background-image: radial-gradient(#44403C, #171717)">
+        <img src="./logo.png" />
+            <h1 style="font-size: 24px; color: white" id="downloadText">Downloading Content...</h1>
+    </div>
         <!-- <div
             id="g_id_onload"
             data-client_id="41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com"

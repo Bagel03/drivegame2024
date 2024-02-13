@@ -23,7 +23,7 @@
     "@capacitor/keyboard": "5.0.7",
     "@capacitor/status-bar": "5.0.6",
     "@codetrix-studio/capacitor-google-auth": "^3.3.6",
-    "bagelecs": "file:C:/Dev Temp/ts/BagelECS/bagelecs-0.0.3.tgz",
+    "esbuild": "^0.20.0",
     "peerjs": "^1.5.1",
     "pixi.js": "^7.3.2",
     "tweakpane": "^4.0.1"

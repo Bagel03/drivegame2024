@@ -660,6 +660,11 @@ var PROD_URL = "https://bagel03.github.io/drivegame2024/builds/prod";
 var LOCAL_URL = "http://localhost:5500/dist";
 var DIST_URL = localStorage.getItem("dev-env") ? LOCAL_URL : PROD_URL;
 window.DIST_URL = DIST_URL;
+GoogleAuth.initialize({
+  clientId: "41009933978-vrdr3g1i3mhjh6u7vip1sce01o8rnijf.apps.googleusercontent.com",
+  grantOfflineAccess: true,
+  scopes: ["profile", "email"]
+});
 var BUNDLE_URL = DIST_URL + "/index.js";
 var CSS_URL = DIST_URL + "/index.css";
 document.body.innerHTML = `
@@ -711,7 +716,6 @@ if (Capacitor.isNativePlatform() || true) {
   const script = document.createElement("script");
   script.src = "https://accounts.google.com/gsi/client";
   document.head.append(script);
-  await new Promise((res) => script.onload = res);
 }
 var downloadText = document.querySelector("#downloadText");
 var intervalId = setInterval(() => {

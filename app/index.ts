@@ -15,8 +15,16 @@ declare global {
         DIST_URL: string;
     }
 }
+
+
 window.DIST_URL = DIST_URL;
 
+
+GoogleAuth.initialize({
+    clientId: "41009933978-vrdr3g1i3mhjh6u7vip1sce01o8rnijf.apps.googleusercontent.com",
+    grantOfflineAccess: true,
+    scopes: ["profile", "email"]
+})
 // window.google ??= {
 //     accounts: {
 //         id: {
@@ -91,7 +99,6 @@ if (Capacitor.isNativePlatform() || true) {
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
     document.head.append(script);
-    await new Promise((res) => (script.onload = res));
 }
 
 const downloadText = document.querySelector("#downloadText")!;
