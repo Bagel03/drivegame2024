@@ -47930,7 +47930,7 @@ void main(void)\r
         onEnter(payload, from) {
           google.accounts.id.initialize({
             client_id: "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
-            callback: (response) => this.signIn.bind({ response }),
+            callback: (response) => this.signIn({ response }),
             auto_select: true,
             context: "use",
             itp_support: true
@@ -47983,6 +47983,7 @@ void main(void)\r
           response,
           email
         }) {
+          console.log("Loggin in with ", arguments);
           document.querySelector("#login")?.replaceWith(this.getLoggingInHTML());
           const searchParams = {};
           if (response) {

@@ -27,9 +27,10 @@
 			<string>REVERSED_CLIENT_ID</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>Info.plist</string>
+				<string>com.googleusercontent.apps.41009933978-vrdr3g1i3mhjh6u7vip1sce01o8rnijf</string>
 			</array>
 		</dict>
+		<dict/>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
