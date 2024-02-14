@@ -23,6 +23,7 @@
     "@capacitor/keyboard": "5.0.7",
     "@capacitor/status-bar": "5.0.6",
     "@codetrix-studio/capacitor-google-auth": "^3.3.6",
+    "bagelecs": "^0.0.3",
     "esbuild": "^0.20.0",
     "peerjs": "^1.5.1",
     "pixi.js": "^7.3.2",

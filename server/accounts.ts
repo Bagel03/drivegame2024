@@ -45,6 +45,7 @@ export async function handleAccountRequests(
             return;
         } else if (jwtStr) {
             // decode the JWT
+            console.log("Decoding: ", jwtStr, jwtStr.split(".")[1]);
             const jwt = JSON.parse(atob(jwtStr.split(".")[1]));
             let foundRow = rows.find((row) => row.get("email") === email);
             if (!foundRow) {

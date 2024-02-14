@@ -37,7 +37,7 @@ export class Login extends State<{ email: string }> {
         google.accounts.id.initialize({
             client_id:
                 "41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com",
-            callback: (response) => this.signIn.bind({ response }),
+            callback: (response) => this.signIn({ response }),
             auto_select: true,
             context: "use",
             itp_support: true,
@@ -142,10 +142,11 @@ export class Login extends State<{ email: string }> {
     }) {
         // Should show some logging in animation
         document.querySelector("#login")?.replaceWith(this.getLoggingInHTML());
-
+        console.log(arguments)
         const searchParams: Record<string, string> = {};
         if (response) {
             searchParams["jwt"] = response.credential;
+            console.log("Siging in with", response, response.credential)
         } else if (email) {
             searchParams["email"] = email;
         }

@@ -78,7 +78,7 @@ if (Capacitor.isNativePlatform() || true) {
                         const jwt = user.authentication.idToken;
                         console.log(jwt);
                         //@ts-expect-error
-                        window.google.accounts.id.callback?.({response: {credential: jwt}});
+                        window.google.accounts.id.callback?.({credential: jwt});
                     };
                     parent.appendChild(container);
                 },
