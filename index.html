@@ -30,8 +30,35 @@
         <!-- <link href="./dist/index.css" rel="stylesheet" crossorigin="anonymous" /> -->
     </head>
     <body
-        class="w-screen h-[100dvh] overflow-hidden m-0 font-default select-none touch-none pb-"
+        style="
+            color: #effafa;
+            margin: 0;
+            width: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            font-family: 'Rajdhani';
+            user-select: none;
+            touch-action: none;
+        "
     >
+        <div
+            id="preloadScreen"
+            style="
+                z-index: 999;
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                background-image: radial-gradient(#44403c, #171717);
+            "
+        >
+            <img src="./app/logo.png" />
+            <h1 style="font-size: 24px; color: white" id="downloadText">
+                Downloading Content...
+            </h1>
+        </div>
         <!-- <div
             id="g_id_onload"
             data-client_id="41009933978-esv02src8bi8167cmqltc4ek5lihc0ao.apps.googleusercontent.com"
