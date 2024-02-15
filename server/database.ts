@@ -30,10 +30,10 @@ class DriveGameDB extends GoogleSpreadsheet {
 
 export const DATABASE = new DriveGameDB();
 
-const green = "\u001b[32m";
-const reset = "\u001b[0m";
-const cyan = "\u001b[36m";
-const purple = "\u001b[35m";
+export const green = "\u001b[32m";
+export const reset = "\u001b[0m";
+export const cyan = "\u001b[36m";
+export const purple = "\u001b[35m";
 
 DATABASE.loadInfo()
     .then(() => {

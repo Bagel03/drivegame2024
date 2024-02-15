@@ -1,6 +1,7 @@
 import { Server } from "http";
 import { handleAccountRequests } from "./accounts.js";
 import { handleMatchmakingRequests } from "./matchmaking.js";
+import { cyan, green } from "./database.js";
 
 const server = new Server(async (req, res) => {
     try {
@@ -8,6 +9,11 @@ const server = new Server(async (req, res) => {
         console.log("Request", url.pathname);
 
         res.setHeader("Access-Control-Allow-Origin", "*");
+        if (url.pathname == "/healthcheck") {
+            res.statusCode = 200;
+            res.end("OK");
+            return;
+        }
 
         if (url.pathname.startsWith("/api/v1")) {
             const path = url.pathname.slice("/api/v1".length);
@@ -36,4 +42,10 @@ const server = new Server(async (req, res) => {
     }
 });
 
-server.listen(8080);
+server.listen(process.env.PORT || 8080, () => {
+    console.log(
+        `${green}Server is running on port ${cyan}${
+            process.env.PORT || 8080
+        }${green}!`
+    );
+});
