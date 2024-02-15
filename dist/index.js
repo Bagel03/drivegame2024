@@ -851,7 +851,7 @@
               Object.defineProperty(o2, i2, { get: () => this.currentEntity.get(y2), set: (S2) => this.currentEntity.update(y2, S2) }), this.prototype.propIds.push(y2), this.prototype.flattenedSchema.push(n2);
               return;
             }
-            for (let y2 of Object.keys(n2))
+            for (let y2 of Object.keys(n2 || {}))
               a3([n2[y2], o2[y2] = {}, y2]);
           }, ...[[e2, this, "prototype"]]), super.__init__(e2);
         }
@@ -16121,7 +16121,7 @@
         // "drivegame-prod-"
         static idLength = 5;
         static generateId() {
-          return new Array(_NetworkConnection.idLength).fill(0).map((_2) => Math.floor(Math.random() * 26)).map((num) => String.fromCharCode("A".charCodeAt(0) + num)).join("");
+          return new Array(_NetworkConnection.idLength).fill(0).map((_2) => Math.floor(Math.random() * 10)).map((num) => num.toString()).join("");
         }
         peer;
         id;
@@ -16192,6 +16192,9 @@
             this.player2 = this.id;
           }
           console.log("Player 1:", this.player1, "Player 2:", this.player2);
+        }
+        isPlayer1() {
+          return this.id === this.player1;
         }
         resolvePromisesWaitingForConnection;
         waitForConnection = new Promise((res) => {
@@ -31748,10 +31751,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/Bounds.mjs
+  // node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/Bounds.mjs
   var Bounds;
   var init_Bounds = __esm({
-    "node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/Bounds.mjs"() {
+    "node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/Bounds.mjs"() {
       init_lib9();
       Bounds = class {
         constructor() {
@@ -31932,10 +31935,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/DisplayObject.mjs
+  // node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/DisplayObject.mjs
   var DisplayObject, TemporaryDisplayObject;
   var init_DisplayObject = __esm({
-    "node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/DisplayObject.mjs"() {
+    "node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/DisplayObject.mjs"() {
       init_lib9();
       init_Bounds();
       DisplayObject = class _DisplayObject extends lib_exports.EventEmitter {
@@ -32301,13 +32304,13 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/Container.mjs
+  // node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/Container.mjs
   function sortChildren(a3, b3) {
     return a3.zIndex === b3.zIndex ? a3._lastSortedIndex - b3._lastSortedIndex : a3.zIndex - b3.zIndex;
   }
   var tempMatrix3, _Container, Container;
   var init_Container = __esm({
-    "node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/Container.mjs"() {
+    "node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/Container.mjs"() {
       init_lib9();
       init_DisplayObject();
       tempMatrix3 = new Matrix();
@@ -32628,9 +32631,9 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/settings.mjs
+  // node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/settings.mjs
   var init_settings5 = __esm({
-    "node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/settings.mjs"() {
+    "node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/settings.mjs"() {
       init_lib9();
       init_lib9();
       init_Container();
@@ -32656,9 +32659,9 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/index.mjs
+  // node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/index.mjs
   var init_lib10 = __esm({
-    "node_modules/.pnpm/@pixi+display@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/display/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+display@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/display/lib/index.mjs"() {
       init_settings5();
       init_Bounds();
       init_Container();
@@ -32666,10 +32669,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/sprite/lib/Sprite.mjs
+  // node_modules/.pnpm/@pixi+sprite@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/sprite/lib/Sprite.mjs
   var tempPoint, indices, Sprite;
   var init_Sprite = __esm({
-    "node_modules/.pnpm/@pixi+sprite@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/sprite/lib/Sprite.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/sprite/lib/Sprite.mjs"() {
       init_lib9();
       init_lib10();
       tempPoint = new Point();
@@ -32869,17 +32872,17 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/sprite/lib/index.mjs
+  // node_modules/.pnpm/@pixi+sprite@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/sprite/lib/index.mjs
   var init_lib11 = __esm({
-    "node_modules/.pnpm/@pixi+sprite@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/sprite/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/sprite/lib/index.mjs"() {
       init_Sprite();
     }
   });
 
-  // node_modules/.pnpm/@pixi+mixin-cache-as-bitmap@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/mixin-cache-as-bitmap/lib/index.mjs
+  // node_modules/.pnpm/@pixi+mixin-cache-as-bitmap@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/mixin-cache-as-bitmap/lib/index.mjs
   var _tempMatrix, CacheData;
   var init_lib12 = __esm({
-    "node_modules/.pnpm/@pixi+mixin-cache-as-bitmap@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/mixin-cache-as-bitmap/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+mixin-cache-as-bitmap@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/mixin-cache-as-bitmap/lib/index.mjs"() {
       init_lib9();
       init_lib10();
       init_lib11();
@@ -33014,9 +33017,9 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+mixin-get-child-by-name@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mixin-get-child-by-name/lib/index.mjs
+  // node_modules/.pnpm/@pixi+mixin-get-child-by-name@7.3.2(@pixi+display@7.3.2)/node_modules/@pixi/mixin-get-child-by-name/lib/index.mjs
   var init_lib13 = __esm({
-    "node_modules/.pnpm/@pixi+mixin-get-child-by-name@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mixin-get-child-by-name/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+mixin-get-child-by-name@7.3.2(@pixi+display@7.3.2)/node_modules/@pixi/mixin-get-child-by-name/lib/index.mjs"() {
       init_lib10();
       DisplayObject.prototype.name = null;
       Container.prototype.getChildByName = function(name, deep) {
@@ -33037,9 +33040,9 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+mixin-get-global-position@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mixin-get-global-position/lib/index.mjs
+  // node_modules/.pnpm/@pixi+mixin-get-global-position@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mixin-get-global-position/lib/index.mjs
   var init_lib14 = __esm({
-    "node_modules/.pnpm/@pixi+mixin-get-global-position@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mixin-get-global-position/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+mixin-get-global-position@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mixin-get-global-position/lib/index.mjs"() {
       init_lib9();
       init_lib10();
       DisplayObject.prototype.getGlobalPosition = function(point = new Point(), skipUpdate = false) {
@@ -33048,10 +33051,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-alpha@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-alpha/lib/alpha.frag.mjs
+  // node_modules/.pnpm/@pixi+filter-alpha@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-alpha/lib/alpha.frag.mjs
   var fragment2;
   var init_alpha_frag = __esm({
-    "node_modules/.pnpm/@pixi+filter-alpha@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-alpha/lib/alpha.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-alpha@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-alpha/lib/alpha.frag.mjs"() {
       fragment2 = `varying vec2 vTextureCoord;
 
 uniform sampler2D uSampler;
@@ -33065,10 +33068,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-alpha@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-alpha/lib/AlphaFilter.mjs
+  // node_modules/.pnpm/@pixi+filter-alpha@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-alpha/lib/AlphaFilter.mjs
   var AlphaFilter;
   var init_AlphaFilter = __esm({
-    "node_modules/.pnpm/@pixi+filter-alpha@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-alpha/lib/AlphaFilter.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-alpha@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-alpha/lib/AlphaFilter.mjs"() {
       init_lib9();
       init_alpha_frag();
       AlphaFilter = class extends Filter {
@@ -33092,14 +33095,14 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-alpha@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-alpha/lib/index.mjs
+  // node_modules/.pnpm/@pixi+filter-alpha@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-alpha/lib/index.mjs
   var init_lib15 = __esm({
-    "node_modules/.pnpm/@pixi+filter-alpha@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-alpha/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-alpha@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-alpha/lib/index.mjs"() {
       init_AlphaFilter();
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/generateBlurFragSource.mjs
+  // node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/generateBlurFragSource.mjs
   function generateBlurFragSource(kernelSize) {
     const kernel = GAUSSIAN_VALUES[kernelSize], halfLength = kernel.length;
     let fragSource = fragTemplate2, blurLoop = "";
@@ -33114,7 +33117,7 @@ void main(void)
   }
   var GAUSSIAN_VALUES, fragTemplate2;
   var init_generateBlurFragSource = __esm({
-    "node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/generateBlurFragSource.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/generateBlurFragSource.mjs"() {
       GAUSSIAN_VALUES = {
         5: [0.153388, 0.221461, 0.250301],
         7: [0.071303, 0.131514, 0.189879, 0.214607],
@@ -33136,7 +33139,7 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/generateBlurVertSource.mjs
+  // node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/generateBlurVertSource.mjs
   function generateBlurVertSource(kernelSize, x3) {
     const halfLength = Math.ceil(kernelSize / 2);
     let vertSource = vertTemplate, blurLoop = "", template;
@@ -33150,7 +33153,7 @@ void main(void)
   }
   var vertTemplate;
   var init_generateBlurVertSource = __esm({
-    "node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/generateBlurVertSource.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/generateBlurVertSource.mjs"() {
       vertTemplate = `
     attribute vec2 aVertexPosition;
 
@@ -33185,10 +33188,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/BlurFilterPass.mjs
+  // node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/BlurFilterPass.mjs
   var BlurFilterPass;
   var init_BlurFilterPass = __esm({
-    "node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/BlurFilterPass.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/BlurFilterPass.mjs"() {
       init_lib9();
       init_generateBlurFragSource();
       init_generateBlurVertSource();
@@ -33256,10 +33259,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/BlurFilter.mjs
+  // node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/BlurFilter.mjs
   var BlurFilter;
   var init_BlurFilter = __esm({
-    "node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/BlurFilter.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/BlurFilter.mjs"() {
       init_lib9();
       init_BlurFilterPass();
       BlurFilter = class extends Filter {
@@ -33354,18 +33357,18 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/index.mjs
+  // node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/index.mjs
   var init_lib16 = __esm({
-    "node_modules/.pnpm/@pixi+filter-blur@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-blur/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-blur@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-blur/lib/index.mjs"() {
       init_BlurFilter();
       init_BlurFilterPass();
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-color-matrix/lib/colorMatrix.frag.mjs
+  // node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-color-matrix/lib/colorMatrix.frag.mjs
   var fragment3;
   var init_colorMatrix_frag = __esm({
-    "node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-color-matrix/lib/colorMatrix.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-color-matrix/lib/colorMatrix.frag.mjs"() {
       fragment3 = `varying vec2 vTextureCoord;
 uniform sampler2D uSampler;
 uniform float m[20];
@@ -33422,10 +33425,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-color-matrix/lib/ColorMatrixFilter.mjs
+  // node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-color-matrix/lib/ColorMatrixFilter.mjs
   var ColorMatrixFilter;
   var init_ColorMatrixFilter = __esm({
-    "node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-color-matrix/lib/ColorMatrixFilter.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-color-matrix/lib/ColorMatrixFilter.mjs"() {
       init_lib9();
       init_colorMatrix_frag();
       ColorMatrixFilter = class extends Filter {
@@ -34145,17 +34148,17 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-color-matrix/lib/index.mjs
+  // node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-color-matrix/lib/index.mjs
   var init_lib17 = __esm({
-    "node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-color-matrix/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-color-matrix@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-color-matrix/lib/index.mjs"() {
       init_ColorMatrixFilter();
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/displacement.frag.mjs
+  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/displacement.frag.mjs
   var fragment4;
   var init_displacement_frag = __esm({
-    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/displacement.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/displacement.frag.mjs"() {
       fragment4 = `varying vec2 vFilterCoord;
 varying vec2 vTextureCoord;
 
@@ -34180,10 +34183,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/displacement.vert.mjs
+  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/displacement.vert.mjs
   var vertex2;
   var init_displacement_vert = __esm({
-    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/displacement.vert.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/displacement.vert.mjs"() {
       vertex2 = `attribute vec2 aVertexPosition;
 
 uniform mat3 projectionMatrix;
@@ -34217,10 +34220,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/DisplacementFilter.mjs
+  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/DisplacementFilter.mjs
   var DisplacementFilter;
   var init_DisplacementFilter = __esm({
-    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/DisplacementFilter.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/DisplacementFilter.mjs"() {
       init_lib9();
       init_displacement_frag();
       init_displacement_vert();
@@ -34261,17 +34264,17 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/index.mjs
+  // node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/index.mjs
   var init_lib18 = __esm({
-    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-displacement/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-displacement@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-displacement/lib/index.mjs"() {
       init_DisplacementFilter();
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/fxaa.frag.mjs
+  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/fxaa.frag.mjs
   var fragment5;
   var init_fxaa_frag = __esm({
-    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/fxaa.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/fxaa.frag.mjs"() {
       fragment5 = `varying vec2 v_rgbNW;
 varying vec2 v_rgbNE;
 varying vec2 v_rgbSW;
@@ -34397,10 +34400,10 @@ void main() {
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/fxaa.vert.mjs
+  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/fxaa.vert.mjs
   var vertex3;
   var init_fxaa_vert = __esm({
-    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/fxaa.vert.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/fxaa.vert.mjs"() {
       vertex3 = `
 attribute vec2 aVertexPosition;
 
@@ -34447,10 +34450,10 @@ void main(void) {
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/FXAAFilter.mjs
+  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/FXAAFilter.mjs
   var FXAAFilter;
   var init_FXAAFilter = __esm({
-    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/FXAAFilter.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/FXAAFilter.mjs"() {
       init_lib9();
       init_fxaa_frag();
       init_fxaa_vert();
@@ -34462,17 +34465,17 @@ void main(void) {
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/index.mjs
+  // node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/index.mjs
   var init_lib19 = __esm({
-    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-fxaa/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-fxaa@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-fxaa/lib/index.mjs"() {
       init_FXAAFilter();
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-noise@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-noise/lib/noise.frag.mjs
+  // node_modules/.pnpm/@pixi+filter-noise@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-noise/lib/noise.frag.mjs
   var fragment6;
   var init_noise_frag = __esm({
-    "node_modules/.pnpm/@pixi+filter-noise@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-noise/lib/noise.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-noise@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-noise/lib/noise.frag.mjs"() {
       fragment6 = `precision highp float;
 
 varying vec2 vTextureCoord;
@@ -34511,10 +34514,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-noise@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-noise/lib/NoiseFilter.mjs
+  // node_modules/.pnpm/@pixi+filter-noise@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-noise/lib/NoiseFilter.mjs
   var NoiseFilter;
   var init_NoiseFilter = __esm({
-    "node_modules/.pnpm/@pixi+filter-noise@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-noise/lib/NoiseFilter.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-noise@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-noise/lib/NoiseFilter.mjs"() {
       init_lib9();
       init_noise_frag();
       NoiseFilter = class extends Filter {
@@ -34549,17 +34552,17 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+filter-noise@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-noise/lib/index.mjs
+  // node_modules/.pnpm/@pixi+filter-noise@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-noise/lib/index.mjs
   var init_lib20 = __esm({
-    "node_modules/.pnpm/@pixi+filter-noise@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/filter-noise/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+filter-noise@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/filter-noise/lib/index.mjs"() {
       init_NoiseFilter();
     }
   });
 
-  // node_modules/.pnpm/pixi.js@7.3.2_@pixi+utils@7.3.2/node_modules/pixi.js/lib/filters.mjs
+  // node_modules/.pnpm/pixi.js@7.3.2/node_modules/pixi.js/lib/filters.mjs
   var filters;
   var init_filters = __esm({
-    "node_modules/.pnpm/pixi.js@7.3.2_@pixi+utils@7.3.2/node_modules/pixi.js/lib/filters.mjs"() {
+    "node_modules/.pnpm/pixi.js@7.3.2/node_modules/pixi.js/lib/filters.mjs"() {
       init_lib9();
       init_lib15();
       init_lib16();
@@ -34628,10 +34631,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/EventTicker.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/EventTicker.mjs
   var EventsTickerClass, EventsTicker;
   var init_EventTicker = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/EventTicker.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/EventTicker.mjs"() {
       init_lib9();
       EventsTickerClass = class {
         constructor() {
@@ -34692,10 +34695,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedEvent.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedEvent.mjs
   var FederatedEvent;
   var init_FederatedEvent = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedEvent.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedEvent.mjs"() {
       init_lib9();
       FederatedEvent = class _FederatedEvent {
         /**
@@ -34777,10 +34780,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedMouseEvent.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedMouseEvent.mjs
   var FederatedMouseEvent;
   var init_FederatedMouseEvent = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedMouseEvent.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedMouseEvent.mjs"() {
       init_lib9();
       init_FederatedEvent();
       FederatedMouseEvent = class extends FederatedEvent {
@@ -34895,10 +34898,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedPointerEvent.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedPointerEvent.mjs
   var FederatedPointerEvent;
   var init_FederatedPointerEvent = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedPointerEvent.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedPointerEvent.mjs"() {
       init_FederatedMouseEvent();
       FederatedPointerEvent = class extends FederatedMouseEvent {
         constructor() {
@@ -34916,10 +34919,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedWheelEvent.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedWheelEvent.mjs
   var FederatedWheelEvent;
   var init_FederatedWheelEvent = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedWheelEvent.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedWheelEvent.mjs"() {
       init_FederatedMouseEvent();
       FederatedWheelEvent = class extends FederatedMouseEvent {
         constructor() {
@@ -34932,10 +34935,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/EventBoundary.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/EventBoundary.mjs
   var PROPAGATION_LIMIT, tempHitLocation, tempLocalMapping, EventBoundary;
   var init_EventBoundary = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/EventBoundary.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/EventBoundary.mjs"() {
       init_lib9();
       init_EventTicker();
       init_FederatedMouseEvent();
@@ -35552,10 +35555,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/EventSystem.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/EventSystem.mjs
   var MOUSE_POINTER_ID, TOUCH_TO_POINTER, _EventSystem, EventSystem;
   var init_EventSystem = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/EventSystem.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/EventSystem.mjs"() {
       init_lib9();
       init_EventBoundary();
       init_EventTicker();
@@ -35836,13 +35839,13 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedEventTarget.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedEventTarget.mjs
   function convertEventModeToInteractiveMode(mode) {
     return mode === "dynamic" || mode === "static";
   }
   var FederatedDisplayObject;
   var init_FederatedEventTarget = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/FederatedEventTarget.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/FederatedEventTarget.mjs"() {
       init_lib9();
       init_lib10();
       init_EventSystem();
@@ -36346,9 +36349,9 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/index.mjs
+  // node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/index.mjs
   var init_lib21 = __esm({
-    "node_modules/.pnpm/@pixi+events@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/events/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+events@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/events/lib/index.mjs"() {
       init_EventBoundary();
       init_EventSystem();
       init_FederatedEvent();
@@ -36359,10 +36362,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+accessibility@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+events@7.3.2/node_modules/@pixi/accessibility/lib/accessibleTarget.mjs
+  // node_modules/.pnpm/@pixi+accessibility@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+events@7.3.2)/node_modules/@pixi/accessibility/lib/accessibleTarget.mjs
   var accessibleTarget;
   var init_accessibleTarget = __esm({
-    "node_modules/.pnpm/@pixi+accessibility@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+events@7.3.2/node_modules/@pixi/accessibility/lib/accessibleTarget.mjs"() {
+    "node_modules/.pnpm/@pixi+accessibility@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+events@7.3.2)/node_modules/@pixi/accessibility/lib/accessibleTarget.mjs"() {
       accessibleTarget = {
         /**
          *  Flag for if the object is accessible. If true AccessibilityManager will overlay a
@@ -36432,10 +36435,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+accessibility@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+events@7.3.2/node_modules/@pixi/accessibility/lib/AccessibilityManager.mjs
+  // node_modules/.pnpm/@pixi+accessibility@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+events@7.3.2)/node_modules/@pixi/accessibility/lib/AccessibilityManager.mjs
   var KEY_CODE_TAB, DIV_TOUCH_SIZE, DIV_TOUCH_POS_X, DIV_TOUCH_POS_Y, DIV_TOUCH_ZINDEX, DIV_HOOK_SIZE, DIV_HOOK_POS_X, DIV_HOOK_POS_Y, DIV_HOOK_ZINDEX, AccessibilityManager;
   var init_AccessibilityManager = __esm({
-    "node_modules/.pnpm/@pixi+accessibility@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+events@7.3.2/node_modules/@pixi/accessibility/lib/AccessibilityManager.mjs"() {
+    "node_modules/.pnpm/@pixi+accessibility@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+events@7.3.2)/node_modules/@pixi/accessibility/lib/AccessibilityManager.mjs"() {
       init_lib9();
       init_lib10();
       init_lib21();
@@ -36640,18 +36643,18 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+accessibility@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+events@7.3.2/node_modules/@pixi/accessibility/lib/index.mjs
+  // node_modules/.pnpm/@pixi+accessibility@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+events@7.3.2)/node_modules/@pixi/accessibility/lib/index.mjs
   var init_lib22 = __esm({
-    "node_modules/.pnpm/@pixi+accessibility@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+events@7.3.2/node_modules/@pixi/accessibility/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+accessibility@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+events@7.3.2)/node_modules/@pixi/accessibility/lib/index.mjs"() {
       init_AccessibilityManager();
       init_accessibleTarget();
     }
   });
 
-  // node_modules/.pnpm/@pixi+app@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/app/lib/Application.mjs
+  // node_modules/.pnpm/@pixi+app@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/app/lib/Application.mjs
   var _Application, Application;
   var init_Application = __esm({
-    "node_modules/.pnpm/@pixi+app@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/app/lib/Application.mjs"() {
+    "node_modules/.pnpm/@pixi+app@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/app/lib/Application.mjs"() {
       init_lib9();
       init_lib10();
       _Application = class _Application2 {
@@ -36710,10 +36713,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+app@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/app/lib/ResizePlugin.mjs
+  // node_modules/.pnpm/@pixi+app@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/app/lib/ResizePlugin.mjs
   var ResizePlugin;
   var init_ResizePlugin = __esm({
-    "node_modules/.pnpm/@pixi+app@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/app/lib/ResizePlugin.mjs"() {
+    "node_modules/.pnpm/@pixi+app@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/app/lib/ResizePlugin.mjs"() {
       init_lib9();
       ResizePlugin = class {
         /**
@@ -36773,18 +36776,18 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+app@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/app/lib/index.mjs
+  // node_modules/.pnpm/@pixi+app@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/app/lib/index.mjs
   var init_lib23 = __esm({
-    "node_modules/.pnpm/@pixi+app@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/app/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+app@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/app/lib/index.mjs"() {
       init_Application();
       init_ResizePlugin();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/AssetExtension.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/AssetExtension.mjs
   var assetKeyMap;
   var init_AssetExtension = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/AssetExtension.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/AssetExtension.mjs"() {
       init_lib9();
       assetKeyMap = {
         loader: ExtensionType.LoadParser,
@@ -36807,10 +36810,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/BackgroundLoader.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/BackgroundLoader.mjs
   var BackgroundLoader;
   var init_BackgroundLoader = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/BackgroundLoader.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/BackgroundLoader.mjs"() {
       BackgroundLoader = class {
         /**
          * @param loader
@@ -36856,7 +36859,7 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/checkDataUrl.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/checkDataUrl.mjs
   function checkDataUrl(url2, mimes) {
     if (Array.isArray(mimes)) {
       for (const mime of mimes)
@@ -36867,33 +36870,33 @@ void main()
     return url2.startsWith(`data:${mimes}`);
   }
   var init_checkDataUrl = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/checkDataUrl.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/checkDataUrl.mjs"() {
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/checkExtension.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/checkExtension.mjs
   function checkExtension(url2, extension) {
     const tempURL = url2.split("?")[0], ext = lib_exports.path.extname(tempURL).toLowerCase();
     return Array.isArray(extension) ? extension.includes(ext) : ext === extension;
   }
   var init_checkExtension = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/checkExtension.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/checkExtension.mjs"() {
       init_lib9();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/convertToList.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/convertToList.mjs
   var convertToList;
   var init_convertToList = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/convertToList.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/convertToList.mjs"() {
       convertToList = (input, transform, forceTransform = false) => (Array.isArray(input) || (input = [input]), transform ? input.map((item) => typeof item == "string" || forceTransform ? transform(item) : item) : input);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/copySearchParams.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/copySearchParams.mjs
   var copySearchParams;
   var init_copySearchParams = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/copySearchParams.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/copySearchParams.mjs"() {
       copySearchParams = (targetUrl, sourceUrl) => {
         const searchParams = sourceUrl.split("?")[1];
         return searchParams && (targetUrl += `?${searchParams}`), targetUrl;
@@ -36901,7 +36904,7 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/createStringVariations.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/createStringVariations.mjs
   function processX(base, ids, depth, result, tags) {
     const id = ids[depth];
     for (let i2 = 0; i2 < id.length; i2++) {
@@ -36922,21 +36925,21 @@ void main()
     return tags;
   }
   var init_createStringVariations = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/createStringVariations.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/createStringVariations.mjs"() {
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/isSingleItem.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/isSingleItem.mjs
   var isSingleItem;
   var init_isSingleItem = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/isSingleItem.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/isSingleItem.mjs"() {
       isSingleItem = (item) => !Array.isArray(item);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/index.mjs
   var init_utils3 = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/utils/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/index.mjs"() {
       init_checkDataUrl();
       init_checkExtension();
       init_convertToList();
@@ -36946,10 +36949,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/Cache.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/Cache.mjs
   var CacheClass, Cache;
   var init_Cache = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/Cache.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/Cache.mjs"() {
       init_lib9();
       init_utils3();
       init_convertToList();
@@ -37036,10 +37039,10 @@ void main()
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/Loader.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/Loader.mjs
   var Loader;
   var init_Loader = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/Loader.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/Loader.mjs"() {
       init_lib9();
       init_utils3();
       init_isSingleItem();
@@ -37137,18 +37140,18 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/LoaderParser.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/LoaderParser.mjs
   var LoaderParserPriority;
   var init_LoaderParser = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/LoaderParser.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/LoaderParser.mjs"() {
       LoaderParserPriority = /* @__PURE__ */ ((LoaderParserPriority2) => (LoaderParserPriority2[LoaderParserPriority2.Low = 0] = "Low", LoaderParserPriority2[LoaderParserPriority2.Normal = 1] = "Normal", LoaderParserPriority2[LoaderParserPriority2.High = 2] = "High", LoaderParserPriority2))(LoaderParserPriority || {});
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/loadJson.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/loadJson.mjs
   var validJSONExtension, validJSONMIME, loadJson;
   var init_loadJson = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/loadJson.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/loadJson.mjs"() {
       init_lib9();
       init_checkDataUrl();
       init_checkExtension();
@@ -37172,10 +37175,10 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/loadTxt.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/loadTxt.mjs
   var validTXTExtension, validTXTMIME, loadTxt;
   var init_loadTxt = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/loadTxt.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/loadTxt.mjs"() {
       init_lib9();
       init_checkDataUrl();
       init_checkExtension();
@@ -37199,7 +37202,7 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/loadWebFont.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/loadWebFont.mjs
   function getFontFamilyName(url2) {
     const ext = lib_exports.path.extname(url2), nameTokens = lib_exports.path.basename(url2, ext).replace(/(-|_)/g, " ").toLowerCase().split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1));
     let valid = nameTokens.length > 0;
@@ -37216,7 +37219,7 @@ ${e2}`);
   }
   var validWeights, validFontExtensions, validFontMIMEs, CSS_IDENT_TOKEN_REGEX, validURICharactersRegex, loadWebFont;
   var init_loadWebFont = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/loadWebFont.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/loadWebFont.mjs"() {
       init_lib9();
       init_checkDataUrl();
       init_checkExtension();
@@ -37275,10 +37278,10 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/WorkerManager.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/WorkerManager.mjs
   var UUID, MAX_WORKERS, WHITE_PNG, checkImageBitmapCode, workerCode, workerURL, WorkerManagerClass, WorkerManager;
   var init_WorkerManager = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/WorkerManager.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/WorkerManager.mjs"() {
       UUID = 0;
       WHITE_PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
       checkImageBitmapCode = {
@@ -37403,7 +37406,7 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/createTexture.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/createTexture.mjs
   function createTexture(base, loader, url2) {
     base.resource.internal = true;
     const texture = new Texture(base), unload = () => {
@@ -37416,13 +37419,13 @@ ${e2}`);
     }), texture;
   }
   var init_createTexture = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/createTexture.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/createTexture.mjs"() {
       init_lib9();
       init_Cache();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/loadTextures.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/loadTextures.mjs
   async function loadImageBitmap(url2) {
     const response = await settings.ADAPTER.fetch(url2);
     if (!response.ok)
@@ -37432,7 +37435,7 @@ ${e2}`);
   }
   var validImageExtensions, validImageMIMEs, loadTextures;
   var init_loadTextures = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/loadTextures.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/loadTextures.mjs"() {
       init_lib9();
       init_checkDataUrl();
       init_checkExtension();
@@ -37480,10 +37483,10 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/loadSVG.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/loadSVG.mjs
   var validSVGExtension, validSVGMIME, loadSVG;
   var init_loadSVG = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/loadSVG.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/loadSVG.mjs"() {
       init_lib9();
       init_checkDataUrl();
       init_checkExtension();
@@ -37522,10 +37525,10 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/loadVideo.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/loadVideo.mjs
   var validVideoExtensions, validVideoMIMEs, loadVideo;
   var init_loadVideo = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/loadVideo.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/loadVideo.mjs"() {
       init_lib9();
       init_checkDataUrl();
       init_checkExtension();
@@ -37579,16 +37582,16 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/index.mjs
   var init_utils4 = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/utils/index.mjs"() {
       init_createTexture();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/index.mjs
   var init_textures = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/textures/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/textures/index.mjs"() {
       init_loadSVG();
       init_loadTextures();
       init_loadVideo();
@@ -37596,9 +37599,9 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/index.mjs
   var init_parsers = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/parsers/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/parsers/index.mjs"() {
       init_LoaderParser();
       init_loadJson();
       init_loadTxt();
@@ -37607,10 +37610,10 @@ ${e2}`);
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/Resolver.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/Resolver.mjs
   var Resolver;
   var init_Resolver = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/Resolver.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/Resolver.mjs"() {
       init_lib9();
       init_convertToList();
       init_createStringVariations();
@@ -38001,10 +38004,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/Assets.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/Assets.mjs
   var AssetsClass, Assets;
   var init_Assets = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/Assets.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/Assets.mjs"() {
       init_lib9();
       init_BackgroundLoader();
       init_Cache();
@@ -38338,10 +38341,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/parsers/cacheTextureArray.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/parsers/cacheTextureArray.mjs
   var cacheTextureArray;
   var init_cacheTextureArray = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/parsers/cacheTextureArray.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/parsers/cacheTextureArray.mjs"() {
       init_lib9();
       cacheTextureArray = {
         extension: ExtensionType.CacheParser,
@@ -38359,22 +38362,22 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/parsers/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/parsers/index.mjs
   var init_parsers2 = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/parsers/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/parsers/index.mjs"() {
       init_cacheTextureArray();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/index.mjs
   var init_cache = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/cache/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/cache/index.mjs"() {
       init_Cache();
       init_parsers2();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/utils/testImageFormat.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/utils/testImageFormat.mjs
   async function testImageFormat(imageData) {
     if ("Image" in globalThis)
       return new Promise((resolve2) => {
@@ -38397,14 +38400,14 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     return false;
   }
   var init_testImageFormat = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/utils/testImageFormat.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/utils/testImageFormat.mjs"() {
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectAvif.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectAvif.mjs
   var detectAvif;
   var init_detectAvif = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectAvif.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectAvif.mjs"() {
       init_lib9();
       init_testImageFormat();
       detectAvif = {
@@ -38423,10 +38426,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectWebp.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectWebp.mjs
   var detectWebp;
   var init_detectWebp = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectWebp.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectWebp.mjs"() {
       init_lib9();
       init_testImageFormat();
       detectWebp = {
@@ -38444,10 +38447,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectDefaults.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectDefaults.mjs
   var imageFormats, detectDefaults;
   var init_detectDefaults = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectDefaults.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectDefaults.mjs"() {
       init_lib9();
       imageFormats = ["png", "jpg", "jpeg"];
       detectDefaults = {
@@ -38463,21 +38466,21 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/utils/testVideoFormat.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/utils/testVideoFormat.mjs
   function testVideoFormat(mimeType) {
     return inWorker ? false : document.createElement("video").canPlayType(mimeType) !== "";
   }
   var inWorker;
   var init_testVideoFormat = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/utils/testVideoFormat.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/utils/testVideoFormat.mjs"() {
       inWorker = "WorkerGlobalScope" in globalThis && globalThis instanceof globalThis.WorkerGlobalScope;
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectWebm.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectWebm.mjs
   var detectWebm;
   var init_detectWebm = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectWebm.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectWebm.mjs"() {
       init_lib9();
       init_testVideoFormat();
       detectWebm = {
@@ -38493,10 +38496,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectMp4.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectMp4.mjs
   var detectMp4;
   var init_detectMp4 = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectMp4.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectMp4.mjs"() {
       init_lib9();
       init_testVideoFormat();
       detectMp4 = {
@@ -38512,10 +38515,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectOgv.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectOgv.mjs
   var detectOgv;
   var init_detectOgv = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/detectOgv.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/detectOgv.mjs"() {
       init_lib9();
       init_testVideoFormat();
       detectOgv = {
@@ -38531,9 +38534,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/index.mjs
   var init_parsers3 = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/parsers/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/parsers/index.mjs"() {
       init_detectAvif();
       init_detectWebp();
       init_detectDefaults();
@@ -38543,24 +38546,24 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/index.mjs
   var init_detections = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/detections/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/detections/index.mjs"() {
       init_parsers3();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/index.mjs
   var init_loader = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/loader/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/loader/index.mjs"() {
       init_parsers();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/parsers/resolveTextureUrl.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/parsers/resolveTextureUrl.mjs
   var resolveTextureUrl;
   var init_resolveTextureUrl = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/parsers/resolveTextureUrl.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/parsers/resolveTextureUrl.mjs"() {
       init_lib9();
       init_loader();
       init_loadTextures();
@@ -38577,23 +38580,23 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/parsers/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/parsers/index.mjs
   var init_parsers4 = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/parsers/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/parsers/index.mjs"() {
       init_resolveTextureUrl();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/index.mjs
   var init_resolver = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/resolver/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/resolver/index.mjs"() {
       init_parsers4();
     }
   });
 
-  // node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/index.mjs
+  // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/index.mjs
   var init_lib24 = __esm({
-    "node_modules/.pnpm/@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+utils@7.3.2/node_modules/@pixi/assets/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/index.mjs"() {
       init_AssetExtension();
       init_Assets();
       init_cache();
@@ -38627,10 +38630,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/const.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/const.mjs
   var INTERNAL_FORMATS, INTERNAL_FORMAT_TO_BYTES_PER_PIXEL;
   var init_const4 = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/const.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/const.mjs"() {
       INTERNAL_FORMATS = /* @__PURE__ */ ((INTERNAL_FORMATS2) => (INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGB_S3TC_DXT1_EXT = 33776] = "COMPRESSED_RGB_S3TC_DXT1_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_S3TC_DXT1_EXT = 33777] = "COMPRESSED_RGBA_S3TC_DXT1_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_S3TC_DXT3_EXT = 33778] = "COMPRESSED_RGBA_S3TC_DXT3_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_S3TC_DXT5_EXT = 33779] = "COMPRESSED_RGBA_S3TC_DXT5_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT = 35917] = "COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT = 35918] = "COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT = 35919] = "COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SRGB_S3TC_DXT1_EXT = 35916] = "COMPRESSED_SRGB_S3TC_DXT1_EXT", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_R11_EAC = 37488] = "COMPRESSED_R11_EAC", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SIGNED_R11_EAC = 37489] = "COMPRESSED_SIGNED_R11_EAC", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RG11_EAC = 37490] = "COMPRESSED_RG11_EAC", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SIGNED_RG11_EAC = 37491] = "COMPRESSED_SIGNED_RG11_EAC", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGB8_ETC2 = 37492] = "COMPRESSED_RGB8_ETC2", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA8_ETC2_EAC = 37496] = "COMPRESSED_RGBA8_ETC2_EAC", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SRGB8_ETC2 = 37493] = "COMPRESSED_SRGB8_ETC2", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC = 37497] = "COMPRESSED_SRGB8_ALPHA8_ETC2_EAC", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 = 37494] = "COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 = 37495] = "COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGB_PVRTC_4BPPV1_IMG = 35840] = "COMPRESSED_RGB_PVRTC_4BPPV1_IMG", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 35842] = "COMPRESSED_RGBA_PVRTC_4BPPV1_IMG", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGB_PVRTC_2BPPV1_IMG = 35841] = "COMPRESSED_RGB_PVRTC_2BPPV1_IMG", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG = 35843] = "COMPRESSED_RGBA_PVRTC_2BPPV1_IMG", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGB_ETC1_WEBGL = 36196] = "COMPRESSED_RGB_ETC1_WEBGL", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGB_ATC_WEBGL = 35986] = "COMPRESSED_RGB_ATC_WEBGL", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL = 35986] = "COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL = 34798] = "COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL", INTERNAL_FORMATS2[INTERNAL_FORMATS2.COMPRESSED_RGBA_ASTC_4x4_KHR = 37808] = "COMPRESSED_RGBA_ASTC_4x4_KHR", INTERNAL_FORMATS2))(INTERNAL_FORMATS || {});
       INTERNAL_FORMAT_TO_BYTES_PER_PIXEL = {
         // WEBGL_compressed_texture_s3tc
@@ -38676,7 +38679,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/detectCompressedTextures.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/detectCompressedTextures.mjs
   function getCompressedTextureExtensions() {
     extensions3 = {
       s3tc: storedGl.getExtension("WEBGL_compressed_texture_s3tc"),
@@ -38691,7 +38694,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   }
   var storedGl, extensions3, detectCompressedTextures;
   var init_detectCompressedTextures = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/detectCompressedTextures.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/detectCompressedTextures.mjs"() {
       init_lib9();
       detectCompressedTextures = {
         extension: {
@@ -38715,10 +38718,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/resources/BlobResource.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/resources/BlobResource.mjs
   var BlobResource;
   var init_BlobResource = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/resources/BlobResource.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/resources/BlobResource.mjs"() {
       init_lib9();
       BlobResource = class extends BufferResource {
         /**
@@ -38744,10 +38747,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/resources/CompressedTextureResource.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/resources/CompressedTextureResource.mjs
   var CompressedTextureResource;
   var init_CompressedTextureResource = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/resources/CompressedTextureResource.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/resources/CompressedTextureResource.mjs"() {
       init_const4();
       init_BlobResource();
       CompressedTextureResource = class _CompressedTextureResource extends BlobResource {
@@ -38850,15 +38853,15 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/resources/index.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/resources/index.mjs
   var init_resources2 = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/resources/index.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/resources/index.mjs"() {
       init_BlobResource();
       init_CompressedTextureResource();
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/parsers/parseDDS.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/parsers/parseDDS.mjs
   function parseDDS(arrayBuffer) {
     const data = new Uint32Array(arrayBuffer);
     if (data[0] !== DDS_MAGIC)
@@ -38916,7 +38919,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   }
   var DDS_MAGIC_SIZE, DDS_HEADER_SIZE, DDS_HEADER_PF_SIZE, DDS_HEADER_DX10_SIZE, DDS_MAGIC, DDS_FIELDS, DDS_PF_FIELDS, DDS_DX10_FIELDS, PF_FLAGS, DDPF_ALPHA, DDPF_FOURCC, DDPF_RGB, DDPF_YUV, DDPF_LUMINANCE, FOURCC_DXT1, FOURCC_DXT3, FOURCC_DXT5, FOURCC_DX10, DDS_RESOURCE_MISC_TEXTURECUBE, FOURCC_TO_FORMAT, DXGI_TO_FORMAT;
   var init_parseDDS = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/parsers/parseDDS.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/parsers/parseDDS.mjs"() {
       init_const4();
       init_resources2();
       init_CompressedTextureResource();
@@ -38982,7 +38985,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/parsers/parseKTX.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/parsers/parseKTX.mjs
   function parseKTX(url2, arrayBuffer, loadKeyValueData = false) {
     const dataView2 = new DataView(arrayBuffer);
     if (!validate(url2, dataView2))
@@ -39105,7 +39108,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   }
   var FILE_IDENTIFIER, ENDIANNESS, KTX_FIELDS, FILE_HEADER_SIZE, TYPES_TO_BYTES_PER_COMPONENT, FORMATS_TO_COMPONENTS, TYPES_TO_BYTES_PER_PIXEL;
   var init_parseKTX = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/parsers/parseKTX.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/parsers/parseKTX.mjs"() {
       init_lib9();
       init_const4();
       init_resources2();
@@ -39154,18 +39157,18 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/parsers/index.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/parsers/index.mjs
   var init_parsers5 = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/parsers/index.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/parsers/index.mjs"() {
       init_parseDDS();
       init_parseKTX();
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/loadDDS.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/loadDDS.mjs
   var loadDDS;
   var init_loadDDS = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/loadDDS.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/loadDDS.mjs"() {
       init_lib24();
       init_lib9();
       init_parsers5();
@@ -39199,10 +39202,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/loadKTX.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/loadKTX.mjs
   var loadKTX;
   var init_loadKTX = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/loadKTX.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/loadKTX.mjs"() {
       init_lib24();
       init_lib9();
       init_parsers5();
@@ -39240,10 +39243,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/resolveCompressedTextureUrl.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/resolveCompressedTextureUrl.mjs
   var resolveCompressedTextureUrl;
   var init_resolveCompressedTextureUrl = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/resolveCompressedTextureUrl.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/resolveCompressedTextureUrl.mjs"() {
       init_lib9();
       resolveCompressedTextureUrl = {
         extension: ExtensionType.ResolveParser,
@@ -39281,9 +39284,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/index.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/index.mjs
   var init_loaders = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/loaders/index.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/loaders/index.mjs"() {
       init_detectCompressedTextures();
       init_loadDDS();
       init_loadKTX();
@@ -39291,9 +39294,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/index.mjs
+  // node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/index.mjs
   var init_lib25 = __esm({
-    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/compressed-textures/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+compressed-textures@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/compressed-textures/lib/index.mjs"() {
       init_const4();
       init_loaders();
       init_parsers5();
@@ -39309,10 +39312,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+extract@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/extract/lib/Extract.mjs
+  // node_modules/.pnpm/@pixi+extract@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/extract/lib/Extract.mjs
   var TEMP_RECT, BYTES_PER_PIXEL, _Extract, Extract;
   var init_Extract = __esm({
-    "node_modules/.pnpm/@pixi+extract@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/extract/lib/Extract.mjs"() {
+    "node_modules/.pnpm/@pixi+extract@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/extract/lib/Extract.mjs"() {
       init_lib9();
       TEMP_RECT = new Rectangle();
       BYTES_PER_PIXEL = 4;
@@ -39461,17 +39464,17 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+extract@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/extract/lib/index.mjs
+  // node_modules/.pnpm/@pixi+extract@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/extract/lib/index.mjs
   var init_lib26 = __esm({
-    "node_modules/.pnpm/@pixi+extract@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/extract/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+extract@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/extract/lib/index.mjs"() {
       init_Extract();
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildCircle.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildCircle.mjs
   var buildCircle;
   var init_buildCircle = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildCircle.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildCircle.mjs"() {
       init_lib9();
       buildCircle = {
         build(graphicsData) {
@@ -39542,7 +39545,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildPoly.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildPoly.mjs
   function fixOrientation(points, hole = false) {
     const m3 = points.length;
     if (m3 < 6)
@@ -39562,7 +39565,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   }
   var buildPoly;
   var init_buildPoly = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildPoly.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildPoly.mjs"() {
       init_lib9();
       buildPoly = {
         build(graphicsData) {
@@ -39592,10 +39595,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildRectangle.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildRectangle.mjs
   var buildRectangle;
   var init_buildRectangle = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildRectangle.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildRectangle.mjs"() {
       buildRectangle = {
         build(graphicsData) {
           const rectData = graphicsData.shape, x3 = rectData.x, y2 = rectData.y, width = rectData.width, height = rectData.height, points = graphicsData.points;
@@ -39637,10 +39640,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildRoundedRectangle.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildRoundedRectangle.mjs
   var buildRoundedRectangle;
   var init_buildRoundedRectangle = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildRoundedRectangle.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildRoundedRectangle.mjs"() {
       init_buildCircle();
       buildRoundedRectangle = {
         build(graphicsData) {
@@ -39653,10 +39656,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/const.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/const.mjs
   var LINE_JOIN, LINE_CAP, curves;
   var init_const5 = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/const.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/const.mjs"() {
       LINE_JOIN = /* @__PURE__ */ ((LINE_JOIN2) => (LINE_JOIN2.MITER = "miter", LINE_JOIN2.BEVEL = "bevel", LINE_JOIN2.ROUND = "round", LINE_JOIN2))(LINE_JOIN || {});
       LINE_CAP = /* @__PURE__ */ ((LINE_CAP2) => (LINE_CAP2.BUTT = "butt", LINE_CAP2.ROUND = "round", LINE_CAP2.SQUARE = "square", LINE_CAP2))(LINE_CAP || {});
       curves = {
@@ -39675,10 +39678,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/ArcUtils.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/ArcUtils.mjs
   var ArcUtils;
   var init_ArcUtils = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/ArcUtils.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/ArcUtils.mjs"() {
       init_lib9();
       init_const5();
       ArcUtils = class {
@@ -39740,10 +39743,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/BatchPart.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/BatchPart.mjs
   var BatchPart;
   var init_BatchPart = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/BatchPart.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/BatchPart.mjs"() {
       BatchPart = class {
         constructor() {
           this.reset();
@@ -39772,10 +39775,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/BezierUtils.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/BezierUtils.mjs
   var BezierUtils;
   var init_BezierUtils = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/BezierUtils.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/BezierUtils.mjs"() {
       init_const5();
       BezierUtils = class _BezierUtils {
         /**
@@ -39830,7 +39833,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildLine.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildLine.mjs
   function square(x3, y2, nx, ny, innerWeight, outerWeight, clockwise, verts) {
     const ix = x3 - nx * innerWeight, iy = y2 - ny * innerWeight, ox = x3 + nx * outerWeight, oy = y2 + ny * outerWeight;
     let exx, eyy;
@@ -40125,16 +40128,16 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     graphicsData.lineStyle.native ? buildNativeLine(graphicsData, graphicsGeometry) : buildNonNativeLine(graphicsData, graphicsGeometry);
   }
   var init_buildLine = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/buildLine.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/buildLine.mjs"() {
       init_lib9();
       init_const5();
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/QuadraticUtils.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/QuadraticUtils.mjs
   var QuadraticUtils;
   var init_QuadraticUtils = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/QuadraticUtils.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/QuadraticUtils.mjs"() {
       init_const5();
       QuadraticUtils = class _QuadraticUtils {
         /**
@@ -40181,10 +40184,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/index.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/index.mjs
   var FILL_COMMANDS, BATCH_POOL, DRAW_CALL_POOL;
   var init_utils5 = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/utils/index.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/utils/index.mjs"() {
       init_lib9();
       init_buildCircle();
       init_buildPoly();
@@ -40207,10 +40210,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/GraphicsData.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/GraphicsData.mjs
   var GraphicsData;
   var init_GraphicsData = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/GraphicsData.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/GraphicsData.mjs"() {
       GraphicsData = class _GraphicsData {
         /**
          * @param {PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.Rectangle|PIXI.RoundedRectangle} shape - The shape object to draw.
@@ -40241,10 +40244,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/GraphicsGeometry.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/GraphicsGeometry.mjs
   var tmpPoint, _GraphicsGeometry, GraphicsGeometry;
   var init_GraphicsGeometry = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/GraphicsGeometry.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/GraphicsGeometry.mjs"() {
       init_lib9();
       init_lib10();
       init_GraphicsData();
@@ -40564,10 +40567,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/styles/FillStyle.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/styles/FillStyle.mjs
   var FillStyle;
   var init_FillStyle = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/styles/FillStyle.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/styles/FillStyle.mjs"() {
       init_lib9();
       FillStyle = class _FillStyle {
         constructor() {
@@ -40590,10 +40593,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/styles/LineStyle.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/styles/LineStyle.mjs
   var LineStyle;
   var init_LineStyle = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/styles/LineStyle.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/styles/LineStyle.mjs"() {
       init_const5();
       init_FillStyle();
       LineStyle = class _LineStyle extends FillStyle {
@@ -40613,10 +40616,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/Graphics.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/Graphics.mjs
   var DEFAULT_SHADERS, _Graphics, Graphics;
   var init_Graphics = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/Graphics.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/Graphics.mjs"() {
       init_lib9();
       init_lib10();
       init_const5();
@@ -41179,9 +41182,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/index.mjs
+  // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/index.mjs
   var init_lib27 = __esm({
-    "node_modules/.pnpm/@pixi+graphics@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/graphics/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/index.mjs"() {
       init_utils5();
       init_const5();
       init_Graphics();
@@ -41201,10 +41204,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/MeshBatchUvs.mjs
+  // node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/MeshBatchUvs.mjs
   var MeshBatchUvs;
   var init_MeshBatchUvs = __esm({
-    "node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/MeshBatchUvs.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/MeshBatchUvs.mjs"() {
       MeshBatchUvs = class {
         /**
          * @param uvBuffer - Buffer with normalized uv's
@@ -41228,10 +41231,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/Mesh.mjs
+  // node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/Mesh.mjs
   var tempPoint2, tempPolygon, _Mesh, Mesh;
   var init_Mesh = __esm({
-    "node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/Mesh.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/Mesh.mjs"() {
       init_lib9();
       init_lib10();
       init_MeshBatchUvs();
@@ -41414,10 +41417,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/MeshGeometry.mjs
+  // node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/MeshGeometry.mjs
   var MeshGeometry;
   var init_MeshGeometry = __esm({
-    "node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/MeshGeometry.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/MeshGeometry.mjs"() {
       init_lib9();
       MeshGeometry = class extends Geometry {
         /**
@@ -41442,10 +41445,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/shader/mesh.frag.mjs
+  // node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/shader/mesh.frag.mjs
   var fragment7;
   var init_mesh_frag = __esm({
-    "node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/shader/mesh.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/shader/mesh.frag.mjs"() {
       fragment7 = `varying vec2 vTextureCoord;
 uniform vec4 uColor;
 
@@ -41459,10 +41462,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/shader/mesh.vert.mjs
+  // node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/shader/mesh.vert.mjs
   var vertex4;
   var init_mesh_vert = __esm({
-    "node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/shader/mesh.vert.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/shader/mesh.vert.mjs"() {
       vertex4 = `attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
 
@@ -41482,10 +41485,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/MeshMaterial.mjs
+  // node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/MeshMaterial.mjs
   var MeshMaterial;
   var init_MeshMaterial = __esm({
-    "node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/MeshMaterial.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/MeshMaterial.mjs"() {
       init_lib9();
       init_mesh_frag();
       init_mesh_vert();
@@ -41559,9 +41562,9 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/index.mjs
+  // node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/index.mjs
   var init_lib28 = __esm({
-    "node_modules/.pnpm/@pixi+mesh@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2/node_modules/@pixi/mesh/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)/node_modules/@pixi/mesh/lib/index.mjs"() {
       init_Mesh();
       init_MeshBatchUvs();
       init_MeshGeometry();
@@ -41569,57 +41572,57 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs
   var init_PlaneGeometry = __esm({
-    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs"() {
       init_lib28();
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs
   var init_RopeGeometry = __esm({
-    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs"() {
       init_lib28();
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs
   var init_SimplePlane = __esm({
-    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs"() {
       init_lib9();
       init_lib28();
       init_PlaneGeometry();
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs
   var init_NineSlicePlane = __esm({
-    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs"() {
       init_lib9();
       init_SimplePlane();
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs
   var init_SimpleMesh = __esm({
-    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs"() {
       init_lib9();
       init_lib28();
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs
   var init_SimpleRope = __esm({
-    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs"() {
       init_lib9();
       init_lib28();
       init_RopeGeometry();
     }
   });
 
-  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/index.mjs
+  // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/index.mjs
   var init_lib29 = __esm({
-    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2_@pixi+core@7.3.2_@pixi+mesh@7.3.2/node_modules/@pixi/mesh-extras/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/index.mjs"() {
       init_PlaneGeometry();
       init_RopeGeometry();
       init_NineSlicePlane();
@@ -41629,18 +41632,18 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs
+  // node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs
   var init_ParticleContainer = __esm({
-    "node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs"() {
+    "node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs"() {
       init_lib9();
       init_lib10();
     }
   });
 
-  // node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/ParticleBuffer.mjs
+  // node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleBuffer.mjs
   var ParticleBuffer;
   var init_ParticleBuffer = __esm({
-    "node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/ParticleBuffer.mjs"() {
+    "node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleBuffer.mjs"() {
       init_lib9();
       ParticleBuffer = class {
         /**
@@ -41754,10 +41757,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/particles.frag.mjs
+  // node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/particles.frag.mjs
   var fragment8;
   var init_particles_frag = __esm({
-    "node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/particles.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/particles.frag.mjs"() {
       fragment8 = `varying vec2 vTextureCoord;
 varying vec4 vColor;
 
@@ -41770,10 +41773,10 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/particles.vert.mjs
+  // node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/particles.vert.mjs
   var vertex5;
   var init_particles_vert = __esm({
-    "node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/particles.vert.mjs"() {
+    "node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/particles.vert.mjs"() {
       vertex5 = `attribute vec2 aVertexPosition;
 attribute vec2 aTextureCoord;
 attribute vec4 aColor;
@@ -41803,10 +41806,10 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/ParticleRenderer.mjs
+  // node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleRenderer.mjs
   var ParticleRenderer;
   var init_ParticleRenderer = __esm({
-    "node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/ParticleRenderer.mjs"() {
+    "node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleRenderer.mjs"() {
       init_lib9();
       init_ParticleBuffer();
       init_particles_frag();
@@ -41990,26 +41993,26 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/index.mjs
+  // node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/index.mjs
   var init_lib30 = __esm({
-    "node_modules/.pnpm/@pixi+particle-container@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/particle-container/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/index.mjs"() {
       init_ParticleContainer();
       init_ParticleRenderer();
     }
   });
 
-  // node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/const.mjs
+  // node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/const.mjs
   var TEXT_GRADIENT;
   var init_const6 = __esm({
-    "node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/const.mjs"() {
+    "node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/const.mjs"() {
       TEXT_GRADIENT = /* @__PURE__ */ ((TEXT_GRADIENT2) => (TEXT_GRADIENT2[TEXT_GRADIENT2.LINEAR_VERTICAL = 0] = "LINEAR_VERTICAL", TEXT_GRADIENT2[TEXT_GRADIENT2.LINEAR_HORIZONTAL = 1] = "LINEAR_HORIZONTAL", TEXT_GRADIENT2))(TEXT_GRADIENT || {});
     }
   });
 
-  // node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/TextMetrics.mjs
+  // node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/TextMetrics.mjs
   var contextSettings, _TextMetrics, TextMetrics;
   var init_TextMetrics = __esm({
-    "node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/TextMetrics.mjs"() {
+    "node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/TextMetrics.mjs"() {
       init_lib9();
       contextSettings = {
         // TextMetrics requires getImageData readback for measuring fonts.
@@ -42431,7 +42434,7 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/TextStyle.mjs
+  // node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/TextStyle.mjs
   function getColor(color) {
     const temp = Color.shared, format2 = (color2) => {
       const res = temp.setValue(color2);
@@ -42453,7 +42456,7 @@ void main(void){
   }
   var genericFontFamilies, _TextStyle, TextStyle;
   var init_TextStyle = __esm({
-    "node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/TextStyle.mjs"() {
+    "node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/TextStyle.mjs"() {
       init_const6();
       init_lib9();
       genericFontFamilies = [
@@ -42889,10 +42892,10 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/Text.mjs
+  // node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/Text.mjs
   var defaultDestroyOptions, _Text, Text;
   var init_Text = __esm({
-    "node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/Text.mjs"() {
+    "node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/Text.mjs"() {
       init_lib9();
       init_lib11();
       init_const6();
@@ -43159,9 +43162,9 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/index.mjs
+  // node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/index.mjs
   var init_lib31 = __esm({
-    "node_modules/.pnpm/@pixi+text@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/text/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+text@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/text/lib/index.mjs"() {
       init_const6();
       init_Text();
       init_TextMetrics();
@@ -43169,10 +43172,10 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/CountLimiter.mjs
+  // node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/CountLimiter.mjs
   var CountLimiter;
   var init_CountLimiter = __esm({
-    "node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/CountLimiter.mjs"() {
+    "node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/CountLimiter.mjs"() {
       CountLimiter = class {
         /**
          * @param maxItemsPerFrame - The maximum number of items that can be prepared each frame.
@@ -43195,7 +43198,7 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/BasePrepare.mjs
+  // node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/BasePrepare.mjs
   function findMultipleBaseTextures(item, queue) {
     let result = false;
     if (item?._textures?.length) {
@@ -43244,7 +43247,7 @@ void main(void){
   }
   var _BasePrepare, BasePrepare;
   var init_BasePrepare = __esm({
-    "node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/BasePrepare.mjs"() {
+    "node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/BasePrepare.mjs"() {
       init_lib9();
       init_lib10();
       init_lib31();
@@ -43347,9 +43350,9 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/settings.mjs
+  // node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/settings.mjs
   var init_settings6 = __esm({
-    "node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/settings.mjs"() {
+    "node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/settings.mjs"() {
       init_lib9();
       init_lib9();
       init_BasePrepare();
@@ -43375,7 +43378,7 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/Prepare.mjs
+  // node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/Prepare.mjs
   function uploadBaseTextures(renderer, item) {
     return item instanceof BaseTexture ? (item._glTextures[renderer.CONTEXT_UID] || renderer.texture.bind(item), true) : false;
   }
@@ -43396,7 +43399,7 @@ void main(void){
   }
   var Prepare;
   var init_Prepare = __esm({
-    "node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/Prepare.mjs"() {
+    "node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/Prepare.mjs"() {
       init_lib9();
       init_lib27();
       init_BasePrepare();
@@ -43416,15 +43419,15 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/TimeLimiter.mjs
+  // node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/TimeLimiter.mjs
   var init_TimeLimiter = __esm({
-    "node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/TimeLimiter.mjs"() {
+    "node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/TimeLimiter.mjs"() {
     }
   });
 
-  // node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/index.mjs
+  // node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/index.mjs
   var init_lib32 = __esm({
-    "node_modules/.pnpm/@pixi+prepare@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+graphics@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/prepare/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/index.mjs"() {
       init_settings6();
       init_BasePrepare();
       init_CountLimiter();
@@ -43433,35 +43436,35 @@ void main(void){
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-animated@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs
+  // node_modules/.pnpm/@pixi+sprite-animated@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs
   var init_AnimatedSprite = __esm({
-    "node_modules/.pnpm/@pixi+sprite-animated@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-animated@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs"() {
       init_lib9();
       init_lib11();
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-animated@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-animated/lib/index.mjs
+  // node_modules/.pnpm/@pixi+sprite-animated@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-animated/lib/index.mjs
   var init_lib33 = __esm({
-    "node_modules/.pnpm/@pixi+sprite-animated@7.3.2_@pixi+core@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-animated/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-animated@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-animated/lib/index.mjs"() {
       init_AnimatedSprite();
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs
   var tempPoint3;
   var init_TilingSprite = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs"() {
       init_lib9();
       init_lib11();
       tempPoint3 = new Point();
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.frag.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.frag.mjs
   var gl2FragmentSrc;
   var init_sprite_tiling_frag = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.frag.mjs"() {
       gl2FragmentSrc = `#version 300 es
 #define SHADER_NAME Tiling-Sprite-100
 
@@ -43492,10 +43495,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.vert.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.vert.mjs
   var gl2VertexSrc;
   var init_sprite_tiling_vert = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.vert.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling.vert.mjs"() {
       gl2VertexSrc = `#version 300 es
 #define SHADER_NAME Tiling-Sprite-300
 
@@ -43520,10 +43523,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.frag.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.frag.mjs
   var gl1FragmentSrc;
   var init_sprite_tiling_fallback_frag = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.frag.mjs"() {
       gl1FragmentSrc = `#version 100
 #ifdef GL_EXT_shader_texture_lod
     #extension GL_EXT_shader_texture_lod : enable
@@ -43561,10 +43564,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.vert.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.vert.mjs
   var gl1VertexSrc;
   var init_sprite_tiling_fallback_vert = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.vert.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-fallback.vert.mjs"() {
       gl1VertexSrc = `#version 100
 #define SHADER_NAME Tiling-Sprite-100
 
@@ -43589,10 +43592,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-simple.frag.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-simple.frag.mjs
   var fragmentSimpleSrc;
   var init_sprite_tiling_simple_frag = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-simple.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/sprite-tiling-simple.frag.mjs"() {
       fragmentSimpleSrc = `#version 100
 #define SHADER_NAME Tiling-Sprite-Simple-100
 
@@ -43612,10 +43615,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/TilingSpriteRenderer.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/TilingSpriteRenderer.mjs
   var tempMat2, TilingSpriteRenderer;
   var init_TilingSpriteRenderer = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/TilingSpriteRenderer.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/TilingSpriteRenderer.mjs"() {
       init_lib9();
       init_sprite_tiling_frag();
       init_sprite_tiling_vert();
@@ -43667,18 +43670,18 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/index.mjs
+  // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/index.mjs
   var init_lib34 = __esm({
-    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2/node_modules/@pixi/sprite-tiling/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/index.mjs"() {
       init_TilingSprite();
       init_TilingSpriteRenderer();
     }
   });
 
-  // node_modules/.pnpm/@pixi+spritesheet@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/spritesheet/lib/Spritesheet.mjs
+  // node_modules/.pnpm/@pixi+spritesheet@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/spritesheet/lib/Spritesheet.mjs
   var _Spritesheet, Spritesheet;
   var init_Spritesheet = __esm({
-    "node_modules/.pnpm/@pixi+spritesheet@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/spritesheet/lib/Spritesheet.mjs"() {
+    "node_modules/.pnpm/@pixi+spritesheet@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/spritesheet/lib/Spritesheet.mjs"() {
       init_lib9();
       _Spritesheet = class _Spritesheet2 {
         /**
@@ -43797,7 +43800,7 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+spritesheet@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/spritesheet/lib/spritesheetAsset.mjs
+  // node_modules/.pnpm/@pixi+spritesheet@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/spritesheet/lib/spritesheetAsset.mjs
   function getCacheableAssets(keys, asset, ignoreMultiPack) {
     const out = {};
     if (keys.forEach((key) => {
@@ -43815,7 +43818,7 @@ void main(void)
   }
   var validImages, spritesheetAsset;
   var init_spritesheetAsset = __esm({
-    "node_modules/.pnpm/@pixi+spritesheet@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/spritesheet/lib/spritesheetAsset.mjs"() {
+    "node_modules/.pnpm/@pixi+spritesheet@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/spritesheet/lib/spritesheetAsset.mjs"() {
       init_lib24();
       init_lib9();
       init_Spritesheet();
@@ -43899,18 +43902,18 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+spritesheet@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/spritesheet/lib/index.mjs
+  // node_modules/.pnpm/@pixi+spritesheet@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/spritesheet/lib/index.mjs
   var init_lib35 = __esm({
-    "node_modules/.pnpm/@pixi+spritesheet@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2/node_modules/@pixi/spritesheet/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+spritesheet@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)/node_modules/@pixi/spritesheet/lib/index.mjs"() {
       init_Spritesheet();
       init_spritesheetAsset();
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/BitmapFontData.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapFontData.mjs
   var BitmapFontData;
   var init_BitmapFontData = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/BitmapFontData.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapFontData.mjs"() {
       BitmapFontData = class {
         constructor() {
           this.info = [], this.common = [], this.page = [], this.char = [], this.kerning = [], this.distanceField = [];
@@ -43919,10 +43922,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/TextFormat.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/TextFormat.mjs
   var TextFormat;
   var init_TextFormat = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/TextFormat.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/TextFormat.mjs"() {
       init_BitmapFontData();
       TextFormat = class {
         /**
@@ -43989,10 +43992,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/XMLFormat.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/XMLFormat.mjs
   var XMLFormat;
   var init_XMLFormat = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/XMLFormat.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/XMLFormat.mjs"() {
       init_BitmapFontData();
       XMLFormat = class {
         /**
@@ -44056,10 +44059,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/XMLStringFormat.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/XMLStringFormat.mjs
   var XMLStringFormat;
   var init_XMLStringFormat = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/XMLStringFormat.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/XMLStringFormat.mjs"() {
       init_lib9();
       init_XMLFormat();
       XMLStringFormat = class {
@@ -44083,7 +44086,7 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/index.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/index.mjs
   function autoDetectFormat(data) {
     for (let i2 = 0; i2 < formats.length; i2++)
       if (formats[i2].test(data))
@@ -44092,7 +44095,7 @@ void main(void)
   }
   var formats;
   var init_formats = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/formats/index.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/formats/index.mjs"() {
       init_TextFormat();
       init_XMLFormat();
       init_XMLStringFormat();
@@ -44104,7 +44107,7 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/generateFillStyle.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/generateFillStyle.mjs
   function generateFillStyle(canvas, context2, style, resolution, lines, metrics) {
     const fillStyle = style.fill;
     if (Array.isArray(fillStyle)) {
@@ -44145,12 +44148,12 @@ void main(void)
     return gradient;
   }
   var init_generateFillStyle = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/generateFillStyle.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/generateFillStyle.mjs"() {
       init_lib31();
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/drawGlyph.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/drawGlyph.mjs
   function drawGlyph(canvas, context2, metrics, x3, y2, resolution, style) {
     const char = metrics.text, fontProperties = metrics.fontProperties;
     context2.translate(x3, y2), context2.scale(resolution, resolution);
@@ -44163,31 +44166,31 @@ void main(void)
     style.stroke && style.strokeThickness && context2.strokeText(char, tx, ty + metrics.lineHeight - fontProperties.descent), style.fill && context2.fillText(char, tx, ty + metrics.lineHeight - fontProperties.descent), context2.setTransform(1, 0, 0, 1, 0, 0), context2.fillStyle = "rgba(0, 0, 0, 0)";
   }
   var init_drawGlyph = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/drawGlyph.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/drawGlyph.mjs"() {
       init_lib9();
       init_generateFillStyle();
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/extractCharCode.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/extractCharCode.mjs
   function extractCharCode(str) {
     return str.codePointAt ? str.codePointAt(0) : str.charCodeAt(0);
   }
   var init_extractCharCode = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/extractCharCode.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/extractCharCode.mjs"() {
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/splitTextToCharacters.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/splitTextToCharacters.mjs
   function splitTextToCharacters(text) {
     return Array.from ? Array.from(text) : text.split("");
   }
   var init_splitTextToCharacters = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/splitTextToCharacters.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/splitTextToCharacters.mjs"() {
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/resolveCharacters.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/resolveCharacters.mjs
   function resolveCharacters(chars) {
     typeof chars == "string" && (chars = [chars]);
     const result = [];
@@ -44209,14 +44212,14 @@ void main(void)
     return result;
   }
   var init_resolveCharacters = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/resolveCharacters.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/resolveCharacters.mjs"() {
       init_splitTextToCharacters();
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/index.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/index.mjs
   var init_utils6 = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/utils/index.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/utils/index.mjs"() {
       init_drawGlyph();
       init_extractCharCode();
       init_generateFillStyle();
@@ -44225,10 +44228,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/BitmapFont.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapFont.mjs
   var _BitmapFont, BitmapFont;
   var init_BitmapFont = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/BitmapFont.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapFont.mjs"() {
       init_lib9();
       init_lib31();
       init_BitmapFontData();
@@ -44461,10 +44464,10 @@ void main(void)
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/shader/msdf.frag.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/shader/msdf.frag.mjs
   var msdfFrag;
   var init_msdf_frag = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/shader/msdf.frag.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/shader/msdf.frag.mjs"() {
       msdfFrag = `// Pixi texture info\r
 varying vec2 vTextureCoord;\r
 uniform sampler2D uSampler;\r
@@ -44507,10 +44510,10 @@ void main(void) {\r
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/shader/msdf.vert.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/shader/msdf.vert.mjs
   var msdfVert;
   var init_msdf_vert = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/shader/msdf.vert.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/shader/msdf.vert.mjs"() {
       msdfVert = `// Mesh material default fragment\r
 attribute vec2 aVertexPosition;\r
 attribute vec2 aTextureCoord;\r
@@ -44531,10 +44534,10 @@ void main(void)\r
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/BitmapText.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapText.mjs
   var pageMeshDataDefaultPageMeshData, pageMeshDataMSDFPageMeshData, charRenderDataPool, _BitmapText;
   var init_BitmapText = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/BitmapText.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapText.mjs"() {
       init_lib9();
       init_lib10();
       init_lib28();
@@ -44860,10 +44863,10 @@ void main(void)\r
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/loadBitmapFont.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/loadBitmapFont.mjs
   var validExtensions, loadBitmapFont;
   var init_loadBitmapFont = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/loadBitmapFont.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/loadBitmapFont.mjs"() {
       init_lib24();
       init_lib9();
       init_BitmapFont();
@@ -44904,9 +44907,9 @@ void main(void)\r
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/index.mjs
+  // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/index.mjs
   var init_lib36 = __esm({
-    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2_@pixi+assets@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+mesh@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-bitmap/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/index.mjs"() {
       init_BitmapFont();
       init_BitmapFontData();
       init_BitmapText();
@@ -44918,10 +44921,10 @@ void main(void)\r
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-html@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-html/lib/HTMLTextStyle.mjs
+  // node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/HTMLTextStyle.mjs
   var _HTMLTextStyle, HTMLTextStyle;
   var init_HTMLTextStyle = __esm({
-    "node_modules/.pnpm/@pixi+text-html@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-html/lib/HTMLTextStyle.mjs"() {
+    "node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/HTMLTextStyle.mjs"() {
       init_lib9();
       init_lib31();
       _HTMLTextStyle = class _HTMLTextStyle2 extends TextStyle {
@@ -45197,10 +45200,10 @@ void main(void)\r
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-html@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-html/lib/HTMLText.mjs
+  // node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/HTMLText.mjs
   var _HTMLText;
   var init_HTMLText = __esm({
-    "node_modules/.pnpm/@pixi+text-html@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-html/lib/HTMLText.mjs"() {
+    "node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/HTMLText.mjs"() {
       init_lib9();
       init_lib11();
       init_lib31();
@@ -45409,17 +45412,17 @@ void main(void)\r
     }
   });
 
-  // node_modules/.pnpm/@pixi+text-html@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-html/lib/index.mjs
+  // node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/index.mjs
   var init_lib37 = __esm({
-    "node_modules/.pnpm/@pixi+text-html@7.3.2_@pixi+core@7.3.2_@pixi+display@7.3.2_@pixi+sprite@7.3.2_@pixi+text@7.3.2/node_modules/@pixi/text-html/lib/index.mjs"() {
+    "node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/index.mjs"() {
       init_HTMLText();
       init_HTMLTextStyle();
     }
   });
 
-  // node_modules/.pnpm/pixi.js@7.3.2_@pixi+utils@7.3.2/node_modules/pixi.js/lib/index.mjs
+  // node_modules/.pnpm/pixi.js@7.3.2/node_modules/pixi.js/lib/index.mjs
   var init_lib38 = __esm({
-    "node_modules/.pnpm/pixi.js@7.3.2_@pixi+utils@7.3.2/node_modules/pixi.js/lib/index.mjs"() {
+    "node_modules/.pnpm/pixi.js@7.3.2/node_modules/pixi.js/lib/index.mjs"() {
       init_lib12();
       init_lib13();
       init_lib14();
@@ -46792,6 +46795,23 @@ void main(void)\r
     }
   });
 
+  // src/ts/game/components/player_stats.ts
+  var PlayerStats;
+  var init_player_stats = __esm({
+    "src/ts/game/components/player_stats.ts"() {
+      "use strict";
+      init_bundle();
+      PlayerStats = Ye(
+        At({
+          bulletsShot: At.number,
+          bulletsHit: At.number,
+          bulletsReceived: At.number,
+          ultsUsed: At.number
+        }).logged()
+      );
+    }
+  });
+
   // src/ts/game/systems/payment.ts
   var PaymentSystem;
   var init_payment = __esm({
@@ -46802,6 +46822,7 @@ void main(void)\r
       init_funds();
       init_position();
       init_collision();
+      init_player_stats();
       PaymentSystem = class extends Zt({
         cost: D(Cost),
         funds: D(Funds)
@@ -46819,6 +46840,8 @@ void main(void)\r
               console.log("Taking ", costEntity.get(Cost.price), "from", funds);
               fundsEntity.inc(Funds, -Math.min(costEntity.get(Cost.price), funds));
               costEntity.get(Cost.payTo).inc(Funds, costEntity.get(Cost.price));
+              fundsEntity.inc(PlayerStats.bulletsReceived);
+              costEntity.get(Cost.payTo).inc(PlayerStats.bulletsHit);
               this.toRemoveQueue.add(costEntity);
             });
           });
@@ -46850,6 +46873,162 @@ void main(void)\r
       AccentButton = ColoredButtonFactory("bg-accent");
       SuccessButton = ColoredButtonFactory("bg-green-500");
       FailButton = ColoredButtonFactory("bg-red-600");
+    }
+  });
+
+  // src/ts/game/components/match_info.ts
+  var playerInfo, MatchInfo;
+  var init_match_info = __esm({
+    "src/ts/game/components/match_info.ts"() {
+      "use strict";
+      init_bundle();
+      playerInfo = At({
+        name: At.string,
+        player: At.custom(),
+        stats: {
+          bulletsShot: At.number,
+          bulletsHit: At.number,
+          bulletsReceived: At.number,
+          ultsUsed: At.number
+        }
+      });
+      MatchInfo = class {
+        constructor(info) {
+          this.info = info;
+        }
+      };
+    }
+  });
+
+  // src/ts/game/blueprints/bullet.ts
+  var bulletBlueprint, BulletEnt;
+  var init_bullet = __esm({
+    "src/ts/game/blueprints/bullet.ts"() {
+      "use strict";
+      init_bundle();
+      init_velocity();
+      init_position();
+      init_lib38();
+      init_timed();
+      init_collision();
+      init_cost();
+      bulletBlueprint = new a(
+        Position,
+        Velocity,
+        Graphics,
+        Cost,
+        new TimedAlive(100),
+        new CollisionHeath(1),
+        new CollisionHitbox({ x: 2, y: 2 })
+      );
+      BulletEnt = Pe2(
+        bulletBlueprint,
+        [Cost.payTo, Cost.price, Position.x, Position.y, Velocity.x, Velocity.y],
+        function() {
+          this.update(
+            Position.r,
+            Math.atan2(this.get(Velocity.y), this.get(Velocity.x))
+          );
+          const sprite = new Sprite(Texture.from("ticket.png"));
+          this.update(sprite);
+          sprite.width = 8;
+          sprite.height = 4;
+        }
+      );
+    }
+  });
+
+  // src/ts/game/blueprints/wall.ts
+  var wallBlueprint, Wall;
+  var init_wall = __esm({
+    "src/ts/game/blueprints/wall.ts"() {
+      "use strict";
+      init_bundle();
+      init_lib38();
+      init_position();
+      init_collision();
+      wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
+      Wall = Pe2(
+        wallBlueprint,
+        [
+          StaticPosition.x,
+          StaticPosition.y,
+          CollisionHitbox.x,
+          CollisionHitbox.y
+        ],
+        function(color) {
+          const graphics = new Graphics();
+          graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
+          this.set(graphics);
+        }
+      );
+    }
+  });
+
+  // src/ts/game/blueprints/player.ts
+  var PlayerIdentifier, playerBlueprint, Player;
+  var init_player = __esm({
+    "src/ts/game/blueprints/player.ts"() {
+      "use strict";
+      init_bundle();
+      init_lib38();
+      init_position();
+      init_velocity();
+      init_player_info();
+      init_collision();
+      init_funds();
+      init_players();
+      init_animation();
+      init_player_stats();
+      PlayerIdentifier = Ye(At.string);
+      playerBlueprint = new a(
+        Sprite,
+        new Position({ x: 0, y: 0, r: 0 }),
+        new Velocity({ x: 0, y: 0 }),
+        new PlayerInfo({
+          canJump: true,
+          heath: 100,
+          shootCooldown: 0,
+          ultPercent: 0,
+          ultTimeLeft: 0
+        }),
+        new CollisionHitbox({ x: 32, y: 32 }),
+        new Funds(0),
+        PlayerIdentifier,
+        new PlayerStats({
+          bulletsShot: 0,
+          bulletsHit: 0,
+          bulletsReceived: 0,
+          ultsUsed: 0
+        })
+      );
+      Player = Pe2(
+        playerBlueprint,
+        [Position.x, Position.y],
+        function(player) {
+          this.set(PlayerIdentifier.id, player);
+          this.addScript(Players[player].playerScript);
+          const sprite = new Sprite(
+            Texture.from(
+              "walk_00.png"
+              /*Players[player].spriteName + "-idle_00.png"*/
+            )
+          );
+          this.set(sprite);
+          sprite.width = 40;
+          sprite.height = 32;
+          this.add(
+            new AnimatedSprite2({
+              spriteName: "walk",
+              //Players[player].spriteName + "-idle",
+              currentFrame: 0,
+              thisFrameElapsed: 0,
+              thisFrameTotal: 15,
+              frameCount: 8
+            })
+          );
+        }
+      );
     }
   });
 
@@ -46896,588 +47075,6 @@ void main(void)\r
     }
   });
 
-  // src/ts/engine/rendering/blueprints/graphics.ts
-  var graphicsBlueprint, GraphicsEnt;
-  var init_graphics = __esm({
-    "src/ts/engine/rendering/blueprints/graphics.ts"() {
-      "use strict";
-      init_bundle();
-      init_position();
-      init_lib38();
-      graphicsBlueprint = new a(
-        new Position({ x: 0, y: 0, r: 0 }),
-        Container
-      );
-      GraphicsEnt = Pe2(
-        graphicsBlueprint,
-        [Position.x, Position.y],
-        function(options, methodName, ...args) {
-          const graphics = new Graphics();
-          if (options.fillStyle) {
-            graphics.beginFill(options.fillStyle);
-          }
-          if (options.lineStyle) {
-            graphics.lineStyle(options.lineStyle);
-          }
-          if (typeof methodName === "function") {
-            methodName(graphics);
-          } else {
-            graphics[methodName](...args);
-          }
-          graphics.position.set(this.get(Position.x), this.get(Position.y));
-          this.update(graphics);
-        }
-      );
-    }
-  });
-
-  // src/ts/game/blueprints/wall.ts
-  var wallBlueprint, Wall;
-  var init_wall = __esm({
-    "src/ts/game/blueprints/wall.ts"() {
-      "use strict";
-      init_bundle();
-      init_lib38();
-      init_position();
-      init_collision();
-      wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
-      Wall = Pe2(
-        wallBlueprint,
-        [
-          StaticPosition.x,
-          StaticPosition.y,
-          CollisionHitbox.x,
-          CollisionHitbox.y
-        ],
-        function(color) {
-          const graphics = new Graphics();
-          graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
-          this.set(graphics);
-        }
-      );
-    }
-  });
-
-  // src/ts/game/scripts/gravity.ts
-  var gravity;
-  var init_gravity = __esm({
-    "src/ts/game/scripts/gravity.ts"() {
-      "use strict";
-      init_player_info();
-      init_velocity();
-      gravity = function() {
-        this.inc(Velocity.y, PlayerInfo.globals.gravity);
-      };
-    }
-  });
-
-  // src/ts/game/blueprints/bullet.ts
-  var bulletBlueprint, BulletEnt;
-  var init_bullet = __esm({
-    "src/ts/game/blueprints/bullet.ts"() {
-      "use strict";
-      init_bundle();
-      init_velocity();
-      init_position();
-      init_lib38();
-      init_timed();
-      init_collision();
-      init_cost();
-      bulletBlueprint = new a(
-        Position,
-        Velocity,
-        Graphics,
-        Cost,
-        new TimedAlive(100),
-        new CollisionHeath(1),
-        new CollisionHitbox({ x: 2, y: 2 })
-      );
-      BulletEnt = Pe2(
-        bulletBlueprint,
-        [Cost.payTo, Cost.price, Position.x, Position.y, Velocity.x, Velocity.y],
-        function() {
-          this.update(
-            Position.r,
-            Math.atan2(this.get(Velocity.y), this.get(Velocity.x))
-          );
-          const sprite = new Sprite(Texture.from("ticket.png"));
-          this.update(sprite);
-          sprite.width = 8;
-          sprite.height = 4;
-        }
-      );
-    }
-  });
-
-  // src/ts/game/scripts/players/common.ts
-  function applyDefaultMovement(entity, input, id) {
-    if (entity.world.get(Countdown) > 0)
-      return;
-    entity.inc(Velocity.y, PlayerInfo.globals.gravity);
-    if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
-      entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
-      entity.set(PlayerInfo.canJump, false);
-    }
-    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
-  }
-  function applyDefaultShooting(entity, input, id) {
-    if (entity.world.get(Countdown) > 0)
-      return;
-    if (input.is("shoot", "PRESSED", id) && entity.get(PlayerInfo.shootCooldown) <= 0) {
-      entity.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
-      BulletEnt(
-        entity,
-        5,
-        entity.get(Position.x),
-        entity.get(Position.y),
-        Math.cos(input.get("aim", id)) * 7,
-        Math.sin(input.get("aim", id)) * 7
-      );
-    } else {
-      entity.inc(PlayerInfo.shootCooldown, -1);
-    }
-  }
-  var init_common = __esm({
-    "src/ts/game/scripts/players/common.ts"() {
-      "use strict";
-      init_velocity();
-      init_player_info();
-      init_bullet();
-      init_position();
-      init_multiplayer();
-    }
-  });
-
-  // src/ts/game/scripts/players/bombs.ts
-  var BombPlayer;
-  var init_bombs = __esm({
-    "src/ts/game/scripts/players/bombs.ts"() {
-      "use strict";
-      init_lib38();
-      init_loop();
-      init_multiplayer_input();
-      init_network();
-      init_position();
-      init_collision();
-      init_player_info();
-      init_velocity();
-      init_gravity();
-      init_common();
-      init_timed();
-      BombPlayer = function() {
-        const input = this.world.get(MultiplayerInput);
-        const id = this.get(PeerId);
-        applyDefaultMovement(this, input, id);
-        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-          this.set(PlayerInfo.ultPercent, 0);
-          this.set(PlayerInfo.ultTimeLeft, DESIRED_FPS * 10);
-        } else {
-          this.inc(PlayerInfo.ultPercent);
-        }
-        if (this.get(PlayerInfo.ultTimeLeft) > 0) {
-          this.inc(PlayerInfo.ultTimeLeft, -1);
-          if (input.is("shoot", "PRESSED") && this.get(PlayerInfo.shootCooldown) <= 0) {
-            this.set(PlayerInfo.shootCooldown, 0);
-          } else {
-            this.inc(PlayerInfo.shootCooldown, -1);
-          }
-        } else {
-          if (input.is("shoot", "PRESSED", id) && this.get(PlayerInfo.shootCooldown) <= 0) {
-            this.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
-            const bomb = this.world.spawn();
-            bomb.add(
-              new Position({
-                x: this.get(Position.x),
-                y: this.get(Position.y),
-                r: 0
-              })
-            );
-            bomb.add(
-              new Velocity({
-                x: Math.cos(input.get("aim", id)) * 3,
-                y: Math.sin(input.get("aim", id)) * 10
-              })
-            );
-            bomb.add(new CollisionHitbox({ x: 20, y: 20 }));
-            bomb.addScript(gravity);
-            const graphics = new Graphics();
-            graphics.beginFill(16711680);
-            graphics.drawCircle(10, 10, 10);
-            graphics.endFill();
-            bomb.add(graphics);
-            bomb.add(new BouncinessFactor({ x: 0.5, y: 0 }));
-            bomb.add(new Friction(0.05));
-            bomb.add(new TimedAlive(60));
-          } else {
-            this.inc(PlayerInfo.shootCooldown, -1);
-          }
-        }
-      };
-    }
-  });
-
-  // src/ts/game/scripts/players/carrier.ts
-  var CARRIER_ULT_COOLDOWN, MrCarrierPlayer;
-  var init_carrier = __esm({
-    "src/ts/game/scripts/players/carrier.ts"() {
-      "use strict";
-      init_loop();
-      init_multiplayer_input();
-      init_network();
-      init_player_info();
-      init_velocity();
-      init_common();
-      CARRIER_ULT_COOLDOWN = DESIRED_FPS * 10;
-      MrCarrierPlayer = function() {
-        const input = this.world.get(MultiplayerInput);
-        const id = this.get(PeerId);
-        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-          this.set(PlayerInfo.ultPercent, 0);
-          this.set(PlayerInfo.ultTimeLeft, CARRIER_ULT_COOLDOWN);
-        }
-        if (this.get(PlayerInfo.ultTimeLeft) > 0) {
-          if (input.get("y", id) >= 0) {
-            this.inc(Velocity.y, PlayerInfo.globals.gravity / 2);
-          } else {
-            this.inc(Velocity.y, input.get("y", id) / 100);
-            if (this.get(Velocity.y) < -PlayerInfo.globals.gravity) {
-              this.set(Velocity.y, -PlayerInfo.globals.gravity);
-            }
-          }
-          this.inc(Velocity.y, Math.min(input.get("y", id), 0));
-          this.inc(PlayerInfo.ultTimeLeft, -1);
-          this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
-        } else {
-          this.inc(PlayerInfo.ultPercent);
-          applyDefaultMovement(this, input, id);
-        }
-        applyDefaultShooting(this, input, id);
-      };
-    }
-  });
-
-  // src/ts/game/scripts/players/laser.ts
-  var LaserPlayer;
-  var init_laser = __esm({
-    "src/ts/game/scripts/players/laser.ts"() {
-      "use strict";
-      init_multiplayer_input();
-      init_network();
-      init_position();
-      init_bullet();
-      init_player_info();
-      init_common();
-      init_lib38();
-      LaserPlayer = function() {
-        const input = this.world.get(MultiplayerInput);
-        const id = this.get(PeerId);
-        applyDefaultMovement(this, input, id);
-        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-          this.set(PlayerInfo.ultPercent, 0);
-          this.set(PlayerInfo.ultTimeLeft, 1);
-        } else {
-          this.inc(PlayerInfo.ultPercent);
-        }
-        if (this.get(PlayerInfo.ultTimeLeft) > 0) {
-          if (input.is("shoot", "JUST_RELEASED", id)) {
-            for (let i2 = 0; i2 < 10; i2++) {
-              const velX = Math.cos(input.get("aim", id));
-              const velY = Math.sin(input.get("aim", id));
-              BulletEnt(
-                this.get(Position.x) + velX * i2 * 30,
-                this.get(Position.y) + velY * i2 * 30,
-                velX * 20,
-                velY * 20
-              );
-            }
-            this.inc(PlayerInfo.ultTimeLeft, -1 / 3);
-            this.get(Container).getChildByName("aimguide")?.removeFromParent();
-          } else if (input.is("shoot", "PRESSED", id)) {
-            const container = this.get(Container);
-            if (container.children.length == 0) {
-              const graphics = new Graphics();
-              graphics.lineStyle(5, 16711680, 0.5);
-              graphics.moveTo(0, 0);
-              graphics.lineTo(1e3, 0);
-              graphics.name = "aimguide";
-              container.addChild(graphics);
-            }
-            container.getChildByName("aimguide").rotation = input.get("aim", id);
-          }
-        } else {
-          applyDefaultShooting(this, input, id);
-        }
-      };
-    }
-  });
-
-  // src/ts/game/players.ts
-  var Players;
-  var init_players = __esm({
-    "src/ts/game/players.ts"() {
-      "use strict";
-      init_bombs();
-      init_carrier();
-      init_laser();
-      Players = {
-        carrier: {
-          name: "carrier",
-          displayName: "Mr. Carrier",
-          available: true,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "carrier",
-          playerScript: MrCarrierPlayer,
-          description: "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms. His primary allows him to throw 1 ticket at a time, but after finally becoming buzz lightyear with his ult, he can fly around the stadium shoot twice as fast"
-        },
-        handcock: {
-          name: "handcock",
-          displayName: "Mr. Handcock",
-          available: false,
-          menuPic: "https://freepngimg.com/save/21721-luigi-transparent-image/772x1024",
-          spriteName: "handcock",
-          playerScript: LaserPlayer,
-          description: "While normally his laser eyes are used to make kids question all of their life choices when he glaces at them, he can also use them to shoot drive tickets faster than he can give out detentions. When he ults, he becomes even more powerful, and his lasers no longer stop for disobedient objects (including walls)"
-        },
-        baker: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker1: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker2: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker3: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker4: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker5: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker6: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker7: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        },
-        baker8: {
-          name: "baker",
-          displayName: "Mrs. Baker",
-          available: false,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "baker",
-          playerScript: BombPlayer,
-          description: "Mr. Baker (hes the goat)"
-        }
-      };
-    }
-  });
-
-  // src/ts/game/states/multiplayer.tsx
-  var Countdown, MatchTimer, MultiplayerGame;
-  var init_multiplayer = __esm({
-    "src/ts/game/states/multiplayer.tsx"() {
-      "use strict";
-      init_game();
-      init_lib38();
-      init_network();
-      init_animation();
-      init_graphics();
-      init_state_managment();
-      init_collision();
-      init_player_info();
-      init_velocity();
-      init_wall();
-      init_joystick();
-      init_preload();
-      init_rollback();
-      init_players();
-      init_bundle();
-      init_funds();
-      init_game_over();
-      init_loop();
-      init_multiplayer_input();
-      Countdown = Pt(At.number.logged());
-      MatchTimer = Pt(At.number.logged());
-      console.log("Coutndown is", Countdown.getId());
-      console.log("Game is", Game);
-      MultiplayerGame = class extends Game {
-        player1;
-        player2;
-        hasLoadedHud;
-        async onEnter(payload, from) {
-          await super.onEnter(payload, from);
-          const player1 = GraphicsEnt(
-            48,
-            32,
-            { fillStyle: "blue" },
-            "drawRect",
-            0,
-            0,
-            16,
-            16
-          );
-          this.player1 = player1;
-          const player2 = GraphicsEnt(
-            256 - 48 - 16,
-            32,
-            { fillStyle: "red" },
-            "drawRect",
-            0,
-            0,
-            16,
-            16
-          );
-          this.player2 = player2;
-          for (const player of [player1, player2]) {
-            player.remove(Graphics);
-            console.log(player.has(Graphics), player.has(Sprite));
-            player.add(new Sprite(Texture.from("walk_00.png")));
-            player.get(Sprite).width = 40;
-            player.get(Sprite).height = 32;
-            player.add(new Velocity({ x: 0, y: 0 }));
-            player.add(new Funds(PlayerInfo.globals.targetFunds / 3));
-            player.add(
-              new PlayerInfo({
-                canJump: true,
-                heath: 100,
-                shootCooldown: 0,
-                ultPercent: 0,
-                ultTimeLeft: 0
-              })
-            );
-            player.add(new CollisionHitbox({ x: 32, y: 32 }));
-            player.add(
-              new AnimatedSprite2({
-                spriteName: "walk",
-                currentFrame: 0,
-                thisFrameElapsed: 0,
-                thisFrameTotal: 15,
-                frameCount: 8
-              })
-            );
-          }
-          player1.add(new PeerId(this.world.get(NetworkConnection).player1));
-          player2.add(new PeerId(this.world.get(NetworkConnection).player2));
-          if (this.world.get(NetworkConnection).id === this.world.get(NetworkConnection).player1) {
-            this.world.add(player1, "local_player_entity");
-            this.world.add(player2, "remote_player_entity");
-          } else {
-            this.world.add(player1, "remote_player_entity");
-            this.world.add(player2, "local_player_entity");
-          }
-          this.world.get("remote_player_entity").addScript(
-            Players[this.world.get("remotePlayer")].playerScript
-          );
-          this.world.get("local_player_entity").addScript(
-            Players[this.world.get("localPlayer")].playerScript
-          );
-          Wall(0, 230, 256, 20, "red");
-          Wall(50, 170, 50, 10, "red");
-          Wall(256 - 50 - 50, 170, 50, 10, "red");
-          const joysticks = /* @__PURE__ */ window.jsx(window.jsxFrag, null, /* @__PURE__ */ window.jsx(Joystick, { id: "Movement", side: "left" }), /* @__PURE__ */ window.jsx(Joystick, { id: "Shoot", side: "right" }));
-          this.hud.element.append(...joysticks);
-          this.world.add(new Countdown(3));
-          const countdownScript = function() {
-            this.set(Countdown.id, this.get(Countdown) - DESIRED_FRAME_TIME / 1e3);
-            if (this.get(Countdown) <= 0) {
-              this.get(RollbackManager).enableRollback();
-              this.add(new MatchTimer(0));
-              this.addScript(
-                () => this.set(
-                  MatchTimer.id,
-                  this.get(MatchTimer) + DESIRED_FRAME_TIME / 1e3
-                )
-              );
-              this.removeScript(countdownScript);
-            }
-          };
-          this.world.addScript(countdownScript);
-          this.hasLoadedHud = true;
-        }
-        update() {
-          if (!this.hasLoadedHud)
-            return;
-          console.log("Updating");
-          const secondsElapsed = this.world.has(MatchTimer) ? this.world.get(MatchTimer) : 0;
-          const minElapsed = Math.floor(secondsElapsed / 60);
-          this.hud.timer.innerHTML = minElapsed.toString().padStart(2, "0") + ":" + (secondsElapsed % 60).toFixed(0).padStart(2, "0");
-          this.hud.updatePlayer1HealthBar(
-            this.player1.get(Funds) * 100 / PlayerInfo.globals.targetFunds
-          );
-          this.hud.updatePlayer2HealthBar(
-            this.player2.get(Funds) * 100 / PlayerInfo.globals.targetFunds
-          );
-          if (this.player1.get(Funds) >= PlayerInfo.globals.targetFunds || this.player2.get(Funds) >= PlayerInfo.globals.targetFunds) {
-            this.world.get(StateManager).moveTo(GameOverState);
-          }
-        }
-        async onLeave(to) {
-          this.world.remove(MatchTimer);
-          this.world.remove(Countdown);
-          this.world.clearScripts();
-          this.world.get(RollbackManager).disableRollback();
-          const mi = this.world.get(MultiplayerInput);
-          mi.knownFutureInputs.clear();
-          mi.buffers = {};
-          mi.ready = false;
-          mi.init();
-          await super.onLeave(to);
-        }
-      };
-    }
-  });
-
   // src/ts/game/game_modes.ts
   var GameModes;
   var init_game_modes = __esm({
@@ -47489,16 +47086,16 @@ void main(void)\r
           name: "Solo",
           description: "Defeat AI enemies in different arenas to win",
           icon: "fa-person-running",
-          getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "Party size is too large" : true
+          getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "Party size is too large" : "Solo mode is coming soon!"
         },
         localPvP: {
-          name: "Friendly Battle",
+          name: "Friendly Sell Off",
           description: "Fight against the other player in your party",
           icon: "fa-user-group",
           getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? true : "Party size is too small"
         },
         onlinePvP: {
-          name: "Online Battle",
+          name: "Online Sell Off",
           description: "Fight against other players through online matchmaking",
           icon: "fa-globe",
           getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "Party size is too large" : true
@@ -47656,6 +47253,41 @@ void main(void)\r
       "use strict";
       init_loop();
       init_network();
+    }
+  });
+
+  // src/ts/engine/rendering/blueprints/graphics.ts
+  var graphicsBlueprint, GraphicsEnt;
+  var init_graphics = __esm({
+    "src/ts/engine/rendering/blueprints/graphics.ts"() {
+      "use strict";
+      init_bundle();
+      init_position();
+      init_lib38();
+      graphicsBlueprint = new a(
+        new Position({ x: 0, y: 0, r: 0 }),
+        Container
+      );
+      GraphicsEnt = Pe2(
+        graphicsBlueprint,
+        [Position.x, Position.y],
+        function(options, methodName, ...args) {
+          const graphics = new Graphics();
+          if (options.fillStyle) {
+            graphics.beginFill(options.fillStyle);
+          }
+          if (options.lineStyle) {
+            graphics.lineStyle(options.lineStyle);
+          }
+          if (typeof methodName === "function") {
+            methodName(graphics);
+          } else {
+            graphics[methodName](...args);
+          }
+          graphics.position.set(this.get(Position.x), this.get(Position.y));
+          this.update(graphics);
+        }
+      );
     }
   });
 
@@ -47849,6 +47481,366 @@ void main(void)\r
     }
   });
 
+  // src/ts/game/levels.ts
+  function totalWinsToLevel(wins) {
+    let level = Levels.findIndex((level2) => level2.wins + level2.prevWins > wins);
+    return { level, winsIntoLevel: wins - Levels[level].prevWins };
+  }
+  var Levels;
+  var init_levels = __esm({
+    "src/ts/game/levels.ts"() {
+      "use strict";
+      Levels = [
+        // Level 1
+        {
+          wins: 5,
+          prevWins: 0
+        },
+        // Level 2
+        {
+          wins: 10,
+          prevWins: 5
+        },
+        // Level 3
+        {
+          wins: 10,
+          prevWins: 15
+        },
+        // Level 3
+        {
+          wins: 20,
+          prevWins: 25
+        }
+      ];
+    }
+  });
+
+  // src/ts/game/states/menu.tsx
+  var menu_exports = {};
+  __export(menu_exports, {
+    Menu: () => Menu
+  });
+  var Menu;
+  var init_menu = __esm({
+    "src/ts/game/states/menu.tsx"() {
+      "use strict";
+      init_bundle();
+      init_state_managment();
+      init_network();
+      init_dialogs();
+      init_multiplayer();
+      init_button();
+      init_choose_game();
+      init_utils7();
+      init_solo();
+      init_background();
+      init_player_select();
+      init_players();
+      init_game_modes();
+      init_server();
+      init_login();
+      init_levels();
+      Menu = class _Menu extends State {
+        async onEnter(payload, from) {
+          this.setupEndpoints();
+          const nc = this.world.get(NetworkConnection);
+          document.body.append(this.getHTML());
+          nc.post("playerChange");
+        }
+        async fetchServerInfo() {
+          const serverResponse = await fetch("");
+          const data = await serverResponse.json();
+          console.log(data);
+        }
+        async onLeave() {
+          document.querySelector("#menu")?.remove();
+          this.eventListenerIds.forEach(
+            ([e2, id]) => this.world.get(NetworkConnection).removeEventListener(e2, id)
+          );
+        }
+        getHTML() {
+          const lastCommitHash = "cddec57";
+          const devMode = true;
+          const buildTime = 1707187970073;
+          const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
+          const { level, winsIntoLevel } = totalWinsToLevel(
+            this.world.get(AccountInfo.totalWins)
+          );
+          const levelTotalWins = Levels[level].wins;
+          const text = winsIntoLevel + "/" + Levels[level].wins + " Wins";
+          console.log(text);
+          return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 p-2 flex text-white bg-menuBackground bg-opacity-50 rounded-br-md w-auto h-auto" }, /* @__PURE__ */ window.jsx("div", { className: "h-12 w-60 bg-menuBackgroundAccent rounded-md pt-1" }, /* @__PURE__ */ window.jsx("div", { className: "w-full pl-4 pr-4 text-center" }, this.world.get(AccountInfo.username), ": ", /* @__PURE__ */ window.jsx("span", { className: "text-yellow-400  w-auto" }, "\u{1F3C6}", this.world.get(AccountInfo.trophies))), /* @__PURE__ */ window.jsx("div", { className: "flex" }, /* @__PURE__ */ window.jsx("div", { className: "w-3/4 h-4 ml-2 bg-menuBackground rounded-full flex" }, /* @__PURE__ */ window.jsx(
+            "div",
+            {
+              className: "h-full bg-primary rounded-full brightness-150 text-center justify-center flex items-center text-sm text-black",
+              style: {
+                width: 100 * winsIntoLevel / Levels[level].wins + "%"
+              }
+            },
+            winsIntoLevel / levelTotalWins > 0.5 ? text : ""
+          ), /* @__PURE__ */ window.jsx("div", { className: "h-full flex-grow text-white text-center justify-center flex align-middle items-center text-sm" }, winsIntoLevel / levelTotalWins < 0.5 ? text : "")), /* @__PURE__ */ window.jsx("div", { className: "flex items-center h-4 pl-2" }, "Lvl ", level + 1))), this.world.get(AccountInfo.isGuest) ? "" : /* @__PURE__ */ window.jsx("div", { className: "ml-2 h-12 w-20 bg-menuBackgroundAccent rounded-md text-center flex justify-center flex-col" }, /* @__PURE__ */ window.jsx("h1", { className: "text-xl" }, "#", this.world.get(AccountInfo.classRank)), /* @__PURE__ */ window.jsx("h5", { className: "text-sm" }, this.world.get(AccountInfo.class)))), /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build " : "Production build ", " @", lastCommitHash + " ", " (", "Built ", Math.round(timeAgo / 60) + " min ", "ago)"), /* @__PURE__ */ window.jsx(
+            "div",
+            {
+              className: "absolute pr-2 w-16 h-52 left-0 top-[50%] transform -translate-y-1/2 text-white bg-menuBackground rounded-tr-md rounded-br-md\r\n                     bg-opacity-50 flex items-center justify-center flex-col"
+            },
+            [
+              {
+                icon: "fa-solid fa-cart-shopping",
+                text: "Shop",
+                onclick: () => {
+                  showDialog(
+                    /* @__PURE__ */ window.jsx(
+                      DialogPopup,
+                      {
+                        title: "Vote for shop items",
+                        message: "The shop is coming soon, go <here> to cast your vote for which items we should add",
+                        hideCancelButton: true
+                      }
+                    )
+                  );
+                }
+              },
+              {
+                icon: "fa-regular fa-calendar",
+                text: "News",
+                onclick: () => {
+                  showDialog(
+                    /* @__PURE__ */ window.jsx(
+                      DialogPopup,
+                      {
+                        title: "News",
+                        message: "<h1>Drive Game Released! </h1><br>Go check out all the current characters, and play online with your friends!",
+                        hideCancelButton: true
+                      }
+                    )
+                  );
+                }
+              },
+              {
+                icon: "fa-solid fa-users",
+                text: "Players",
+                onclick: () => this.world.get(StateManager).fadeTo(PlayerSelect)
+              }
+            ].map(({ icon, text: text2, onclick }) => /* @__PURE__ */ window.jsx(
+              "div",
+              {
+                onclick,
+                className: "w-full aspect-square text-center bg-menuBackgroundAccent rounded-md bg-opacity-75 pt-2 m-auto hover:brightness-90 cursor-pointer"
+              },
+              /* @__PURE__ */ window.jsx("i", { className: `${icon} fa-xl` }),
+              /* @__PURE__ */ window.jsx("br", null),
+              text2
+            ))
+          ), /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center m-2" }, /* @__PURE__ */ window.jsx("div", { className: "bg-menuBackgroundAccent rounded-md h-10 w-10 flex items-center justify-center cursor-not-allowed" }, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-bars fa-xl" }))), /* @__PURE__ */ window.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center align-middle items-center" }, /* @__PURE__ */ window.jsx(
+            "img",
+            {
+              src: Players[this.world.get("localPlayer")].menuPic,
+              className: "h-48"
+            }
+          ), this.world.get(NetworkConnection).isConnected ? /* @__PURE__ */ window.jsx(
+            "img",
+            {
+              id: "remotePlayer",
+              src: Players[this.world.get("remotePlayer")].menuPic,
+              className: "h-36"
+            }
+          ) : /* @__PURE__ */ window.jsx(
+            "div",
+            {
+              id: "connectToRemote",
+              onclick: () => {
+                this.connectToRemote();
+              }
+            },
+            /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100" })
+          )), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-1 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(
+            AccentButton,
+            {
+              onclick: () => this.world.get(StateManager).fadeTo(ChooseGameMode, null),
+              id: "gameModeButton"
+            },
+            GameModes[this.world.get("selectedGameMode")].name
+          ), /* @__PURE__ */ window.jsx(
+            PrimaryButton,
+            {
+              id: "playButton",
+              onclick: () => {
+                switch (this.world.get("selectedGameMode")) {
+                  case "localPvP":
+                    this.queueMultiplayerGameStart();
+                    break;
+                  case "onlinePvP":
+                    this.enterQueue();
+                    break;
+                  case "co-op":
+                    this.queueMultiplayerGameStart();
+                    break;
+                  case "solo":
+                    this.world.get(StateManager).fadeTo(SoloGame);
+                    break;
+                }
+              }
+            },
+            "PLAY"
+          ))));
+        }
+        connectToRemote() {
+          const input = /* @__PURE__ */ window.jsx(
+            "input",
+            {
+              type: "text",
+              pattern: "[0-9]{5}",
+              className: "uppercase mt-1 w-1/2 m-auto text-center bg-secondary text-xl text-white invalid:text-gray-500",
+              placeholder: "XXXXX"
+            }
+          );
+          const dialog = /* @__PURE__ */ window.jsx(
+            DialogPopup,
+            {
+              title: "Enter Remote ID",
+              message: `The remote ID should be 5 capital letters. Your ID is ${this.world.get(NetworkConnection).id}`,
+              onok: async () => {
+                const remoteId = input.value.toUpperCase();
+                try {
+                  if (!input.checkValidity()) {
+                    return KEEP_OPEN;
+                  }
+                  const nc = this.world.get(NetworkConnection);
+                  await nc.connect(remoteId);
+                  const username = await nc.fetch("username");
+                  this.world.add(username, "remoteUser");
+                  const player = await nc.fetch("currentPlayer");
+                  console.log("Player", player);
+                  this.world.add("remotePlayer", player);
+                  document.querySelector("#connectToRemote")?.replaceWith(
+                    /* @__PURE__ */ window.jsx("img", { id: "remotePlayer", className: "h-36" })
+                  );
+                  this.world.set("selectedGameMode", "localPvP");
+                  nc.post("gameModeChange");
+                  document.querySelector("#gameModeButton").innerHTML = GameModes[this.world.get("selectedGameMode")].name;
+                } catch (e2) {
+                  showDialog(
+                    /* @__PURE__ */ window.jsx(
+                      DialogPopup,
+                      {
+                        title: "Failed To Connect",
+                        message: e2.message,
+                        hideCancelButton: true
+                      }
+                    )
+                  );
+                }
+              }
+            },
+            input
+          );
+          showDialog(dialog);
+        }
+        enterQueue() {
+          return new Promise((res, rej) => {
+            const play = document.querySelector("#playButton");
+            this.world.get(ServerConnection).fetch("/matchmaking/enterQueue", {
+              searchParams: {
+                id: this.world.get(NetworkConnection).id
+              }
+            }).then(async (serverRes) => {
+              const { remoteId, isHost } = serverRes;
+              if (!isHost)
+                return res();
+              play.innerHTML = "Establishing Connection";
+              const nc = this.world.get(NetworkConnection);
+              try {
+                await nc.connect(remoteId);
+                this.queueMultiplayerGameStart();
+              } catch (e2) {
+                showDialog({
+                  title: "Matchmaking error",
+                  message: "Failed to establish connection",
+                  hideCancelButton: true
+                });
+                nc.close();
+              }
+              res();
+            });
+            this.world.add(true, "inQueue");
+            play.innerHTML = "In queue (";
+            const span = /* @__PURE__ */ window.jsx("span", null, "0");
+            play.append(span, "s)");
+            let seconds = 0;
+            setInterval(() => {
+              seconds++;
+              span.innerHTML = seconds.toString();
+            }, 1e3);
+          });
+        }
+        async queueMultiplayerGameStart() {
+          const startFrame = this.world.get(NetworkConnection).framesConnected + v + 10;
+          this.world.get(NetworkConnection).send("start_game", startFrame);
+          await awaitFrame(this.world, startFrame);
+          this.world.get(StateManager).fadeTo(MultiplayerGame);
+        }
+        static alreadySetupEndpoints = false;
+        eventListenerIds = [];
+        setupEndpoints() {
+          const nc = this.world.get(NetworkConnection);
+          this.eventListenerIds.push(
+            ["connect", nc.addEventListener("connect", () => {
+            })],
+            [
+              "connect",
+              nc.addEventListener("close", () => {
+                document.querySelector("#remotePlayer")?.replaceWith(
+                  /* @__PURE__ */ window.jsx(
+                    "div",
+                    {
+                      id: "connectToRemote",
+                      onclick: () => this.connectToRemote()
+                    },
+                    /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100" })
+                  )
+                );
+              })
+            ]
+          );
+          if (_Menu.alreadySetupEndpoints)
+            return;
+          _Menu.alreadySetupEndpoints = true;
+          nc.addEndpoint("username", () => {
+            console.log("Sending username");
+            return this.world.get(AccountInfo.username);
+          });
+          nc.addEndpoint("currentPlayer", () => {
+            console.log("sending current player");
+            return this.world.get("localPlayer");
+          });
+          nc.addEndpoint("playerChange", async () => {
+            const player = await nc.fetch("currentPlayer");
+            this.world.set("remotePlayer", player);
+            document.querySelector("#connectToRemote")?.replaceWith(/* @__PURE__ */ window.jsx("img", { id: "remotePlayer", className: "h-36" }));
+            document.querySelector("#remotePlayer")?.setAttribute("src", Players[player].menuPic);
+          });
+          nc.addEventListener("connect", async () => {
+            nc.post("playerChange");
+            this.world.set("remotePlayer", await nc.fetch("currentPlayer"));
+            this.world.set("remoteUser", await nc.fetch("username"));
+          });
+          nc.addEndpoint("currentGameMode", () => {
+            return this.world.get("selectedGameMode");
+          });
+          nc.addEndpoint("gameModeChange", async () => {
+            const mode = await nc.fetch("currentGameMode");
+            this.world.set("selectedGameMode", mode);
+            document.querySelector("#gameModeButton").innerHTML = GameModes[mode].name;
+          });
+          nc.on("start_game", async (frame) => {
+            await awaitFrame(this.world, frame);
+            this.world.get(StateManager).fadeTo(MultiplayerGame);
+          });
+        }
+      };
+    }
+  });
+
   // src/ts/game/states/fade.tsx
   var duration, fadeElement;
   var init_fade = __esm({
@@ -48007,343 +47999,341 @@ void main(void)\r
     }
   });
 
-  // src/ts/game/levels.ts
-  function totalWinsToLevel(wins) {
-    let level = Levels.findIndex((level2) => level2.wins + level2.prevWins > wins);
-    return { level, winsIntoLevel: wins - Levels[level].prevWins };
-  }
-  var Levels;
-  var init_levels = __esm({
-    "src/ts/game/levels.ts"() {
+  // src/ts/game/states/multiplayer.tsx
+  var multiplayer_exports = {};
+  __export(multiplayer_exports, {
+    Countdown: () => Countdown,
+    MatchTimer: () => MatchTimer,
+    MultiplayerGame: () => MultiplayerGame
+  });
+  var Countdown, MatchTimer, MultiplayerGame;
+  var init_multiplayer = __esm({
+    "src/ts/game/states/multiplayer.tsx"() {
       "use strict";
-      Levels = [
-        // Level 1
-        {
-          wins: 5,
-          prevWins: 0
-        },
-        // Level 2
-        {
-          wins: 10,
-          prevWins: 5
-        },
-        // Level 3
-        {
-          wins: 10,
-          prevWins: 15
-        },
-        // Level 3
-        {
-          wins: 20,
-          prevWins: 25
+      init_game();
+      init_network();
+      init_state_managment();
+      init_player_info();
+      init_wall();
+      init_preload();
+      init_rollback();
+      init_players();
+      init_bundle();
+      init_funds();
+      init_game_over();
+      init_loop();
+      init_multiplayer_input();
+      init_player();
+      init_match_info();
+      init_login();
+      init_player_stats();
+      Countdown = Pt(At.number.logged());
+      MatchTimer = Pt(At.number.logged());
+      MultiplayerGame = class extends Game {
+        player1;
+        player2;
+        hasLoadedHud;
+        async onEnter(payload, from) {
+          await super.onEnter(payload, from);
+          let player1Name = this.world.get(
+            this.world.get(NetworkConnection).isPlayer1() ? "localPlayer" : "remotePlayer"
+          );
+          let player2Name = this.world.get(
+            this.world.get(NetworkConnection).isPlayer1() ? "remotePlayer" : "localPlayer"
+          );
+          const player1 = Player(48, 32, player1Name);
+          this.player1 = player1;
+          const player2 = Player(256 - 48 - 32, 32, player2Name);
+          this.player2 = player2;
+          player1.add(new PeerId(this.world.get(NetworkConnection).player1));
+          player2.add(new PeerId(this.world.get(NetworkConnection).player2));
+          this.world.add("player_1_entity", player1);
+          this.world.add("player_2_entity", player2);
+          if (this.world.get(NetworkConnection).id === this.world.get(NetworkConnection).player1) {
+            this.world.add(player1, "local_player_entity");
+            this.world.add(player2, "remote_player_entity");
+          } else {
+            this.world.add(player1, "remote_player_entity");
+            this.world.add(player2, "local_player_entity");
+          }
+          this.world.get("remote_player_entity").addScript(
+            Players[this.world.get("remotePlayer")].playerScript
+          );
+          this.world.get("local_player_entity").addScript(
+            Players[this.world.get("localPlayer")].playerScript
+          );
+          Wall(0, 230, 256, 20, "red");
+          Wall(50, 170, 50, 10, "red");
+          Wall(256 - 50 - 50, 170, 50, 10, "red");
+          this.world.add(new Countdown(3));
+          const hud = this.hud;
+          const player1Username = this.world.get(NetworkConnection).isPlayer1() ? this.world.get(AccountInfo.username) : this.world.get("remoteUser");
+          const player2Username = this.world.get(NetworkConnection).isPlayer1() ? this.world.get("remoteUser") : this.world.get(AccountInfo.username);
+          this.hud.element.querySelector(".text-left").childNodes[0].textContent = player1Username;
+          this.hud.element.querySelector(".text-right").childNodes[0].textContent = player2Username;
+          const countdownScript = function() {
+            let lastValue = this.get(Countdown);
+            this.set(Countdown.id, this.get(Countdown) - DESIRED_FRAME_TIME / 1e3);
+            let newValue = this.get(Countdown);
+            if (Math.floor(lastValue) !== Math.floor(newValue) && newValue > 0) {
+              const el = /* @__PURE__ */ window.jsx("div", { className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-1000 text-9xl opacity-100" }, Math.floor(lastValue));
+              console.log("Showing countdown", el);
+              hud.element.append(el);
+              window.requestAnimationFrame(() => {
+                el.offsetHeight;
+                el.style.opacity = "0";
+                el.style.setProperty("--tw-scale-x", "3");
+                el.style.setProperty("--tw-scale-y", "3");
+              });
+              setTimeout(() => {
+                el.remove();
+              }, 1e3);
+            }
+            if (this.get(Countdown) <= 0) {
+              this.get(RollbackManager).enableRollback();
+              this.add(new MatchTimer(0));
+              this.addScript(
+                () => this.set(
+                  MatchTimer.id,
+                  this.get(MatchTimer) + DESIRED_FRAME_TIME / 1e3
+                )
+              );
+              this.removeScript(countdownScript);
+            }
+          };
+          this.world.addScript(countdownScript);
+          this.hasLoadedHud = true;
         }
-      ];
+        update() {
+          if (!this.hasLoadedHud)
+            return;
+          const secondsElapsed = this.world.has(MatchTimer) ? this.world.get(MatchTimer) : 0;
+          const minElapsed = Math.floor(secondsElapsed / 60);
+          this.hud.timer.innerHTML = minElapsed.toString().padStart(2, "0") + ":" + (secondsElapsed % 60).toFixed(0).padStart(2, "0");
+          this.hud.updatePlayer1HealthBar(
+            this.player1.get(Funds) * 100 / PlayerInfo.globals.targetFunds
+          );
+          this.hud.updatePlayer2HealthBar(
+            this.player2.get(Funds) * 100 / PlayerInfo.globals.targetFunds
+          );
+          if (this.player1.get(Funds) >= PlayerInfo.globals.targetFunds || this.player2.get(Funds) >= PlayerInfo.globals.targetFunds) {
+            this.world.get(StateManager).moveTo(GameOverState);
+          }
+        }
+        async onLeave(to) {
+          const nc = this.world.get(NetworkConnection);
+          this.world.add(
+            new MatchInfo({
+              duration: this.world.get(MatchTimer),
+              winner: this.player1.get(Funds) >= PlayerInfo.globals.targetFunds ? "player1" : "player2",
+              player1: {
+                name: nc.isPlayer1() ? this.world.get(AccountInfo.username) : this.world.get("remoteUser"),
+                player: nc.isPlayer1() ? this.world.get("localPlayer") : this.world.get("remotePlayer"),
+                stats: {
+                  bulletsShot: this.player1.get(PlayerStats.bulletsShot),
+                  bulletsHit: this.player1.get(PlayerStats.bulletsHit),
+                  bulletsReceived: this.player1.get(
+                    PlayerStats.bulletsReceived
+                  ),
+                  ultsUsed: this.player1.get(PlayerStats.ultsUsed)
+                }
+              },
+              player2: {
+                name: nc.isPlayer1() ? this.world.get("remoteUser") : this.world.get(AccountInfo.username),
+                player: nc.isPlayer1() ? this.world.get("remotePlayer") : this.world.get("localPlayer"),
+                stats: {
+                  bulletsShot: this.player2.get(PlayerStats.bulletsShot),
+                  bulletsHit: this.player2.get(PlayerStats.bulletsHit),
+                  bulletsReceived: this.player2.get(
+                    PlayerStats.bulletsReceived
+                  ),
+                  ultsUsed: this.player2.get(PlayerStats.ultsUsed)
+                }
+              }
+            })
+          );
+          this.world.remove(MatchTimer);
+          this.world.remove(Countdown);
+          this.world.clearScripts();
+          this.world.get(RollbackManager).disableRollback();
+          const mi = this.world.get(MultiplayerInput);
+          mi.knownFutureInputs.clear();
+          mi.buffers = {};
+          mi.ready = false;
+          mi.init();
+          await super.onLeave(to);
+        }
+      };
     }
   });
 
-  // src/ts/game/states/menu.tsx
-  var menu_exports = {};
-  __export(menu_exports, {
-    Menu: () => Menu
-  });
-  var Menu;
-  var init_menu = __esm({
-    "src/ts/game/states/menu.tsx"() {
+  // src/ts/game/scripts/players/common.ts
+  function applyDefaultMovement(entity, input, id) {
+    if (entity.world.get(CountdownClass) > 0)
+      return;
+    entity.inc(Velocity.y, PlayerInfo.globals.gravity);
+    if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
+      entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
+      entity.set(PlayerInfo.canJump, false);
+    }
+    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+  }
+  function applyDefaultShooting(entity, input, id) {
+    if (entity.world.get(CountdownClass) > 0)
+      return;
+    if (input.is("shoot", "PRESSED", id) && entity.get(PlayerInfo.shootCooldown) <= 0) {
+      entity.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
+      entity.inc(PlayerStats.bulletsShot);
+      BulletEnt(
+        entity,
+        5,
+        entity.get(Position.x),
+        entity.get(Position.y),
+        Math.cos(input.get("aim", id)) * 7,
+        Math.sin(input.get("aim", id)) * 7
+      );
+    } else {
+      entity.inc(PlayerInfo.shootCooldown, -1);
+    }
+  }
+  var CountdownClass;
+  var init_common = __esm({
+    "src/ts/game/scripts/players/common.ts"() {
       "use strict";
-      init_bundle();
-      init_state_managment();
+      init_velocity();
+      init_player_info();
+      init_bullet();
+      init_position();
+      init_player_stats();
+      Promise.resolve().then(() => (init_multiplayer(), multiplayer_exports)).then((module) => {
+        CountdownClass = module.Countdown;
+        console.log("CountdownClass", CountdownClass);
+      });
+    }
+  });
+
+  // src/ts/game/scripts/players/carrier.ts
+  var CARRIER_ULT_COOLDOWN, MrCarrierPlayer;
+  var init_carrier = __esm({
+    "src/ts/game/scripts/players/carrier.ts"() {
+      "use strict";
+      init_loop();
+      init_multiplayer_input();
       init_network();
-      init_dialogs();
-      init_multiplayer();
-      init_button();
-      init_choose_game();
-      init_utils7();
-      init_solo();
-      init_background();
-      init_player_select();
-      init_players();
-      init_game_modes();
-      init_server();
-      init_login();
-      init_levels();
-      Menu = class _Menu extends State {
-        async onEnter(payload, from) {
-          this.setupEndpoints();
-          const nc = this.world.get(NetworkConnection);
-          document.body.append(this.getHTML());
-          nc.post("playerChange");
+      init_player_info();
+      init_player_stats();
+      init_velocity();
+      init_common();
+      CARRIER_ULT_COOLDOWN = DESIRED_FPS * 10;
+      MrCarrierPlayer = function() {
+        const input = this.world.get(MultiplayerInput);
+        const id = this.get(PeerId);
+        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
+          this.set(PlayerInfo.ultPercent, 0);
+          this.set(PlayerInfo.ultTimeLeft, CARRIER_ULT_COOLDOWN);
+          this.inc(PlayerStats.ultsUsed);
         }
-        async fetchServerInfo() {
-          const serverResponse = await fetch("");
-          const data = await serverResponse.json();
-          console.log(data);
-        }
-        async onLeave() {
-          document.querySelector("#menu")?.remove();
-          this.eventListenerIds.forEach(
-            ([e2, id]) => this.world.get(NetworkConnection).removeEventListener(e2, id)
-          );
-        }
-        getHTML() {
-          const lastCommitHash = "cddec57";
-          const devMode = true;
-          const buildTime = 1707187970073;
-          const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
-          const { level, winsIntoLevel } = totalWinsToLevel(
-            this.world.get(AccountInfo.totalWins)
-          );
-          const levelTotalWins = Levels[level].wins;
-          const text = winsIntoLevel + "/" + Levels[level].wins + " Wins";
-          console.log(text);
-          return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 p-2 flex text-white bg-menuBackground bg-opacity-50 rounded-br-md w-auto h-auto" }, /* @__PURE__ */ window.jsx("div", { className: "h-12 w-60 bg-menuBackgroundAccent rounded-md pt-1" }, /* @__PURE__ */ window.jsx("div", { className: "w-full pl-4 pr-4 text-center" }, this.world.get(AccountInfo.username), ": ", /* @__PURE__ */ window.jsx("span", { className: "text-yellow-400  w-auto" }, "\u{1F3C6}", this.world.get(AccountInfo.trophies))), /* @__PURE__ */ window.jsx("div", { className: "flex" }, /* @__PURE__ */ window.jsx("div", { className: "w-3/4 h-4 ml-2 bg-menuBackground rounded-full flex" }, /* @__PURE__ */ window.jsx(
-            "div",
-            {
-              className: "h-full bg-primary rounded-full brightness-150 text-center justify-center flex items-center text-sm text-black",
-              style: {
-                width: 100 * winsIntoLevel / Levels[level].wins + "%"
-              }
-            },
-            winsIntoLevel / levelTotalWins > 0.5 ? text : ""
-          ), /* @__PURE__ */ window.jsx("div", { className: "h-full flex-grow text-white text-center justify-center flex align-middle items-center text-sm" }, winsIntoLevel / levelTotalWins < 0.5 ? text : "")), /* @__PURE__ */ window.jsx("div", { className: "flex items-center h-4 pl-2" }, "Lvl ", level + 1))), this.world.get(AccountInfo.isGuest) ? "" : /* @__PURE__ */ window.jsx("div", { className: "ml-2 h-12 w-20 bg-menuBackgroundAccent rounded-md text-center flex justify-center flex-col" }, /* @__PURE__ */ window.jsx("h1", { className: "text-xl" }, "#", this.world.get(AccountInfo.classRank)), /* @__PURE__ */ window.jsx("h5", { className: "text-sm" }, this.world.get(AccountInfo.class)))), /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build " : "Production build ", " @", lastCommitHash + " ", " (", "Built ", Math.round(timeAgo / 60) + " min ", "ago)"), /* @__PURE__ */ window.jsx(
-            "div",
-            {
-              className: "absolute pr-2 w-16 h-52 left-0 top-[50%] transform -translate-y-1/2 text-white bg-menuBackground rounded-tr-md rounded-br-md\n                     bg-opacity-50 flex items-center justify-center flex-col"
-            },
-            [
-              {
-                icon: "fa-solid fa-cart-shopping",
-                text: "Shop",
-                onclick: () => {
-                  showDialog(
-                    /* @__PURE__ */ window.jsx(
-                      DialogPopup,
-                      {
-                        title: "Vote for shop items",
-                        message: "The shop is coming soon, go <here> to cast your vote for which items we should add",
-                        hideCancelButton: true
-                      }
-                    )
-                  );
-                }
-              },
-              {
-                icon: "fa-regular fa-calendar",
-                text: "News",
-                onclick: () => {
-                  showDialog(
-                    /* @__PURE__ */ window.jsx(
-                      DialogPopup,
-                      {
-                        title: "News",
-                        message: "<h1>Drive Game Released! </h1><br>Go check out all the current characters, and play online with your friends!",
-                        hideCancelButton: true
-                      }
-                    )
-                  );
-                }
-              },
-              {
-                icon: "fa-solid fa-person-rifle",
-                text: "Players",
-                onclick: () => this.world.get(StateManager).fadeTo(PlayerSelect)
-              }
-            ].map(({ icon, text: text2, onclick }) => /* @__PURE__ */ window.jsx(
-              "div",
-              {
-                onclick,
-                className: "w-full aspect-square text-center bg-menuBackgroundAccent rounded-md bg-opacity-75 pt-2 m-auto hover:brightness-90 cursor-pointer"
-              },
-              /* @__PURE__ */ window.jsx("i", { className: `${icon} fa-xl` }),
-              /* @__PURE__ */ window.jsx("br", null),
-              text2
-            ))
-          ), /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center" }, /* @__PURE__ */ window.jsx("div", { className: "bg-menuBackgroundAccent mr-2 rounded-md h-10 w-10 flex items-center justify-center" }, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-user-group fa-xl" })), /* @__PURE__ */ window.jsx("div", { className: "bg-menuBackgroundAccent rounded-md h-10 w-10 flex items-center justify-center" }, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-bars fa-xl" }))), /* @__PURE__ */ window.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center align-middle items-center" }, /* @__PURE__ */ window.jsx(
-            "img",
-            {
-              src: Players[this.world.get("localPlayer")].menuPic,
-              className: "h-48"
+        if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+          if (input.get("y", id) >= 0) {
+            this.inc(Velocity.y, PlayerInfo.globals.gravity / 2);
+          } else {
+            this.inc(Velocity.y, input.get("y", id) / 100);
+            if (this.get(Velocity.y) < -PlayerInfo.globals.gravity) {
+              this.set(Velocity.y, -PlayerInfo.globals.gravity);
             }
-          ), this.world.get(NetworkConnection).isConnected ? /* @__PURE__ */ window.jsx(
-            "img",
-            {
-              id: "remotePlayer",
-              src: Players[this.world.get("remotePlayer")].menuPic,
-              className: "h-36"
+          }
+          this.inc(Velocity.y, Math.min(input.get("y", id), 0));
+          this.inc(PlayerInfo.ultTimeLeft, -1);
+          this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+        } else {
+          this.inc(PlayerInfo.ultPercent);
+          applyDefaultMovement(this, input, id);
+        }
+        applyDefaultShooting(this, input, id);
+      };
+    }
+  });
+
+  // src/ts/game/scripts/players/laser.ts
+  var LaserPlayer;
+  var init_laser = __esm({
+    "src/ts/game/scripts/players/laser.ts"() {
+      "use strict";
+      init_multiplayer_input();
+      init_network();
+      init_position();
+      init_bullet();
+      init_player_info();
+      init_common();
+      init_lib38();
+      LaserPlayer = function() {
+        const input = this.world.get(MultiplayerInput);
+        const id = this.get(PeerId);
+        applyDefaultMovement(this, input, id);
+        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
+          this.set(PlayerInfo.ultPercent, 0);
+          this.set(PlayerInfo.ultTimeLeft, 1);
+        } else {
+          this.inc(PlayerInfo.ultPercent);
+        }
+        if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+          if (input.is("shoot", "JUST_RELEASED", id)) {
+            for (let i2 = 0; i2 < 10; i2++) {
+              const velX = Math.cos(input.get("aim", id));
+              const velY = Math.sin(input.get("aim", id));
+              BulletEnt(
+                this.get(Position.x) + velX * i2 * 30,
+                this.get(Position.y) + velY * i2 * 30,
+                velX * 20,
+                velY * 20
+              );
             }
-          ) : /* @__PURE__ */ window.jsx(
-            "i",
-            {
-              id: "connectToRemote",
-              className: "fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100",
-              onclick: () => {
-                this.connectToRemote();
-              }
+            this.inc(PlayerInfo.ultTimeLeft, -1 / 3);
+            this.get(Container).getChildByName("aimguide")?.removeFromParent();
+          } else if (input.is("shoot", "PRESSED", id)) {
+            const container = this.get(Container);
+            if (container.children.length == 0) {
+              const graphics = new Graphics();
+              graphics.lineStyle(5, 16711680, 0.5);
+              graphics.moveTo(0, 0);
+              graphics.lineTo(1e3, 0);
+              graphics.name = "aimguide";
+              container.addChild(graphics);
             }
-          )), /* @__PURE__ */ window.jsx("div", { className: "absolute right-0 bottom-0 p-1 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(
-            AccentButton,
-            {
-              onclick: () => this.world.get(StateManager).fadeTo(ChooseGameMode, null),
-              id: "gameModeButton"
-            },
-            GameModes[this.world.get("selectedGameMode")].name
-          ), /* @__PURE__ */ window.jsx(
-            PrimaryButton,
-            {
-              id: "playButton",
-              onclick: () => {
-                switch (this.world.get("selectedGameMode")) {
-                  case "onlinePvP":
-                    this.enterQueue();
-                    break;
-                  case "co-op":
-                    this.queueMultiplayerGameStart();
-                    break;
-                  case "solo":
-                    this.world.get(StateManager).fadeTo(SoloGame);
-                    break;
-                }
-              }
-            },
-            "PLAY"
-          ))));
+            container.getChildByName("aimguide").rotation = input.get("aim", id);
+          }
+        } else {
+          applyDefaultShooting(this, input, id);
         }
-        connectToRemote() {
-          const input = /* @__PURE__ */ window.jsx(
-            "input",
-            {
-              type: "text",
-              pattern: "[a-zA-Z]{5}",
-              className: "uppercase mt-1 w-1/2 m-auto text-center bg-secondary text-xl text-white invalid:text-gray-500",
-              placeholder: "XXXXX"
-            }
-          );
-          const dialog = /* @__PURE__ */ window.jsx(
-            DialogPopup,
-            {
-              title: "Enter Remote ID",
-              message: `The remote ID should be 5 capital letters. Your ID is ${this.world.get(NetworkConnection).id}`,
-              onok: async () => {
-                const remoteId = input.value.toUpperCase();
-                try {
-                  if (!input.checkValidity()) {
-                    return KEEP_OPEN;
-                  }
-                  await this.world.get(NetworkConnection).connect(remoteId);
-                  const player = await this.world.get(NetworkConnection).fetch("currentPlayer");
-                  this.world.set("remotePlayer", player);
-                  document.querySelector("#connectToRemote")?.replaceWith(
-                    /* @__PURE__ */ window.jsx("img", { id: "remotePlayer", className: "h-36" })
-                  );
-                } catch (e2) {
-                  showDialog(
-                    /* @__PURE__ */ window.jsx(
-                      DialogPopup,
-                      {
-                        title: "Failed To Connect",
-                        message: e2.message,
-                        hideCancelButton: true
-                      }
-                    )
-                  );
-                }
-              }
-            },
-            input
-          );
-          showDialog(dialog);
-        }
-        enterQueue() {
-          return new Promise((res, rej) => {
-            const play = document.querySelector("#playButton");
-            this.world.get(ServerConnection).fetch("/matchmaking/enterQueue", {
-              searchParams: {
-                id: this.world.get(NetworkConnection).id
-              }
-            }).then(async (serverRes) => {
-              const { remoteId, isHost } = serverRes;
-              if (!isHost)
-                return res();
-              play.innerHTML = "Establishing Connection";
-              const nc = this.world.get(NetworkConnection);
-              try {
-                await nc.connect(remoteId);
-                this.queueMultiplayerGameStart();
-              } catch (e2) {
-                showDialog({
-                  title: "Matchmaking error",
-                  message: "Failed to establish connection",
-                  hideCancelButton: true
-                });
-                nc.close();
-              }
-              res();
-            });
-            this.world.add(true, "inQueue");
-            play.innerHTML = "In queue (";
-            const span = /* @__PURE__ */ window.jsx("span", null, "0");
-            play.append(span, "s)");
-            let seconds = 0;
-            setInterval(() => {
-              seconds++;
-              span.innerHTML = seconds.toString();
-            }, 1e3);
-          });
-        }
-        async queueMultiplayerGameStart() {
-          const startFrame = this.world.get(NetworkConnection).framesConnected + v + 10;
-          this.world.get(NetworkConnection).send("start_game", startFrame);
-          await awaitFrame(this.world, startFrame);
-          this.world.get(StateManager).fadeTo(MultiplayerGame);
-        }
-        static alreadySetupEndpoints = false;
-        eventListenerIds = [];
-        setupEndpoints() {
-          const nc = this.world.get(NetworkConnection);
-          this.eventListenerIds.push(
-            ["connect", nc.addEventListener("connect", () => {
-            })],
-            [
-              "connect",
-              nc.addEventListener("close", () => {
-                this.world.remove("remotePlayer");
-                document.querySelector("#remotePlayer")?.replaceWith(
-                  /* @__PURE__ */ window.jsx(
-                    "i",
-                    {
-                      id: "connectToRemote",
-                      className: "fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100",
-                      onclick: () => this.connectToRemote()
-                    }
-                  )
-                );
-              })
-            ]
-          );
-          if (_Menu.alreadySetupEndpoints)
-            return;
-          _Menu.alreadySetupEndpoints = true;
-          nc.addEndpoint("currentPlayer", () => this.world.get("localPlayer"));
-          nc.addEndpoint("playerChange", async () => {
-            const player = await nc.fetch("currentPlayer");
-            this.world.set("remotePlayer", player);
-            document.querySelector("#connectToRemote")?.replaceWith(/* @__PURE__ */ window.jsx("img", { id: "remotePlayer", className: "h-36" }));
-            document.querySelector("#remotePlayer")?.setAttribute("src", Players[player].menuPic);
-          });
-          nc.addEventListener("connect", () => {
-            nc.post("playerChange");
-          });
-          nc.addEndpoint("currentGameMode", () => {
-            return this.world.get("selectedGameMode");
-          });
-          nc.addEndpoint("gameModeChange", async () => {
-            const mode = await nc.fetch("currentGameMode");
-            this.world.set("selectedGameMode", mode);
-            document.querySelector("#gameModeButton").innerHTML = GameModes[mode].name;
-          });
-          nc.on("start_game", async (frame) => {
-            await awaitFrame(this.world, frame);
-            this.world.get(StateManager).fadeTo(MultiplayerGame);
-          });
+      };
+    }
+  });
+
+  // src/ts/game/players.ts
+  var Players;
+  var init_players = __esm({
+    "src/ts/game/players.ts"() {
+      "use strict";
+      init_carrier();
+      init_laser();
+      Players = {
+        carrier: {
+          name: "carrier",
+          displayName: "Mr. Carrier",
+          available: true,
+          menuPic: "https://www.freeiconspng.com/download/49305",
+          spriteName: "carrier",
+          playerScript: MrCarrierPlayer,
+          description: "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms. His primary allows him to throw 1 ticket at a time, but after finally becoming buzz lightyear with his ult, he can fly around the stadium shoot twice as fast"
+        },
+        handcock: {
+          name: "handcock",
+          displayName: "Mr. Handcock",
+          available: false,
+          menuPic: "https://freepngimg.com/save/21721-luigi-transparent-image/772x1024",
+          spriteName: "handcock",
+          playerScript: LaserPlayer,
+          description: "While normally his laser eyes are used to make kids question all of their life choices when he glaces at them, he can also use them to shoot drive tickets faster than he can give out detentions. When he ults, he becomes even more powerful, and his lasers no longer stop for disobedient objects (including walls)"
         }
       };
     }
@@ -48357,6 +48347,8 @@ void main(void)\r
       init_network();
       init_state_managment();
       init_button();
+      init_match_info();
+      init_players();
       GameOverState = class extends State {
         element = /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 w-full h-full z-50" });
         menuState;
@@ -48372,9 +48364,46 @@ void main(void)\r
           this.world.get(NetworkConnection).close();
         }
         getHTML() {
-          return /* @__PURE__ */ window.jsx("div", { className: "w-full h-full bg-base bg-opacity-80 " }, /* @__PURE__ */ window.jsx("div", { className: "absolute w-full bottom-0 p-1 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, { onclick: () => null }, "Play Again"), /* @__PURE__ */ window.jsx(
+          const playerStats = [
+            "bulletsShot",
+            "bulletsHit",
+            "bulletsReceived",
+            "ultsUsed"
+          ];
+          const player1Stats = playerStats.map(
+            (s3) => this.world.get(MatchInfo).info.player1.stats[s3]
+          );
+          const player2Stats = playerStats.map(
+            (s3) => this.world.get(MatchInfo).info.player2.stats[s3]
+          );
+          player1Stats.splice(
+            2,
+            0,
+            (Math.floor(player1Stats[1] * 100 / player1Stats[0]) || 0) + "%"
+          );
+          player2Stats.splice(
+            2,
+            0,
+            (Math.floor(player2Stats[1] * 100 / player2Stats[0]) || 0) + "%"
+          );
+          const statNames = [
+            "Tickets Thrown",
+            "Tickets Sold",
+            "Accuracy",
+            "Tickets Bought",
+            "Ultimates Used"
+          ];
+          const statEls = [player1Stats, statNames, player2Stats];
+          const info = this.world.get(MatchInfo).info;
+          return /* @__PURE__ */ window.jsx("div", { className: "w-full h-full bg-base bg-opacity-80 flex flex-col" }, /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-5 grow" }, /* @__PURE__ */ window.jsx("div", { className: "flex flex-col justify-center text-center" }, /* @__PURE__ */ window.jsx("span", { className: "text-2xl" }, info.winner == "player1" ? "WINNER" : /* @__PURE__ */ window.jsx("br", null)), /* @__PURE__ */ window.jsx(
+            "img",
+            {
+              src: Players[this.world.get(MatchInfo).info.player1.player].menuPic
+            }
+          ), this.world.get(MatchInfo).info.player1.name), statEls.map((stats) => /* @__PURE__ */ window.jsx("div", { className: " flex flex-col justify-center" }, stats.map((stat, i2) => /* @__PURE__ */ window.jsx("div", { className: "text-center" }, stat)))), /* @__PURE__ */ window.jsx("div", { className: "flex flex-col justify-center text-center" }, /* @__PURE__ */ window.jsx("span", { className: "text-2xl" }, info.winner == "player2" ? "WINNER" : /* @__PURE__ */ window.jsx("br", null)), /* @__PURE__ */ window.jsx("img", { src: Players[info.player2.player].menuPic }), info.player2.name)), /* @__PURE__ */ window.jsx("div", { className: "bottom-0 flex p-1 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, { onclick: () => null }, "Play Again"), /* @__PURE__ */ window.jsx(
             PrimaryButton,
             {
+              className: "ml-auto",
               id: "playButton",
               onclick: () => this.world.get(StateManager).moveTo(this.menuState)
             },
@@ -48506,7 +48535,7 @@ void main(void)\r
           this.world.set("localPlayer", Players.handcock.name);
           this.world.set("selectedMap", "map1");
           this.world.set("selectedGameMode", "onlinePvP");
-          setTimeout(() => {
+          requestAnimationFrame(() => {
             loader.style.opacity = "0";
           });
           setTimeout(() => {

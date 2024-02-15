@@ -1,16 +1,8 @@
-import { Class, LOGGED_COMPONENT_STORAGE_BUFFER_SIZE } from "bagelecs";
-import {
-    ExtractPayload,
-    State,
-    StateClass,
-    StateManager,
-} from "../../engine/state_managment";
-import { FolderApi, Pane } from "tweakpane";
+import { LOGGED_COMPONENT_STORAGE_BUFFER_SIZE } from "bagelecs";
+import { State, StateClass, StateManager } from "../../engine/state_managment";
 import { NetworkConnection } from "../../engine/multiplayer/network";
-import { Game } from "./game";
 import { DialogPopup, KEEP_OPEN, showDialog } from "../hud/components/dialogs";
 import { MultiplayerGame } from "./multiplayer";
-import { Joystick } from "../hud/components/joystick";
 import { AccentButton, PrimaryButton } from "../hud/components/button";
 import { ChooseGameMode } from "./choose_game";
 import { awaitFrame } from "../../engine/utils";
@@ -166,7 +158,7 @@ export class Menu extends State<MenuPayload> {
                                 },
                             },
                             {
-                                icon: "fa-solid fa-person-rifle",
+                                icon: "fa-solid fa-users",
                                 text: "Players",
                                 onclick: () =>
                                     this.world
@@ -185,11 +177,8 @@ export class Menu extends State<MenuPayload> {
                         ))}
                     </div>
 
-                    <div className="absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center">
-                        <div className="bg-menuBackgroundAccent mr-2 rounded-md h-10 w-10 flex items-center justify-center">
-                            <i className="fa-solid fa-user-group fa-xl"></i>
-                        </div>
-                        <div className="bg-menuBackgroundAccent rounded-md h-10 w-10 flex items-center justify-center">
+                    <div className="absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center m-2">
+                        <div className="bg-menuBackgroundAccent rounded-md h-10 w-10 flex items-center justify-center cursor-not-allowed">
                             <i className="fa-solid fa-bars fa-xl"></i>
                         </div>
                         {/* <div className="bg-menuBackgroundAccent rounded-md h-10 w-10 m-auto text-center">
@@ -217,14 +206,15 @@ export class Menu extends State<MenuPayload> {
                                 className="h-36"
                             />
                         ) : (
-                            <i
+                            <div
                                 id="connectToRemote"
-                                className="fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100"
                                 onclick={() => {
                                     // Connect to remote
                                     this.connectToRemote();
                                 }}
-                            ></i>
+                            >
+                                <i className="fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100"></i>
+                            </div>
                         )}
                     </div>
 
@@ -248,6 +238,9 @@ export class Menu extends State<MenuPayload> {
                             id="playButton"
                             onclick={() => {
                                 switch (this.world.get("selectedGameMode")) {
+                                    case "localPvP":
+                                        this.queueMultiplayerGameStart();
+                                        break;
                                     case "onlinePvP":
                                         this.enterQueue();
                                         break;
@@ -274,7 +267,7 @@ export class Menu extends State<MenuPayload> {
         const input = (
             <input
                 type="text"
-                pattern="[a-zA-Z]{5}"
+                pattern="[0-9]{5}"
                 className="uppercase mt-1 w-1/2 m-auto text-center bg-secondary text-xl text-white invalid:text-gray-500"
                 placeholder="XXXXX"
             ></input>
@@ -293,19 +286,26 @@ export class Menu extends State<MenuPayload> {
                                 // Play some sound
                                 return KEEP_OPEN;
                             }
-                            await this.world
-                                .get(NetworkConnection)
-                                .connect(remoteId);
-                            const player = await this.world
-                                .get(NetworkConnection)
-                                .fetch("currentPlayer");
+                            const nc = this.world.get(NetworkConnection);
+                            await nc.connect(remoteId);
+                            const username = await nc.fetch("username");
+                            this.world.add(username, "remoteUser");
+                            const player = await nc.fetch("currentPlayer");
+                            console.log("Player", player);
 
-                            this.world.set("remotePlayer", player);
+                            this.world.add("remotePlayer", player);
                             document
                                 .querySelector("#connectToRemote")
                                 ?.replaceWith(
                                     <img id="remotePlayer" className="h-36" />
                                 );
+                            this.world.set("selectedGameMode", "localPvP");
+                            nc.post("gameModeChange");
+
+                            document.querySelector("#gameModeButton")!.innerHTML =
+                                GameModes[
+                                    this.world.get("selectedGameMode") as "solo"
+                                ].name;
                         } catch (e) {
                             showDialog(
                                 <DialogPopup
@@ -402,16 +402,14 @@ export class Menu extends State<MenuPayload> {
             [
                 "connect",
                 nc.addEventListener("close", () => {
-                    this.world.remove("remotePlayer");
-                    document
-                        .querySelector("#remotePlayer")
-                        ?.replaceWith(
-                            <i
-                                id="connectToRemote"
-                                className="fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100"
-                                onclick={() => this.connectToRemote()}
-                            ></i>
-                        );
+                    document.querySelector("#remotePlayer")?.replaceWith(
+                        <div
+                            id="connectToRemote"
+                            onclick={() => this.connectToRemote()}
+                        >
+                            <i className="fa-solid fa-user-plus fa-2x opacity-75 ml-8 hover:opacity-100"></i>
+                        </div>
+                    );
                 }),
             ]
         );
@@ -419,7 +417,15 @@ export class Menu extends State<MenuPayload> {
         if (Menu.alreadySetupEndpoints) return;
         Menu.alreadySetupEndpoints = true;
 
-        nc.addEndpoint("currentPlayer", () => this.world.get("localPlayer"));
+        nc.addEndpoint("username", () => {
+            console.log("Sending username");
+            return this.world.get(AccountInfo.username);
+        });
+
+        nc.addEndpoint("currentPlayer", () => {
+            console.log("sending current player");
+            return this.world.get("localPlayer");
+        });
         nc.addEndpoint("playerChange", async () => {
             const player = await nc.fetch("currentPlayer");
             this.world.set("remotePlayer", player);
@@ -430,8 +436,11 @@ export class Menu extends State<MenuPayload> {
                 .querySelector("#remotePlayer")
                 ?.setAttribute("src", Players[player as "carrier"].menuPic);
         });
-        nc.addEventListener("connect", () => {
+        nc.addEventListener("connect", async () => {
             nc.post("playerChange");
+
+            this.world.set("remotePlayer", await nc.fetch("currentPlayer"));
+            this.world.set("remoteUser", await nc.fetch("username"));
         });
         nc.addEndpoint("currentGameMode", () => {
             return this.world.get("selectedGameMode");
@@ -457,5 +466,6 @@ declare global {
         playerChange: void;
         currentGameMode: string;
         gameModeChange: void;
+        username: string;
     }
 }

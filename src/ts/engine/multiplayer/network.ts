@@ -36,8 +36,8 @@ export class NetworkConnection {
     private static generateId(): string {
         return new Array(NetworkConnection.idLength)
             .fill(0) // Make array w/ length of 5
-            .map((_) => Math.floor(Math.random() * 26)) // Fill the array with random numbers 0 - 25
-            .map((num) => String.fromCharCode("A".charCodeAt(0) + num)) // Map numbers to capital letters
+            .map((_) => Math.floor(Math.random() * 10)) // Fill the array with random numbers 0 - 25
+            .map((num) => num.toString()) // Map numbers to capital letters
             .join(""); // Turn it into a string
     }
 
@@ -144,6 +144,10 @@ export class NetworkConnection {
         }
 
         console.log("Player 1:", this.player1, "Player 2:", this.player2);
+    }
+
+    isPlayer1() {
+        return this.id === this.player1;
     }
 
     private resolvePromisesWaitingForConnection!: (remoteId: string) => void;

@@ -16,15 +16,8 @@ declare global {
     }
 }
 
-
 window.DIST_URL = DIST_URL;
 
-
-GoogleAuth.initialize({
-    clientId: "41009933978-vrdr3g1i3mhjh6u7vip1sce01o8rnijf.apps.googleusercontent.com",
-    grantOfflineAccess: true,
-    scopes: ["profile", "email"]
-})
 // window.google ??= {
 //     accounts: {
 //         id: {
@@ -37,16 +30,15 @@ GoogleAuth.initialize({
 const BUNDLE_URL = DIST_URL + "/index.js";
 const CSS_URL = DIST_URL + "/index.css";
 
-// Show loading screen
-document.body.innerHTML = `
-    <div id="preloadScreen" style="z-index: 999; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; background-image: radial-gradient(#44403C, #171717)">
-        <img src="./logo.png" />
-            <h1 style="font-size: 24px; color: white" id="downloadText">Downloading Content...</h1>
-    </div>
-`;
-
 // Load google auth stuff
-if (Capacitor.isNativePlatform() || true) {
+if (Capacitor.isNativePlatform()) {
+    GoogleAuth.initialize({
+        clientId:
+            "41009933978-vrdr3g1i3mhjh6u7vip1sce01o8rnijf.apps.googleusercontent.com",
+        grantOfflineAccess: true,
+        scopes: ["profile", "email"],
+    });
+
     // Load ios / android stuff
     window.google = {
         accounts: {
@@ -78,7 +70,7 @@ if (Capacitor.isNativePlatform() || true) {
                         const jwt = user.authentication.idToken;
                         console.log(jwt);
                         //@ts-expect-error
-                        window.google.accounts.id.callback?.({credential: jwt});
+                        window.google.accounts.id.callback?.({ credential: jwt });
                     };
                     parent.appendChild(container);
                 },

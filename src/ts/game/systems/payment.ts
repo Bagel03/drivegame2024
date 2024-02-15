@@ -3,6 +3,8 @@ import { Cost } from "../components/cost";
 import { Funds } from "../components/funds";
 import { Position } from "../../engine/rendering/position";
 import { CollisionHitbox } from "../components/collision";
+import { PlayerInfo } from "../components/player_info";
+import { PlayerStats } from "../components/player_stats";
 
 export class PaymentSystem extends System({
     cost: With(Cost),
@@ -34,6 +36,10 @@ export class PaymentSystem extends System({
 
                 fundsEntity.inc(Funds, -Math.min(costEntity.get(Cost.price), funds));
                 costEntity.get(Cost.payTo).inc(Funds, costEntity.get(Cost.price));
+                fundsEntity.inc(PlayerStats.bulletsReceived);
+
+                costEntity.get(Cost.payTo).inc(PlayerStats.bulletsHit);
+
                 this.toRemoveQueue.add(costEntity);
             });
         });

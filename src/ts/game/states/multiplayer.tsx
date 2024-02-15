@@ -1,29 +1,24 @@
 import { Game } from "./game";
-import { Graphics, Sprite, Texture } from "pixi.js";
 import { NetworkConnection, PeerId } from "../../engine/multiplayer/network";
-import { AnimatedSprite } from "../../engine/rendering/animation";
-import { GraphicsEnt } from "../../engine/rendering/blueprints/graphics";
 import { StateClass, StateManager } from "../../engine/state_managment";
-import { CollisionHitbox } from "../components/collision";
 import { PlayerInfo } from "../components/player_info";
-import { Velocity } from "../components/velocity";
 import { Wall } from "../blueprints/wall";
-import { Joystick } from "../hud/components/joystick";
 import "./preload";
 import { RollbackManager } from "../../engine/multiplayer/rollback";
-import { PlayerDescriptor, Players } from "../players";
+import { Players } from "../players";
 import { Entity, Resource, Type, World } from "bagelecs";
 import { Funds } from "../components/funds";
 import { GameOverState } from "./game_over";
 import { DESIRED_FRAME_TIME } from "../../engine/loop";
 import { Script } from "../../engine/script";
 import { MultiplayerInput } from "../../engine/multiplayer/multiplayer_input";
+import { Player } from "../blueprints/player";
+import { MatchInfo } from "../components/match_info";
+import { AccountInfo } from "./login";
+import { PlayerStats } from "../components/player_stats";
 
 export const Countdown = Resource(Type.number.logged());
 export const MatchTimer = Resource(Type.number.logged());
-console.log("Coutndown is", Countdown.getId());
-
-console.log("Game is", Game);
 
 export class MultiplayerGame extends Game {
     player1!: Entity;
@@ -37,61 +32,79 @@ export class MultiplayerGame extends Game {
         await super.onEnter(payload, from);
         // this.world.disable(MovementSystem);
 
-        const player1 = GraphicsEnt(
-            48,
-            32,
-            { fillStyle: "blue" },
-            "drawRect",
-            0,
-            0,
-            16,
-            16
+        let player1Name = this.world.get<"carrier">(
+            this.world.get(NetworkConnection).isPlayer1()
+                ? "localPlayer"
+                : "remotePlayer"
         );
-        this.player1 = player1;
-        const player2 = GraphicsEnt(
-            256 - 48 - 16,
-            32,
-            { fillStyle: "red" },
-            "drawRect",
-            0,
-            0,
-            16,
-            16
+        let player2Name = this.world.get<"carrier">(
+            this.world.get(NetworkConnection).isPlayer1()
+                ? "remotePlayer"
+                : "localPlayer"
         );
-        this.player2 = player2;
 
-        for (const player of [player1, player2]) {
-            player.remove(Graphics);
-            console.log(player.has(Graphics), player.has(Sprite));
-            player.add(new Sprite(Texture.from("walk_00.png")));
-            player.get(Sprite).width = 40;
-            player.get(Sprite).height = 32;
-            player.add(new Velocity({ x: 0, y: 0 }));
-            player.add(new Funds(PlayerInfo.globals.targetFunds / 3));
-            // player.addScript(LaserPlayer);
-            player.add(
-                new PlayerInfo({
-                    canJump: true,
-                    heath: 100,
-                    shootCooldown: 0,
-                    ultPercent: 0,
-                    ultTimeLeft: 0,
-                })
-            );
-            player.add(new CollisionHitbox({ x: 32, y: 32 }));
-            player.add(
-                new AnimatedSprite({
-                    spriteName: "walk",
-                    currentFrame: 0,
-                    thisFrameElapsed: 0,
-                    thisFrameTotal: 15,
-                    frameCount: 8,
-                })
-            );
-        }
+        const player1 = Player(48, 32, player1Name);
+        this.player1 = player1;
+        const player2 = Player(256 - 48 - 32, 32, player2Name);
+        this.player2 = player2;
+        // const player1 = GraphicsEnt(
+        //     48,
+        //     32,
+        //     { fillStyle: "blue" },
+        //     "drawRect",
+        //     0,
+        //     0,
+        //     16,
+        //     16
+        // );
+        // this.player1 = player1;
+        // const player2 = GraphicsEnt(
+        //     256 - 48 - 16,
+        //     32,
+        //     { fillStyle: "red" },
+        //     "drawRect",
+        //     0,
+        //     0,
+        //     16,
+        //     16
+        // );
+        // this.player2 = player2;
+
+        // for (const player of [player1, player2]) {
+        //     player.remove(Graphics);
+        //     console.log(player.has(Graphics), player.has(Sprite));
+        //     player.add(new Sprite(Texture.from("walk_00.png")));
+        //     player.get(Sprite).width = 40;
+        //     player.get(Sprite).height = 32;
+        //     player.add(new Velocity({ x: 0, y: 0 }));
+        //     player.add(new Funds(0));
+        //     // player.addScript(LaserPlayer);
+        //     player.add(
+        //         new PlayerInfo({
+        //             canJump: true,
+        //             heath: 100,
+        //             shootCooldown: 0,
+        //             ultPercent: 0,
+        //             ultTimeLeft: 0,
+        //         })
+        //     );
+        //     player.add(new CollisionHitbox({ x: 32, y: 32 }));
+        //     player.add(
+        //         new AnimatedSprite({
+        //             spriteName: "walk",
+        //             currentFrame: 0,
+        //             thisFrameElapsed: 0,
+        //             thisFrameTotal: 15,
+        //             frameCount: 8,
+        //         })
+        //     );
+        // }
 
         player1.add(new PeerId(this.world.get(NetworkConnection).player1));
         player2.add(new PeerId(this.world.get(NetworkConnection).player2));
+
+        this.world.add("player_1_entity", player1);
+        this.world.add("player_2_entity", player2);
 
         if (
             this.world.get(NetworkConnection).id ===
@@ -109,6 +122,7 @@ export class MultiplayerGame extends Game {
             .addScript(
                 Players[this.world.get<"carrier">("remotePlayer")].playerScript
             );
+
         this.world
             .get<Entity>("local_player_entity")
             .addScript(
@@ -148,18 +162,54 @@ export class MultiplayerGame extends Game {
         Wall(50, 170, 50, 10, "red");
         Wall(256 - 50 - 50, 170, 50, 10, "red");
 
-        const joysticks = (
-            <>
-                <Joystick id="Movement" side="left"></Joystick>
-                <Joystick id="Shoot" side="right"></Joystick>
-            </>
-        ) as any as HTMLElement[];
-        this.hud.element.append(...joysticks);
-
-        // Wait 1 seconds before starting the input sync
+        // Wait 3 seconds before starting the input sync
         this.world.add(new Countdown(3));
+
+        const hud = this.hud;
+
+        const player1Username = this.world.get(NetworkConnection).isPlayer1()
+            ? this.world.get(AccountInfo.username)
+            : this.world.get<string>("remoteUser");
+        const player2Username = this.world.get(NetworkConnection).isPlayer1()
+            ? this.world.get<string>("remoteUser")
+            : this.world.get(AccountInfo.username);
+
+        this.hud.element.querySelector(".text-left")!.childNodes[0].textContent =
+            player1Username;
+        this.hud.element.querySelector(".text-right")!.childNodes[0].textContent =
+            player2Username;
+
         const countdownScript: Script<World> = function () {
+            let lastValue = this.get(Countdown);
             this.set(Countdown.id, this.get(Countdown) - DESIRED_FRAME_TIME / 1000);
+            let newValue = this.get(Countdown);
+
+            // console.log("Countdown", lastValue, newValue);
+
+            // Check if a second passed in between
+            if (Math.floor(lastValue) !== Math.floor(newValue) && newValue > 0) {
+                const el = (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-1000 text-9xl opacity-100">
+                        {Math.floor(lastValue)}
+                    </div>
+                ) as HTMLDivElement;
+                console.log("Showing countdown", el);
+
+                hud.element.append(el);
+
+                window.requestAnimationFrame(() => {
+                    el.offsetHeight;
+                    el.style.opacity = "0";
+                    // el.style.transform = "scale(3) translate(-50%, -50%)";
+                    el.style.setProperty("--tw-scale-x", "3");
+                    el.style.setProperty("--tw-scale-y", "3");
+                    // el.style.scale = "3";
+                });
+
+                setTimeout(() => {
+                    el.remove();
+                }, 1000);
+            }
 
             if (this.get(Countdown) <= 0) {
                 this.get(RollbackManager).enableRollback();
@@ -183,7 +233,6 @@ export class MultiplayerGame extends Game {
 
         if (!this.hasLoadedHud) return;
 
-        console.log("Updating");
         const secondsElapsed = this.world.has(MatchTimer)
             ? this.world.get(MatchTimer)
             : 0;
@@ -210,6 +259,49 @@ export class MultiplayerGame extends Game {
     }
 
     async onLeave(to: StateClass<any>): Promise<void> {
+        const nc = this.world.get(NetworkConnection);
+        this.world.add(
+            new MatchInfo({
+                duration: this.world.get(MatchTimer),
+                winner:
+                    this.player1.get(Funds) >= PlayerInfo.globals.targetFunds
+                        ? "player1"
+                        : "player2",
+                player1: {
+                    name: nc.isPlayer1()
+                        ? this.world.get(AccountInfo.username)
+                        : this.world.get("remoteUser"),
+                    player: nc.isPlayer1()
+                        ? this.world.get("localPlayer")
+                        : this.world.get("remotePlayer"),
+                    stats: {
+                        bulletsShot: this.player1.get(PlayerStats.bulletsShot),
+                        bulletsHit: this.player1.get(PlayerStats.bulletsHit),
+                        bulletsReceived: this.player1.get(
+                            PlayerStats.bulletsReceived
+                        ),
+                        ultsUsed: this.player1.get(PlayerStats.ultsUsed),
+                    },
+                },
+                player2: {
+                    name: nc.isPlayer1()
+                        ? this.world.get("remoteUser")
+                        : this.world.get(AccountInfo.username),
+                    player: nc.isPlayer1()
+                        ? this.world.get("remotePlayer")
+                        : this.world.get("localPlayer"),
+                    stats: {
+                        bulletsShot: this.player2.get(PlayerStats.bulletsShot),
+                        bulletsHit: this.player2.get(PlayerStats.bulletsHit),
+                        bulletsReceived: this.player2.get(
+                            PlayerStats.bulletsReceived
+                        ),
+                        ultsUsed: this.player2.get(PlayerStats.ultsUsed),
+                    },
+                },
+            })
+        );
+
         this.world.remove(MatchTimer);
         this.world.remove(Countdown);
         this.world.clearScripts();

@@ -47,7 +47,7 @@ export class Preload extends State {
         this.world.set("selectedGameMode", "onlinePvP");
 
         // Just setting it doesn't work, we need to force a reflow
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             loader.style.opacity = "0";
         });
 
@@ -56,6 +56,17 @@ export class Preload extends State {
         }, 1000);
 
         this.world.get(StateManager).moveTo(Login);
+
+        // const requestFullScreen = () => {
+        //     const fullScreenMethod =
+        //         document.documentElement.requestFullscreen ||
+        //         document.documentElement.webkitRequestFullscreen ||
+        //         document.documentElement.mozRequestFullScreen ||
+        //         document.documentElement.msRequestFullscreen;
+        //     fullScreenMethod();
+        // };
+
+        // document.body.addEventListener("pointerdown", requestFullScreen);
     }
 
     async loadAssets() {

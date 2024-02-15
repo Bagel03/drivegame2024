@@ -4,14 +4,22 @@ import { Velocity } from "../../components/velocity";
 import { PlayerInfo } from "../../components/player_info";
 import { BulletEnt } from "../../blueprints/bullet";
 import { Position } from "../../../engine/rendering/position";
-import { Countdown } from "../../states/multiplayer";
+import type { Countdown } from "../../states/multiplayer";
+import { PlayerStats } from "../../components/player_stats";
+
+let CountdownClass: typeof Countdown;
+import("../../states/multiplayer").then((module) => {
+    CountdownClass = module.Countdown;
+    console.log("CountdownClass", CountdownClass);
+});
+// const { Countdown } = await import("../../states/multiplayer");
 
 export function applyDefaultMovement(
     entity: Entity,
     input: MultiplayerInput,
     id: string
 ) {
-    if (entity.world.get(Countdown) > 0) return;
+    if (entity.world.get(CountdownClass) > 0) return;
 
     entity.inc(Velocity.y, PlayerInfo.globals.gravity);
 
@@ -27,13 +35,14 @@ export function applyDefaultShooting(
     input: MultiplayerInput,
     id: string
 ) {
-    if (entity.world.get(Countdown) > 0) return;
+    if (entity.world.get(CountdownClass) > 0) return;
 
     if (
         input.is("shoot", "PRESSED", id) &&
         entity.get(PlayerInfo.shootCooldown) <= 0
     ) {
         entity.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
+        entity.inc(PlayerStats.bulletsShot);
         BulletEnt(
             entity,
             5,

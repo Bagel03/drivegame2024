@@ -14,14 +14,13 @@ export const GameModes = {
         name: "Solo",
         description: "Defeat AI enemies in different arenas to win",
         icon: "fa-person-running",
-
         getIsAvailable: (world: World): string | true =>
             world.get(NetworkConnection).isConnected
                 ? "Party size is too large"
-                : true,
+                : "Solo mode is coming soon!",
     },
     localPvP: {
-        name: "Friendly Battle",
+        name: "Friendly Sell Off",
         description: "Fight against the other player in your party",
         icon: "fa-user-group",
         getIsAvailable: (world: World): string | true =>
@@ -30,7 +29,7 @@ export const GameModes = {
                 : "Party size is too small",
     },
     onlinePvP: {
-        name: "Online Battle",
+        name: "Online Sell Off",
         description: "Fight against other players through online matchmaking",
         icon: "fa-globe",
         getIsAvailable: (world: World): string | true =>
