@@ -660,20 +660,17 @@ var PROD_URL = "https://bagel03.github.io/drivegame2024/builds/prod";
 var LOCAL_URL = "http://localhost:5500/dist";
 var DIST_URL = localStorage.getItem("dev-env") ? LOCAL_URL : PROD_URL;
 window.DIST_URL = DIST_URL;
+
+var BUNDLE_URL = DIST_URL + "/index.js";
+var CSS_URL = DIST_URL + "/index.css";
+
+if (Capacitor.isNativePlatform()) {
 GoogleAuth.initialize({
   clientId: "41009933978-vrdr3g1i3mhjh6u7vip1sce01o8rnijf.apps.googleusercontent.com",
   grantOfflineAccess: true,
   scopes: ["profile", "email"]
 });
-var BUNDLE_URL = DIST_URL + "/index.js";
-var CSS_URL = DIST_URL + "/index.css";
-document.body.innerHTML = `
-    <div id="preloadScreen" style="z-index: 999; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; background-image: radial-gradient(#44403C, #171717)">
-        <img src="./logo.png" />
-            <h1 style="font-size: 24px; color: white" id="downloadText">Downloading Content...</h1>
-    </div>
-`;
-if (Capacitor.isNativePlatform()) {
+  
   window.google = {
     accounts: {
       //@ts-expect-error
