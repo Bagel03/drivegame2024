@@ -1,6 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { DATABASE } from "./database.js";
-import { JWT, JWTInput } from "google-auth-library";
 import { GoogleSpreadsheetRow } from "google-spreadsheet";
 
 interface AccountInfo {
