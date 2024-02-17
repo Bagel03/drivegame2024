@@ -1,85 +1,173 @@
 {
 	"meta": {
 		"image": "atlas.png",
-		"size": {"w":1126,"h":1016},
+		"size": {"w":3731,"h":2872},
 		"scale": "1"
 	},
 	"frames": {
-		"walk_00.png":
+		"Carrier-jumpright_02.png":
 		{
-			"frame": {"x":0,"y":0,"w":175,"h":514},
+			"frame": {"x":0,"y":0,"w":412,"h":973},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":229,"y":83,"w":175,"h":514},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":295,"y":0,"w":412,"h":973},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"walk_01.png":
+		"Gismo-jump_02.png":
 		{
-			"frame": {"x":175,"y":0,"w":247,"h":512},
+			"frame": {"x":412,"y":0,"w":515,"h":954},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":219,"y":84,"w":247,"h":512},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":266,"y":19,"w":515,"h":954},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"walk_07.png":
+		"Carrier-shoot_01.png":
 		{
-			"frame": {"x":422,"y":0,"w":177,"h":509},
+			"frame": {"x":927,"y":0,"w":463,"h":953},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":239,"y":84,"w":177,"h":509},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":295,"y":20,"w":463,"h":953},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"walk_04.png":
+		"Carrier-jumpright_01.png":
 		{
-			"frame": {"x":599,"y":0,"w":157,"h":507},
+			"frame": {"x":1390,"y":0,"w":444,"h":953},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":247,"y":81,"w":157,"h":507},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":295,"y":20,"w":444,"h":953},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"walk_03.png":
+		"Carrier-idleright_00.png":
 		{
-			"frame": {"x":756,"y":0,"w":168,"h":506},
+			"frame": {"x":1834,"y":0,"w":412,"h":953},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":243,"y":85,"w":168,"h":506},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":295,"y":20,"w":412,"h":953},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"walk_06.png":
+		"Carrier-runright_01.png":
 		{
-			"frame": {"x":924,"y":0,"w":202,"h":504},
+			"frame": {"x":0,"y":973,"w":412,"h":953},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":231,"y":90,"w":202,"h":504},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":295,"y":20,"w":412,"h":953},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"walk_05.png":
+		"Carrier-runright_03.png":
 		{
-			"frame": {"x":0,"y":514,"w":178,"h":502},
+			"frame": {"x":412,"y":973,"w":412,"h":953},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":240,"y":88,"w":178,"h":502},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":295,"y":20,"w":412,"h":953},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"walk_02.png":
+		"Carrier-shoot_00.png":
 		{
-			"frame": {"x":178,"y":514,"w":233,"h":495},
+			"frame": {"x":824,"y":973,"w":412,"h":953},
 			"rotated": false,
 			"trimmed": true,
-			"spriteSourceSize": {"x":212,"y":90,"w":233,"h":495},
-			"sourceSize": {"w":650,"h":650}
+			"spriteSourceSize": {"x":295,"y":20,"w":412,"h":953},
+			"sourceSize": {"w":1000,"h":1000}
 		},
-		"map1bg.png":
+		"Carrier-runright_00.png":
 		{
-			"frame": {"x":411,"y":514,"w":256,"h":256},
+			"frame": {"x":1236,"y":973,"w":571,"h":951},
 			"rotated": false,
-			"trimmed": false,
-			"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
-			"sourceSize": {"w":256,"h":256}
+			"trimmed": true,
+			"spriteSourceSize": {"x":136,"y":20,"w":571,"h":951},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-shoot_01.png":
+		{
+			"frame": {"x":2246,"y":0,"w":467,"h":946},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":381,"y":27,"w":467,"h":946},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-jump_01.png":
+		{
+			"frame": {"x":2246,"y":946,"w":459,"h":946},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":381,"y":27,"w":459,"h":946},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-idleright_00.png":
+		{
+			"frame": {"x":1807,"y":973,"w":400,"h":946},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":381,"y":27,"w":400,"h":946},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-runright_01.png":
+		{
+			"frame": {"x":2713,"y":0,"w":400,"h":946},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":381,"y":27,"w":400,"h":946},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-runright_03.png":
+		{
+			"frame": {"x":2713,"y":946,"w":400,"h":946},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":381,"y":27,"w":400,"h":946},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-shoot_00.png":
+		{
+			"frame": {"x":0,"y":1926,"w":400,"h":946},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":381,"y":27,"w":400,"h":946},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Carrier-runright_02.png":
+		{
+			"frame": {"x":400,"y":1926,"w":571,"h":942},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":136,"y":20,"w":571,"h":942},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-runright_00.png":
+		{
+			"frame": {"x":971,"y":1926,"w":562,"h":942},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":219,"y":27,"w":562,"h":942},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-runright_02.png":
+		{
+			"frame": {"x":1533,"y":1926,"w":562,"h":942},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":219,"y":27,"w":562,"h":942},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Carrier-jumpright_00.png":
+		{
+			"frame": {"x":2095,"y":1926,"w":614,"h":913},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":93,"y":60,"w":614,"h":913},
+			"sourceSize": {"w":1000,"h":1000}
+		},
+		"Gismo-jump_00.png":
+		{
+			"frame": {"x":3113,"y":0,"w":618,"h":903},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {"x":192,"y":68,"w":618,"h":903},
+			"sourceSize": {"w":1000,"h":1000}
 		},
 		"ticket.png":
 		{
-			"frame": {"x":667,"y":514,"w":32,"h":16},
+			"frame": {"x":3113,"y":903,"w":32,"h":16},
 			"rotated": false,
 			"trimmed": false,
 			"spriteSourceSize": {"x":0,"y":0,"w":32,"h":16},
