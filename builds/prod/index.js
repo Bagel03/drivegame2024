@@ -45602,14 +45602,24 @@ void main(void)\r
       "use strict";
       init_bundle();
       init_lib38();
-      AnimatedSprite2 = Ye({
+      AnimatedSprite2 = class _AnimatedSprite extends Ye({
         spriteName: At.string,
         currentFrame: At.number,
         thisFrameElapsed: At.number,
         // Note that both of these are in frames, not ms or seconds
         thisFrameTotal: At.number,
-        frameCount: At.number
-      });
+        frameCount: At.number,
+        loops: At.bool
+      }) {
+        static changeSprite(entity, spriteName, frameCount, loops = true, frameLength = 10) {
+          entity.set(_AnimatedSprite.spriteName, spriteName);
+          entity.set(_AnimatedSprite.currentFrame, 0);
+          entity.set(_AnimatedSprite.frameCount, frameCount);
+          entity.set(_AnimatedSprite.loops, loops);
+          entity.set(_AnimatedSprite.thisFrameTotal, frameLength);
+          entity.get(Sprite).texture = Texture.from(spriteName + "_00.png");
+        }
+      };
       AnimationSystem = class extends Zt(D(Container, AnimatedSprite2)) {
         textureCache = /* @__PURE__ */ new Map();
         update() {
@@ -45618,8 +45628,16 @@ void main(void)\r
             if (ent.get(AnimatedSprite2.thisFrameElapsed) > ent.get(AnimatedSprite2.thisFrameTotal)) {
               ent.set(AnimatedSprite2.thisFrameElapsed, 0);
               ent.inc(AnimatedSprite2.currentFrame);
-              if (ent.get(AnimatedSprite2.currentFrame) >= ent.get(AnimatedSprite2.frameCount)) {
+              if (ent.get(AnimatedSprite2.currentFrame) >= ent.get(AnimatedSprite2.frameCount) && ent.get(AnimatedSprite2.loops)) {
                 ent.set(AnimatedSprite2.currentFrame, 0);
+              } else {
+                ent.set(
+                  AnimatedSprite2.currentFrame,
+                  Math.min(
+                    ent.get(AnimatedSprite2.currentFrame),
+                    ent.get(AnimatedSprite2.frameCount) - 1
+                  )
+                );
               }
               const frameName = `${ent.get(AnimatedSprite2.spriteName)}_${ent.get(AnimatedSprite2.currentFrame).toString().padStart(2, "0")}`;
               if (!this.textureCache.has(frameName)) {
@@ -46434,7 +46452,7 @@ void main(void)\r
     "src/ts/engine/server.ts"() {
       "use strict";
       ServerConnection = class {
-        url = "http:localhost:8080/api/v1";
+        url = "https://drivegame2024.onrender.com/api/v1";
         //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
         fetch(path2, options) {
           const url2 = new URL(this.url + path2);
@@ -46938,33 +46956,6 @@ void main(void)\r
     }
   });
 
-  // src/ts/game/blueprints/wall.ts
-  var wallBlueprint, Wall;
-  var init_wall = __esm({
-    "src/ts/game/blueprints/wall.ts"() {
-      "use strict";
-      init_bundle();
-      init_lib38();
-      init_position();
-      init_collision();
-      wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
-      Wall = Pe2(
-        wallBlueprint,
-        [
-          StaticPosition.x,
-          StaticPosition.y,
-          CollisionHitbox.x,
-          CollisionHitbox.y
-        ],
-        function(color) {
-          const graphics = new Graphics();
-          graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
-          this.set(graphics);
-        }
-      );
-    }
-  });
-
   // src/ts/game/blueprints/player.ts
   var PlayerIdentifier, playerBlueprint, Player;
   var init_player = __esm({
@@ -47009,24 +47000,48 @@ void main(void)\r
           this.set(PlayerIdentifier.id, player);
           this.addScript(Players[player].playerScript);
           const sprite = new Sprite(
-            Texture.from(
-              "walk_00.png"
-              /*Players[player].spriteName + "-idle_00.png"*/
-            )
+            Texture.from(Players[player].spriteName + "-idleright_00.png")
           );
           this.set(sprite);
           sprite.width = 40;
           sprite.height = 32;
           this.add(
             new AnimatedSprite2({
-              spriteName: "walk",
-              //Players[player].spriteName + "-idle",
+              spriteName: Players[player].spriteName + "-idleright",
               currentFrame: 0,
               thisFrameElapsed: 0,
-              thisFrameTotal: 15,
-              frameCount: 8
+              thisFrameTotal: 10,
+              frameCount: 1,
+              loops: true
             })
           );
+        }
+      );
+    }
+  });
+
+  // src/ts/game/blueprints/wall.ts
+  var wallBlueprint, Wall;
+  var init_wall = __esm({
+    "src/ts/game/blueprints/wall.ts"() {
+      "use strict";
+      init_bundle();
+      init_lib38();
+      init_position();
+      init_collision();
+      wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
+      Wall = Pe2(
+        wallBlueprint,
+        [
+          StaticPosition.x,
+          StaticPosition.y,
+          CollisionHitbox.x,
+          CollisionHitbox.y
+        ],
+        function(color) {
+          const graphics = new Graphics();
+          graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
+          this.set(graphics);
         }
       );
     }
@@ -47082,12 +47097,15 @@ void main(void)\r
       "use strict";
       init_network();
       GameModes = {
-        solo: {
-          name: "Solo",
-          description: "Defeat AI enemies in different arenas to win",
-          icon: "fa-person-running",
-          getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "Party size is too large" : "Solo mode is coming soon!"
-        },
+        // solo: {
+        //     name: "Solo",
+        //     description: "Defeat AI enemies in different arenas to win",
+        //     icon: "fa-person-running",
+        //     getIsAvailable: (world: World): string | true =>
+        //         world.get(NetworkConnection).isConnected
+        //             ? "Party size is too large"
+        //             : "Solo mode is coming soon!",
+        // },
         localPvP: {
           name: "Friendly Sell Off",
           description: "Fight against the other player in your party",
@@ -47161,14 +47179,14 @@ void main(void)\r
         }
         getMainHTML() {
           return /* @__PURE__ */ window.jsx(MenuBackground, { className: "flex flex-col" }, /* @__PURE__ */ window.jsx("div", { className: "text-4xl p-5 flex align-middle items-center" }, /* @__PURE__ */ window.jsx(
-            "i",
+            "div",
             {
-              className: "fa-solid fa-arrow-left mr-5 hover:cursor-pointer",
               onclick: () => {
                 this.world.get(StateManager).fadeTo(Menu);
               }
-            }
-          ), /* @__PURE__ */ window.jsx("span", null, "Game Modes")), /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-4 p-2 w-full flex-grow" }, Object.entries(GameModes).map(([game, info]) => /* @__PURE__ */ window.jsx(
+            },
+            /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-arrow-left mr-5 hover:cursor-pointer" })
+          ), /* @__PURE__ */ window.jsx("span", null, "Game Modes")), /* @__PURE__ */ window.jsx("div", { className: "grid grid-cols-3 p-2 w-full flex-grow" }, Object.entries(GameModes).map(([game, info]) => /* @__PURE__ */ window.jsx(
             "div",
             {
               className: "bg-menuBackgroundAccent border-white p-1 relative m-3 flex flex-col justify-between rounded-md transition-transform delay-[50] " + (info.getIsAvailable(this.world) === true ? "hover:brightness-90 cursor-pointer" : ""),
@@ -47394,13 +47412,13 @@ void main(void)\r
         localPlayer;
         getHTML() {
           return /* @__PURE__ */ window.jsx(MenuBackground, { id: "playerSelect", className: "flex flex-col" }, /* @__PURE__ */ window.jsx("div", { className: "text-4xl p-5 flex align-middle items-center" }, /* @__PURE__ */ window.jsx(
-            "i",
+            "div",
             {
-              className: "fa-solid fa-arrow-left mr-5 hover:cursor-pointer",
               onclick: () => {
                 this.world.get(StateManager).fadeTo(Menu);
               }
-            }
+            },
+            /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-arrow-left mr-5 hover:cursor-pointer" })
           ), /* @__PURE__ */ window.jsx("span", null, "Players")), /* @__PURE__ */ window.jsx("div", { className: "flex align-middle justify-center items-center flex-grow" }, /* @__PURE__ */ window.jsx(
             "div",
             {
@@ -47560,8 +47578,8 @@ void main(void)\r
         }
         getHTML() {
           const lastCommitHash = "cddec57";
-          const devMode = true;
-          const buildTime = 1707187970073;
+          const devMode = false;
+          const buildTime = 1708187242171;
           const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
           const { level, winsIntoLevel } = totalWinsToLevel(
             this.world.get(AccountInfo.totalWins)
@@ -47631,7 +47649,7 @@ void main(void)\r
               /* @__PURE__ */ window.jsx("br", null),
               text2
             ))
-          ), /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center m-2" }, /* @__PURE__ */ window.jsx("div", { className: "bg-menuBackgroundAccent rounded-md h-10 w-10 flex items-center justify-center cursor-not-allowed" }, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-bars fa-xl" }))), /* @__PURE__ */ window.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center align-middle items-center" }, /* @__PURE__ */ window.jsx(
+          ), /* @__PURE__ */ window.jsx("div", { className: "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center align-middle items-center" }, /* @__PURE__ */ window.jsx(
             "img",
             {
               src: Players[this.world.get("localPlayer")].menuPic,
@@ -47897,7 +47915,7 @@ void main(void)\r
         overallRank: At.number
       });
       window.ai = AccountInfo;
-      Login = class extends State {
+      Login = class _Login extends State {
         googleBtn = /* @__PURE__ */ window.jsx("div", null);
         onEnter(payload, from) {
           google.accounts.id.initialize({
@@ -47942,6 +47960,11 @@ void main(void)\r
                   })
                 );
                 await this.world.get(StateManager).fadeTo(Menu);
+                showDialog({
+                  title: "Guest Login",
+                  message: "You can still play, but none of your stats will save. If you are a CC student, please use your CC email to login.",
+                  oncancel: (e2) => this.world.get(StateManager).fadeTo(_Login)
+                });
               }
             },
             "Continue as Guest"
@@ -47967,13 +47990,14 @@ void main(void)\r
           const info = await this.world.get(ServerConnection).fetch("/accounts/login", {
             searchParams
           }).catch((e2) => {
-            console.error(e2);
+            localStorage.removeItem("email");
             showDialog({
               title: "Failed to login",
               message: "Please try again"
             });
           });
-          localStorage.setItem("email", info.email);
+          if (!info)
+            return;
           this.world.add(
             new AccountInfo({
               email: info.email,
@@ -47992,6 +48016,8 @@ void main(void)\r
               message: "You can still play, but none of your stats will count towards leaderboards and prizes. If you are a CC student, please use your CC email to login."
             });
             this.world.set(AccountInfo.isGuest, true);
+          } else {
+            localStorage.setItem("email", info.email);
           }
           this.world.get(StateManager).moveTo(Menu);
         }
@@ -48065,6 +48091,7 @@ void main(void)\r
           Wall(0, 230, 256, 20, "red");
           Wall(50, 170, 50, 10, "red");
           Wall(256 - 50 - 50, 170, 50, 10, "red");
+          Wall(100, 110, 50, 10, "red");
           this.world.add(new Countdown(3));
           const hud = this.hud;
           const player1Username = this.world.get(NetworkConnection).isPlayer1() ? this.world.get(AccountInfo.username) : this.world.get("remoteUser");
@@ -48171,12 +48198,23 @@ void main(void)\r
   function applyDefaultMovement(entity, input, id) {
     if (entity.world.get(CountdownClass) > 0)
       return;
-    entity.inc(Velocity.y, PlayerInfo.globals.gravity);
+    const spritePrefix = Players[entity.get(PlayerIdentifier)].spriteName;
+    const spritePostfix = entity.get(AnimatedSprite2.spriteName).split("-")[1];
     if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
+      AnimatedSprite2.changeSprite(entity, spritePrefix + "-jump", 3, false, 8);
       entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
       entity.set(PlayerInfo.canJump, false);
     }
     entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+    entity.inc(Velocity.y, PlayerInfo.globals.gravity);
+    if (!entity.get(PlayerInfo.canJump))
+      return;
+    if (entity.get(Velocity.x) > 0 && spritePostfix !== "runright") {
+      AnimatedSprite2.changeSprite(entity, spritePrefix + "-runright", 4);
+    } else if (entity.get(Velocity.x) === 0 && spritePostfix !== "idleright") {
+      AnimatedSprite2.changeSprite(entity, spritePrefix + "-idleright", 1);
+    } else {
+    }
   }
   function applyDefaultShooting(entity, input, id) {
     if (entity.world.get(CountdownClass) > 0)
@@ -48205,6 +48243,9 @@ void main(void)\r
       init_bullet();
       init_position();
       init_player_stats();
+      init_animation();
+      init_player();
+      init_players();
       Promise.resolve().then(() => (init_multiplayer(), multiplayer_exports)).then((module) => {
         CountdownClass = module.Countdown;
         console.log("CountdownClass", CountdownClass);
@@ -48317,23 +48358,46 @@ void main(void)\r
       init_carrier();
       init_laser();
       Players = {
+        // carrier: {
+        //     name: "carrier",
+        //     displayName: "Mr. Carrier",
+        //     available: true,
+        //     menuPic: "https://www.freeiconspng.com/download/49305",
+        //     spriteName: "carrier",
+        //     playerScript: MrCarrierPlayer,
+        //     description:
+        //         "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms. His primary allows him to throw 1 ticket at a time, but after finally becoming buzz lightyear with his ult, he can fly around the stadium shoot twice as fast",
+        // },
+        // handcock: {
+        //     name: "handcock",
+        //     displayName: "Mr. Handcock",
+        //     available: false,
+        //     menuPic:
+        //         "https://freepngimg.com/save/21721-luigi-transparent-image/772x1024",
+        //     spriteName: "handcock",
+        //     playerScript: LaserPlayer,
+        //     description:
+        //         "While normally his laser eyes are used to make kids question all of their life choices when he glaces at them, he can also use them to shoot drive tickets faster than he can give out detentions. When he ults, he becomes even more powerful, and his lasers no longer stop for disobedient objects (including walls)",
+        // },
+        gismondi: {
+          name: "gismondi",
+          displayName: "Mr. Gismondi",
+          available: false,
+          menuPic: window.DIST_URL + "/assets/Gismo.png",
+          //http://localhost:5500/src/assets/Gismo.png",
+          spriteName: "Gismo",
+          playerScript: LaserPlayer,
+          description: "Mr. Gismondi, while he isn't writing impossible essay prompts, sells more tickets a second than the senior class will all week"
+        },
         carrier: {
           name: "carrier",
           displayName: "Mr. Carrier",
           available: true,
-          menuPic: "https://www.freeiconspng.com/download/49305",
-          spriteName: "carrier",
+          menuPic: window.DIST_URL + "/assets/carrier.png",
+          //http://localhost:5500/src/assets/carrier.png",
+          spriteName: "Carrier",
           playerScript: MrCarrierPlayer,
-          description: "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms. His primary allows him to throw 1 ticket at a time, but after finally becoming buzz lightyear with his ult, he can fly around the stadium shoot twice as fast"
-        },
-        handcock: {
-          name: "handcock",
-          displayName: "Mr. Handcock",
-          available: false,
-          menuPic: "https://freepngimg.com/save/21721-luigi-transparent-image/772x1024",
-          spriteName: "handcock",
-          playerScript: LaserPlayer,
-          description: "While normally his laser eyes are used to make kids question all of their life choices when he glaces at them, he can also use them to shoot drive tickets faster than he can give out detentions. When he ults, he becomes even more powerful, and his lasers no longer stop for disobedient objects (including walls)"
+          description: "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms"
         }
       };
     }
@@ -48532,7 +48596,7 @@ void main(void)\r
           await this.loadAssets();
           this.initBindings();
           await this.world.get(NetworkConnection).waitForServerConnection;
-          this.world.set("localPlayer", Players.handcock.name);
+          this.world.set("localPlayer", Players.gismondi.name);
           this.world.set("selectedMap", "map1");
           this.world.set("selectedGameMode", "onlinePvP");
           requestAnimationFrame(() => {
