@@ -10,15 +10,15 @@ export interface GameModeInfo {
 }
 
 export const GameModes = {
-    solo: {
-        name: "Solo",
-        description: "Defeat AI enemies in different arenas to win",
-        icon: "fa-person-running",
-        getIsAvailable: (world: World): string | true =>
-            world.get(NetworkConnection).isConnected
-                ? "Party size is too large"
-                : "Solo mode is coming soon!",
-    },
+    // solo: {
+    //     name: "Solo",
+    //     description: "Defeat AI enemies in different arenas to win",
+    //     icon: "fa-person-running",
+    //     getIsAvailable: (world: World): string | true =>
+    //         world.get(NetworkConnection).isConnected
+    //             ? "Party size is too large"
+    //             : "Solo mode is coming soon!",
+    // },
     localPvP: {
         name: "Friendly Sell Off",
         description: "Fight against the other player in your party",

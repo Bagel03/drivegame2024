@@ -1,5 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { DATABASE } from "./database";
+import { AccountInfo, classes } from "./accounts";
+import { GoogleSpreadsheetRow } from "google-spreadsheet";
 
 let queuedPlayer: {
     res: ServerResponse;
@@ -77,6 +79,11 @@ export async function handleMatchmakingRequests(
         return;
     }
 
+    if (path.startsWith("/clearQueue") && url.searchParams.get("user") == "admin") {
+        queuedPlayer = null;
+        return;
+    }
+
     if (path.startsWith("/gameOver")) {
         const matchId = url.searchParams.get("matchId")!;
         const clientId = url.searchParams.get("id")!;
@@ -115,11 +122,44 @@ export async function handleMatchmakingRequests(
                     trophiesAwarded,
                 });
 
+                const rows = await DATABASE.accounts.getRows<AccountInfo>();
+                const winningRow =
+                    rows[
+                        rows.findIndex(
+                            (row) =>
+                                row.get("email") ==
+                                match.playerEmails[match.players.indexOf(winningId)]
+                        )
+                    ]!;
+                //@ts-expect-error
+                winningRow.assign({
+                    trophies: winningRow.get("trophies") + trophiesAwarded,
+                    wins: winningRow.get("wins") + 1,
+                    "total matches": winningRow.get("total matches") + 1,
+                });
+                const losingRow = rows.find(
+                    (row) =>
+                        row.get("email") ==
+                        match.playerEmails[1 - match.players.indexOf(winningId)]
+                )!;
+                //@ts-expect-error
+
+                losingRow.assign({
+                    "total matches": losingRow.get("total matches") + 1,
+                    trophies: Math.max(
+                        losingRow.get("trophies") - trophiesAwarded,
+                        0
+                    ),
+                });
+
                 console.log(
                     `Match ${matchId} over: (${winningId}) v ${
                         match.players[1 - match.players.indexOf(winningId)]
                     }`
                 );
+
+                reorderRanks(rows);
+                await DATABASE.accounts.saveUpdatedCells();
 
                 ongoingGames.delete(matchId);
             } else {
@@ -155,7 +195,27 @@ export async function handleMatchmakingRequests(
                         } (timeout)`
                     );
                 }
-            }, 10000);
+            }, 5000);
+        }
+    }
+}
+
+function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
+    rows.sort((a, b) => {
+        return b.get("trophies") - a.get("trophies");
+    });
+
+    for (let i = 0; i < rows.length; i++) {
+        // @ts-expect-error
+        rows[i].assign({ overallRank: i + 1 });
+    }
+
+    for (const c of classes) {
+        const classRows = rows.filter((r) => r.get("class") == c);
+        classRows.sort((a, b) => b.get("trophies") - a.get("trophies"));
+        for (let i = 0; i < classRows.length; i++) {
+            // @ts-expect-error
+            classRows[i].assign({ classRank: i + 1 });
         }
     }
 }

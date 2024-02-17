@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { DATABASE } from "./database.js";
 import { GoogleSpreadsheetRow } from "google-spreadsheet";
 
-interface AccountInfo {
+export interface AccountInfo {
     email: string;
     "full name": string;
     username: string;
@@ -11,7 +11,12 @@ interface AccountInfo {
     trophies: number;
     coins: number;
     items: string;
+    class: string;
+    classRank: number;
+    overallRank: number;
 }
+
+export const classes = ["Freshman", "Sophomore", "Junior", "Senior"];
 
 export async function handleAccountRequests(
     req: IncomingMessage,
@@ -44,15 +49,15 @@ export async function handleAccountRequests(
             return;
         } else if (jwtStr) {
             // decode the JWT
-            console.log("Decoding: ", jwtStr, jwtStr.split(".")[1]);
             const jwt = JSON.parse(atob(jwtStr.split(".")[1]));
-            let foundRow = rows.find((row) => row.get("email") === email);
+            let foundRow = rows.find((row) => {
+                return row.get("email") === jwt.email;
+            });
+            // console.log(jwt.email, foundRow?.get("email") || "not found", rows);
             if (!foundRow) {
                 // make a new row
                 const userClass =
-                    ["Freshman", "Sophomore", "Junior", "Senior"].reverse()[
-                        24 - parseInt(jwt.email.slice(0, 2))
-                    ] || "";
+                    classes.reverse()[parseInt(jwt.email.slice(0, 2)) - 24] || "";
 
                 foundRow = await DATABASE.accounts.addRow({
                     email: jwt.email,
@@ -64,8 +69,10 @@ export async function handleAccountRequests(
                     coins: 0,
                     items: "",
                     class: userClass,
-                    classRank: 0,
-                    overallRank: 0,
+                    classRank:
+                        rows.filter((row) => row.get("class") === userClass).length +
+                        1,
+                    overallRank: rows.length + 1,
                 });
             }
 
@@ -74,7 +81,7 @@ export async function handleAccountRequests(
 
         res.write(
             JSON.stringify({
-                email,
+                email: row.get("email"),
                 "full name": row.get("full name"),
                 username: row.get("username"),
                 wins: row.get("wins"),
@@ -82,10 +89,11 @@ export async function handleAccountRequests(
                 trophies: row.get("trophies"),
                 coins: row.get("coins"),
                 items: row.get("items"),
+                class: row.get("class"),
+                classRank: row.get("classRank"),
+                overallRank: row.get("overallRank"),
             })
         );
         res.end();
     }
-    console.log(DATABASE.title);
-    DATABASE;
 }

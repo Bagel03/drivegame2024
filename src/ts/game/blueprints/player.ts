@@ -46,20 +46,19 @@ export const Player = AdvancedBlueprintFactory(
         this.set(PlayerIdentifier.id, player);
         this.addScript(Players[player].playerScript);
         const sprite = new Sprite(
-            Texture.from(
-                "walk_00.png" /*Players[player].spriteName + "-idle_00.png"*/
-            )
+            Texture.from(Players[player].spriteName + "-idleright_00.png")
         );
         this.set(sprite);
         sprite.width = 40;
         sprite.height = 32;
         this.add(
             new AnimatedSprite({
-                spriteName: "walk", //Players[player].spriteName + "-idle",
+                spriteName: Players[player].spriteName + "-idleright",
                 currentFrame: 0,
                 thisFrameElapsed: 0,
-                thisFrameTotal: 15,
-                frameCount: 8,
+                thisFrameTotal: 10,
+                frameCount: 1,
+                loops: true,
             })
         );
     }

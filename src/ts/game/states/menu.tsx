@@ -52,8 +52,8 @@ export class Menu extends State<MenuPayload> {
 
     private getHTML() {
         const lastCommitHash = "cddec57";
-        const devMode = true;
-        const buildTime = 1707187970073;
+        const devMode = false;
+        const buildTime = 1708187242171;
         const timeAgo = Math.round((Date.now() - buildTime) / 1000);
 
         const { level, winsIntoLevel } = totalWinsToLevel(
@@ -177,14 +177,14 @@ export class Menu extends State<MenuPayload> {
                         ))}
                     </div>
 
-                    <div className="absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center m-2">
+                    {/* <div className="absolute top-0 right-0 bg-menuBackground bg-opacity-50 p-2 rounded-bl-md text-white flex items-center justify-center m-2">
                         <div className="bg-menuBackgroundAccent rounded-md h-10 w-10 flex items-center justify-center cursor-not-allowed">
                             <i className="fa-solid fa-bars fa-xl"></i>
                         </div>
                         {/* <div className="bg-menuBackgroundAccent rounded-md h-10 w-10 m-auto text-center">
                             <i className="fa-solid fa-bars fa-xl"></i>
-                        </div> */}
-                    </div>
+                        </div>}
+                    </div> */}
 
                     {/* Players */}
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center align-middle items-center">
@@ -230,7 +230,7 @@ export class Menu extends State<MenuPayload> {
                         >
                             {
                                 GameModes[
-                                    this.world.get("selectedGameMode") as "solo"
+                                    this.world.get<"onlinePvP">("selectedGameMode")
                                 ].name
                             }
                         </AccentButton>
@@ -304,7 +304,7 @@ export class Menu extends State<MenuPayload> {
 
                             document.querySelector("#gameModeButton")!.innerHTML =
                                 GameModes[
-                                    this.world.get("selectedGameMode") as "solo"
+                                    this.world.get("selectedGameMode") as "onlinePvP"
                                 ].name;
                         } catch (e) {
                             showDialog(

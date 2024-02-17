@@ -52,12 +52,13 @@ export class PlayerSelect extends State<never> {
         return (
             <MenuBackground id="playerSelect" className="flex flex-col">
                 <div className="text-4xl p-5 flex align-middle items-center">
-                    <i
-                        className="fa-solid fa-arrow-left mr-5 hover:cursor-pointer"
+                    <div
                         onclick={() => {
                             this.world.get(StateManager).fadeTo(Menu);
                         }}
-                    ></i>
+                    >
+                        <i className="fa-solid fa-arrow-left mr-5 hover:cursor-pointer"></i>
+                    </div>
                     <span>Players</span>
                 </div>
                 {/* This should create a carousel of each player */}

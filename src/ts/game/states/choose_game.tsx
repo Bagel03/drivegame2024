@@ -44,15 +44,16 @@ export class ChooseGameMode extends State {
         return (
             <MenuBackground className="flex flex-col">
                 <div className="text-4xl p-5 flex align-middle items-center">
-                    <i
-                        className="fa-solid fa-arrow-left mr-5 hover:cursor-pointer"
+                    <div
                         onclick={() => {
                             this.world.get(StateManager).fadeTo(Menu);
                         }}
-                    ></i>
+                    >
+                        <i className="fa-solid fa-arrow-left mr-5 hover:cursor-pointer"></i>
+                    </div>
                     <span>Game Modes</span>
                 </div>
-                <div className="grid grid-cols-4 p-2 w-full flex-grow">
+                <div className="grid grid-cols-3 p-2 w-full flex-grow">
                     {Object.entries(GameModes).map(([game, info]) => (
                         <div
                             className={

@@ -6,7 +6,6 @@ import { cyan, green } from "./database.js";
 const server = new Server(async (req, res) => {
     try {
         const url = new URL(req.url!, `http://${req.headers.host}`);
-        console.log("Request", url.pathname);
 
         res.setHeader("Access-Control-Allow-Origin", "*");
         if (url.pathname == "/healthcheck") {
@@ -14,6 +13,7 @@ const server = new Server(async (req, res) => {
             res.end("OK");
             return;
         }
+        console.log("Request", url.pathname);
 
         if (url.pathname.startsWith("/api/v1")) {
             const path = url.pathname.slice("/api/v1".length);

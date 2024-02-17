@@ -161,6 +161,7 @@ export class MultiplayerGame extends Game {
         Wall(0, 230, 256, 20, "red");
         Wall(50, 170, 50, 10, "red");
         Wall(256 - 50 - 50, 170, 50, 10, "red");
+        Wall(100, 110, 50, 10, "red");
 
         // Wait 3 seconds before starting the input sync
         this.world.add(new Countdown(3));

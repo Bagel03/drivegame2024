@@ -1,7 +1,7 @@
 import { World } from "bagelecs";
 
 export class ServerConnection {
-    private readonly url = "http:localhost:8080/api/v1"; //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
+    private readonly url = "https://drivegame2024.onrender.com/api/v1"; //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
 
     fetch(
         path: string,

@@ -99,13 +99,13 @@ export class Login extends State<{ email: string }> {
                             );
                             await this.world.get(StateManager).fadeTo(Menu);
 
-                            // showDialog({
-                            //     title: "Guest Login",
-                            //     message:
-                            //         "You can still play, but none of your stats will save. If you are a CC student, please use your CC email to login.",
-                            //     oncancel: (e) =>
-                            //         this.world.get(StateManager).fadeTo(Login),
-                            // });
+                            showDialog({
+                                title: "Guest Login",
+                                message:
+                                    "You can still play, but none of your stats will save. If you are a CC student, please use your CC email to login.",
+                                oncancel: (e) =>
+                                    this.world.get(StateManager).fadeTo(Login),
+                            });
                         }}
                     >
                         Continue as Guest
@@ -142,11 +142,11 @@ export class Login extends State<{ email: string }> {
     }) {
         // Should show some logging in animation
         document.querySelector("#login")?.replaceWith(this.getLoggingInHTML());
-        console.log(arguments)
+        console.log(arguments);
         const searchParams: Record<string, string> = {};
         if (response) {
             searchParams["jwt"] = response.credential;
-            console.log("Siging in with", response, response.credential)
+            console.log("Siging in with", response, response.credential);
         } else if (email) {
             searchParams["email"] = email;
         }
@@ -157,19 +157,20 @@ export class Login extends State<{ email: string }> {
                 searchParams,
             })
             .catch((e) => {
-                console.error(e);
+                localStorage.removeItem("email");
                 showDialog({
                     title: "Failed to login",
                     message: "Please try again",
                 });
             });
 
+        if (!info) return;
+
         // if (info.status !== 200) {
         //     console.error(info);
         //     showDialog({ title: "Failed to login", message: "Please try again" });
         //     return;
         // }
-        localStorage.setItem("email", info.email);
         this.world.add(
             new AccountInfo({
                 email: info.email,
@@ -190,6 +191,8 @@ export class Login extends State<{ email: string }> {
                     "You can still play, but none of your stats will count towards leaderboards and prizes. If you are a CC student, please use your CC email to login.",
             });
             this.world.set(AccountInfo.isGuest, true);
+        } else {
+            localStorage.setItem("email", info.email);
         }
 
         this.world.get(StateManager).moveTo(Menu);

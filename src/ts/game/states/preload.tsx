@@ -42,7 +42,7 @@ export class Preload extends State {
         await this.world.get(NetworkConnection).waitForServerConnection;
 
         // Setup resources
-        this.world.set("localPlayer", Players.handcock.name);
+        this.world.set("localPlayer", Players.gismondi.name);
         this.world.set("selectedMap", "map1");
         this.world.set("selectedGameMode", "onlinePvP");
 
