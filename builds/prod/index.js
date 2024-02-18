@@ -47992,7 +47992,7 @@ void main(void)\r
           )));
         }
         getLoggingInHTML() {
-          let elements = /* @__PURE__ */ window.jsx("div", { id: "loggingIn", className: "w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "w-full h-full flex justify-center items-center" }, /* @__PURE__ */ window.jsx("div", { className: "" }, /* @__PURE__ */ window.jsx("h1", { className: "text-center text-white text-3xl mb-2" }, "Logging In...")))));
+          let elements = /* @__PURE__ */ window.jsx("div", { id: "login", className: "w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "w-full h-full flex justify-center items-center" }, /* @__PURE__ */ window.jsx("div", { className: "" }, /* @__PURE__ */ window.jsx("h1", { className: "text-center text-white text-3xl mb-2" }, "Logging In...")))));
           return elements;
         }
         async signIn({
