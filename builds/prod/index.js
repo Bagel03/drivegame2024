@@ -116,6 +116,9 @@
     let n2 = Ie[r2.type](t2, r2);
     return l.set(t2, n2), Q.set(t2, r2), t2;
   }
+  function mt(r2) {
+    v = r2;
+  }
   function je(r2, { backingStorageId: e2 }) {
     let t2 = l.get(e2);
     return class extends t2 {
@@ -45595,6 +45598,16 @@ void main(void)\r
     }
   });
 
+  // src/ts/game/components/facing.ts
+  var Facing;
+  var init_facing = __esm({
+    "src/ts/game/components/facing.ts"() {
+      "use strict";
+      init_bundle();
+      Facing = Ye(At.enum("left", "right"));
+    }
+  });
+
   // src/ts/engine/rendering/animation.ts
   var AnimatedSprite2, AnimationSystem;
   var init_animation = __esm({
@@ -45602,6 +45615,7 @@ void main(void)\r
       "use strict";
       init_bundle();
       init_lib38();
+      init_facing();
       AnimatedSprite2 = class _AnimatedSprite extends Ye({
         spriteName: At.string,
         currentFrame: At.number,
@@ -45617,7 +45631,15 @@ void main(void)\r
           entity.set(_AnimatedSprite.frameCount, frameCount);
           entity.set(_AnimatedSprite.loops, loops);
           entity.set(_AnimatedSprite.thisFrameTotal, frameLength);
-          entity.get(Sprite).texture = Texture.from(spriteName + "_00.png");
+          let dir = entity.has(Facing) ? entity.get(Facing) : "";
+          entity.get(Sprite).texture = Texture.from(spriteName + dir + "_00.png");
+        }
+        static onChangeDirection(entity) {
+          let dir = entity.has(Facing) ? entity.get(Facing) : "";
+          let spriteName = entity.get(_AnimatedSprite.spriteName);
+          entity.get(Sprite).texture = Texture.from(spriteName + dir + "_00.png");
+          entity.set(_AnimatedSprite.currentFrame, 0);
+          entity.set(_AnimatedSprite.thisFrameElapsed, 0);
         }
       };
       AnimationSystem = class extends Zt(D(Container, AnimatedSprite2)) {
@@ -45639,7 +45661,7 @@ void main(void)\r
                   )
                 );
               }
-              const frameName = `${ent.get(AnimatedSprite2.spriteName)}_${ent.get(AnimatedSprite2.currentFrame).toString().padStart(2, "0")}`;
+              const frameName = `${ent.get(AnimatedSprite2.spriteName)}${ent.has(Facing) ? ent.get(Facing) : ""}_${ent.get(AnimatedSprite2.currentFrame).toString().padStart(2, "0")}`;
               if (!this.textureCache.has(frameName)) {
                 this.textureCache.set(
                   frameName,
@@ -46452,7 +46474,7 @@ void main(void)\r
     "src/ts/engine/server.ts"() {
       "use strict";
       ServerConnection = class {
-        url = "https://drivegame2024.onrender.com/api/v1";
+        url = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080/api/v1" : "https://drivegame2024.onrender.com/api/v1";
         //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
         fetch(path2, options) {
           const url2 = new URL(this.url + path2);
@@ -46971,6 +46993,7 @@ void main(void)\r
       init_players();
       init_animation();
       init_player_stats();
+      init_facing();
       PlayerIdentifier = Ye(At.string);
       playerBlueprint = new a(
         Sprite,
@@ -46991,7 +47014,8 @@ void main(void)\r
           bulletsHit: 0,
           bulletsReceived: 0,
           ultsUsed: 0
-        })
+        }),
+        new Facing("right")
       );
       Player = Pe2(
         playerBlueprint,
@@ -47007,7 +47031,7 @@ void main(void)\r
           sprite.height = 32;
           this.add(
             new AnimatedSprite2({
-              spriteName: Players[player].spriteName + "-idleright",
+              spriteName: Players[player].spriteName + "-idle",
               currentFrame: 0,
               thisFrameElapsed: 0,
               thisFrameTotal: 10,
@@ -47929,9 +47953,6 @@ void main(void)\r
             theme: "filled_blue"
           });
           document.body.append(this.getHTML());
-          if (localStorage.getItem("email")) {
-            this.signIn({ email: localStorage.getItem("email") });
-          }
           return Promise.resolve();
         }
         onLeave(to) {
@@ -48200,19 +48221,27 @@ void main(void)\r
       return;
     const spritePrefix = Players[entity.get(PlayerIdentifier)].spriteName;
     const spritePostfix = entity.get(AnimatedSprite2.spriteName).split("-")[1];
+    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+    console.log(entity.get(Facing), entity.get(Velocity.x));
+    if (entity.get(Velocity.x) > 0 && entity.get(Facing) !== "right") {
+      entity.set(Facing.id, "right");
+      AnimatedSprite2.onChangeDirection(entity);
+    } else if (entity.get(Velocity.x) < 0 && entity.get(Facing) !== "left") {
+      entity.set(Facing.id, "left");
+      AnimatedSprite2.onChangeDirection(entity);
+    }
     if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
       AnimatedSprite2.changeSprite(entity, spritePrefix + "-jump", 3, false, 8);
       entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
       entity.set(PlayerInfo.canJump, false);
     }
-    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
     entity.inc(Velocity.y, PlayerInfo.globals.gravity);
     if (!entity.get(PlayerInfo.canJump))
       return;
-    if (entity.get(Velocity.x) > 0 && spritePostfix !== "runright") {
-      AnimatedSprite2.changeSprite(entity, spritePrefix + "-runright", 4);
-    } else if (entity.get(Velocity.x) === 0 && spritePostfix !== "idleright") {
-      AnimatedSprite2.changeSprite(entity, spritePrefix + "-idleright", 1);
+    if (entity.get(Velocity.x) !== 0 && spritePostfix !== "run") {
+      AnimatedSprite2.changeSprite(entity, spritePrefix + "-run", 4);
+    } else if (entity.get(Velocity.x) === 0 && spritePostfix !== "idle") {
+      AnimatedSprite2.changeSprite(entity, spritePrefix + "-idle", 1);
     } else {
     }
   }
@@ -48246,6 +48275,7 @@ void main(void)\r
       init_animation();
       init_player();
       init_players();
+      init_facing();
       Promise.resolve().then(() => (init_multiplayer(), multiplayer_exports)).then((module) => {
         CountdownClass = module.Countdown;
         console.log("CountdownClass", CountdownClass);
@@ -48840,6 +48870,7 @@ void main(void)\r
   // src/ts/index.ts
   init_state_managment();
   init_preload();
+  mt(100);
   window.SharedArrayBuffer = ArrayBuffer;
   Object.defineProperty(Error.prototype, "toJSON", {
     value: function() {
