@@ -16,6 +16,8 @@ import { Player } from "../blueprints/player";
 import { MatchInfo } from "../components/match_info";
 import { AccountInfo } from "./login";
 import { PlayerStats } from "../components/player_stats";
+import { Facing } from "../components/facing";
+import { AnimatedSprite } from "../../engine/rendering/animation";
 
 export const Countdown = Resource(Type.number.logged());
 console.log("Countdown", Countdown.id);
@@ -44,9 +46,14 @@ export class MultiplayerGame extends Game {
                 : "localPlayer"
         );
 
-        const player1 = Player(48, 32, player1Name);
+        const width = this.world.get<number>("screenWidth");
+        const height = this.world.get<number>("screenHeight");
+
+        const player1 = Player(width / 4, 32, player1Name);
         this.player1 = player1;
-        const player2 = Player(256 - 48 - 32, 32, player2Name);
+        const player2 = Player((width * 3) / 4, 32, player2Name);
+        player2.set(Facing.id, "left");
+        AnimatedSprite.onChangeDirection(player2);
         this.player2 = player2;
         // const player1 = GraphicsEnt(
         //     48,
@@ -130,17 +137,18 @@ export class MultiplayerGame extends Game {
                 Players[this.world.get<"carrier">("localPlayer")].playerScript
             );
 
-        const width = this.world.get<number>("screenWidth");
-        const height = this.world.get<number>("screenHeight");
-
         const walls = [
-            Wall(width / 2, height - 20, width, 30, "red"),
-            Wall(width / 4, height - 200, width / 8, 20, "red"),
-            Wall(width * 0.75, height - 200, width / 8, 20, "red"),
-            Wall(width / 2, height - 500, width / 2, 20, "red"),
-            Wall(width / 16, height - 350, width / 8, 20, "red"),
-            Wall(width * (15 / 16), height - 350, width / 8, 20, "red"),
-            Wall(width / 2, height - 700, width / 16, 20, "red"),
+            Wall(width / 2, height - 200, width - 150, 20, "red"),
+            Wall(width / 4 + 20, height - 450, width / 5 - 30, 20, "red"),
+            Wall((width * 3) / 4 - 30, height - 450, width / 5 - 30, 20, "red"),
+            Wall(width / 2 - 5, height - 680, width / 5 - 30, 20, "red"),
+            // Wall(width / 2, height - 20, width, 30, "red"),
+            // Wall(width / 4, height - 200, width / 8, 20, "red"),
+            // Wall(width * 0.75, height - 200, width / 8, 20, "red"),
+            // Wall(width / 2, height - 500, width / 2, 20, "red"),
+            // Wall(width / 16, height - 350, width / 8, 20, "red"),
+            // Wall(width * (15 / 16), height - 350, width / 8, 20, "red"),
+            // Wall(width / 2, height - 700, width / 16, 20, "red"),
             // // Wall(width/4, height -50)
             // Wall(256 - 50, 175, 50, 10, "red"),
             // Wall(256 / 2, 110, 50, 10, "red"),

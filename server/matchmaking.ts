@@ -189,7 +189,6 @@ export async function handleMatchmakingRequests(
                             row.get("email") ==
                             match.playerEmails[match.players.indexOf(winningId)]
                     )!;
-
                     //@ts-expect-error
                     winningRow.assign({
                         trophies: winningRow.get("trophies") + trophiesAwarded,

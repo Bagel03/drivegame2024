@@ -51,9 +51,9 @@ export const Player = AdvancedBlueprintFactory(
         const sprite = new Sprite(
             Texture.from(Players[player].spriteName + "-idleright_00.png")
         );
-        sprite.texture.baseTexture.scaleMode = SCALE_MODES.LINEAR;
+        // sprite.texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
         sprite.texture.baseTexture.mipmap = MIPMAP_MODES.ON;
-        // sprite.filters = [
+        sprite.texture; // sprite.filters = [
         //     new GlowFilter({
         //         color: 0xff0000,
         //         outerStrength: 3,

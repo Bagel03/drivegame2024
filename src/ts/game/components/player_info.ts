@@ -12,7 +12,7 @@ export class PlayerInfo extends Component(
 ) {
     static readonly globals = {
         maxHealth: 100,
-        jumpHeight: 20,
+        jumpHeight: 25,
         gravity: 1,
         speed: 8,
         fireCooldown: DESIRED_FPS / 6,
