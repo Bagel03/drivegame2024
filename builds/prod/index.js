@@ -43,38 +43,38 @@
   };
 
   // node_modules/.pnpm/bagelecs@0.0.3/node_modules/bagelecs/dist/shared.js
-  function $(r2, ...e2) {
-    for (; e2.length; ) {
-      let t2 = r2(e2.pop(), e2.push);
-      t2 != null && e2.push(...t2);
+  function $(r2, ...e3) {
+    for (; e3.length; ) {
+      let t2 = r2(e3.pop(), e3.push);
+      t2 != null && e3.push(...t2);
     }
   }
-  function Te(r2, e2) {
+  function Te(r2, e3) {
     for (; r2; ) {
-      let t2 = Object.getOwnPropertyDescriptor(r2, e2);
+      let t2 = Object.getOwnPropertyDescriptor(r2, e3);
       if (t2)
         return t2.get;
       r2 = Object.getPrototypeOf(r2);
     }
   }
-  function be(r2, e2) {
+  function be(r2, e3) {
     for (; r2; ) {
-      let t2 = Object.getOwnPropertyDescriptor(r2, e2);
+      let t2 = Object.getOwnPropertyDescriptor(r2, e3);
       if (t2)
         return t2.set;
       r2 = Object.getPrototypeOf(r2);
     }
   }
-  function h(r2, e2) {
-    s[r2] = e2;
+  function h(r2, e3) {
+    s[r2] = e3;
   }
-  function A(r2, e2) {
+  function A(r2, e3) {
     return class Ee extends O {
       internalArray;
       id = r2;
       kind = r2;
       constructor(n2, o2) {
-        super(n2, o2), this.internalArray = new e2(new SharedArrayBuffer(e2.BYTES_PER_ELEMENT * o2));
+        super(n2, o2), this.internalArray = new e3(new SharedArrayBuffer(e3.BYTES_PER_ELEMENT * o2));
         let i2 = new.target;
         i2 !== Ee && !i2.patchedByNCS && (new.target.prototype.inc = function(a3, y2 = 1) {
           this.addOrSetEnt(a3, this.getEnt(a3) + y2);
@@ -86,7 +86,7 @@
       }
       resize(n2) {
         let o2 = this.internalArray;
-        this.internalArray = new e2(new SharedArrayBuffer(e2.BYTES_PER_ELEMENT * n2)), this.internalArray.set(o2);
+        this.internalArray = new e3(new SharedArrayBuffer(e3.BYTES_PER_ELEMENT * n2)), this.internalArray.set(o2);
       }
       getEnt(n2) {
         return this.internalArray[n2];
@@ -108,19 +108,19 @@
     };
   }
   function k(r2) {
-    let e2 = JSON.stringify(r2);
-    if (X[r2.type].has(e2))
-      return X[r2.type].get(e2);
+    let e3 = JSON.stringify(r2);
+    if (X[r2.type].has(e3))
+      return X[r2.type].get(e3);
     let t2 = l.size;
-    X[r2.type].set(e2, t2);
+    X[r2.type].set(e3, t2);
     let n2 = Ie[r2.type](t2, r2);
     return l.set(t2, n2), Q.set(t2, r2), t2;
   }
   function mt(r2) {
     v = r2;
   }
-  function je(r2, { backingStorageId: e2 }) {
-    let t2 = l.get(e2);
+  function je(r2, { backingStorageId: e3 }) {
+    let t2 = l.get(e3);
     return class extends t2 {
       needsUpdate = true;
       id = r2;
@@ -145,21 +145,21 @@
       }
     };
   }
-  function ze(r2, { options: e2 }) {
+  function ze(r2, { options: e3 }) {
     return class extends O {
       internalArray;
       internalMap;
       id = r2;
       kind = s.enum;
-      options = e2;
+      options = e3;
       constructor(n2, o2) {
-        super(n2, o2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * o2)), e2.length > 20;
+        super(n2, o2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * o2)), e3.length > 20;
       }
       getEnt(n2) {
-        return e2[this.internalArray[n2]];
+        return e3[this.internalArray[n2]];
       }
       addOrSetEnt(n2, o2) {
-        this.internalArray[n2] = e2.indexOf(o2);
+        this.internalArray[n2] = e3.indexOf(o2);
       }
       deleteEnt(n2) {
       }
@@ -169,8 +169,8 @@
       }
     };
   }
-  function Fe(r2, e2) {
-    let t2 = l.get(e2.backingStorageId);
+  function Fe(r2, e3) {
+    let t2 = l.get(e3.backingStorageId);
     return class extends t2 {
       nullValues = /* @__PURE__ */ new Set();
       id = r2;
@@ -189,8 +189,8 @@
       }
     };
   }
-  function Ge(r2, { backingStorageId: e2, capacity: t2 }) {
-    let n2 = l.get(e2);
+  function Ge(r2, { backingStorageId: e3, capacity: t2 }) {
+    let n2 = l.get(e3);
     return class extends n2 {
       first;
       kind = s.ranged;
@@ -230,9 +230,9 @@
         Function.prototype.getId = function() {
           if (this[te])
             return this[te];
-          let e2 = this.toString(), t2;
-          for (let n2 = 0; n2 < e2.length; n2++)
-            t2 = Math.imul(31, t2) + e2.charCodeAt(n2) | 0;
+          let e3 = this.toString(), t2;
+          for (let n2 = 0; n2 < e3.length; n2++)
+            t2 = Math.imul(31, t2) + e3.charCodeAt(n2) | 0;
           return this[te] = t2, t2;
         };
         break;
@@ -243,9 +243,9 @@
     }
   }
   function Bt(r2) {
-    let e2 = Object.getPrototypeOf(r2);
+    let e3 = Object.getPrototypeOf(r2);
     r2.getId = function() {
-      return e2.getId();
+      return e3.getId();
     };
   }
   function Ut() {
@@ -254,23 +254,23 @@
     }, we.log("Patched Object prototype, 3rd party external components are now available");
   }
   function Ye(r2) {
-    let e2 = ae(r2);
-    if (typeof e2 == "number") {
+    let e3 = ae(r2);
+    if (typeof e3 == "number") {
       class n2 extends ne {
         static id = b();
       }
-      return n2.__init__(e2), n2;
+      return n2.__init__(e3), n2;
     }
-    if ($e(e2)) {
+    if ($e(e3)) {
       class n2 extends oe {
         static id = b();
       }
-      return n2.__init__(e2), n2;
+      return n2.__init__(e3), n2;
     }
     class t2 extends ie {
       static id = b();
     }
-    return t2.__init__(e2), t2;
+    return t2.__init__(e3), t2;
   }
   function qe(r2) {
     return typeof r2 == "number";
@@ -279,7 +279,7 @@
     return r2 instanceof p;
   }
   function $e(r2) {
-    return Object.values(r2).every((e2) => typeof e2 == "number");
+    return Object.values(r2).every((e3) => typeof e3 == "number");
   }
   function Je(r2) {
     return r2 instanceof f;
@@ -291,45 +291,45 @@
       return r2.toTypeId();
     if (Je(r2))
       return ae(r2.toTypeTree());
-    let e2 = {};
+    let e3 = {};
     for (let [t2, n2] of Object.entries(r2))
-      e2[t2] = ae(n2);
-    return e2;
+      e3[t2] = ae(n2);
+    return e3;
   }
   function Kt() {
     Set.prototype.clone = function() {
       return new Set(this);
     }, Set.prototype.concat = function(...r2) {
-      let e2 = this.clone();
+      let e3 = this.clone();
       for (let t2 of r2)
-        t2 instanceof Set ? t2.forEach((n2) => e2.add(n2)) : e2.add(t2);
-      return e2;
+        t2 instanceof Set ? t2.forEach((n2) => e3.add(n2)) : e3.add(t2);
+      return e3;
     }, Set.prototype.every = function(r2) {
-      for (let e2 of this)
-        if (!r2(e2))
+      for (let e3 of this)
+        if (!r2(e3))
           return false;
       return true;
     }, Set.prototype.filter = function(r2) {
-      let e2 = /* @__PURE__ */ new Set();
+      let e3 = /* @__PURE__ */ new Set();
       for (let t2 of this)
-        r2(t2) && e2.add(t2);
-      return e2;
+        r2(t2) && e3.add(t2);
+      return e3;
     }, Set.prototype.some = function(r2) {
-      for (let e2 of this)
-        if (r2(e2))
+      for (let e3 of this)
+        if (r2(e3))
           return true;
       return false;
     }, Set.prototype.map = function(r2) {
-      let e2 = /* @__PURE__ */ new Set();
+      let e3 = /* @__PURE__ */ new Set();
       for (let t2 of this)
-        e2.add(r2(t2));
-      return e2;
+        e3.add(r2(t2));
+      return e3;
     };
   }
   function Zt(r2) {
-    let e2 = ye(r2);
+    let e3 = ye(r2);
     class t2 extends C {
-      entities = e2;
+      entities = e3;
       static id = C.nextSystemId++;
     }
     return t2;
@@ -345,36 +345,36 @@
       return new x(xe(r2));
     if (Array.isArray(r2))
       return r2.map(ye);
-    let e2 = {};
+    let e3 = {};
     for (let [t2, n2] of Object.entries(r2))
-      e2[t2] = ye(n2);
-    return e2;
+      e3[t2] = ye(n2);
+    return e3;
   }
-  function de(r2, e2) {
+  function de(r2, e3) {
     return new Promise((t2, n2) => {
       function o2({ data: i2 }) {
-        i2.type === e2 && (r2.removeEventListener("message", o2), t2(i2));
+        i2.type === e3 && (r2.removeEventListener("message", o2), t2(i2));
       }
       r2.addEventListener("message", o2);
     });
   }
-  function ce(r2, e2, t2) {
-    return r2 >> e2 & (1 << t2) - 1;
+  function ce(r2, e3, t2) {
+    return r2 >> e3 & (1 << t2) - 1;
   }
-  function le(r2, e2) {
-    return typeof r2 != "number" && (r2 = r2.getId()), r2 << R | e2;
+  function le(r2, e3) {
+    return typeof r2 != "number" && (r2 = r2.getId()), r2 << R | e3;
   }
   function zr() {
     Object.defineProperty(Number.prototype, "world", { configurable: false, enumerable: false, get() {
       return c.GLOBAL_WORLD;
-    } }), Number.prototype.add = function(r2, e2 = r2.constructor.getId()) {
-      if (c.GLOBAL_WORLD.archetypeManager.entityAddComponent(this, e2), r2 instanceof T) {
+    } }), Number.prototype.add = function(r2, e3 = r2.constructor.getId()) {
+      if (c.GLOBAL_WORLD.archetypeManager.entityAddComponent(this, e3), r2 instanceof T) {
         r2.copyIntoStorage(c.GLOBAL_WORLD, this);
         return;
       }
-      typeof e2 != "number" && (e2 = e2.getId()), c.GLOBAL_WORLD.storageManager.getOrCreateStorage(e2, r2.storageKind).addOrSetEnt(this, r2);
-    }, Number.prototype.update = function(r2, e2) {
-      e2 == null && (e2 = r2), typeof r2 == "string" ? r2 = r2.getId() : typeof r2 != "number" && (r2 = r2.constructor.getId()), c.GLOBAL_WORLD.storageManager.getOrCreateStorage(r2, 0).addOrSetEnt(this, e2);
+      typeof e3 != "number" && (e3 = e3.getId()), c.GLOBAL_WORLD.storageManager.getOrCreateStorage(e3, r2.storageKind).addOrSetEnt(this, r2);
+    }, Number.prototype.update = function(r2, e3) {
+      e3 == null && (e3 = r2), typeof r2 == "string" ? r2 = r2.getId() : typeof r2 != "number" && (r2 = r2.constructor.getId()), c.GLOBAL_WORLD.storageManager.getOrCreateStorage(r2, 0).addOrSetEnt(this, e3);
     }, Number.prototype.set = Number.prototype.update, Number.prototype.get = function(r2) {
       return typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].getEnt(this);
     }, Number.prototype.remove = function(r2) {
@@ -382,65 +382,65 @@
     }, Number.prototype.has = function(r2) {
       return typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.archetypeManager.archetypes.get(c.GLOBAL_WORLD.archetypeManager.entityArchetypes[this]).components.has(r2);
     }, Number.prototype.components = function() {
-      let { archetypes: r2, entityArchetypes: e2 } = c.GLOBAL_WORLD.archetypeManager;
-      return r2.get(e2[this]).components;
+      let { archetypes: r2, entityArchetypes: e3 } = c.GLOBAL_WORLD.archetypeManager;
+      return r2.get(e3[this]).components;
     }, Number.prototype.tag = function(r2) {
       typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.archetypeManager.entityAddComponent(this, r2);
     }, Number.prototype.removeTag = function(r2) {
       typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.archetypeManager.entityRemoveComponent(this, r2);
     }, Number.prototype.getSlowRef = function() {
-      return new Proxy({}, { get: (r2, e2, t2) => this.get(e2), set: (r2, e2, t2, n2) => (this.update(e2, t2), true) });
+      return new Proxy({}, { get: (r2, e3, t2) => this.get(e3), set: (r2, e3, t2, n2) => (this.update(e3, t2), true) });
     }, Number.prototype.getLinkInfo = function(r2) {
       return [this, c.GLOBAL_WORLD.storageManager.storages[r2].internalArray];
-    }, Number.prototype.inc = function(r2, e2 = 1) {
-      typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].inc(this, e2);
-    }, Number.prototype.mult = function(r2, e2) {
-      typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].mult(this, e2);
-    }, Number.prototype.mod = function(r2, e2) {
-      typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].mod(this, e2);
+    }, Number.prototype.inc = function(r2, e3 = 1) {
+      typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].inc(this, e3);
+    }, Number.prototype.mult = function(r2, e3) {
+      typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].mult(this, e3);
+    }, Number.prototype.mod = function(r2, e3) {
+      typeof r2 != "number" && (r2 = r2.getId()), c.GLOBAL_WORLD.storageManager.storages[r2].mod(this, e3);
     }, me.forEach((r2) => r2()), et.logOk("Loaded all entity polyfills");
   }
   var Re, Le, d, Ne, m, U, M, P, Se, W, s, O, J, ke, _e, De, Be, Ue, Pe, We, Qe, Z, l, Ae, Q, X, Ie, v, p, f, ee, u, I, K, E, At, we, te, re, w, T, ne, oe, ie, Pt, j, x, z, D, se, C, F, G, Xe, pe, ue, H, R, Ce, N, L, Oe, Y, q, V, c, et, me;
   var init_shared = __esm({
     "node_modules/.pnpm/bagelecs@0.0.3/node_modules/bagelecs/dist/shared.js"() {
       Re = Object.defineProperty;
-      Le = (r2, e2, t2) => e2 in r2 ? Re(r2, e2, { enumerable: true, configurable: true, writable: true, value: t2 }) : r2[e2] = t2;
-      d = (r2, e2, t2) => (Le(r2, typeof e2 != "symbol" ? e2 + "" : e2, t2), t2);
+      Le = (r2, e3, t2) => e3 in r2 ? Re(r2, e3, { enumerable: true, configurable: true, writable: true, value: t2 }) : r2[e3] = t2;
+      d = (r2, e3, t2) => (Le(r2, typeof e3 != "symbol" ? e3 + "" : e3, t2), t2);
       Ne = typeof importScripts == "function";
       m = class {
         context;
         color;
-        constructor(...e2) {
-          this.context = typeof e2 == "string" ? e2 : e2.join(" > "), this.color = `hsl(${JSON.stringify(e2).split("").reduce((t2, n2) => n2.charCodeAt(0) + ((t2 << 5) - t2), 0) % 360}, 70%, 60%)`;
+        constructor(...e3) {
+          this.context = typeof e3 == "string" ? e3 : e3.join(" > "), this.color = `hsl(${JSON.stringify(e3).split("").reduce((t2, n2) => n2.charCodeAt(0) + ((t2 << 5) - t2), 0) % 360}, 70%, 60%)`;
         }
-        group(...e2) {
-          console.group(...this.generateContextPrefix("\u2800\u2800", "I", "bgWhite", e2));
+        group(...e3) {
+          console.group(...this.generateContextPrefix("\u2800\u2800", "I", "bgWhite", e3));
         }
-        groupCollapsed(...e2) {
-          console.groupCollapsed(...this.generateContextPrefix("\u2800\u2800", "I", "bgWhite", e2));
+        groupCollapsed(...e3) {
+          console.groupCollapsed(...this.generateContextPrefix("\u2800\u2800", "I", "bgWhite", e3));
         }
         groupEnd() {
           console.groupEnd();
         }
-        log(...e2) {
-          this.info(...e2);
+        log(...e3) {
+          this.info(...e3);
         }
-        logOk(...e2) {
-          console.log(...this.generateContextPrefix("\u2714\uFE0F", "O", "bgGreen", e2));
+        logOk(...e3) {
+          console.log(...this.generateContextPrefix("\u2714\uFE0F", "O", "bgGreen", e3));
         }
-        debug(...e2) {
-          console.log(...this.generateContextPrefix("\u2800\u2800", "D", "bgGray", e2));
+        debug(...e3) {
+          console.log(...this.generateContextPrefix("\u2800\u2800", "D", "bgGray", e3));
         }
-        info(...e2) {
-          console.info(...this.generateContextPrefix("\u2800\u2800", "I", "bgWhite", e2));
+        info(...e3) {
+          console.info(...this.generateContextPrefix("\u2800\u2800", "I", "bgWhite", e3));
         }
-        warn(...e2) {
-          console.warn(...this.generateContextPrefix("\u26A0\uFE0F", "W", "bgYellow", e2));
+        warn(...e3) {
+          console.warn(...this.generateContextPrefix("\u26A0\uFE0F", "W", "bgYellow", e3));
         }
-        error(...e2) {
-          console.error(...this.generateContextPrefix("\u274C", "!", "bgRed", e2));
+        error(...e3) {
+          console.error(...this.generateContextPrefix("\u274C", "!", "bgRed", e3));
         }
-        generateContextPrefix(e2, t2, n2, o2) {
+        generateContextPrefix(e3, t2, n2, o2) {
           let i2 = this.color, a3 = "";
           switch (t2) {
             case "O":
@@ -459,60 +459,60 @@
               i2 = this.color;
               break;
           }
-          return Ne && (e2 = "\u2699\uFE0F"), [`%c ${e2} %c ` + this.context.padEnd(25, " ") + " %c " + a3, `background: ${i2}; color: #fff; padding: 2px 5px 0 5px;  border-top-left-radius: 3px; border-bottom-left-radius: 3px;`, `background: #333438; color: ${i2}; border-top-right-radius: 3px; border-bottom-right-radius: 3px; padding-top: 2px`, "color: gray", ...o2];
+          return Ne && (e3 = "\u2699\uFE0F"), [`%c ${e3} %c ` + this.context.padEnd(25, " ") + " %c " + a3, `background: ${i2}; color: #fff; padding: 2px 5px 0 5px;  border-top-left-radius: 3px; border-bottom-left-radius: 3px;`, `background: #333438; color: ${i2}; border-top-right-radius: 3px; border-bottom-right-radius: 3px; padding-top: 2px`, "color: gray", ...o2];
         }
       };
       U = new m("Archetype Manager");
       M = class {
-        constructor(e2, t2, n2) {
-          this.id = e2;
+        constructor(e3, t2, n2) {
+          this.id = e3;
           this.components = t2;
           this.entities = new Int32Array(new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * (n2 + 1))), this.lastModified = performance.now();
         }
         graph = { added: /* @__PURE__ */ new Map(), removed: /* @__PURE__ */ new Map() };
         entities;
         lastModified;
-        addEntity(e2) {
-          this.entities[++this.entities[0]] = e2, this.lastModified = performance.now();
+        addEntity(e3) {
+          this.entities[++this.entities[0]] = e3, this.lastModified = performance.now();
         }
-        removeEntity(e2) {
+        removeEntity(e3) {
           for (let t2 = 1; t2 <= this.entities[0]; t2++)
-            if (this.entities[t2] === e2) {
+            if (this.entities[t2] === e3) {
               this.entities[t2] = this.entities[this.entities[0]--];
               break;
             }
           this.lastModified = performance.now();
         }
-        resize(e2) {
-          let t2 = new Int32Array(new SharedArrayBuffer((e2 + 1) * Int32Array.BYTES_PER_ELEMENT));
+        resize(e3) {
+          let t2 = new Int32Array(new SharedArrayBuffer((e3 + 1) * Int32Array.BYTES_PER_ELEMENT));
           t2.set(this.entities), this.entities = t2;
         }
       };
       P = class {
-        constructor(e2) {
-          this.world = e2;
-          this.archetypes.set(0, this.defaultArchetype), this.entityArchetypes = new Int32Array(new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * e2.maxEntities));
+        constructor(e3) {
+          this.world = e3;
+          this.archetypes.set(0, this.defaultArchetype), this.entityArchetypes = new Int32Array(new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * e3.maxEntities));
         }
         archetypes = /* @__PURE__ */ new Map();
         entityArchetypes;
         nextArchetypeId = 1;
         defaultArchetype = new M(0, /* @__PURE__ */ new Set(), 10);
-        loadFromData(e2) {
-          U.log("Loading from data dump:", e2), this.defaultArchetype = Object.create(M.prototype, Object.getOwnPropertyDescriptors(e2.defaultArchetype)), e2.archetypes.forEach((t2, n2) => {
+        loadFromData(e3) {
+          U.log("Loading from data dump:", e3), this.defaultArchetype = Object.create(M.prototype, Object.getOwnPropertyDescriptors(e3.defaultArchetype)), e3.archetypes.forEach((t2, n2) => {
             this.archetypes.set(n2, Object.create(M.prototype, Object.getOwnPropertyDescriptors(t2)));
-          }), this.entityArchetypes = e2.entityArchetypes;
+          }), this.entityArchetypes = e3.entityArchetypes;
         }
-        createNewArchetype(e2) {
-          U.log("Creating new archetype for components:", e2);
-          let t2 = new M(this.nextArchetypeId++, e2, this.world.maxEntities);
+        createNewArchetype(e3) {
+          U.log("Creating new archetype for components:", e3);
+          let t2 = new M(this.nextArchetypeId++, e3, this.world.maxEntities);
           return this.world.queryManager.onNewArchetypeCreated(t2), this.world.workerManager.onNewArchetypeCreated(t2), this.archetypes.set(t2.id, t2), t2;
         }
-        getOrCreateArchetype(e2) {
+        getOrCreateArchetype(e3) {
           for (let [t2, n2] of this.archetypes) {
-            if (n2.components.size !== e2.size)
+            if (n2.components.size !== e3.size)
               continue;
             let o2 = true;
-            for (let i2 of e2)
+            for (let i2 of e3)
               if (!n2.components.has(i2)) {
                 o2 = false;
                 break;
@@ -520,21 +520,21 @@
             if (o2)
               return n2;
           }
-          return this.createNewArchetype(e2);
+          return this.createNewArchetype(e3);
         }
-        moveWithoutGraph(e2, t2, n2) {
-          t2.removeEntity(e2), n2.addEntity(e2), this.entityArchetypes[e2] = n2.id;
+        moveWithoutGraph(e3, t2, n2) {
+          t2.removeEntity(e3), n2.addEntity(e3), this.entityArchetypes[e3] = n2.id;
         }
-        addEntity(e2) {
-          this.entityArchetypes[e2] = 0, this.defaultArchetype.addEntity(e2);
+        addEntity(e3) {
+          this.entityArchetypes[e3] = 0, this.defaultArchetype.addEntity(e3);
         }
-        entityAddComponent(e2, t2) {
-          if (e2.has(t2)) {
-            U.warn("Entity", e2, "tried to add component (ID:", t2, ") which it already had");
+        entityAddComponent(e3, t2) {
+          if (e3.has(t2)) {
+            U.warn("Entity", e3, "tried to add component (ID:", t2, ") which it already had");
             return;
           }
-          let n2 = this.archetypes.get(this.entityArchetypes[e2]);
-          if (n2.removeEntity(e2), !n2.graph.added.has(t2)) {
+          let n2 = this.archetypes.get(this.entityArchetypes[e3]);
+          if (n2.removeEntity(e3), !n2.graph.added.has(t2)) {
             for (let [i2, a3] of this.archetypes.entries())
               if (a3.components.size == n2.components.size + 1 && a3.components.has(t2) && n2.components.every((y2) => a3.components.has(y2))) {
                 n2.graph.added.set(t2, a3);
@@ -546,15 +546,15 @@
             }
           }
           let o2 = n2.graph.added.get(t2);
-          o2.addEntity(e2), this.entityArchetypes[e2] = o2.id;
+          o2.addEntity(e3), this.entityArchetypes[e3] = o2.id;
         }
-        entityRemoveComponent(e2, t2) {
-          if (!e2.has(t2)) {
-            U.warn("Entity", e2, "tried to remove component (ID:", t2, ") which it did not have");
+        entityRemoveComponent(e3, t2) {
+          if (!e3.has(t2)) {
+            U.warn("Entity", e3, "tried to remove component (ID:", t2, ") which it did not have");
             return;
           }
-          let n2 = this.archetypes.get(this.entityArchetypes[e2]);
-          if (n2.removeEntity(e2), !n2.graph.removed.has(t2)) {
+          let n2 = this.archetypes.get(this.entityArchetypes[e3]);
+          if (n2.removeEntity(e3), !n2.graph.removed.has(t2)) {
             for (let [i2, a3] of this.archetypes)
               if (a3.components.size == n2.components.size - 1 && a3.components.every((y2) => y2 !== t2 && n2.components.has(y2))) {
                 n2.graph.removed.set(t2, a3);
@@ -566,45 +566,45 @@
             }
           }
           let o2 = n2.graph.removed.get(t2);
-          o2.addEntity(e2), this.entityArchetypes[e2] = o2.id;
+          o2.addEntity(e3), this.entityArchetypes[e3] = o2.id;
         }
-        resize(e2) {
+        resize(e3) {
           for (let [t2, n2] of this.archetypes)
-            n2.resize(e2);
+            n2.resize(e3);
         }
         update() {
         }
       };
       Se = new m("Component Storage");
       W = class {
-        constructor(e2) {
-          this.world = e2;
+        constructor(e3) {
+          this.world = e3;
         }
         storages = [];
         updateQueue = [];
         storagesByType = /* @__PURE__ */ new Map();
-        loadFromData(e2) {
-          Se.log("Loading from data dump:", e2), e2.forEach((t2, n2) => {
+        loadFromData(e3) {
+          Se.log("Loading from data dump:", e3), e3.forEach((t2, n2) => {
             this.storages[n2] = Object.create(l.get(t2.id).prototype, Object.getOwnPropertyDescriptors(t2));
           });
         }
-        createStorage(e2, t2) {
-          let n2 = l.get(t2), o2 = new n2(e2, this.world.maxEntities);
-          return o2.needsUpdate && this.updateQueue.push(o2), this.storagesByType.has(o2.kind) ? this.storagesByType.get(o2.kind).push(o2) : this.storagesByType.set(o2.kind, [o2]), Se.log("Created new data storage for", e2, "(Type:", t2, ")"), o2;
+        createStorage(e3, t2) {
+          let n2 = l.get(t2), o2 = new n2(e3, this.world.maxEntities);
+          return o2.needsUpdate && this.updateQueue.push(o2), this.storagesByType.has(o2.kind) ? this.storagesByType.get(o2.kind).push(o2) : this.storagesByType.set(o2.kind, [o2]), Se.log("Created new data storage for", e3, "(Type:", t2, ")"), o2;
         }
-        getOrCreateStorage(e2, t2) {
-          return this.storages[e2] ? this.storages[e2] : (this.storages[e2] = this.createStorage(e2, t2), this.storages[e2]);
+        getOrCreateStorage(e3, t2) {
+          return this.storages[e3] ? this.storages[e3] : (this.storages[e3] = this.createStorage(e3, t2), this.storages[e3]);
         }
-        resize(e2) {
+        resize(e3) {
           for (let t2 = this.storages.length - 1; t2 >= 0; t2--)
-            this.storages[t2].resize(e2);
+            this.storages[t2].resize(e3);
         }
         update() {
-          for (let e2 = this.updateQueue.length - 1; e2 >= 0; e2--)
-            this.updateQueue[e2].update();
+          for (let e3 = this.updateQueue.length - 1; e3 >= 0; e3--)
+            this.updateQueue[e3].update();
         }
-        getAllByType(e2) {
-          return this.storagesByType.get(e2) ?? [];
+        getAllByType(e3) {
+          return this.storagesByType.get(e3) ?? [];
         }
       };
       s = {};
@@ -619,33 +619,33 @@
       h("u32", 8);
       h("bool", 9);
       O = class {
-        constructor(e2, t2) {
-          this.id = e2;
+        constructor(e3, t2) {
+          this.id = e3;
         }
         internalArray;
         needsUpdate = false;
-        link(e2, t2, n2, o2 = false) {
+        link(e3, t2, n2, o2 = false) {
           if (o2) {
-            let i2 = Te(e2, t2), a3 = be(e2, t2);
-            Object.defineProperty(this.internalArray, n2, { get: i2 || (() => e2[t2]), set: a3 || ((y2) => e2[t2] = y2), enumerable: true, configurable: true });
+            let i2 = Te(e3, t2), a3 = be(e3, t2);
+            Object.defineProperty(this.internalArray, n2, { get: i2 || (() => e3[t2]), set: a3 || ((y2) => e3[t2] = y2), enumerable: true, configurable: true });
           }
-          Object.defineProperty(e2, t2, { get: () => this.getEnt(n2), set: (i2) => this.addOrSetEnt(n2, i2) });
+          Object.defineProperty(e3, t2, { get: () => this.getEnt(n2), set: (i2) => this.addOrSetEnt(n2, i2) });
         }
       };
       J = class extends O {
         internalArray = [];
         id = s.any;
         kind = s.any;
-        getEnt(e2) {
-          return this.internalArray[e2];
+        getEnt(e3) {
+          return this.internalArray[e3];
         }
-        addOrSetEnt(e2, t2) {
-          this.internalArray[e2] = t2;
+        addOrSetEnt(e3, t2) {
+          this.internalArray[e3] = t2;
         }
-        deleteEnt(e2) {
-          delete this.internalArray[e2];
+        deleteEnt(e3) {
+          delete this.internalArray[e3];
         }
-        resize(e2) {
+        resize(e3) {
         }
       };
       Object.defineProperty(Object.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: s.any });
@@ -662,20 +662,20 @@
         internalArray;
         id = s.bool;
         kind = s.bool;
-        constructor(e2, t2) {
-          super(e2, t2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * t2));
+        constructor(e3, t2) {
+          super(e3, t2), this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * t2));
         }
-        getEnt(e2) {
-          return !!this.internalArray[e2];
+        getEnt(e3) {
+          return !!this.internalArray[e3];
         }
-        addOrSetEnt(e2, t2) {
-          this.internalArray[e2] = +t2;
+        addOrSetEnt(e3, t2) {
+          this.internalArray[e3] = +t2;
         }
-        deleteEnt(e2) {
+        deleteEnt(e3) {
         }
-        resize(e2) {
+        resize(e3) {
           let t2 = this.internalArray;
-          this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * e2)), this.internalArray.set(t2);
+          this.internalArray = new Uint8Array(new SharedArrayBuffer(Uint8Array.BYTES_PER_ELEMENT * e3)), this.internalArray.set(t2);
         }
       };
       Object.defineProperty(Boolean.prototype, "storageKind", { configurable: true, enumerable: false, writable: true, value: s.bool });
@@ -700,8 +700,8 @@
       Ie = { [s.logged]: je, [s.enum]: ze, [s.nullable]: Fe, [s.ranged]: Ge };
       v = 15;
       p = class {
-        constructor(e2) {
-          this.id = e2;
+        constructor(e3) {
+          this.id = e3;
         }
         toTypeId() {
           return this.id;
@@ -712,61 +712,61 @@
         logged() {
           return new p(k({ type: s.logged, backingStorageId: this.id }));
         }
-        ranged(e2) {
-          return new p(k({ type: s.ranged, capacity: e2, backingStorageId: this.id }));
+        ranged(e3) {
+          return new p(k({ type: s.ranged, capacity: e3, backingStorageId: this.id }));
         }
-        vec(e2) {
-          return new f(new Array(e2).fill(0).map((t2) => new p(this.id)));
+        vec(e3) {
+          return new f(new Array(e3).fill(0).map((t2) => new p(this.id)));
         }
       };
       f = class {
         #e;
-        constructor(e2) {
-          if (this.#e = e2, !(typeof this.#e == "number" || this.#e instanceof f || this.#e instanceof p))
-            for (let [t2, n2] of Object.entries(e2))
+        constructor(e3) {
+          if (this.#e = e3, !(typeof this.#e == "number" || this.#e instanceof f || this.#e instanceof p))
+            for (let [t2, n2] of Object.entries(e3))
               this[t2] = n2;
         }
         toTypeTree() {
           return this.#e;
         }
-        static nullableRaw(e2) {
-          if (e2 instanceof p)
-            return e2.nullable();
-          if (Array.isArray(e2))
-            return e2.map((n2) => this.nullableRaw(n2));
+        static nullableRaw(e3) {
+          if (e3 instanceof p)
+            return e3.nullable();
+          if (Array.isArray(e3))
+            return e3.map((n2) => this.nullableRaw(n2));
           let t2 = {};
-          for (let [n2, o2] of Object.entries(e2))
+          for (let [n2, o2] of Object.entries(e3))
             t2[n2] = this.nullableRaw(o2);
           return t2;
         }
         nullable() {
           return new f(f.nullableRaw(this.#e));
         }
-        static loggedRaw(e2) {
-          if (e2 instanceof p)
-            return e2.logged();
-          if (Array.isArray(e2))
-            return e2.map((n2) => this.loggedRaw(n2));
+        static loggedRaw(e3) {
+          if (e3 instanceof p)
+            return e3.logged();
+          if (Array.isArray(e3))
+            return e3.map((n2) => this.loggedRaw(n2));
           let t2 = {};
-          for (let [n2, o2] of Object.entries(e2))
+          for (let [n2, o2] of Object.entries(e3))
             t2[n2] = this.loggedRaw(o2);
           return t2;
         }
         logged() {
           return new f(f.loggedRaw(this.#e));
         }
-        static rangedRaw(e2, t2) {
-          if (e2 instanceof p)
-            return e2.ranged(t2);
-          if (Array.isArray(e2))
-            return e2.map((o2) => this.rangedRaw(o2, t2));
+        static rangedRaw(e3, t2) {
+          if (e3 instanceof p)
+            return e3.ranged(t2);
+          if (Array.isArray(e3))
+            return e3.map((o2) => this.rangedRaw(o2, t2));
           let n2 = {};
-          for (let [o2, i2] of Object.entries(e2))
+          for (let [o2, i2] of Object.entries(e3))
             n2[o2] = this.rangedRaw(i2, t2);
           return n2;
         }
-        ranged(e2) {
-          return new f(f.rangedRaw(this.#e, e2));
+        ranged(e3) {
+          return new f(f.rangedRaw(this.#e, e3));
         }
       };
       ee = class {
@@ -775,12 +775,12 @@
       d(u, "any", new p(g(s.any))), d(u, "bool", new p(g(s.bool))), d(u, "string", new p(g(s.any))), d(u, "entity", new p(g(s.i32))), d(u, "f64", new p(g(s.f64))), d(u, "f32", new p(g(s.f32))), d(u, "i8", new p(g(s.i8))), d(u, "i16", new p(g(s.i16))), d(u, "i32", new p(g(s.i32))), d(u, "u8", new p(g(s.u8))), d(u, "u16", new p(g(s.u16))), d(u, "u32", new p(g(s.u32))), d(u, "number", ee.f64);
       I = class {
       };
-      d(I, "custom", function(e2) {
+      d(I, "custom", function(e3) {
         return new p(g(0));
-      }), d(I, "component", function(e2) {
-        return new f(e2.schema);
-      }), d(I, "enum", function(...e2) {
-        return new p(k({ type: s.enum, options: e2 }));
+      }), d(I, "component", function(e3) {
+        return new f(e3.schema);
+      }), d(I, "enum", function(...e3) {
+        return new p(k({ type: s.enum, options: e3 }));
       });
       K = class {
       };
@@ -792,48 +792,48 @@
       re = 1;
       w = {};
       T = class {
-        constructor(e2) {
-          this.cache = e2;
+        constructor(e3) {
+          this.cache = e3;
         }
         static getId() {
           return this.id;
         }
-        static __init__(e2) {
-          this.prototype.schema = e2;
+        static __init__(e3) {
+          this.prototype.schema = e3;
         }
       };
       d(T, "id"), d(T, "currentEntity");
       ne = class extends T {
-        static __init__(e2) {
-          super.__init__(e2), this.prototype.propIds = [this.getId()], this.prototype.flattenedSchema = [e2], Object.defineProperty(this.prototype, "data", { get: () => this.currentEntity.get(this.getId()), set: (t2) => this.currentEntity.update(this.getId(), t2) });
+        static __init__(e3) {
+          super.__init__(e3), this.prototype.propIds = [this.getId()], this.prototype.flattenedSchema = [e3], Object.defineProperty(this.prototype, "data", { get: () => this.currentEntity.get(this.getId()), set: (t2) => this.currentEntity.update(this.getId(), t2) });
         }
-        copyIntoStorage(e2, t2) {
-          e2.storageManager.getOrCreateStorage(this.constructor.getId(), this.schema).addOrSetEnt(t2, this.cache);
+        copyIntoStorage(e3, t2) {
+          e3.storageManager.getOrCreateStorage(this.constructor.getId(), this.schema).addOrSetEnt(t2, this.cache);
         }
       };
       oe = class extends T {
-        constructor(e2) {
+        constructor(e3) {
           super([]);
           for (let t2 = this.propNames.length - 1; t2 > -1; t2--)
-            this.cache[t2] = e2[this.propNames[t2]];
+            this.cache[t2] = e3[this.propNames[t2]];
         }
-        copyIntoStorage(e2, t2) {
+        copyIntoStorage(e3, t2) {
           for (let n2 = this.flattenedSchema.length - 1; n2 > -1; n2--)
-            e2.storageManager.getOrCreateStorage(this.propIds[n2], this.flattenedSchema[n2]).addOrSetEnt(t2, this.cache[n2]);
+            e3.storageManager.getOrCreateStorage(this.propIds[n2], this.flattenedSchema[n2]).addOrSetEnt(t2, this.cache[n2]);
         }
-        static __init__(e2) {
+        static __init__(e3) {
           this.prototype.flattenedSchema = [], this.prototype.propIds = [], this.prototype.propNames = [];
-          for (let [t2, n2] of Object.entries(e2)) {
+          for (let [t2, n2] of Object.entries(e3)) {
             let o2 = b();
             this.prototype.flattenedSchema.push(n2), this.prototype.propIds.push(o2), this.prototype.propNames.push(t2), this[t2] = o2, Object.defineProperty(this.prototype, t2, { get: () => this.currentEntity.get(o2), set: (i2) => this.currentEntity.update(o2, i2) });
           }
-          super.__init__(e2);
+          super.__init__(e3);
         }
       };
       ie = class extends T {
-        constructor(e2) {
+        constructor(e3) {
           super([]);
-          let t2 = [[this.schema, e2]];
+          let t2 = [[this.schema, e3]];
           $(([n2, o2], i2) => {
             if (typeof n2 == "number") {
               this.cache.push(o2);
@@ -843,11 +843,11 @@
               i2([n2[a3], o2[a3]]);
           }, t2);
         }
-        copyIntoStorage(e2, t2) {
+        copyIntoStorage(e3, t2) {
           for (let n2 = this.flattenedSchema.length - 1; n2 > -1; n2--)
-            e2.storageManager.getOrCreateStorage(this.propIds[n2], this.flattenedSchema[n2]).addOrSetEnt(t2, this.cache[n2]);
+            e3.storageManager.getOrCreateStorage(this.propIds[n2], this.flattenedSchema[n2]).addOrSetEnt(t2, this.cache[n2]);
         }
-        static __init__(e2) {
+        static __init__(e3) {
           this.prototype.propIds = [], this.prototype.flattenedSchema = [], $(([n2, o2, i2], a3) => {
             if (typeof n2 == "number") {
               let y2 = b();
@@ -856,59 +856,59 @@
             }
             for (let y2 of Object.keys(n2 || {}))
               a3([n2[y2], o2[y2] = {}, y2]);
-          }, ...[[e2, this, "prototype"]]), super.__init__(e2);
+          }, ...[[e3, this, "prototype"]]), super.__init__(e3);
         }
       };
       Pt = Ye;
       j = (r2) => typeof r2 == "function" && r2.toString().startsWith("class");
       x = class {
-        constructor(e2) {
-          this.componentTester = e2;
-          typeof e2.narrower == "function" && (this[Symbol.iterator] = this.iterator_narrower, this.forEach = this.forEach_narrower), this.entityNarrower = e2.narrower;
+        constructor(e3) {
+          this.componentTester = e3;
+          typeof e3.narrower == "function" && (this[Symbol.iterator] = this.iterator_narrower, this.forEach = this.forEach_narrower), this.entityNarrower = e3.narrower;
         }
         targetedArchetypes = [];
         offset = 0;
         stepSize = 1;
         lastCheckedArchetypes = /* @__PURE__ */ new Map();
-        setStepSizeAndOffset(e2, t2) {
-          this.stepSize = e2, this.offset = t2;
+        setStepSizeAndOffset(e3, t2) {
+          this.stepSize = e3, this.offset = t2;
         }
         entityNarrower;
         ignoreMultithreadingFragmentation() {
           this.offset = 0, this.stepSize = 1;
         }
-        addTargetedArchetype(e2) {
-          this.targetedArchetypes.includes(e2) || (this.targetedArchetypes.push(e2), this.lastCheckedArchetypes.set(e2, -1 / 0));
+        addTargetedArchetype(e3) {
+          this.targetedArchetypes.includes(e3) || (this.targetedArchetypes.push(e3), this.lastCheckedArchetypes.set(e3, -1 / 0));
         }
         *[Symbol.iterator]() {
-          for (let e2 = this.targetedArchetypes.length - 1; e2 >= 0; e2--)
-            for (let t2 = this.targetedArchetypes[e2].entities[0] - this.offset; t2 > 0; t2 -= this.stepSize)
-              yield this.targetedArchetypes[e2].entities[t2];
+          for (let e3 = this.targetedArchetypes.length - 1; e3 >= 0; e3--)
+            for (let t2 = this.targetedArchetypes[e3].entities[0] - this.offset; t2 > 0; t2 -= this.stepSize)
+              yield this.targetedArchetypes[e3].entities[t2];
         }
-        forEach(e2) {
+        forEach(e3) {
           for (let t2 = this.targetedArchetypes.length - 1; t2 >= 0; t2--)
             for (let n2 = this.targetedArchetypes[t2].entities[0] - this.offset; n2 > 0; n2 -= this.stepSize)
-              e2(this.targetedArchetypes[t2].entities[n2]);
+              e3(this.targetedArchetypes[t2].entities[n2]);
         }
-        forEach_narrower(e2) {
+        forEach_narrower(e3) {
           for (let t2 = this.targetedArchetypes.length - 1; t2 >= 0; t2--)
             for (let n2 = this.targetedArchetypes[t2].entities[0] - this.offset; n2 > 0; n2 -= this.stepSize) {
               let o2 = this.targetedArchetypes[t2].entities[n2];
-              this.entityNarrower(o2) && e2(o2);
+              this.entityNarrower(o2) && e3(o2);
             }
         }
         *iterator_narrower() {
-          for (let e2 = this.targetedArchetypes.length - 1; e2 >= 0; e2--)
-            for (let t2 = this.targetedArchetypes[e2].entities[0] - this.offset; t2 > 0; t2 -= this.stepSize) {
-              let n2 = this.targetedArchetypes[e2].entities[t2];
+          for (let e3 = this.targetedArchetypes.length - 1; e3 >= 0; e3--)
+            for (let t2 = this.targetedArchetypes[e3].entities[0] - this.offset; t2 > 0; t2 -= this.stepSize) {
+              let n2 = this.targetedArchetypes[e3].entities[t2];
               this.entityNarrower(n2) && (yield n2);
             }
         }
         addedState = /* @__PURE__ */ new Set();
         removedState = /* @__PURE__ */ new Set();
         NO_OP = new Function();
-        forEach_state(e2, t2, n2) {
-          let o2 = new Set(e2);
+        forEach_state(e3, t2, n2) {
+          let o2 = new Set(e3);
           for (let i2 = this.targetedArchetypes.length - 1; i2 >= 0; i2--) {
             let a3 = this.targetedArchetypes[i2];
             if (a3.lastModified === this.lastCheckedArchetypes.get(a3))
@@ -917,68 +917,68 @@
             else
               for (let y2 = this.targetedArchetypes[i2].entities[0] - this.offset; y2 > 0; y2 -= this.stepSize) {
                 let S2 = this.targetedArchetypes[i2].entities[y2];
-                e2.has(S2) || (e2.add(S2), t2(S2)), o2.delete(S2);
+                e3.has(S2) || (e3.add(S2), t2(S2)), o2.delete(S2);
               }
           }
           o2.forEach((i2) => {
-            n2(i2), e2.delete(i2);
+            n2(i2), e3.delete(i2);
           });
         }
-        forEachAdded(e2) {
-          this.forEach_state(this.addedState, e2, this.NO_OP);
+        forEachAdded(e3) {
+          this.forEach_state(this.addedState, e3, this.NO_OP);
         }
-        forEachRemoved(e2) {
-          this.forEach_state(this.removedState, this.NO_OP, e2);
+        forEachRemoved(e3) {
+          this.forEach_state(this.removedState, this.NO_OP, e3);
         }
       };
       z = class {
-        constructor(e2) {
-          this.world = e2;
+        constructor(e3) {
+          this.world = e3;
         }
         queries = [];
-        query(...e2) {
-          let t2 = new x(se(...e2));
+        query(...e3) {
+          let t2 = new x(se(...e3));
           for (let [n2, o2] of this.world.archetypeManager.archetypes)
             t2.componentTester(o2.components) && t2.addTargetedArchetype(o2);
           return t2;
         }
-        addQuery(e2) {
-          this.queries.push(e2);
+        addQuery(e3) {
+          this.queries.push(e3);
           for (let [t2, n2] of this.world.archetypeManager.archetypes)
-            e2.componentTester(n2.components) && e2.addTargetedArchetype(n2);
+            e3.componentTester(n2.components) && e3.addTargetedArchetype(n2);
         }
-        onNewArchetypeCreated(e2) {
+        onNewArchetypeCreated(e3) {
           for (let t2 = 0; t2 < this.queries.length; t2++)
-            this.queries[t2].componentTester(e2.components) && this.queries[t2].addTargetedArchetype(e2);
+            this.queries[t2].componentTester(e3.components) && this.queries[t2].addTargetedArchetype(e3);
         }
       };
-      D = (...r2) => r2.length === 1 && typeof r2[0] == "function" && !j(r2[0]) ? r2[0] : (r2 = r2.map((e2) => typeof e2 == "number" ? e2 : e2.getId()), (e2) => r2.every((t2) => e2.has(t2)));
+      D = (...r2) => r2.length === 1 && typeof r2[0] == "function" && !j(r2[0]) ? r2[0] : (r2 = r2.map((e3) => typeof e3 == "number" ? e3 : e3.getId()), (e3) => r2.every((t2) => e3.has(t2)));
       se = (...r2) => {
-        let e2 = function(o2) {
+        let e3 = function(o2) {
           for (let i2 = r2.length - 1; i2 > -1; i2--)
             if (!r2[i2](o2))
               return false;
           return true;
         }, t2 = r2.map((n2) => n2.narrower).filter((n2) => typeof n2 == "function");
-        return t2.length > 0 && (e2.narrower = function(n2) {
+        return t2.length > 0 && (e3.narrower = function(n2) {
           for (let o2 = t2.length - 1; o2 > -1; o2--)
             if (!t2[o2](n2))
               return false;
           return true;
-        }), e2;
+        }), e3;
       };
       C = class {
-        constructor(e2) {
-          this.world = e2;
+        constructor(e3) {
+          this.world = e3;
         }
         init() {
         }
-        setStepSizeAndOffset(e2, t2, n2 = this.entities) {
+        setStepSizeAndOffset(e3, t2, n2 = this.entities) {
           if (n2 instanceof x)
-            n2.setStepSizeAndOffset(e2, t2);
+            n2.setStepSizeAndOffset(e3, t2);
           else
             for (let o2 of Object.values(n2))
-              this.setStepSizeAndOffset(e2, t2, o2);
+              this.setStepSizeAndOffset(e3, t2, o2);
         }
         update() {
         }
@@ -986,47 +986,47 @@
       d(C, "nextSystemId", 0), d(C, "runOrder", "STANDARD");
       F = { LOCAL: 0, REMOTE: 1 };
       G = class {
-        constructor(e2) {
-          this.world = e2;
+        constructor(e3) {
+          this.world = e3;
           this.createSchedule("DEFAULT");
         }
         localSystems = [];
         systemLocations = new Uint8Array(100);
         schedules = {};
         enabledSchedules = {};
-        reorderEnabled(e2) {
-          let t2 = this.enabledSchedules[e2].slice(), n2 = this.enabledSchedules[e2];
+        reorderEnabled(e3) {
+          let t2 = this.enabledSchedules[e3].slice(), n2 = this.enabledSchedules[e3];
           n2.length = 0;
-          let { first: o2, standard: i2, last: a3 } = this.schedules[e2];
+          let { first: o2, standard: i2, last: a3 } = this.schedules[e3];
           n2.push(...[...o2, ...i2, ...a3].filter((y2) => t2.includes(y2)));
         }
-        registerSystem(e2, t2 = F.REMOTE) {
-          this.systemLocations[e2] = t2;
+        registerSystem(e3, t2 = F.REMOTE) {
+          this.systemLocations[e3] = t2;
         }
-        createSchedule(e2, ...t2) {
-          this.schedules[e2] = { first: [], standard: t2, last: [] }, this.enabledSchedules[e2] = [];
+        createSchedule(e3, ...t2) {
+          this.schedules[e3] = { first: [], standard: t2, last: [] }, this.enabledSchedules[e3] = [];
         }
-        addToSchedule(e2, t2, n2, o2) {
+        addToSchedule(e3, t2, n2, o2) {
           let i2 = this.schedules[t2] ??= { first: [], standard: [], last: [] }, { first: a3, standard: y2, last: S2 } = i2;
           if (n2 === "STANDARD" || n2 === "LAST" || n2 === "FIRST")
-            i2[n2.toLowerCase()].push(e2);
+            i2[n2.toLowerCase()].push(e3);
           else if ("position" in n2)
-            n2.position < a3.length ? a3.splice(n2.position, 0, e2) : n2.position < a3.length + y2.length ? y2.splice(n2.position - a3.length, 0, e2) : S2.splice(n2.position - a3.length - y2.length, e2);
+            n2.position < a3.length ? a3.splice(n2.position, 0, e3) : n2.position < a3.length + y2.length ? y2.splice(n2.position - a3.length, 0, e3) : S2.splice(n2.position - a3.length - y2.length, e3);
           else {
             let he = Object.keys(n2)[0], fe = n2[he], ge = [a3, y2, S2].find((ve) => ve.includes(fe)), Me = ge.indexOf(fe);
-            ge.splice(Me + (he === "before" ? 0 : 1), 0, e2);
+            ge.splice(Me + (he === "before" ? 0 : 1), 0, e3);
           }
-          o2 && this.enable(e2, t2);
+          o2 && this.enable(e3, t2);
         }
-        enable(e2, t2) {
-          this.enabledSchedules[t2].includes(e2) || (this.enabledSchedules[t2].push(e2), this.reorderEnabled(t2));
+        enable(e3, t2) {
+          this.enabledSchedules[t2].includes(e3) || (this.enabledSchedules[t2].push(e3), this.reorderEnabled(t2));
         }
-        disable(e2, t2) {
-          this.enabledSchedules[t2].splice(this.enabledSchedules[t2].indexOf(e2), 1);
+        disable(e3, t2) {
+          this.enabledSchedules[t2].splice(this.enabledSchedules[t2].indexOf(e3), 1);
         }
-        addSystem(e2) {
-          let { id: t2 } = e2.constructor;
-          this.localSystems[t2] = e2, this.registerSystem(t2, F.LOCAL);
+        addSystem(e3) {
+          let { id: t2 } = e3.constructor;
+          this.localSystems[t2] = e3, this.registerSystem(t2, F.LOCAL);
           let n2 = (o2) => {
             if (o2 instanceof x) {
               this.world.queryManager.addQuery(o2);
@@ -1035,14 +1035,14 @@
             for (let i2 of Object.values(o2))
               n2(i2);
           };
-          n2(e2.entities);
+          n2(e3.entities);
         }
-        addRemoteSystem(e2) {
-          this.registerSystem(e2, F.REMOTE);
+        addRemoteSystem(e3) {
+          this.registerSystem(e3, F.REMOTE);
         }
-        update(e2 = "DEFAULT") {
+        update(e3 = "DEFAULT") {
           let t2;
-          typeof e2 == "string" ? t2 = this.enabledSchedules[e2] : t2 = e2;
+          typeof e3 == "string" ? t2 = this.enabledSchedules[e3] : t2 = e3;
           let n2 = [];
           for (let o2 of t2)
             this.systemLocations[o2] == F.REMOTE ? n2.push(this.world.workerManager.update(o2)) : this.localSystems[o2].update();
@@ -1052,34 +1052,34 @@
       Xe = ((o2) => (o2[o2.init = 0] = "init", o2[o2.update = 1] = "update", o2[o2.sync = 2] = "sync", o2[o2.newArchetype = 3] = "newArchetype", o2))(Xe || {});
       pe = new m("Worker Manager");
       ue = class {
-        constructor(e2, t2) {
-          this.url = e2;
+        constructor(e3, t2) {
+          this.url = e3;
           this.numThreads = t2;
         }
         workers = [];
-        postMessage(e2) {
+        postMessage(e3) {
           for (let t2 = this.workers.length - 1; t2 >= 0; t2--)
-            this.workers[t2].postMessage(e2);
+            this.workers[t2].postMessage(e3);
         }
-        async initAndEmitData(e2, t2, n2) {
+        async initAndEmitData(e3, t2, n2) {
           let o2 = [];
           for (let i2 = 0; i2 < this.numThreads; i2++)
-            this.workers.push(new Worker(this.url, { type: "module" })), n2 ? this.workers[i2].postMessage({ ...e2, [n2]: i2 }) : this.workers[i2].postMessage(e2), o2[i2] = await de(this.workers[i2], t2);
+            this.workers.push(new Worker(this.url, { type: "module" })), n2 ? this.workers[i2].postMessage({ ...e3, [n2]: i2 }) : this.workers[i2].postMessage(e3), o2[i2] = await de(this.workers[i2], t2);
           return o2;
         }
       };
       H = class {
-        constructor(e2) {
-          this.world = e2;
+        constructor(e3) {
+          this.world = e3;
         }
         workers = [];
         triggerArrays = [];
-        async loadWorkerSystem(e2, t2 = 1) {
+        async loadWorkerSystem(e3, t2 = 1) {
           let n2, o2, i2 = new Int32Array(new SharedArrayBuffer(t2 * Int32Array.BYTES_PER_ELEMENT));
-          return t2 === 1 ? (pe.log("Loading remote system..."), n2 = new Worker(e2, { type: "module" }), n2.postMessage({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: 1, offset: 0, triggerArray: i2 }), o2 = await de(n2, 0)) : (pe.log(`Loading remote system with ${t2} threads`), n2 = new ue(e2, t2), o2 = (await n2.initAndEmitData({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: t2, triggerArray: i2 }, 0, "offset"))[0]), this.workers[o2.id] = n2, this.triggerArrays[o2.id] = i2, pe.logOk(`Remote system ${o2.name} (${o2.id}) is ready`), o2.id;
+          return t2 === 1 ? (pe.log("Loading remote system..."), n2 = new Worker(e3, { type: "module" }), n2.postMessage({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: 1, offset: 0, triggerArray: i2 }), o2 = await de(n2, 0)) : (pe.log(`Loading remote system with ${t2} threads`), n2 = new ue(e3, t2), o2 = (await n2.initAndEmitData({ type: 0, storage: this.world.storageManager.storages, components: w, archetypeManager: this.world.archetypeManager, customStorages: Q, stepSize: t2, triggerArray: i2 }, 0, "offset"))[0]), this.workers[o2.id] = n2, this.triggerArrays[o2.id] = i2, pe.logOk(`Remote system ${o2.name} (${o2.id}) is ready`), o2.id;
         }
-        update(e2) {
-          let t2 = this.triggerArrays[e2];
+        update(e3) {
+          let t2 = this.triggerArrays[e3];
           if (t2.length === 1)
             return Atomics.store(t2, 0, 1), Atomics.notify(t2, 0), Atomics.waitAsync(t2, 0, 1).value;
           let n2 = [];
@@ -1088,63 +1088,63 @@
           return Promise.all(n2);
         }
         updateAll() {
-          this.triggerArrays.forEach((e2, t2) => this.update(t2));
+          this.triggerArrays.forEach((e3, t2) => this.update(t2));
         }
-        onNewArchetypeCreated(e2) {
+        onNewArchetypeCreated(e3) {
           for (let t2 of this.workers)
-            t2.postMessage({ type: 3, archetype: e2 });
+            t2.postMessage({ type: 3, archetype: e3 });
         }
       };
       R = 15;
       Ce = (r2) => r2.push(() => {
-        Number.prototype.relate = function(e2, t2, n2) {
-          n2 == null ? this.tag(le(e2, t2)) : this.add(le(e2, t2), n2);
-        }, Number.prototype.getAllRelatedBy = function(e2) {
-          return typeof e2 != "number" && (e2 = e2.getId()), this.components().filter((t2) => t2 >> R == e2).map((t2) => ce(t2, 0, R));
-        }, Number.prototype.getSingleRelatedBy = function(e2) {
-          typeof e2 != "number" && (e2 = e2.getId());
+        Number.prototype.relate = function(e3, t2, n2) {
+          n2 == null ? this.tag(le(e3, t2)) : this.add(le(e3, t2), n2);
+        }, Number.prototype.getAllRelatedBy = function(e3) {
+          return typeof e3 != "number" && (e3 = e3.getId()), this.components().filter((t2) => t2 >> R == e3).map((t2) => ce(t2, 0, R));
+        }, Number.prototype.getSingleRelatedBy = function(e3) {
+          typeof e3 != "number" && (e3 = e3.getId());
           for (let t2 of this.components())
-            if (t2 >> R == e2)
+            if (t2 >> R == e3)
               return ce(t2, 0, R);
           return null;
         };
       });
       Oe = (r2) => r2.push(() => {
-        N = b(), L = b(), Number.prototype.addChild = function(e2) {
-          this.relate(N, e2), e2.relate(L, this);
+        N = b(), L = b(), Number.prototype.addChild = function(e3) {
+          this.relate(N, e3), e3.relate(L, this);
         }, Number.prototype.children = function() {
           return this.getAllRelatedBy(N);
         };
       });
       Y = class {
-        constructor(e2) {
-          this.world = e2;
+        constructor(e3) {
+          this.world = e3;
         }
         entities = /* @__PURE__ */ new Set();
-        spawn(...e2) {
+        spawn(...e3) {
           for (let t2 = 1; t2 <= this.entities.size + 1; t2++) {
             let n2 = t2;
             if (!this.entities.has(n2)) {
-              for (let o2 of e2)
+              for (let o2 of e3)
                 Array.isArray(o2) ? n2.add(o2[0], o2[1]) : n2.add(o2);
               return this.entities.add(n2), n2;
             }
           }
           throw new Error("Couldn't find free entity");
         }
-        destroy(e2) {
-          this.entities.delete(e2) || console.warn("removed entity that wasn't present in the world");
-          let t2 = this.world.archetypeManager.archetypes.get(this.world.archetypeManager.entityArchetypes[e2]);
-          this.world.archetypeManager.moveWithoutGraph(e2, t2, this.world.archetypeManager.defaultArchetype);
+        destroy(e3) {
+          this.entities.delete(e3) || console.warn("removed entity that wasn't present in the world");
+          let t2 = this.world.archetypeManager.archetypes.get(this.world.archetypeManager.entityArchetypes[e3]);
+          this.world.archetypeManager.moveWithoutGraph(e3, t2, this.world.archetypeManager.defaultArchetype);
         }
         update() {
         }
       };
       q = new m("World");
       V = class {
-        constructor(e2) {
-          this.internalMaxEntities = e2;
-          q.group("Creating world with", e2, "entities"), this.storageManager = new W(this), this.queryManager = new z(this), this.workerManager = new H(this), this.systemManager = new G(this), this.archetypeManager = new P(this), this.entityManager = new Y(this), V.GLOBAL_WORLD = this, q.groupEnd(), q.logOk("Created world with max capacity of", e2, "entities");
+        constructor(e3) {
+          this.internalMaxEntities = e3;
+          q.group("Creating world with", e3, "entities"), this.storageManager = new W(this), this.queryManager = new z(this), this.workerManager = new H(this), this.systemManager = new G(this), this.archetypeManager = new P(this), this.entityManager = new Y(this), V.GLOBAL_WORLD = this, q.groupEnd(), q.logOk("Created world with max capacity of", e3, "entities");
         }
         storageManager;
         queryManager;
@@ -1156,64 +1156,64 @@
         get maxEntities() {
           return this.internalMaxEntities;
         }
-        set maxEntities(e2) {
-          this.internalMaxEntities = e2, q.log("Resizing all storages for", e2, "entities..."), this.archetypeManager.resize(e2), this.storageManager.resize(e2);
+        set maxEntities(e3) {
+          this.internalMaxEntities = e3, q.log("Resizing all storages for", e3, "entities..."), this.archetypeManager.resize(e3), this.storageManager.resize(e3);
         }
-        spawn(...e2) {
-          return this.entityManager.spawn(...e2);
+        spawn(...e3) {
+          return this.entityManager.spawn(...e3);
         }
-        destroy(e2) {
-          return this.entityManager.destroy(e2);
+        destroy(e3) {
+          return this.entityManager.destroy(e3);
         }
-        query(...e2) {
-          return this.queryManager.query(...e2);
+        query(...e3) {
+          return this.queryManager.query(...e3);
         }
-        addSystem(e2, t2 = "DEFAULT", n2 = true, o2) {
-          e2 instanceof C || (e2 = new e2(this));
-          let i2 = e2.constructor;
-          return o2 ??= i2.runOrder, this.systemManager.addSystem(e2), e2.init(), t2 === false ? this : (this.systemManager.addToSchedule(i2.id, t2, o2, n2), this);
+        addSystem(e3, t2 = "DEFAULT", n2 = true, o2) {
+          e3 instanceof C || (e3 = new e3(this));
+          let i2 = e3.constructor;
+          return o2 ??= i2.runOrder, this.systemManager.addSystem(e3), e3.init(), t2 === false ? this : (this.systemManager.addToSchedule(i2.id, t2, o2, n2), this);
         }
-        async addRemoteSystem(e2, t2) {
-          let n2 = await this.workerManager.loadWorkerSystem(e2, t2);
+        async addRemoteSystem(e3, t2) {
+          let n2 = await this.workerManager.loadWorkerSystem(e3, t2);
           return this.systemManager.addRemoteSystem(n2), this;
         }
-        createSchedule(e2, ...t2) {
-          return this.systemManager.createSchedule(e2, ...t2.map((n2) => n2.id)), this;
+        createSchedule(e3, ...t2) {
+          return this.systemManager.createSchedule(e3, ...t2.map((n2) => n2.id)), this;
         }
-        addToSchedule(e2, t2 = "DEFAULT", n2, o2 = true) {
-          return this.systemManager.addToSchedule(e2.id, t2, n2 ?? e2.runOrder, o2), this;
+        addToSchedule(e3, t2 = "DEFAULT", n2, o2 = true) {
+          return this.systemManager.addToSchedule(e3.id, t2, n2 ?? e3.runOrder, o2), this;
         }
-        enable(e2, t2 = "DEFAULT") {
-          return this.systemManager.enable(e2.id, t2), this;
+        enable(e3, t2 = "DEFAULT") {
+          return this.systemManager.enable(e3.id, t2), this;
         }
-        disable(e2, t2 = "DEFAULT") {
-          this.systemManager.disable(e2.id, t2);
+        disable(e3, t2 = "DEFAULT") {
+          this.systemManager.disable(e3.id, t2);
         }
-        tick(e2 = "DEFAULT") {
-          return this.entityManager.update(), this.storageManager.update(), this.archetypeManager.update(), this.update(e2);
+        tick(e3 = "DEFAULT") {
+          return this.entityManager.update(), this.storageManager.update(), this.archetypeManager.update(), this.update(e3);
         }
-        update(e2 = "DEFAULT") {
-          if (typeof e2 == "string")
-            return this.systemManager.update(e2);
-          for (let t2 = e2.length - 1; t2 >= 0; t2--)
-            typeof e2[t2] != "number" && (e2[t2] = e2[t2].id);
-          return this.systemManager.update(e2);
+        update(e3 = "DEFAULT") {
+          if (typeof e3 == "string")
+            return this.systemManager.update(e3);
+          for (let t2 = e3.length - 1; t2 >= 0; t2--)
+            typeof e3[t2] != "number" && (e3[t2] = e3[t2].id);
+          return this.systemManager.update(e3);
         }
         components = /* @__PURE__ */ new Set();
-        add(e2, t2 = e2.constructor.getId()) {
-          if (this.components.add(typeof t2 == "number" ? t2 : t2.getId()), e2 instanceof T) {
-            e2.copyIntoStorage(this, this.reservedEntity);
+        add(e3, t2 = e3.constructor.getId()) {
+          if (this.components.add(typeof t2 == "number" ? t2 : t2.getId()), e3 instanceof T) {
+            e3.copyIntoStorage(this, this.reservedEntity);
             return;
           }
-          typeof t2 != "number" && (t2 = t2.getId()), V.GLOBAL_WORLD.storageManager.getOrCreateStorage(t2, e2.storageKind).addOrSetEnt(this.reservedEntity, e2);
+          typeof t2 != "number" && (t2 = t2.getId()), V.GLOBAL_WORLD.storageManager.getOrCreateStorage(t2, e3.storageKind).addOrSetEnt(this.reservedEntity, e3);
         }
         get = this.reservedEntity.get.bind(this.reservedEntity);
         set = this.reservedEntity.set.bind(this.reservedEntity);
-        has(e2) {
-          return this.components.has(typeof e2 == "number" ? e2 : e2.getId());
+        has(e3) {
+          return this.components.has(typeof e3 == "number" ? e3 : e3.getId());
         }
-        remove(e2) {
-          typeof e2 != "number" && (e2 = e2.getId()), this.storageManager.storages[e2].deleteEnt(this.reservedEntity);
+        remove(e3) {
+          typeof e3 != "number" && (e3 = e3.getId()), this.storageManager.storages[e3].deleteEnt(this.reservedEntity);
         }
       };
       c = V;
@@ -1226,21 +1226,21 @@
   });
 
   // node_modules/.pnpm/bagelecs@0.0.3/node_modules/bagelecs/dist/bundle.js
-  function l2(p3, ...e2) {
-    let t2 = p3 instanceof a ? p3 : new a(...p3);
+  function l2(p4, ...e3) {
+    let t2 = p4 instanceof a ? p4 : new a(...p4);
     return (...o2) => {
       let r2 = t2.new();
-      for (let n2 = e2.length - 1; n2 > -1; n2--)
-        r2.update(e2[n2], o2[n2]);
+      for (let n2 = e3.length - 1; n2 > -1; n2--)
+        r2.update(e3[n2], o2[n2]);
       return r2;
     };
   }
-  function Pe2(p3, e2, t2) {
+  function Pe2(p4, e3, t2) {
     return (...o2) => {
-      let r2 = p3.new();
-      for (let n2 = e2.length - 1; n2 > -1; n2--)
-        r2.update(e2[n2], o2[n2]);
-      return t2.call(r2, ...o2.slice(e2.length)), r2;
+      let r2 = p4.new();
+      for (let n2 = e3.length - 1; n2 > -1; n2--)
+        r2.update(e3[n2], o2[n2]);
+      return t2.call(r2, ...o2.slice(e3.length)), r2;
     };
   }
   var a, u2;
@@ -1253,8 +1253,8 @@
         targetedComponents = /* @__PURE__ */ new Set();
         neededPropertyIds = [];
         neededPropertyStorageKinds = [];
-        constructor(...e2) {
-          for (let t2 of e2)
+        constructor(...e3) {
+          for (let t2 of e3)
             if (t2 instanceof T) {
               this.targetedComponents.add(t2.constructor.getId());
               let o2 = t2 instanceof ne ? [t2.cache] : t2.cache;
@@ -1270,24 +1270,24 @@
             }
           c.GLOBAL_WORLD && this.setupWithWorld(c.GLOBAL_WORLD);
         }
-        registerComponentProperties(e2) {
-          this.neededPropertyIds.push(...e2.prototype.propIds), this.neededPropertyStorageKinds.push(...e2.prototype.flattenedSchema);
+        registerComponentProperties(e3) {
+          this.neededPropertyIds.push(...e3.prototype.propIds), this.neededPropertyStorageKinds.push(...e3.prototype.flattenedSchema);
         }
-        setupWithWorld(e2) {
-          this.archetype = e2.archetypeManager.getOrCreateArchetype(this.targetedComponents);
+        setupWithWorld(e3) {
+          this.archetype = e3.archetypeManager.getOrCreateArchetype(this.targetedComponents);
           for (let t2 = this.neededPropertyIds.length - 1; t2 > -1; t2--)
-            e2.storageManager.getOrCreateStorage(this.neededPropertyIds[t2], this.neededPropertyStorageKinds[t2]);
+            e3.storageManager.getOrCreateStorage(this.neededPropertyIds[t2], this.neededPropertyStorageKinds[t2]);
         }
         new() {
           this.archetype || this.setupWithWorld(c.GLOBAL_WORLD);
-          let e2 = c.GLOBAL_WORLD.spawn();
+          let e3 = c.GLOBAL_WORLD.spawn();
           for (let [o2, r2] of this.defaultData)
-            c.GLOBAL_WORLD.storageManager.getOrCreateStorage(o2, r2.storageKind).addOrSetEnt(e2, r2);
+            c.GLOBAL_WORLD.storageManager.getOrCreateStorage(o2, r2.storageKind).addOrSetEnt(e3, r2);
           let t2 = c.GLOBAL_WORLD.archetypeManager;
-          return t2.moveWithoutGraph(e2, t2.defaultArchetype, this.archetype), e2;
+          return t2.moveWithoutGraph(e3, t2.defaultArchetype, this.archetype), e3;
         }
-        factory(...e2) {
-          return l2(this, ...e2);
+        factory(...e3) {
+          return l2(this, ...e3);
         }
       };
       u2 = new m("World", "Resources");
@@ -1393,16 +1393,16 @@
     return sign2 + sds;
   }
   function readExponentPart(text, cursor) {
-    const e2 = text.substr(cursor, 1);
+    const e3 = text.substr(cursor, 1);
     cursor += 1;
-    if (e2.toLowerCase() !== "e") {
+    if (e3.toLowerCase() !== "e") {
       return "";
     }
     const si = readSignedInteger(text, cursor);
     if (si === "") {
       return "";
     }
-    return e2 + si;
+    return e3 + si;
   }
   function readDecimalIntegerLiteral(text, cursor) {
     const ch = text.substr(cursor, 1);
@@ -1641,8 +1641,8 @@
     };
   }
   function mapRange(value, start1, end1, start2, end2) {
-    const p3 = (value - start1) / (end1 - start1);
-    return start2 + p3 * (end2 - start2);
+    const p4 = (value - start1) / (end1 - start1);
+    return start2 + p4 * (end2 - start2);
   }
   function getDecimalDigits(value) {
     const text = String(value.toFixed(10));
@@ -1696,14 +1696,14 @@
       pointerScale: (_c = params.pointerScale) !== null && _c !== void 0 ? _c : getSuitablePointerScale(params, initialValue)
     };
   }
-  function createNumberTextInputParamsParser(p3) {
+  function createNumberTextInputParamsParser(p4) {
     return {
-      format: p3.optional.function,
-      keyScale: p3.optional.number,
-      max: p3.optional.number,
-      min: p3.optional.number,
-      pointerScale: p3.optional.number,
-      step: p3.optional.number
+      format: p4.optional.function,
+      keyScale: p4.optional.number,
+      max: p4.optional.number,
+      min: p4.optional.number,
+      pointerScale: p4.optional.number,
+      step: p4.optional.number
     };
   }
   function createPointAxis(config) {
@@ -2074,9 +2074,9 @@
     if (!ac) {
       return null;
     }
-    const params = parseRecord(args.params, (p3) => ({
-      disabled: p3.optional.boolean,
-      hidden: p3.optional.boolean
+    const params = parseRecord(args.params, (p4) => ({
+      disabled: p4.optional.boolean,
+      hidden: p4.optional.boolean
     }));
     return plugin.controller({
       blade: createBlade(),
@@ -2107,17 +2107,17 @@
   }
   function parseListOptions(value) {
     var _a;
-    const p3 = MicroParsers;
+    const p4 = MicroParsers;
     if (Array.isArray(value)) {
-      return (_a = parseRecord({ items: value }, (p4) => ({
-        items: p4.required.array(p4.required.object({
-          text: p4.required.string,
-          value: p4.required.raw
+      return (_a = parseRecord({ items: value }, (p5) => ({
+        items: p5.required.array(p5.required.object({
+          text: p5.required.string,
+          value: p5.required.raw
         }))
       }))) === null || _a === void 0 ? void 0 : _a.items;
     }
     if (typeof value === "object") {
-      return p3.required.raw(value).value;
+      return p4.required.raw(value).value;
     }
     return void 0;
   }
@@ -2252,8 +2252,8 @@
   function getCssVar(key) {
     return `--${CSS_VAR_MAP[key]}`;
   }
-  function createPointDimensionParser(p3) {
-    return createNumberTextInputParamsParser(p3);
+  function createPointDimensionParser(p4) {
+    return createNumberTextInputParamsParser(p4);
   }
   function parsePointDimensionParams(value) {
     if (!isRecord(value)) {
@@ -2308,7 +2308,7 @@
     const c3 = cmax - cmin;
     let h3 = 0;
     let s3 = 0;
-    const l4 = (cmin + cmax) / 2;
+    const l5 = (cmin + cmax) / 2;
     if (c3 !== 0) {
       s3 = c3 / (1 - Math.abs(cmax + cmin - 1));
       if (rp === cmax) {
@@ -2320,12 +2320,12 @@
       }
       h3 = h3 / 6 + (h3 < 0 ? 1 : 0);
     }
-    return [h3 * 360, s3 * 100, l4 * 100];
+    return [h3 * 360, s3 * 100, l5 * 100];
   }
-  function hslToRgbInt(h3, s3, l4) {
+  function hslToRgbInt(h3, s3, l5) {
     const hp = (h3 % 360 + 360) % 360;
     const sp = constrainRange(s3 / 100, 0, 1);
-    const lp = constrainRange(l4 / 100, 0, 1);
+    const lp = constrainRange(l5 / 100, 0, 1);
     const c3 = (1 - Math.abs(2 * lp - 1)) * sp;
     const x3 = c3 * (1 - Math.abs(hp / 60 % 2 - 1));
     const m3 = lp - c3 / 2;
@@ -2389,12 +2389,12 @@
     }
     return [(rp + m3) * 255, (gp + m3) * 255, (bp + m3) * 255];
   }
-  function hslToHsvInt(h3, s3, l4) {
-    const sd = l4 + s3 * (100 - Math.abs(2 * l4 - 100)) / (2 * 100);
+  function hslToHsvInt(h3, s3, l5) {
+    const sd = l5 + s3 * (100 - Math.abs(2 * l5 - 100)) / (2 * 100);
     return [
       h3,
-      sd !== 0 ? s3 * (100 - Math.abs(2 * l4 - 100)) / sd : 0,
-      l4 + s3 * (100 - Math.abs(2 * l4 - 100)) / (2 * 100)
+      sd !== 0 ? s3 * (100 - Math.abs(2 * l5 - 100)) / sd : 0,
+      l5 + s3 * (100 - Math.abs(2 * l5 - 100)) / (2 * 100)
     ];
   }
   function hsvToHslInt(h3, s3, v3) {
@@ -2441,14 +2441,14 @@
     return value === "int" ? "int" : value === "float" ? "float" : void 0;
   }
   function parseColorInputParams(params) {
-    return parseRecord(params, (p3) => ({
-      color: p3.optional.object({
-        alpha: p3.optional.boolean,
-        type: p3.optional.custom(parseColorType)
+    return parseRecord(params, (p4) => ({
+      color: p4.optional.object({
+        alpha: p4.optional.boolean,
+        type: p4.optional.custom(parseColorType)
       }),
-      expanded: p3.optional.boolean,
-      picker: p3.optional.custom(parsePickerLayout),
-      readonly: p3.optional.constant(false)
+      expanded: p4.optional.boolean,
+      picker: p4.optional.custom(parsePickerLayout),
+      readonly: p4.optional.constant(false)
     }));
   }
   function getKeyScaleForColor(forAlpha) {
@@ -2873,13 +2873,13 @@
       connectValues({
         primary: config.value,
         secondary: c3.value,
-        forward(p3) {
-          const mc = mapColorType(p3, config.colorType);
+        forward(p4) {
+          const mc = mapColorType(p4, config.colorType);
           return mc.getComponents(config.colorMode)[i2];
         },
-        backward(p3, s3) {
+        backward(p4, s3) {
           const pickedMode = config.colorMode;
-          const mc = mapColorType(p3, config.colorType);
+          const mc = mapColorType(p4, config.colorType);
           const comps = mc.getComponents(pickedMode);
           comps[i2] = s3;
           const c4 = createColor(appendAlphaComponent(removeAlphaComponent(comps), comps[3]), pickedMode, config.colorType);
@@ -2901,8 +2901,8 @@
     connectValues({
       primary: config.value,
       secondary: c3.value,
-      forward: (p3) => new IntColor(removeAlphaComponent(p3.getComponents()), p3.mode),
-      backward: (p3, s3) => new IntColor(appendAlphaComponent(removeAlphaComponent(s3.getComponents(p3.mode)), p3.getComponents()[3]), p3.mode)
+      forward: (p4) => new IntColor(removeAlphaComponent(p4.getComponents()), p4.mode),
+      backward: (p4, s3) => new IntColor(appendAlphaComponent(removeAlphaComponent(s3.getComponents(p4.mode)), p4.getComponents()[3]), p4.mode)
     });
     return [c3];
   }
@@ -3228,11 +3228,11 @@
       initialValue: result.initialValue,
       params: result.params
     };
-    const params = parseRecord(args.params, (p3) => ({
-      disabled: p3.optional.boolean,
-      hidden: p3.optional.boolean,
-      label: p3.optional.string,
-      tag: p3.optional.string
+    const params = parseRecord(args.params, (p4) => ({
+      disabled: p4.optional.boolean,
+      hidden: p4.optional.boolean,
+      label: p4.optional.string,
+      tag: p4.optional.string
     }));
     const reader = plugin.binding.reader(valueArgs);
     const constraint = plugin.binding.constraint ? plugin.binding.constraint(valueArgs) : void 0;
@@ -3280,12 +3280,12 @@
       initialValue: result.initialValue,
       params: result.params
     };
-    const params = parseRecord(args.params, (p3) => ({
-      bufferSize: p3.optional.number,
-      disabled: p3.optional.boolean,
-      hidden: p3.optional.boolean,
-      interval: p3.optional.number,
-      label: p3.optional.string
+    const params = parseRecord(args.params, (p4) => ({
+      bufferSize: p4.optional.number,
+      disabled: p4.optional.boolean,
+      hidden: p4.optional.boolean,
+      interval: p4.optional.number,
+      label: p4.optional.string
     }));
     const reader = plugin.binding.reader(bindingArgs);
     const bufferSize = (_b = (_a = params === null || params === void 0 ? void 0 : params.bufferSize) !== null && _a !== void 0 ? _a : plugin.binding.defaultBufferSize && plugin.binding.defaultBufferSize(result.params)) !== null && _b !== void 0 ? _b : 1;
@@ -3337,8 +3337,8 @@
       ButtonBladePlugin,
       FolderBladePlugin,
       TabBladePlugin
-    ].forEach((p3) => {
-      pool.register("core", p3);
+    ].forEach((p4) => {
+      pool.register("core", p4);
     });
     return pool;
   }
@@ -3917,8 +3917,8 @@
           this.view.valueElement.appendChild(this.valueController.view.element);
         }
         importProps(state) {
-          return importBladeState(state, null, (p3) => ({
-            label: p3.optional.string
+          return importBladeState(state, null, (p4) => ({
+            label: p4.optional.string
           }), (result) => {
             this.props.set("label", result.label);
             return true;
@@ -3964,9 +3964,9 @@
           this.viewProps.set("parent", this.parent_ ? this.parent_.viewProps : null);
         }
         importState(state) {
-          return importBladeState(state, null, (p3) => ({
-            disabled: p3.required.boolean,
-            hidden: p3.required.boolean
+          return importBladeState(state, null, (p4) => ({
+            disabled: p4.required.boolean,
+            hidden: p4.required.boolean
           }), (result) => {
             this.viewProps.importState(result);
             return true;
@@ -4000,8 +4000,8 @@
           return importBladeState(state, (s3) => {
             var _a, _b, _c;
             return super.importState(s3) && this.labelController.importProps(s3) && ((_c = (_b = (_a = this.valueController).importProps) === null || _b === void 0 ? void 0 : _b.call(_a, state)) !== null && _c !== void 0 ? _c : true);
-          }, (p3) => ({
-            value: p3.optional.raw
+          }, (p4) => ({
+            value: p4.optional.raw
           }), (result) => {
             if (result.value) {
               this.value.rawValue = result.value;
@@ -4023,8 +4023,8 @@
           return importBladeState(
             state,
             (_s) => super.importState(excludeValue(state)),
-            (p3) => ({
-              tag: p3.optional.string
+            (p4) => ({
+              tag: p4.optional.string
             }),
             (result) => {
               this.tag = result.tag;
@@ -4044,9 +4044,9 @@
       };
       InputBindingController = class extends BindingController {
         importState(state) {
-          return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
-            binding: p3.required.object({
-              value: p3.required.raw
+          return importBladeState(state, (s3) => super.importState(s3), (p4) => ({
+            binding: p4.required.object({
+              value: p4.required.raw
             })
           }), (result) => {
             this.value.binding.inject(result.binding.value);
@@ -4153,8 +4153,8 @@
           this.view.buttonElement.addEventListener("click", this.onClick_);
         }
         importProps(state) {
-          return importBladeState(state, null, (p3) => ({
-            title: p3.optional.string
+          return importBladeState(state, null, (p4) => ({
+            title: p4.optional.string
           }), (result) => {
             this.props.set("title", result.title);
             return true;
@@ -4216,10 +4216,10 @@
         id: "button",
         type: "blade",
         accept(params) {
-          const result = parseRecord(params, (p3) => ({
-            title: p3.required.string,
-            view: p3.required.constant("button"),
-            label: p3.optional.string
+          const result = parseRecord(params, (p4) => ({
+            title: p4.required.string,
+            view: p4.required.constant("button"),
+            label: p4.optional.string
           }));
           return result ? { params: result } : null;
         },
@@ -4324,8 +4324,8 @@
           this.rackController = config.rackController;
         }
         importState(state) {
-          return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
-            children: p3.required.array(p3.required.raw)
+          return importBladeState(state, (s3) => super.importState(s3), (p4) => ({
+            children: p4.required.array(p4.required.raw)
           }), (result) => {
             return this.rackController.rack.children.every((c3, index) => {
               return c3.importState(result.children[index]);
@@ -4789,9 +4789,9 @@
           return this.view.element.ownerDocument;
         }
         importState(state) {
-          return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
-            expanded: p3.required.boolean,
-            title: p3.optional.string
+          return importBladeState(state, (s3) => super.importState(s3), (p4) => ({
+            expanded: p4.required.boolean,
+            title: p4.optional.string
           }), (result) => {
             this.foldable.set("expanded", result.expanded);
             this.props.set("title", result.title);
@@ -4812,10 +4812,10 @@
         id: "folder",
         type: "blade",
         accept(params) {
-          const result = parseRecord(params, (p3) => ({
-            title: p3.required.string,
-            view: p3.required.constant("folder"),
-            expanded: p3.optional.boolean
+          const result = parseRecord(params, (p4) => ({
+            title: p4.required.string,
+            view: p4.required.constant("folder"),
+            expanded: p4.optional.boolean
           }));
           return result ? { params: result } : null;
         },
@@ -4996,9 +4996,9 @@
           return this.ic_;
         }
         importState(state) {
-          return importBladeState(state, (s3) => super.importState(s3), (p3) => ({
-            selected: p3.required.boolean,
-            title: p3.required.string
+          return importBladeState(state, (s3) => super.importState(s3), (p4) => ({
+            selected: p4.required.boolean,
+            title: p4.required.string
           }), (result) => {
             this.ic_.props.set("selected", result.selected);
             this.ic_.props.set("title", result.title);
@@ -5225,9 +5225,9 @@
         id: "tab",
         type: "blade",
         accept(params) {
-          const result = parseRecord(params, (p3) => ({
-            pages: p3.required.array(p3.required.object({ title: p3.required.string })),
-            view: p3.required.constant("tab")
+          const result = parseRecord(params, (p4) => ({
+            pages: p4.required.array(p4.required.object({ title: p4.required.string })),
+            view: p4.required.constant("tab")
           }));
           if (!result || result.pages.length === 0) {
             return null;
@@ -5239,12 +5239,12 @@
             blade: args.blade,
             viewProps: args.viewProps
           });
-          args.params.pages.forEach((p3) => {
+          args.params.pages.forEach((p4) => {
             const pc = new TabPageController(args.document, {
               blade: createBlade(),
               itemProps: ValueMap.fromObject({
                 selected: false,
-                title: p3.title
+                title: p4.title
               }),
               props: ValueMap.fromObject({
                 selected: false
@@ -5419,13 +5419,13 @@
           });
           this.view.selectElement.addEventListener("change", this.onSelectChange_);
         }
-        onSelectChange_(e2) {
-          const selectElem = forceCast(e2.currentTarget);
+        onSelectChange_(e3) {
+          const selectElem = forceCast(e3.currentTarget);
           this.value.rawValue = this.props.get("options")[selectElem.selectedIndex].value;
         }
         importProps(state) {
-          return importBladeState(state, null, (p3) => ({
-            options: p3.required.custom(parseListOptions)
+          return importBladeState(state, null, (p4) => ({
+            options: p4.required.custom(parseListOptions)
           }), (result) => {
             this.props.set("options", normalizeListOptions(result.options));
             return true;
@@ -5497,8 +5497,8 @@
           });
           this.view.inputElement.addEventListener("change", this.onInputChange_);
         }
-        onInputChange_(e2) {
-          const inputElem = forceCast(e2.currentTarget);
+        onInputChange_(e3) {
+          const inputElem = forceCast(e3.currentTarget);
           const value = inputElem.value;
           const parsedValue = this.parser_(value);
           if (!isEmpty(parsedValue)) {
@@ -5731,8 +5731,8 @@
           }
           return v3;
         }
-        onInputChange_(e2) {
-          const inputElem = forceCast(e2.currentTarget);
+        onInputChange_(e3) {
+          const inputElem = forceCast(e3.currentTarget);
           const value = inputElem.value;
           const parsedValue = this.parser_(value);
           if (!isEmpty(parsedValue)) {
@@ -5817,8 +5817,8 @@
           this.update_();
         }
         update_() {
-          const p3 = constrainRange(mapRange(this.value.rawValue, this.props_.get("min"), this.props_.get("max"), 0, 100), 0, 100);
-          this.knobElement.style.width = `${p3}%`;
+          const p4 = constrainRange(mapRange(this.value.rawValue, this.props_.get("min"), this.props_.get("max"), 0, 100), 0, 100);
+          this.knobElement.style.width = `${p4}%`;
         }
         onChange_() {
           this.update_();
@@ -5929,9 +5929,9 @@
           return this.textC_;
         }
         importProps(state) {
-          return importBladeState(state, null, (p3) => ({
-            max: p3.required.number,
-            min: p3.required.number
+          return importBladeState(state, null, (p4) => ({
+            max: p4.required.number,
+            min: p4.required.number
           }), (result) => {
             const sliderProps = this.sliderC_.props;
             sliderProps.set("max", result.max);
@@ -5993,8 +5993,8 @@
           });
           this.view.inputElement.addEventListener("change", this.onInputChange_);
         }
-        onInputChange_(e2) {
-          const inputElem = forceCast(e2.currentTarget);
+        onInputChange_(e3) {
+          const inputElem = forceCast(e3.currentTarget);
           this.value.rawValue = inputElem.checked;
         }
       };
@@ -6005,9 +6005,9 @@
           if (typeof value !== "boolean") {
             return null;
           }
-          const result = parseRecord(params, (p3) => ({
-            options: p3.optional.custom(parseListOptions),
-            readonly: p3.optional.constant(false)
+          const result = parseRecord(params, (p4) => ({
+            options: p4.optional.custom(parseListOptions),
+            readonly: p4.optional.constant(false)
           }));
           return result ? {
             initialValue: value,
@@ -6078,7 +6078,7 @@
       };
       MODE_CONVERTER_MAP = {
         hsl: {
-          hsl: (h3, s3, l4) => [h3, s3, l4],
+          hsl: (h3, s3, l5) => [h3, s3, l5],
           hsv: hslToHsvInt,
           rgb: hslToRgbInt
         },
@@ -6812,11 +6812,11 @@
             connectValues({
               primary: this.value,
               secondary: this.alphaIcs_.text.value,
-              forward: (p3) => p3.getComponents()[3],
-              backward: (p3, s3) => {
-                const comps = p3.getComponents();
+              forward: (p4) => p4.getComponents()[3],
+              backward: (p4, s3) => {
+                const comps = p4.getComponents();
                 comps[3] = s3;
-                return new IntColor(comps, p3.mode);
+                return new IntColor(comps, p4.mode);
               }
             });
           }
@@ -6929,7 +6929,7 @@
             connectValues({
               primary: this.foldable_.value("expanded"),
               secondary: this.popC_.shows,
-              forward: (p3) => p3,
+              forward: (p4) => p4,
               backward: (_2, s3) => s3
             });
           } else if (this.view.pickerElement) {
@@ -6940,12 +6940,12 @@
         get textController() {
           return this.textC_;
         }
-        onButtonBlur_(e2) {
+        onButtonBlur_(e3) {
           if (!this.popC_) {
             return;
           }
           const elem = this.view.element;
-          const nextTarget = forceCast(e2.relatedTarget);
+          const nextTarget = forceCast(e3.relatedTarget);
           if (!nextTarget || !elem.contains(nextTarget)) {
             this.popC_.shows.rawValue = false;
           }
@@ -7140,9 +7140,9 @@
             connectValues({
               primary: this.value,
               secondary: c3.value,
-              forward: (p3) => config.assembly.toComponents(p3)[index],
-              backward: (p3, s3) => {
-                const comps = config.assembly.toComponents(p3);
+              forward: (p4) => config.assembly.toComponents(p4)[index],
+              backward: (p4, s3) => {
+                const comps = config.assembly.toComponents(p4);
                 comps[index] = s3;
                 return config.assembly.fromComponents(comps);
               }
@@ -7177,7 +7177,7 @@
           if (typeof value !== "number") {
             return null;
           }
-          const result = parseRecord(params, (p3) => Object.assign(Object.assign({}, createNumberTextInputParamsParser(p3)), { options: p3.optional.custom(parseListOptions), readonly: p3.optional.constant(false) }));
+          const result = parseRecord(params, (p4) => Object.assign(Object.assign({}, createNumberTextInputParamsParser(p4)), { options: p4.optional.custom(parseListOptions), readonly: p4.optional.constant(false) }));
           return result ? {
             initialValue: value,
             params: result
@@ -7256,7 +7256,7 @@
         }
       };
       Point2dAssembly = {
-        toComponents: (p3) => p3.getComponents(),
+        toComponents: (p4) => p4.getComponents(),
         fromComponents: (comps) => new Point2d(...comps)
       };
       cn$5 = ClassName("p2d");
@@ -7488,7 +7488,7 @@
             connectValues({
               primary: this.foldable_.value("expanded"),
               secondary: this.popC_.shows,
-              forward: (p3) => p3,
+              forward: (p4) => p4,
               backward: (_2, s3) => s3
             });
           } else if (this.view.pickerElement) {
@@ -7499,12 +7499,12 @@
         get textController() {
           return this.textC_;
         }
-        onPadButtonBlur_(e2) {
+        onPadButtonBlur_(e3) {
           if (!this.popC_) {
             return;
           }
           const elem = this.view.element;
-          const nextTarget = forceCast(e2.relatedTarget);
+          const nextTarget = forceCast(e3.relatedTarget);
           if (!nextTarget || !elem.contains(nextTarget)) {
             this.popC_.shows.rawValue = false;
           }
@@ -7548,7 +7548,7 @@
           if (!Point2d.isObject(value)) {
             return null;
           }
-          const result = parseRecord(params, (p3) => Object.assign(Object.assign({}, createPointDimensionParser(p3)), { expanded: p3.optional.boolean, picker: p3.optional.custom(parsePickerLayout), readonly: p3.optional.constant(false), x: p3.optional.custom(parsePointDimensionParams), y: p3.optional.object(Object.assign(Object.assign({}, createPointDimensionParser(p3)), { inverted: p3.optional.boolean })) }));
+          const result = parseRecord(params, (p4) => Object.assign(Object.assign({}, createPointDimensionParser(p4)), { expanded: p4.optional.boolean, picker: p4.optional.custom(parsePickerLayout), readonly: p4.optional.constant(false), x: p4.optional.custom(parsePointDimensionParams), y: p4.optional.object(Object.assign(Object.assign({}, createPointDimensionParser(p4)), { inverted: p4.optional.boolean })) }));
           return result ? {
             initialValue: value,
             params: result
@@ -7618,7 +7618,7 @@
         }
       };
       Point3dAssembly = {
-        toComponents: (p3) => p3.getComponents(),
+        toComponents: (p4) => p4.getComponents(),
         fromComponents: (comps) => new Point3d(...comps)
       };
       Point3dInputPlugin = createPlugin({
@@ -7628,7 +7628,7 @@
           if (!Point3d.isObject(value)) {
             return null;
           }
-          const result = parseRecord(params, (p3) => Object.assign(Object.assign({}, createPointDimensionParser(p3)), { readonly: p3.optional.constant(false), x: p3.optional.custom(parsePointDimensionParams), y: p3.optional.custom(parsePointDimensionParams), z: p3.optional.custom(parsePointDimensionParams) }));
+          const result = parseRecord(params, (p4) => Object.assign(Object.assign({}, createPointDimensionParser(p4)), { readonly: p4.optional.constant(false), x: p4.optional.custom(parsePointDimensionParams), y: p4.optional.custom(parsePointDimensionParams), z: p4.optional.custom(parsePointDimensionParams) }));
           return result ? {
             initialValue: value,
             params: result
@@ -7696,7 +7696,7 @@
         }
       };
       Point4dAssembly = {
-        toComponents: (p3) => p3.getComponents(),
+        toComponents: (p4) => p4.getComponents(),
         fromComponents: (comps) => new Point4d(...comps)
       };
       Point4dInputPlugin = createPlugin({
@@ -7706,7 +7706,7 @@
           if (!Point4d.isObject(value)) {
             return null;
           }
-          const result = parseRecord(params, (p3) => Object.assign(Object.assign({}, createPointDimensionParser(p3)), { readonly: p3.optional.constant(false), w: p3.optional.custom(parsePointDimensionParams), x: p3.optional.custom(parsePointDimensionParams), y: p3.optional.custom(parsePointDimensionParams), z: p3.optional.custom(parsePointDimensionParams) }));
+          const result = parseRecord(params, (p4) => Object.assign(Object.assign({}, createPointDimensionParser(p4)), { readonly: p4.optional.constant(false), w: p4.optional.custom(parsePointDimensionParams), x: p4.optional.custom(parsePointDimensionParams), y: p4.optional.custom(parsePointDimensionParams), z: p4.optional.custom(parsePointDimensionParams) }));
           return result ? {
             initialValue: value,
             params: result
@@ -7750,9 +7750,9 @@
           if (typeof value !== "string") {
             return null;
           }
-          const result = parseRecord(params, (p3) => ({
-            readonly: p3.optional.constant(false),
-            options: p3.optional.custom(parseListOptions)
+          const result = parseRecord(params, (p4) => ({
+            readonly: p4.optional.constant(false),
+            options: p4.optional.custom(parseListOptions)
           }));
           return result ? {
             initialValue: value,
@@ -7898,9 +7898,9 @@
           if (typeof value !== "boolean") {
             return null;
           }
-          const result = parseRecord(params, (p3) => ({
-            readonly: p3.required.constant(true),
-            rows: p3.optional.number
+          const result = parseRecord(params, (p4) => ({
+            readonly: p4.required.constant(true),
+            rows: p4.optional.number
           }));
           return result ? {
             initialValue: value,
@@ -8041,9 +8041,9 @@
           }
         }
         importProps(state) {
-          return importBladeState(state, null, (p3) => ({
-            max: p3.required.number,
-            min: p3.required.number
+          return importBladeState(state, null, (p4) => ({
+            max: p4.required.number,
+            min: p4.required.number
           }), (result) => {
             this.props.set("max", result.max);
             this.props.set("min", result.min);
@@ -8084,13 +8084,13 @@
           if (typeof value !== "number") {
             return null;
           }
-          const result = parseRecord(params, (p3) => ({
-            format: p3.optional.function,
-            max: p3.optional.number,
-            min: p3.optional.number,
-            readonly: p3.required.constant(true),
-            rows: p3.optional.number,
-            view: p3.optional.string
+          const result = parseRecord(params, (p4) => ({
+            format: p4.optional.function,
+            max: p4.optional.number,
+            min: p4.optional.number,
+            readonly: p4.required.constant(true),
+            rows: p4.optional.number,
+            view: p4.optional.string
           }));
           return result ? {
             initialValue: value,
@@ -8121,10 +8121,10 @@
           if (typeof value !== "string") {
             return null;
           }
-          const result = parseRecord(params, (p3) => ({
-            multiline: p3.optional.boolean,
-            readonly: p3.required.constant(true),
-            rows: p3.optional.number
+          const result = parseRecord(params, (p4) => ({
+            multiline: p4.optional.boolean,
+            readonly: p4.required.constant(true),
+            rows: p4.optional.number
           }));
           return result ? {
             initialValue: value,
@@ -8458,11 +8458,11 @@
           type: "blade",
           core: VERSION$1,
           accept(params) {
-            const result = parseRecord(params, (p3) => ({
-              options: p3.required.custom(parseListOptions),
-              value: p3.required.raw,
-              view: p3.required.constant("list"),
-              label: p3.optional.string
+            const result = parseRecord(params, (p4) => ({
+              options: p4.required.custom(parseListOptions),
+              value: p4.required.raw,
+              view: p4.required.constant("list"),
+              label: p4.optional.string
             }));
             return result ? { params: result } : null;
           },
@@ -8546,8 +8546,8 @@
         type: "blade",
         core: VERSION$1,
         accept(params) {
-          const result = parseRecord(params, (p3) => ({
-            view: p3.required.constant("separator")
+          const result = parseRecord(params, (p4) => ({
+            view: p4.required.constant("separator")
           }));
           return result ? { params: result } : null;
         },
@@ -8569,13 +8569,13 @@
         type: "blade",
         core: VERSION$1,
         accept(params) {
-          const result = parseRecord(params, (p3) => ({
-            max: p3.required.number,
-            min: p3.required.number,
-            view: p3.required.constant("slider"),
-            format: p3.optional.function,
-            label: p3.optional.string,
-            value: p3.optional.number
+          const result = parseRecord(params, (p4) => ({
+            max: p4.required.number,
+            min: p4.required.number,
+            view: p4.required.constant("slider"),
+            format: p4.optional.function,
+            label: p4.optional.string,
+            value: p4.optional.number
           }));
           return result ? { params: result } : null;
         },
@@ -8621,12 +8621,12 @@
           type: "blade",
           core: VERSION$1,
           accept(params) {
-            const result = parseRecord(params, (p3) => ({
-              parse: p3.required.function,
-              value: p3.required.raw,
-              view: p3.required.constant("text"),
-              format: p3.optional.function,
-              label: p3.optional.string
+            const result = parseRecord(params, (p4) => ({
+              parse: p4.required.function,
+              value: p4.required.raw,
+              view: p4.required.constant("text"),
+              format: p4.optional.function,
+              label: p4.optional.string
             }));
             return result ? { params: result } : null;
           },
@@ -8709,8 +8709,8 @@
             embedStyle(this.document, `plugin-${bundle.id}`, bundle.css);
           }
           const plugins = "plugin" in bundle ? [bundle.plugin] : "plugins" in bundle ? bundle.plugins : [];
-          plugins.forEach((p3) => {
-            this.pool_.register(bundle.id, p3);
+          plugins.forEach((p4) => {
+            this.pool_.register(bundle.id, p4);
           });
         }
         setUpDefaultPlugins_() {
@@ -9298,8 +9298,8 @@
       if (nativeEventName !== eventNameToWrap) {
         return nativeAddEventListener.apply(this, arguments);
       }
-      const wrappedCallback = (e2) => {
-        const modifiedEvent = wrapper(e2);
+      const wrappedCallback = (e3) => {
+        const modifiedEvent = wrapper(e3);
         if (modifiedEvent) {
           if (cb.handleEvent) {
             cb.handleEvent(modifiedEvent);
@@ -9595,9 +9595,9 @@
       logging("chrome: " + JSON.stringify(constraints));
       return func(constraints);
     };
-    const shimError_ = function(e2) {
+    const shimError_ = function(e3) {
       if (browserDetails.version >= 64) {
-        return e2;
+        return e3;
       }
       return {
         name: {
@@ -9612,9 +9612,9 @@
           TabCaptureError: "AbortError",
           ScreenCaptureError: "AbortError",
           DeviceCaptureError: "AbortError"
-        }[e2.name] || e2.name,
-        message: e2.message,
-        constraint: e2.constraint || e2.constraintName,
+        }[e3.name] || e3.name,
+        message: e3.message,
+        constraint: e3.constraint || e3.constraintName,
         toString() {
           return this.name + (this.message && ": ") + this.message;
         }
@@ -9622,9 +9622,9 @@
     };
     const getUserMedia_ = function(constraints, onSuccess, onError) {
       shimConstraints_(constraints, (c3) => {
-        navigator2.webkitGetUserMedia(c3, onSuccess, (e2) => {
+        navigator2.webkitGetUserMedia(c3, onSuccess, (e3) => {
           if (onError) {
-            onError(shimError_(e2));
+            onError(shimError_(e3));
           }
         });
       });
@@ -9641,7 +9641,7 @@
             throw new DOMException("", "NotFoundError");
           }
           return stream;
-        }, (e2) => Promise.reject(shimError_(e2))));
+        }, (e3) => Promise.reject(shimError_(e3))));
       };
     }
   }
@@ -9718,11 +9718,11 @@
         get() {
           return this._ontrack;
         },
-        set(f3) {
+        set(f4) {
           if (this._ontrack) {
             this.removeEventListener("track", this._ontrack);
           }
-          this.addEventListener("track", this._ontrack = f3);
+          this.addEventListener("track", this._ontrack = f4);
         },
         enumerable: true,
         configurable: true
@@ -9730,8 +9730,8 @@
       const origSetRemoteDescription = window2.RTCPeerConnection.prototype.setRemoteDescription;
       window2.RTCPeerConnection.prototype.setRemoteDescription = function setRemoteDescription() {
         if (!this._ontrackpoly) {
-          this._ontrackpoly = (e2) => {
-            e2.stream.addEventListener("addtrack", (te2) => {
+          this._ontrackpoly = (e3) => {
+            e3.stream.addEventListener("addtrack", (te2) => {
               let receiver;
               if (window2.RTCPeerConnection.prototype.getReceivers) {
                 receiver = this.getReceivers().find((r2) => r2.track && r2.track.id === te2.track.id);
@@ -9742,10 +9742,10 @@
               event.track = te2.track;
               event.receiver = receiver;
               event.transceiver = { receiver };
-              event.streams = [e2.stream];
+              event.streams = [e3.stream];
               this.dispatchEvent(event);
             });
-            e2.stream.getTracks().forEach((track) => {
+            e3.stream.getTracks().forEach((track) => {
               let receiver;
               if (window2.RTCPeerConnection.prototype.getReceivers) {
                 receiver = this.getReceivers().find((r2) => r2.track && r2.track.id === track.id);
@@ -9756,7 +9756,7 @@
               event.track = track;
               event.receiver = receiver;
               event.transceiver = { receiver };
-              event.streams = [e2.stream];
+              event.streams = [e3.stream];
               this.dispatchEvent(event);
             });
           };
@@ -9765,15 +9765,15 @@
         return origSetRemoteDescription.apply(this, arguments);
       };
     } else {
-      wrapPeerConnectionEvent(window2, "track", (e2) => {
-        if (!e2.transceiver) {
+      wrapPeerConnectionEvent(window2, "track", (e3) => {
+        if (!e3.transceiver) {
           Object.defineProperty(
-            e2,
+            e3,
             "transceiver",
-            { value: { receiver: e2.receiver } }
+            { value: { receiver: e3.receiver } }
           );
         }
-        return e2;
+        return e3;
       });
     }
   }
@@ -9953,9 +9953,9 @@
           return receivers;
         };
       }
-      wrapPeerConnectionEvent(window2, "track", (e2) => {
-        e2.receiver._pc = e2.srcElement;
-        return e2;
+      wrapPeerConnectionEvent(window2, "track", (e3) => {
+        e3.receiver._pc = e3.srcElement;
+        return e3;
       });
       window2.RTCRtpReceiver.prototype.getStats = function getStats() {
         const receiver = this;
@@ -10279,14 +10279,14 @@
     }
   }
   function fixNegotiationNeeded(window2, browserDetails) {
-    wrapPeerConnectionEvent(window2, "negotiationneeded", (e2) => {
-      const pc = e2.target;
+    wrapPeerConnectionEvent(window2, "negotiationneeded", (e3) => {
+      const pc = e3.target;
       if (browserDetails.version < 72 || pc.getConfiguration && pc.getConfiguration().sdpSemantics === "plan-b") {
         if (pc.signalingState !== "stable") {
           return;
         }
       }
-      return e2;
+      return e3;
     });
   }
   var init_chrome_shim = __esm({
@@ -10441,9 +10441,9 @@
             stats.forEach((stat) => {
               stat.type = modernStatsTypes[stat.type] || stat.type;
             });
-          } catch (e2) {
-            if (e2.name !== "TypeError") {
-              throw e2;
+          } catch (e3) {
+            if (e3.name !== "TypeError") {
+              throw e3;
             }
             stats.forEach((stat, i2) => {
               stats.set(i2, Object.assign({}, stat, {
@@ -10498,9 +10498,9 @@
         return receivers;
       };
     }
-    wrapPeerConnectionEvent(window2, "track", (e2) => {
-      e2.receiver._pc = e2.srcElement;
-      return e2;
+    wrapPeerConnectionEvent(window2, "track", (e3) => {
+      e3.receiver._pc = e3.srcElement;
+      return e3;
     });
     window2.RTCRtpReceiver.prototype.getStats = function getStats() {
       return this._pc.getStats(this.track);
@@ -10726,14 +10726,14 @@
         get() {
           return this._onaddstream;
         },
-        set(f3) {
+        set(f4) {
           if (this._onaddstream) {
             this.removeEventListener("addstream", this._onaddstream);
             this.removeEventListener("track", this._onaddstreampoly);
           }
-          this.addEventListener("addstream", this._onaddstream = f3);
-          this.addEventListener("track", this._onaddstreampoly = (e2) => {
-            e2.streams.forEach((stream) => {
+          this.addEventListener("addstream", this._onaddstream = f4);
+          this.addEventListener("track", this._onaddstreampoly = (e3) => {
+            e3.streams.forEach((stream) => {
               if (!this._remoteStreams) {
                 this._remoteStreams = [];
               }
@@ -10752,8 +10752,8 @@
       window2.RTCPeerConnection.prototype.setRemoteDescription = function setRemoteDescription() {
         const pc = this;
         if (!this._onaddstreampoly) {
-          this.addEventListener("track", this._onaddstreampoly = function(e2) {
-            e2.streams.forEach((stream) => {
+          this.addEventListener("track", this._onaddstreampoly = function(e3) {
+            e3.streams.forEach((stream) => {
               if (!pc._remoteStreams) {
                 pc._remoteStreams = [];
               }
@@ -11616,32 +11616,32 @@
       return new NativeRTCIceCandidate(args);
     };
     window2.RTCIceCandidate.prototype = NativeRTCIceCandidate.prototype;
-    wrapPeerConnectionEvent(window2, "icecandidate", (e2) => {
-      if (e2.candidate) {
-        Object.defineProperty(e2, "candidate", {
-          value: new window2.RTCIceCandidate(e2.candidate),
+    wrapPeerConnectionEvent(window2, "icecandidate", (e3) => {
+      if (e3.candidate) {
+        Object.defineProperty(e3, "candidate", {
+          value: new window2.RTCIceCandidate(e3.candidate),
           writable: "false"
         });
       }
-      return e2;
+      return e3;
     });
   }
   function shimRTCIceCandidateRelayProtocol(window2) {
     if (!window2.RTCIceCandidate || window2.RTCIceCandidate && "relayProtocol" in window2.RTCIceCandidate.prototype) {
       return;
     }
-    wrapPeerConnectionEvent(window2, "icecandidate", (e2) => {
-      if (e2.candidate) {
-        const parsedCandidate = import_sdp.default.parseCandidate(e2.candidate.candidate);
+    wrapPeerConnectionEvent(window2, "icecandidate", (e3) => {
+      if (e3.candidate) {
+        const parsedCandidate = import_sdp.default.parseCandidate(e3.candidate.candidate);
         if (parsedCandidate.type === "relay") {
-          e2.candidate.relayProtocol = {
+          e3.candidate.relayProtocol = {
             0: "tls",
             1: "tcp",
             2: "udp"
           }[parsedCandidate.priority >> 24];
         }
       }
-      return e2;
+      return e3;
     });
   }
   function shimMaxMessageSize(window2, browserDetails) {
@@ -11766,9 +11766,9 @@
       wrapDcSend(dataChannel, this);
       return dataChannel;
     };
-    wrapPeerConnectionEvent(window2, "datachannel", (e2) => {
-      wrapDcSend(e2.channel, e2.target);
-      return e2;
+    wrapPeerConnectionEvent(window2, "datachannel", (e3) => {
+      wrapDcSend(e3.channel, e3.target);
+      return e3;
     });
   }
   function shimConnectionState(window2) {
@@ -11812,14 +11812,14 @@
       const origMethod = proto[method];
       proto[method] = function() {
         if (!this._connectionstatechangepoly) {
-          this._connectionstatechangepoly = (e2) => {
-            const pc = e2.target;
+          this._connectionstatechangepoly = (e3) => {
+            const pc = e3.target;
             if (pc._lastConnectionState !== pc.connectionState) {
               pc._lastConnectionState = pc.connectionState;
-              const newEvent = new Event("connectionstatechange", e2);
+              const newEvent = new Event("connectionstatechange", e3);
               pc.dispatchEvent(newEvent);
             }
-            return e2;
+            return e3;
           };
           this.addEventListener(
             "iceconnectionstatechange",
@@ -12459,47 +12459,47 @@
         if (length === 4)
           return fromCharCode(a3, b3, c3, d3);
         else {
-          let e2 = src[position++];
-          if ((e2 & 128) > 0) {
+          let e3 = src[position++];
+          if ((e3 & 128) > 0) {
             position -= 5;
             return;
           }
-          return fromCharCode(a3, b3, c3, d3, e2);
+          return fromCharCode(a3, b3, c3, d3, e3);
         }
       } else if (length < 8) {
-        let e2 = src[position++];
-        let f3 = src[position++];
-        if ((e2 & 128) > 0 || (f3 & 128) > 0) {
+        let e3 = src[position++];
+        let f4 = src[position++];
+        if ((e3 & 128) > 0 || (f4 & 128) > 0) {
           position -= 6;
           return;
         }
         if (length < 7)
-          return fromCharCode(a3, b3, c3, d3, e2, f3);
+          return fromCharCode(a3, b3, c3, d3, e3, f4);
         let g3 = src[position++];
         if ((g3 & 128) > 0) {
           position -= 7;
           return;
         }
-        return fromCharCode(a3, b3, c3, d3, e2, f3, g3);
+        return fromCharCode(a3, b3, c3, d3, e3, f4, g3);
       } else {
-        let e2 = src[position++];
-        let f3 = src[position++];
+        let e3 = src[position++];
+        let f4 = src[position++];
         let g3 = src[position++];
         let h3 = src[position++];
-        if ((e2 & 128) > 0 || (f3 & 128) > 0 || (g3 & 128) > 0 || (h3 & 128) > 0) {
+        if ((e3 & 128) > 0 || (f4 & 128) > 0 || (g3 & 128) > 0 || (h3 & 128) > 0) {
           position -= 8;
           return;
         }
         if (length < 10) {
           if (length === 8)
-            return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3);
+            return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3);
           else {
             let i2 = src[position++];
             if ((i2 & 128) > 0) {
               position -= 9;
               return;
             }
-            return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3, i2);
+            return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3, i2);
           }
         } else if (length < 12) {
           let i2 = src[position++];
@@ -12509,32 +12509,32 @@
             return;
           }
           if (length < 11)
-            return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3, i2, j3);
+            return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3, i2, j3);
           let k3 = src[position++];
           if ((k3 & 128) > 0) {
             position -= 11;
             return;
           }
-          return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3, i2, j3, k3);
+          return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3, i2, j3, k3);
         } else {
           let i2 = src[position++];
           let j3 = src[position++];
           let k3 = src[position++];
-          let l4 = src[position++];
-          if ((i2 & 128) > 0 || (j3 & 128) > 0 || (k3 & 128) > 0 || (l4 & 128) > 0) {
+          let l5 = src[position++];
+          if ((i2 & 128) > 0 || (j3 & 128) > 0 || (k3 & 128) > 0 || (l5 & 128) > 0) {
             position -= 12;
             return;
           }
           if (length < 14) {
             if (length === 12)
-              return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3, i2, j3, k3, l4);
+              return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3, i2, j3, k3, l5);
             else {
               let m3 = src[position++];
               if ((m3 & 128) > 0) {
                 position -= 13;
                 return;
               }
-              return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3, i2, j3, k3, l4, m3);
+              return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3, i2, j3, k3, l5, m3);
             }
           } else {
             let m3 = src[position++];
@@ -12544,13 +12544,13 @@
               return;
             }
             if (length < 15)
-              return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3, i2, j3, k3, l4, m3, n2);
+              return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3, i2, j3, k3, l5, m3, n2);
             let o2 = src[position++];
             if ((o2 & 128) > 0) {
               position -= 15;
               return;
             }
-            return fromCharCode(a3, b3, c3, d3, e2, f3, g3, h3, i2, j3, k3, l4, m3, n2, o2);
+            return fromCharCode(a3, b3, c3, d3, e3, f4, g3, h3, i2, j3, k3, l5, m3, n2, o2);
           }
         }
       }
@@ -12905,7 +12905,7 @@
       };
       currentExtensions[2] = (buffer) => {
         let value = BigInt(0);
-        for (let i2 = 0, l4 = buffer.byteLength; i2 < l4; i2++) {
+        for (let i2 = 0, l5 = buffer.byteLength; i2 < l5; i2++) {
           value = BigInt(buffer[i2]) + value << BigInt(8);
         }
         return value;
@@ -13136,7 +13136,7 @@
       case "object":
         if (value) {
           if (value instanceof Array) {
-            for (let i2 = 0, l4 = value.length; i2 < l4; i2++) {
+            for (let i2 = 0, l5 = value.length; i2 < l5; i2++) {
               findRepetitiveStrings(value[i2], packedValues2);
             }
           } else {
@@ -13277,7 +13277,7 @@
           let sharedPackedObjectMap2;
           if (sharedValues) {
             sharedPackedObjectMap2 = /* @__PURE__ */ Object.create(null);
-            for (let i2 = 0, l4 = sharedValues.length; i2 < l4; i2++) {
+            for (let i2 = 0, l5 = sharedValues.length; i2 < l5; i2++) {
               sharedPackedObjectMap2[sharedValues[i2]] = i2;
             }
           }
@@ -13328,7 +13328,7 @@
                 let sharedValues2 = encoder.sharedValues = sharedData.packedValues;
                 if (sharedValues2) {
                   sharedPackedObjectMap2 = {};
-                  for (let i2 = 0, l4 = sharedValues2.length; i2 < l4; i2++)
+                  for (let i2 = 0, l5 = sharedValues2.length; i2 < l5; i2++)
                     sharedPackedObjectMap2[sharedValues2[i2]] = i2;
                 }
               }
@@ -13342,7 +13342,7 @@
                   if (!keys)
                     continue;
                   let nextTransition, transition = sharedStructures.transitions;
-                  for (let j3 = 0, l4 = keys.length; j3 < l4; j3++) {
+                  for (let j3 = 0, l5 = keys.length; j3 < l5; j3++) {
                     if (transition[RECORD_SYMBOL] === void 0)
                       transition[RECORD_SYMBOL] = i2;
                     let key = keys[j3];
@@ -13379,7 +13379,7 @@
                 writeArrayHeader(0);
                 writeArrayHeader(0);
                 packedObjectMap2 = Object.create(sharedPackedObjectMap2 || null);
-                for (let i2 = 0, l4 = valuesArray.length; i2 < l4; i2++) {
+                for (let i2 = 0, l5 = valuesArray.length; i2 < l5; i2++) {
                   packedObjectMap2[valuesArray[i2]] = i2;
                 }
               }
@@ -13421,7 +13421,7 @@
                   if (recordIdsToRemove.length > 0)
                     recordIdsToRemove = [];
                 } else if (recordIdsToRemove.length > 0 && !isSequential) {
-                  for (let i2 = 0, l4 = recordIdsToRemove.length; i2 < l4; i2++) {
+                  for (let i2 = 0, l5 = recordIdsToRemove.length; i2 < l5; i2++) {
                     recordIdsToRemove[i2][RECORD_SYMBOL] = void 0;
                   }
                   recordIdsToRemove = [];
@@ -13695,7 +13695,7 @@
                     }
                   }
                 } else {
-                  for (let i2 = 0, l4 = extensions.length; i2 < l4; i2++) {
+                  for (let i2 = 0, l5 = extensions.length; i2 < l5; i2++) {
                     let extensionClass = extensionClasses[i2];
                     if (value instanceof extensionClass) {
                       let extension = extensions[i2];
@@ -14229,7 +14229,7 @@
               writeArrayHeader(0);
               writeArrayHeader(0);
               packedObjectMap = Object.create(sharedPackedObjectMap || null);
-              for (let i2 = 0, l4 = valuesArray.length; i2 < l4; i2++) {
+              for (let i2 = 0, l5 = valuesArray.length; i2 < l5; i2++) {
                 packedObjectMap[valuesArray[i2]] = i2;
               }
             }
@@ -14274,8 +14274,8 @@
   });
 
   // node_modules/.pnpm/peerjs@1.5.1/node_modules/peerjs/dist/bundler.mjs
-  function $parcel$export(e2, n2, v3, s3) {
-    Object.defineProperty(e2, n2, { get: v3, set: s3, enumerable: true, configurable: true });
+  function $parcel$export(e3, n2, v3, s3) {
+    Object.defineProperty(e3, n2, { get: v3, set: s3, enumerable: true, configurable: true });
   }
   function $fcbcc7538a6776d5$export$52c89ebcdc4f53f2(bufs) {
     let size = 0;
@@ -14396,7 +14396,7 @@
             tempPc = new RTCPeerConnection();
             tempPc.addTransceiver("audio");
             supported2 = true;
-          } catch (e2) {
+          } catch (e3) {
           } finally {
             if (tempPc)
               tempPc.close();
@@ -14507,14 +14507,14 @@
                 try {
                   dc.binaryType = "blob";
                   supported2.binaryBlob = !(0, $fb63e766cfafaab9$export$25be9502477c137d).isIOS;
-                } catch (e2) {
+                } catch (e3) {
                 }
-              } catch (e2) {
+              } catch (e3) {
               } finally {
                 if (dc)
                   dc.close();
               }
-            } catch (e2) {
+            } catch (e3) {
             } finally {
               if (pc)
                 pc.close();
@@ -14622,7 +14622,7 @@
           return [
             handlers.fn
           ];
-        for (var i2 = 0, l4 = handlers.length, ee2 = new Array(l4); i2 < l4; i2++)
+        for (var i2 = 0, l5 = handlers.length, ee2 = new Array(l5); i2 < l5; i2++)
           ee2[i2] = handlers[i2].fn;
         return ee2;
       };
@@ -14880,7 +14880,7 @@
             try {
               data = JSON.parse(event.data);
               (0, $257947e92926277a$export$2e2bcd8739ae039).log("Server message received:", data);
-            } catch (e2) {
+            } catch (e3) {
               (0, $257947e92926277a$export$2e2bcd8739ae039).log("Invalid server message", event.data);
               return;
             }
@@ -15417,8 +15417,8 @@
             this._open = true;
             this.emit("open");
           };
-          this.dataChannel.onmessage = (e2) => {
-            (0, $257947e92926277a$export$2e2bcd8739ae039).log(`DC#${this.connectionId} dc onmessage:`, e2.data);
+          this.dataChannel.onmessage = (e3) => {
+            (0, $257947e92926277a$export$2e2bcd8739ae039).log(`DC#${this.connectionId} dc onmessage:`, e3.data);
           };
           this.dataChannel.onclose = () => {
             (0, $257947e92926277a$export$2e2bcd8739ae039).log(`DC#${this.connectionId} dc closed for:`, this.peer);
@@ -15487,7 +15487,7 @@
         _initializeDataChannel(dc) {
           super._initializeDataChannel(dc);
           this.dataChannel.binaryType = "arraybuffer";
-          this.dataChannel.addEventListener("message", (e2) => this._handleDataMessage(e2));
+          this.dataChannel.addEventListener("message", (e3) => this._handleDataMessage(e3));
         }
         _bufferedSend(msg) {
           if (this._buffering || !this._trySend(msg)) {
@@ -15509,8 +15509,8 @@
           }
           try {
             this.dataChannel.send(msg);
-          } catch (e2) {
-            (0, $257947e92926277a$export$2e2bcd8739ae039).error(`DC#:${this.connectionId} Error when sending:`, e2);
+          } catch (e3) {
+            (0, $257947e92926277a$export$2e2bcd8739ae039).error(`DC#:${this.connectionId} Error when sending:`, e3);
             this._buffering = true;
             this.close();
             return false;
@@ -16694,8 +16694,6 @@
               "Will only roll back that many frames, so desync could occur "
             );
             numFramesAgo = this.world.get(NetworkConnection).framesConnected - this.initialRollbackFrame;
-            if (this.world.get(NetworkConnection).framesConnected - this.initialRollbackFrame <= 0)
-              return;
           }
           if (numFramesAgo > this.world.get(NetworkConnection).framesConnected) {
             this.logger.warn(
@@ -16819,7 +16817,7 @@
   });
 
   // node_modules/.pnpm/@pixi+constants@7.3.2/node_modules/@pixi/constants/lib/index.mjs
-  var ENV, RENDERER_TYPE, BUFFER_BITS, BLEND_MODES, DRAW_MODES, FORMATS, TARGETS, TYPES, SAMPLER_TYPES, SCALE_MODES, WRAP_MODES, MIPMAP_MODES, ALPHA_MODES, CLEAR_MODES, GC_MODES, PRECISION, MASK_TYPES, MSAA_QUALITY, BUFFER_TYPE;
+  var ENV, RENDERER_TYPE, BUFFER_BITS, BLEND_MODES, DRAW_MODES, FORMATS, TARGETS, TYPES, SAMPLER_TYPES, SCALE_MODES, WRAP_MODES, MIPMAP_MODES, ALPHA_MODES, CLEAR_MODES, GC_MODES, PRECISION, MASK_TYPES, COLOR_MASK_BITS, MSAA_QUALITY, BUFFER_TYPE;
   var init_lib = __esm({
     "node_modules/.pnpm/@pixi+constants@7.3.2/node_modules/@pixi/constants/lib/index.mjs"() {
       ENV = /* @__PURE__ */ ((ENV2) => (ENV2[ENV2.WEBGL_LEGACY = 0] = "WEBGL_LEGACY", ENV2[ENV2.WEBGL = 1] = "WEBGL", ENV2[ENV2.WEBGL2 = 2] = "WEBGL2", ENV2))(ENV || {});
@@ -16839,6 +16837,7 @@
       GC_MODES = /* @__PURE__ */ ((GC_MODES2) => (GC_MODES2[GC_MODES2.AUTO = 0] = "AUTO", GC_MODES2[GC_MODES2.MANUAL = 1] = "MANUAL", GC_MODES2))(GC_MODES || {});
       PRECISION = /* @__PURE__ */ ((PRECISION2) => (PRECISION2.LOW = "lowp", PRECISION2.MEDIUM = "mediump", PRECISION2.HIGH = "highp", PRECISION2))(PRECISION || {});
       MASK_TYPES = /* @__PURE__ */ ((MASK_TYPES2) => (MASK_TYPES2[MASK_TYPES2.NONE = 0] = "NONE", MASK_TYPES2[MASK_TYPES2.SCISSOR = 1] = "SCISSOR", MASK_TYPES2[MASK_TYPES2.STENCIL = 2] = "STENCIL", MASK_TYPES2[MASK_TYPES2.SPRITE = 3] = "SPRITE", MASK_TYPES2[MASK_TYPES2.COLOR = 4] = "COLOR", MASK_TYPES2))(MASK_TYPES || {});
+      COLOR_MASK_BITS = /* @__PURE__ */ ((COLOR_MASK_BITS2) => (COLOR_MASK_BITS2[COLOR_MASK_BITS2.RED = 1] = "RED", COLOR_MASK_BITS2[COLOR_MASK_BITS2.GREEN = 2] = "GREEN", COLOR_MASK_BITS2[COLOR_MASK_BITS2.BLUE = 4] = "BLUE", COLOR_MASK_BITS2[COLOR_MASK_BITS2.ALPHA = 8] = "ALPHA", COLOR_MASK_BITS2))(COLOR_MASK_BITS || {});
       MSAA_QUALITY = /* @__PURE__ */ ((MSAA_QUALITY2) => (MSAA_QUALITY2[MSAA_QUALITY2.NONE = 0] = "NONE", MSAA_QUALITY2[MSAA_QUALITY2.LOW = 2] = "LOW", MSAA_QUALITY2[MSAA_QUALITY2.MEDIUM = 4] = "MEDIUM", MSAA_QUALITY2[MSAA_QUALITY2.HIGH = 8] = "HIGH", MSAA_QUALITY2))(MSAA_QUALITY || {});
       BUFFER_TYPE = /* @__PURE__ */ ((BUFFER_TYPE2) => (BUFFER_TYPE2[BUFFER_TYPE2.ELEMENT_ARRAY_BUFFER = 34963] = "ELEMENT_ARRAY_BUFFER", BUFFER_TYPE2[BUFFER_TYPE2.ARRAY_BUFFER = 34962] = "ARRAY_BUFFER", BUFFER_TYPE2[BUFFER_TYPE2.UNIFORM_BUFFER = 35345] = "UNIFORM_BUFFER", BUFFER_TYPE2))(BUFFER_TYPE || {});
     }
@@ -17119,7 +17118,7 @@
           return [];
         if (handlers.fn)
           return [handlers.fn];
-        for (var i2 = 0, l4 = handlers.length, ee2 = new Array(l4); i2 < l4; i2++) {
+        for (var i2 = 0, l5 = handlers.length, ee2 = new Array(l5); i2 < l5; i2++) {
           ee2[i2] = handlers[i2].fn;
         }
         return ee2;
@@ -17296,19 +17295,19 @@
           return start;
         if (!end)
           end = start;
-        var p3 = start, again;
+        var p4 = start, again;
         do {
           again = false;
-          if (!p3.steiner && (equals(p3, p3.next) || area(p3.prev, p3, p3.next) === 0)) {
-            removeNode(p3);
-            p3 = end = p3.prev;
-            if (p3 === p3.next)
+          if (!p4.steiner && (equals(p4, p4.next) || area(p4.prev, p4, p4.next) === 0)) {
+            removeNode(p4);
+            p4 = end = p4.prev;
+            if (p4 === p4.next)
               break;
             again = true;
           } else {
-            p3 = p3.next;
+            p4 = p4.next;
           }
-        } while (again || p3 !== end);
+        } while (again || p4 !== end);
         return end;
       }
       function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
@@ -17349,11 +17348,11 @@
           return false;
         var ax = a3.x, bx = b3.x, cx = c3.x, ay = a3.y, by = b3.y, cy = c3.y;
         var x0 = ax < bx ? ax < cx ? ax : cx : bx < cx ? bx : cx, y0 = ay < by ? ay < cy ? ay : cy : by < cy ? by : cy, x1 = ax > bx ? ax > cx ? ax : cx : bx > cx ? bx : cx, y1 = ay > by ? ay > cy ? ay : cy : by > cy ? by : cy;
-        var p3 = c3.next;
-        while (p3 !== a3) {
-          if (p3.x >= x0 && p3.x <= x1 && p3.y >= y0 && p3.y <= y1 && pointInTriangle(ax, ay, bx, by, cx, cy, p3.x, p3.y) && area(p3.prev, p3, p3.next) >= 0)
+        var p4 = c3.next;
+        while (p4 !== a3) {
+          if (p4.x >= x0 && p4.x <= x1 && p4.y >= y0 && p4.y <= y1 && pointInTriangle(ax, ay, bx, by, cx, cy, p4.x, p4.y) && area(p4.prev, p4, p4.next) >= 0)
             return false;
-          p3 = p3.next;
+          p4 = p4.next;
         }
         return true;
       }
@@ -17364,19 +17363,19 @@
         var ax = a3.x, bx = b3.x, cx = c3.x, ay = a3.y, by = b3.y, cy = c3.y;
         var x0 = ax < bx ? ax < cx ? ax : cx : bx < cx ? bx : cx, y0 = ay < by ? ay < cy ? ay : cy : by < cy ? by : cy, x1 = ax > bx ? ax > cx ? ax : cx : bx > cx ? bx : cx, y1 = ay > by ? ay > cy ? ay : cy : by > cy ? by : cy;
         var minZ = zOrder(x0, y0, minX, minY, invSize), maxZ = zOrder(x1, y1, minX, minY, invSize);
-        var p3 = ear.prevZ, n2 = ear.nextZ;
-        while (p3 && p3.z >= minZ && n2 && n2.z <= maxZ) {
-          if (p3.x >= x0 && p3.x <= x1 && p3.y >= y0 && p3.y <= y1 && p3 !== a3 && p3 !== c3 && pointInTriangle(ax, ay, bx, by, cx, cy, p3.x, p3.y) && area(p3.prev, p3, p3.next) >= 0)
+        var p4 = ear.prevZ, n2 = ear.nextZ;
+        while (p4 && p4.z >= minZ && n2 && n2.z <= maxZ) {
+          if (p4.x >= x0 && p4.x <= x1 && p4.y >= y0 && p4.y <= y1 && p4 !== a3 && p4 !== c3 && pointInTriangle(ax, ay, bx, by, cx, cy, p4.x, p4.y) && area(p4.prev, p4, p4.next) >= 0)
             return false;
-          p3 = p3.prevZ;
+          p4 = p4.prevZ;
           if (n2.x >= x0 && n2.x <= x1 && n2.y >= y0 && n2.y <= y1 && n2 !== a3 && n2 !== c3 && pointInTriangle(ax, ay, bx, by, cx, cy, n2.x, n2.y) && area(n2.prev, n2, n2.next) >= 0)
             return false;
           n2 = n2.nextZ;
         }
-        while (p3 && p3.z >= minZ) {
-          if (p3.x >= x0 && p3.x <= x1 && p3.y >= y0 && p3.y <= y1 && p3 !== a3 && p3 !== c3 && pointInTriangle(ax, ay, bx, by, cx, cy, p3.x, p3.y) && area(p3.prev, p3, p3.next) >= 0)
+        while (p4 && p4.z >= minZ) {
+          if (p4.x >= x0 && p4.x <= x1 && p4.y >= y0 && p4.y <= y1 && p4 !== a3 && p4 !== c3 && pointInTriangle(ax, ay, bx, by, cx, cy, p4.x, p4.y) && area(p4.prev, p4, p4.next) >= 0)
             return false;
-          p3 = p3.prevZ;
+          p4 = p4.prevZ;
         }
         while (n2 && n2.z <= maxZ) {
           if (n2.x >= x0 && n2.x <= x1 && n2.y >= y0 && n2.y <= y1 && n2 !== a3 && n2 !== c3 && pointInTriangle(ax, ay, bx, by, cx, cy, n2.x, n2.y) && area(n2.prev, n2, n2.next) >= 0)
@@ -17386,20 +17385,20 @@
         return true;
       }
       function cureLocalIntersections(start, triangles, dim) {
-        var p3 = start;
+        var p4 = start;
         do {
-          var a3 = p3.prev, b3 = p3.next.next;
-          if (!equals(a3, b3) && intersects(a3, p3, p3.next, b3) && locallyInside(a3, b3) && locallyInside(b3, a3)) {
+          var a3 = p4.prev, b3 = p4.next.next;
+          if (!equals(a3, b3) && intersects(a3, p4, p4.next, b3) && locallyInside(a3, b3) && locallyInside(b3, a3)) {
             triangles.push(a3.i / dim | 0);
-            triangles.push(p3.i / dim | 0);
+            triangles.push(p4.i / dim | 0);
             triangles.push(b3.i / dim | 0);
-            removeNode(p3);
-            removeNode(p3.next);
-            p3 = start = b3;
+            removeNode(p4);
+            removeNode(p4.next);
+            p4 = start = b3;
           }
-          p3 = p3.next;
-        } while (p3 !== start);
-        return filterPoints(p3);
+          p4 = p4.next;
+        } while (p4 !== start);
+        return filterPoints(p4);
       }
       function splitEarcut(start, triangles, dim, minX, minY, invSize) {
         var a3 = start;
@@ -17448,61 +17447,61 @@
         return filterPoints(bridge, bridge.next);
       }
       function findHoleBridge(hole, outerNode) {
-        var p3 = outerNode, hx = hole.x, hy = hole.y, qx = -Infinity, m3;
+        var p4 = outerNode, hx = hole.x, hy = hole.y, qx = -Infinity, m3;
         do {
-          if (hy <= p3.y && hy >= p3.next.y && p3.next.y !== p3.y) {
-            var x3 = p3.x + (hy - p3.y) * (p3.next.x - p3.x) / (p3.next.y - p3.y);
+          if (hy <= p4.y && hy >= p4.next.y && p4.next.y !== p4.y) {
+            var x3 = p4.x + (hy - p4.y) * (p4.next.x - p4.x) / (p4.next.y - p4.y);
             if (x3 <= hx && x3 > qx) {
               qx = x3;
-              m3 = p3.x < p3.next.x ? p3 : p3.next;
+              m3 = p4.x < p4.next.x ? p4 : p4.next;
               if (x3 === hx)
                 return m3;
             }
           }
-          p3 = p3.next;
-        } while (p3 !== outerNode);
+          p4 = p4.next;
+        } while (p4 !== outerNode);
         if (!m3)
           return null;
         var stop = m3, mx = m3.x, my = m3.y, tanMin = Infinity, tan;
-        p3 = m3;
+        p4 = m3;
         do {
-          if (hx >= p3.x && p3.x >= mx && hx !== p3.x && pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p3.x, p3.y)) {
-            tan = Math.abs(hy - p3.y) / (hx - p3.x);
-            if (locallyInside(p3, hole) && (tan < tanMin || tan === tanMin && (p3.x > m3.x || p3.x === m3.x && sectorContainsSector(m3, p3)))) {
-              m3 = p3;
+          if (hx >= p4.x && p4.x >= mx && hx !== p4.x && pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p4.x, p4.y)) {
+            tan = Math.abs(hy - p4.y) / (hx - p4.x);
+            if (locallyInside(p4, hole) && (tan < tanMin || tan === tanMin && (p4.x > m3.x || p4.x === m3.x && sectorContainsSector(m3, p4)))) {
+              m3 = p4;
               tanMin = tan;
             }
           }
-          p3 = p3.next;
-        } while (p3 !== stop);
+          p4 = p4.next;
+        } while (p4 !== stop);
         return m3;
       }
-      function sectorContainsSector(m3, p3) {
-        return area(m3.prev, m3, p3.prev) < 0 && area(p3.next, m3, m3.next) < 0;
+      function sectorContainsSector(m3, p4) {
+        return area(m3.prev, m3, p4.prev) < 0 && area(p4.next, m3, m3.next) < 0;
       }
       function indexCurve(start, minX, minY, invSize) {
-        var p3 = start;
+        var p4 = start;
         do {
-          if (p3.z === 0)
-            p3.z = zOrder(p3.x, p3.y, minX, minY, invSize);
-          p3.prevZ = p3.prev;
-          p3.nextZ = p3.next;
-          p3 = p3.next;
-        } while (p3 !== start);
-        p3.prevZ.nextZ = null;
-        p3.prevZ = null;
-        sortLinked(p3);
+          if (p4.z === 0)
+            p4.z = zOrder(p4.x, p4.y, minX, minY, invSize);
+          p4.prevZ = p4.prev;
+          p4.nextZ = p4.next;
+          p4 = p4.next;
+        } while (p4 !== start);
+        p4.prevZ.nextZ = null;
+        p4.prevZ = null;
+        sortLinked(p4);
       }
       function sortLinked(list) {
-        var i2, p3, q2, e2, tail, numMerges, pSize, qSize, inSize = 1;
+        var i2, p4, q2, e3, tail, numMerges, pSize, qSize, inSize = 1;
         do {
-          p3 = list;
+          p4 = list;
           list = null;
           tail = null;
           numMerges = 0;
-          while (p3) {
+          while (p4) {
             numMerges++;
-            q2 = p3;
+            q2 = p4;
             pSize = 0;
             for (i2 = 0; i2 < inSize; i2++) {
               pSize++;
@@ -17512,23 +17511,23 @@
             }
             qSize = inSize;
             while (pSize > 0 || qSize > 0 && q2) {
-              if (pSize !== 0 && (qSize === 0 || !q2 || p3.z <= q2.z)) {
-                e2 = p3;
-                p3 = p3.nextZ;
+              if (pSize !== 0 && (qSize === 0 || !q2 || p4.z <= q2.z)) {
+                e3 = p4;
+                p4 = p4.nextZ;
                 pSize--;
               } else {
-                e2 = q2;
+                e3 = q2;
                 q2 = q2.nextZ;
                 qSize--;
               }
               if (tail)
-                tail.nextZ = e2;
+                tail.nextZ = e3;
               else
-                list = e2;
-              e2.prevZ = tail;
-              tail = e2;
+                list = e3;
+              e3.prevZ = tail;
+              tail = e3;
             }
-            p3 = q2;
+            p4 = q2;
           }
           tail.nextZ = null;
           inSize *= 2;
@@ -17549,12 +17548,12 @@
         return x3 | y2 << 1;
       }
       function getLeftmost(start) {
-        var p3 = start, leftmost = start;
+        var p4 = start, leftmost = start;
         do {
-          if (p3.x < leftmost.x || p3.x === leftmost.x && p3.y < leftmost.y)
-            leftmost = p3;
-          p3 = p3.next;
-        } while (p3 !== start);
+          if (p4.x < leftmost.x || p4.x === leftmost.x && p4.y < leftmost.y)
+            leftmost = p4;
+          p4 = p4.next;
+        } while (p4 !== start);
         return leftmost;
       }
       function pointInTriangle(ax, ay, bx, by, cx, cy, px, py) {
@@ -17566,8 +17565,8 @@
         (area(a3.prev, a3, b3.prev) || area(a3, b3.prev, b3)) || // does not create opposite-facing sectors
         equals(a3, b3) && area(a3.prev, a3, a3.next) > 0 && area(b3.prev, b3, b3.next) > 0);
       }
-      function area(p3, q2, r2) {
-        return (q2.y - p3.y) * (r2.x - q2.x) - (q2.x - p3.x) * (r2.y - q2.y);
+      function area(p4, q2, r2) {
+        return (q2.y - p4.y) * (r2.x - q2.x) - (q2.x - p4.x) * (r2.y - q2.y);
       }
       function equals(p1, p22) {
         return p1.x === p22.x && p1.y === p22.y;
@@ -17589,31 +17588,31 @@
           return true;
         return false;
       }
-      function onSegment(p3, q2, r2) {
-        return q2.x <= Math.max(p3.x, r2.x) && q2.x >= Math.min(p3.x, r2.x) && q2.y <= Math.max(p3.y, r2.y) && q2.y >= Math.min(p3.y, r2.y);
+      function onSegment(p4, q2, r2) {
+        return q2.x <= Math.max(p4.x, r2.x) && q2.x >= Math.min(p4.x, r2.x) && q2.y <= Math.max(p4.y, r2.y) && q2.y >= Math.min(p4.y, r2.y);
       }
       function sign2(num) {
         return num > 0 ? 1 : num < 0 ? -1 : 0;
       }
       function intersectsPolygon(a3, b3) {
-        var p3 = a3;
+        var p4 = a3;
         do {
-          if (p3.i !== a3.i && p3.next.i !== a3.i && p3.i !== b3.i && p3.next.i !== b3.i && intersects(p3, p3.next, a3, b3))
+          if (p4.i !== a3.i && p4.next.i !== a3.i && p4.i !== b3.i && p4.next.i !== b3.i && intersects(p4, p4.next, a3, b3))
             return true;
-          p3 = p3.next;
-        } while (p3 !== a3);
+          p4 = p4.next;
+        } while (p4 !== a3);
         return false;
       }
       function locallyInside(a3, b3) {
         return area(a3.prev, a3, a3.next) < 0 ? area(a3, b3, a3.next) >= 0 && area(a3, a3.prev, b3) >= 0 : area(a3, b3, a3.prev) < 0 || area(a3, a3.next, b3) < 0;
       }
       function middleInside(a3, b3) {
-        var p3 = a3, inside = false, px = (a3.x + b3.x) / 2, py = (a3.y + b3.y) / 2;
+        var p4 = a3, inside = false, px = (a3.x + b3.x) / 2, py = (a3.y + b3.y) / 2;
         do {
-          if (p3.y > py !== p3.next.y > py && p3.next.y !== p3.y && px < (p3.next.x - p3.x) * (py - p3.y) / (p3.next.y - p3.y) + p3.x)
+          if (p4.y > py !== p4.next.y > py && p4.next.y !== p4.y && px < (p4.next.x - p4.x) * (py - p4.y) / (p4.next.y - p4.y) + p4.x)
             inside = !inside;
-          p3 = p3.next;
-        } while (p3 !== a3);
+          p4 = p4.next;
+        } while (p4 !== a3);
         return inside;
       }
       function splitPolygon(a3, b3) {
@@ -17629,25 +17628,25 @@
         return b22;
       }
       function insertNode(i2, x3, y2, last) {
-        var p3 = new Node2(i2, x3, y2);
+        var p4 = new Node2(i2, x3, y2);
         if (!last) {
-          p3.prev = p3;
-          p3.next = p3;
+          p4.prev = p4;
+          p4.next = p4;
         } else {
-          p3.next = last.next;
-          p3.prev = last;
-          last.next.prev = p3;
-          last.next = p3;
+          p4.next = last.next;
+          p4.prev = last;
+          last.next.prev = p4;
+          last.next = p4;
         }
-        return p3;
+        return p4;
       }
-      function removeNode(p3) {
-        p3.next.prev = p3.prev;
-        p3.prev.next = p3.next;
-        if (p3.prevZ)
-          p3.prevZ.nextZ = p3.nextZ;
-        if (p3.nextZ)
-          p3.nextZ.prevZ = p3.prevZ;
+      function removeNode(p4) {
+        p4.next.prev = p4.prev;
+        p4.prev.next = p4.next;
+        if (p4.prevZ)
+          p4.prevZ.nextZ = p4.nextZ;
+        if (p4.nextZ)
+          p4.nextZ.prevZ = p4.prevZ;
       }
       function Node2(i2, x3, y2) {
         this.i = i2;
@@ -18122,14 +18121,14 @@
       var getEvalledConstructor = function(expressionSyntax) {
         try {
           return $Function('"use strict"; return (' + expressionSyntax + ").constructor;")();
-        } catch (e2) {
+        } catch (e3) {
         }
       };
       var $gOPD = Object.getOwnPropertyDescriptor;
       if ($gOPD) {
         try {
           $gOPD({}, "");
-        } catch (e2) {
+        } catch (e3) {
           $gOPD = null;
         }
       }
@@ -18227,8 +18226,8 @@
       if (getProto) {
         try {
           null.error;
-        } catch (e2) {
-          errorProto = getProto(getProto(e2));
+        } catch (e3) {
+          errorProto = getProto(getProto(e3));
           INTRINSICS["%Error.prototype%"] = errorProto;
         }
       }
@@ -18433,7 +18432,7 @@
       if ($defineProperty) {
         try {
           $defineProperty({}, "a", { value: 1 });
-        } catch (e2) {
+        } catch (e3) {
           $defineProperty = null;
         }
       }
@@ -18759,7 +18758,7 @@
         try {
           symToString.call(obj);
           return true;
-        } catch (e2) {
+        } catch (e3) {
         }
         return false;
       }
@@ -18770,7 +18769,7 @@
         try {
           bigIntValueOf.call(obj);
           return true;
-        } catch (e2) {
+        } catch (e3) {
         }
         return false;
       }
@@ -18783,11 +18782,11 @@
       function toStr(obj) {
         return objectToString.call(obj);
       }
-      function nameOf(f3) {
-        if (f3.name) {
-          return f3.name;
+      function nameOf(f4) {
+        if (f4.name) {
+          return f4.name;
         }
-        var m3 = $match.call(functionToString.call(f3), /^function\s*([\w$]+)/);
+        var m3 = $match.call(functionToString.call(f4), /^function\s*([\w$]+)/);
         if (m3) {
           return m3[1];
         }
@@ -18797,7 +18796,7 @@
         if (xs.indexOf) {
           return xs.indexOf(x3);
         }
-        for (var i2 = 0, l4 = xs.length; i2 < l4; i2++) {
+        for (var i2 = 0, l5 = xs.length; i2 < l5; i2++) {
           if (xs[i2] === x3) {
             return i2;
           }
@@ -18816,7 +18815,7 @@
             return true;
           }
           return x3 instanceof Map;
-        } catch (e2) {
+        } catch (e3) {
         }
         return false;
       }
@@ -18832,7 +18831,7 @@
             return true;
           }
           return x3 instanceof WeakMap;
-        } catch (e2) {
+        } catch (e3) {
         }
         return false;
       }
@@ -18843,7 +18842,7 @@
         try {
           weakRefDeref.call(x3);
           return true;
-        } catch (e2) {
+        } catch (e3) {
         }
         return false;
       }
@@ -18859,7 +18858,7 @@
             return true;
           }
           return x3 instanceof Set;
-        } catch (e2) {
+        } catch (e3) {
         }
         return false;
       }
@@ -18875,7 +18874,7 @@
             return true;
           }
           return x3 instanceof WeakSet;
-        } catch (e2) {
+        } catch (e3) {
         }
         return false;
       }
@@ -19230,7 +19229,7 @@
         }
         try {
           return decodeURIComponent(strWithoutPlus);
-        } catch (e2) {
+        } catch (e3) {
           return strWithoutPlus;
         }
       };
@@ -19968,7 +19967,7 @@
           var ipv6Hostname = this.hostname[0] === "[" && this.hostname[this.hostname.length - 1] === "]";
           if (!ipv6Hostname) {
             var hostparts = this.hostname.split(/\./);
-            for (var i2 = 0, l4 = hostparts.length; i2 < l4; i2++) {
+            for (var i2 = 0, l5 = hostparts.length; i2 < l5; i2++) {
               var part = hostparts[i2];
               if (!part) {
                 continue;
@@ -20007,9 +20006,9 @@
           if (!ipv6Hostname) {
             this.hostname = punycode.toASCII(this.hostname);
           }
-          var p3 = this.port ? ":" + this.port : "";
+          var p4 = this.port ? ":" + this.port : "";
           var h3 = this.hostname || "";
-          this.host = h3 + p3;
+          this.host = h3 + p4;
           this.href += this.host;
           if (ipv6Hostname) {
             this.hostname = this.hostname.substr(1, this.hostname.length - 2);
@@ -20019,7 +20018,7 @@
           }
         }
         if (!unsafeProtocol[lowerProto]) {
-          for (var i2 = 0, l4 = autoEscape.length; i2 < l4; i2++) {
+          for (var i2 = 0, l5 = autoEscape.length; i2 < l5; i2++) {
             var ae2 = autoEscape[i2];
             if (rest.indexOf(ae2) === -1) {
               continue;
@@ -20055,9 +20054,9 @@
           this.pathname = "/";
         }
         if (this.pathname || this.search) {
-          var p3 = this.pathname || "";
+          var p4 = this.pathname || "";
           var s3 = this.search || "";
-          this.path = p3 + s3;
+          this.path = p4 + s3;
         }
         this.href = this.format();
         return this;
@@ -20200,9 +20199,9 @@
           result.hostname = relative.hostname || relative.host;
           result.port = relative.port;
           if (result.pathname || result.search) {
-            var p3 = result.pathname || "";
+            var p4 = result.pathname || "";
             var s3 = result.search || "";
-            result.path = p3 + s3;
+            result.path = p4 + s3;
           }
           result.slashes = result.slashes || relative.slashes;
           result.href = result.format();
@@ -20800,14 +20799,14 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
         return t2.length < 2 ? "0" + t2 : t2;
       };
       h2 = function(r2) {
-        var t2 = r2.r, n2 = r2.g, e2 = r2.b, u4 = r2.a, a3 = Math.max(t2, n2, e2), o2 = a3 - Math.min(t2, n2, e2), i2 = o2 ? a3 === t2 ? (n2 - e2) / o2 : a3 === n2 ? 2 + (e2 - t2) / o2 : 4 + (t2 - n2) / o2 : 0;
+        var t2 = r2.r, n2 = r2.g, e3 = r2.b, u4 = r2.a, a3 = Math.max(t2, n2, e3), o2 = a3 - Math.min(t2, n2, e3), i2 = o2 ? a3 === t2 ? (n2 - e3) / o2 : a3 === n2 ? 2 + (e3 - t2) / o2 : 4 + (t2 - n2) / o2 : 0;
         return { h: 60 * (i2 < 0 ? i2 + 6 : i2), s: a3 ? o2 / a3 * 100 : 0, v: a3 / 255 * 100, a: u4 };
       };
       b2 = function(r2) {
-        var t2 = r2.h, n2 = r2.s, e2 = r2.v, u4 = r2.a;
-        t2 = t2 / 360 * 6, n2 /= 100, e2 /= 100;
-        var a3 = Math.floor(t2), o2 = e2 * (1 - n2), i2 = e2 * (1 - (t2 - a3) * n2), s3 = e2 * (1 - (1 - t2 + a3) * n2), h3 = a3 % 6;
-        return { r: 255 * [e2, i2, o2, o2, s3, e2][h3], g: 255 * [s3, e2, e2, i2, o2, o2][h3], b: 255 * [o2, o2, s3, e2, e2, i2][h3], a: u4 };
+        var t2 = r2.h, n2 = r2.s, e3 = r2.v, u4 = r2.a;
+        t2 = t2 / 360 * 6, n2 /= 100, e3 /= 100;
+        var a3 = Math.floor(t2), o2 = e3 * (1 - n2), i2 = e3 * (1 - (t2 - a3) * n2), s3 = e3 * (1 - (1 - t2 + a3) * n2), h3 = a3 % 6;
+        return { r: 255 * [e3, i2, o2, o2, s3, e3][h3], g: 255 * [s3, e3, e3, i2, o2, o2][h3], b: 255 * [o2, o2, s3, e3, e3, i2][h3], a: u4 };
       };
       g2 = function(r2) {
         return { h: u3(r2.h), s: e(r2.s, 0, 100), l: e(r2.l, 0, 100), a: e(r2.a) };
@@ -20816,12 +20815,12 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
         return { h: n(r2.h), s: n(r2.s), l: n(r2.l), a: n(r2.a, 3) };
       };
       f2 = function(r2) {
-        return b2((n2 = (t2 = r2).s, { h: t2.h, s: (n2 *= ((e2 = t2.l) < 50 ? e2 : 100 - e2) / 100) > 0 ? 2 * n2 / (e2 + n2) * 100 : 0, v: e2 + n2, a: t2.a }));
-        var t2, n2, e2;
+        return b2((n2 = (t2 = r2).s, { h: t2.h, s: (n2 *= ((e3 = t2.l) < 50 ? e3 : 100 - e3) / 100) > 0 ? 2 * n2 / (e3 + n2) * 100 : 0, v: e3 + n2, a: t2.a }));
+        var t2, n2, e3;
       };
       c2 = function(r2) {
-        return { h: (t2 = h2(r2)).h, s: (u4 = (200 - (n2 = t2.s)) * (e2 = t2.v) / 100) > 0 && u4 < 200 ? n2 * e2 / 100 / (u4 <= 100 ? u4 : 200 - u4) * 100 : 0, l: u4 / 2, a: t2.a };
-        var t2, n2, e2, u4;
+        return { h: (t2 = h2(r2)).h, s: (u4 = (200 - (n2 = t2.s)) * (e3 = t2.v) / 100) > 0 && u4 < 200 ? n2 * e3 / 100 / (u4 <= 100 ? u4 : 200 - u4) * 100 : 0, l: u4 / 2, a: t2.a };
+        var t2, n2, e3, u4;
       };
       l3 = /^hsla?\(\s*([+-]?\d*\.?\d+)(deg|rad|grad|turn)?\s*,\s*([+-]?\d*\.?\d+)%\s*,\s*([+-]?\d*\.?\d+)%\s*(?:,\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
       p2 = /^hsla?\(\s*([+-]?\d*\.?\d+)(deg|rad|grad|turn)?\s+([+-]?\d*\.?\d+)%\s+([+-]?\d*\.?\d+)%\s*(?:\/\s*([+-]?\d*\.?\d+)(%)?\s*)?\)$/i;
@@ -20837,16 +20836,16 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
         var n2 = l3.exec(t2) || p2.exec(t2);
         if (!n2)
           return null;
-        var e2, u4, a3 = g2({ h: (e2 = n2[1], u4 = n2[2], void 0 === u4 && (u4 = "deg"), Number(e2) * (r[u4] || 1)), s: Number(n2[3]), l: Number(n2[4]), a: void 0 === n2[5] ? 1 : Number(n2[5]) / (n2[6] ? 100 : 1) });
+        var e3, u4, a3 = g2({ h: (e3 = n2[1], u4 = n2[2], void 0 === u4 && (u4 = "deg"), Number(e3) * (r[u4] || 1)), s: Number(n2[3]), l: Number(n2[4]), a: void 0 === n2[5] ? 1 : Number(n2[5]) / (n2[6] ? 100 : 1) });
         return f2(a3);
       }, "hsl"]], object: [[function(r2) {
-        var n2 = r2.r, e2 = r2.g, u4 = r2.b, o2 = r2.a, i2 = void 0 === o2 ? 1 : o2;
-        return t(n2) && t(e2) && t(u4) ? a2({ r: Number(n2), g: Number(e2), b: Number(u4), a: Number(i2) }) : null;
+        var n2 = r2.r, e3 = r2.g, u4 = r2.b, o2 = r2.a, i2 = void 0 === o2 ? 1 : o2;
+        return t(n2) && t(e3) && t(u4) ? a2({ r: Number(n2), g: Number(e3), b: Number(u4), a: Number(i2) }) : null;
       }, "rgb"], [function(r2) {
-        var n2 = r2.h, e2 = r2.s, u4 = r2.l, a3 = r2.a, o2 = void 0 === a3 ? 1 : a3;
-        if (!t(n2) || !t(e2) || !t(u4))
+        var n2 = r2.h, e3 = r2.s, u4 = r2.l, a3 = r2.a, o2 = void 0 === a3 ? 1 : a3;
+        if (!t(n2) || !t(e3) || !t(u4))
           return null;
-        var i2 = g2({ h: Number(n2), s: Number(e2), l: Number(u4), a: Number(o2) });
+        var i2 = g2({ h: Number(n2), s: Number(e3), l: Number(u4), a: Number(o2) });
         return f2(i2);
       }, "hsl"], [function(r2) {
         var n2 = r2.h, a3 = r2.s, o2 = r2.v, i2 = r2.a, s3 = void 0 === i2 ? 1 : i2;
@@ -20859,9 +20858,9 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
       }, "hsv"]] };
       N2 = function(r2, t2) {
         for (var n2 = 0; n2 < t2.length; n2++) {
-          var e2 = t2[n2][0](r2);
-          if (e2)
-            return [e2, t2[n2][1]];
+          var e3 = t2[n2][0](r2);
+          if (e3)
+            return [e3, t2[n2][1]];
         }
         return [null, void 0];
       };
@@ -20892,18 +20891,18 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
         }, r2.prototype.isLight = function() {
           return H2(this.rgba) >= 0.5;
         }, r2.prototype.toHex = function() {
-          return r3 = o(this.rgba), t2 = r3.r, e2 = r3.g, u4 = r3.b, i2 = (a3 = r3.a) < 1 ? s2(n(255 * a3)) : "", "#" + s2(t2) + s2(e2) + s2(u4) + i2;
-          var r3, t2, e2, u4, a3, i2;
+          return r3 = o(this.rgba), t2 = r3.r, e3 = r3.g, u4 = r3.b, i2 = (a3 = r3.a) < 1 ? s2(n(255 * a3)) : "", "#" + s2(t2) + s2(e3) + s2(u4) + i2;
+          var r3, t2, e3, u4, a3, i2;
         }, r2.prototype.toRgb = function() {
           return o(this.rgba);
         }, r2.prototype.toRgbString = function() {
-          return r3 = o(this.rgba), t2 = r3.r, n2 = r3.g, e2 = r3.b, (u4 = r3.a) < 1 ? "rgba(" + t2 + ", " + n2 + ", " + e2 + ", " + u4 + ")" : "rgb(" + t2 + ", " + n2 + ", " + e2 + ")";
-          var r3, t2, n2, e2, u4;
+          return r3 = o(this.rgba), t2 = r3.r, n2 = r3.g, e3 = r3.b, (u4 = r3.a) < 1 ? "rgba(" + t2 + ", " + n2 + ", " + e3 + ", " + u4 + ")" : "rgb(" + t2 + ", " + n2 + ", " + e3 + ")";
+          var r3, t2, n2, e3, u4;
         }, r2.prototype.toHsl = function() {
           return d2(c2(this.rgba));
         }, r2.prototype.toHslString = function() {
-          return r3 = d2(c2(this.rgba)), t2 = r3.h, n2 = r3.s, e2 = r3.l, (u4 = r3.a) < 1 ? "hsla(" + t2 + ", " + n2 + "%, " + e2 + "%, " + u4 + ")" : "hsl(" + t2 + ", " + n2 + "%, " + e2 + "%)";
-          var r3, t2, n2, e2, u4;
+          return r3 = d2(c2(this.rgba)), t2 = r3.h, n2 = r3.s, e3 = r3.l, (u4 = r3.a) < 1 ? "hsla(" + t2 + ", " + n2 + "%, " + e3 + "%, " + u4 + ")" : "hsl(" + t2 + ", " + n2 + "%, " + e3 + "%)";
+          var r3, t2, n2, e3, u4;
         }, r2.prototype.toHsv = function() {
           return r3 = h2(this.rgba), { h: n(r3.h), s: n(r3.s), v: n(r3.v), a: n(r3.a, 3) };
           var r3;
@@ -20945,32 +20944,32 @@ Deprecated since v${version}`), console.warn(stack))), warnings[message] = true;
   });
 
   // node_modules/.pnpm/@pixi+colord@2.9.6/node_modules/@pixi/colord/plugins/names.mjs
-  function names_default(e2, f3) {
+  function names_default(e3, f4) {
     var a3 = { white: "#ffffff", bisque: "#ffe4c4", blue: "#0000ff", cadetblue: "#5f9ea0", chartreuse: "#7fff00", chocolate: "#d2691e", coral: "#ff7f50", antiquewhite: "#faebd7", aqua: "#00ffff", azure: "#f0ffff", whitesmoke: "#f5f5f5", papayawhip: "#ffefd5", plum: "#dda0dd", blanchedalmond: "#ffebcd", black: "#000000", gold: "#ffd700", goldenrod: "#daa520", gainsboro: "#dcdcdc", cornsilk: "#fff8dc", cornflowerblue: "#6495ed", burlywood: "#deb887", aquamarine: "#7fffd4", beige: "#f5f5dc", crimson: "#dc143c", cyan: "#00ffff", darkblue: "#00008b", darkcyan: "#008b8b", darkgoldenrod: "#b8860b", darkkhaki: "#bdb76b", darkgray: "#a9a9a9", darkgreen: "#006400", darkgrey: "#a9a9a9", peachpuff: "#ffdab9", darkmagenta: "#8b008b", darkred: "#8b0000", darkorchid: "#9932cc", darkorange: "#ff8c00", darkslateblue: "#483d8b", gray: "#808080", darkslategray: "#2f4f4f", darkslategrey: "#2f4f4f", deeppink: "#ff1493", deepskyblue: "#00bfff", wheat: "#f5deb3", firebrick: "#b22222", floralwhite: "#fffaf0", ghostwhite: "#f8f8ff", darkviolet: "#9400d3", magenta: "#ff00ff", green: "#008000", dodgerblue: "#1e90ff", grey: "#808080", honeydew: "#f0fff0", hotpink: "#ff69b4", blueviolet: "#8a2be2", forestgreen: "#228b22", lawngreen: "#7cfc00", indianred: "#cd5c5c", indigo: "#4b0082", fuchsia: "#ff00ff", brown: "#a52a2a", maroon: "#800000", mediumblue: "#0000cd", lightcoral: "#f08080", darkturquoise: "#00ced1", lightcyan: "#e0ffff", ivory: "#fffff0", lightyellow: "#ffffe0", lightsalmon: "#ffa07a", lightseagreen: "#20b2aa", linen: "#faf0e6", mediumaquamarine: "#66cdaa", lemonchiffon: "#fffacd", lime: "#00ff00", khaki: "#f0e68c", mediumseagreen: "#3cb371", limegreen: "#32cd32", mediumspringgreen: "#00fa9a", lightskyblue: "#87cefa", lightblue: "#add8e6", midnightblue: "#191970", lightpink: "#ffb6c1", mistyrose: "#ffe4e1", moccasin: "#ffe4b5", mintcream: "#f5fffa", lightslategray: "#778899", lightslategrey: "#778899", navajowhite: "#ffdead", navy: "#000080", mediumvioletred: "#c71585", powderblue: "#b0e0e6", palegoldenrod: "#eee8aa", oldlace: "#fdf5e6", paleturquoise: "#afeeee", mediumturquoise: "#48d1cc", mediumorchid: "#ba55d3", rebeccapurple: "#663399", lightsteelblue: "#b0c4de", mediumslateblue: "#7b68ee", thistle: "#d8bfd8", tan: "#d2b48c", orchid: "#da70d6", mediumpurple: "#9370db", purple: "#800080", pink: "#ffc0cb", skyblue: "#87ceeb", springgreen: "#00ff7f", palegreen: "#98fb98", red: "#ff0000", yellow: "#ffff00", slateblue: "#6a5acd", lavenderblush: "#fff0f5", peru: "#cd853f", palevioletred: "#db7093", violet: "#ee82ee", teal: "#008080", slategray: "#708090", slategrey: "#708090", aliceblue: "#f0f8ff", darkseagreen: "#8fbc8f", darkolivegreen: "#556b2f", greenyellow: "#adff2f", seagreen: "#2e8b57", seashell: "#fff5ee", tomato: "#ff6347", silver: "#c0c0c0", sienna: "#a0522d", lavender: "#e6e6fa", lightgreen: "#90ee90", orange: "#ffa500", orangered: "#ff4500", steelblue: "#4682b4", royalblue: "#4169e1", turquoise: "#40e0d0", yellowgreen: "#9acd32", salmon: "#fa8072", saddlebrown: "#8b4513", sandybrown: "#f4a460", rosybrown: "#bc8f8f", darksalmon: "#e9967a", lightgoldenrodyellow: "#fafad2", snow: "#fffafa", lightgrey: "#d3d3d3", lightgray: "#d3d3d3", dimgray: "#696969", dimgrey: "#696969", olivedrab: "#6b8e23", olive: "#808000" }, r2 = {};
     for (var d3 in a3)
       r2[a3[d3]] = d3;
-    var l4 = {};
-    e2.prototype.toName = function(f4) {
+    var l5 = {};
+    e3.prototype.toName = function(f5) {
       if (!(this.rgba.a || this.rgba.r || this.rgba.g || this.rgba.b))
         return "transparent";
       var d4, i2, n2 = r2[this.toHex()];
       if (n2)
         return n2;
-      if (null == f4 ? void 0 : f4.closest) {
+      if (null == f5 ? void 0 : f5.closest) {
         var o2 = this.toRgb(), t2 = 1 / 0, b3 = "black";
-        if (!l4.length)
+        if (!l5.length)
           for (var c3 in a3)
-            l4[c3] = new e2(a3[c3]).toRgb();
+            l5[c3] = new e3(a3[c3]).toRgb();
         for (var g3 in a3) {
-          var u4 = (d4 = o2, i2 = l4[g3], Math.pow(d4.r - i2.r, 2) + Math.pow(d4.g - i2.g, 2) + Math.pow(d4.b - i2.b, 2));
+          var u4 = (d4 = o2, i2 = l5[g3], Math.pow(d4.r - i2.r, 2) + Math.pow(d4.g - i2.g, 2) + Math.pow(d4.b - i2.b, 2));
           u4 < t2 && (t2 = u4, b3 = g3);
         }
         return b3;
       }
     };
-    f3.string.push([function(f4) {
-      var r3 = f4.toLowerCase(), d4 = "transparent" === r3 ? "#0000" : a3[r3];
-      return d4 ? new e2(d4).toRgb() : null;
+    f4.string.push([function(f5) {
+      var r3 = f5.toLowerCase(), d4 = "transparent" === r3 ? "#0000" : a3[r3];
+      return d4 ? new e3(d4).toRgb() : null;
     }, "name"]);
   }
   var init_names = __esm({
@@ -23067,24 +23066,24 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
          * @param p - The point to copy from
          * @returns The point instance itself
          */
-        copyFrom(p3) {
-          return this.set(p3.x, p3.y), this;
+        copyFrom(p4) {
+          return this.set(p4.x, p4.y), this;
         }
         /**
          * Copies this point's x and y into the given point (`p`).
          * @param p - The point to copy to. Can be any of type that is or extends `IPointData`
          * @returns The point (`p`) with values updated
          */
-        copyTo(p3) {
-          return p3.set(this.x, this.y), p3;
+        copyTo(p4) {
+          return p4.set(this.x, this.y), p4;
         }
         /**
          * Accepts another point (`p`) and returns `true` if the given point is equal to this point
          * @param p - The point to check
          * @returns Returns `true` if both `x` and `y` are equal
          */
-        equals(p3) {
-          return p3.x === this.x && p3.y === this.y;
+        equals(p4) {
+          return p4.x === this.x && p4.y === this.y;
         }
         /**
          * Sets the point to a new `x` and `y` position.
@@ -23363,10 +23362,10 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
         constructor(...points) {
           let flat = Array.isArray(points[0]) ? points[0] : points;
           if (typeof flat[0] != "number") {
-            const p3 = [];
+            const p4 = [];
             for (let i2 = 0, il = flat.length; i2 < il; i2++)
-              p3.push(flat[i2].x, flat[i2].y);
-            flat = p3;
+              p4.push(flat[i2].x, flat[i2].y);
+            flat = p4;
           }
           this.points = flat, this.type = SHAPES.POLY, this.closeStroke = true;
         }
@@ -23915,24 +23914,24 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
          * @param p - The point to copy from. Can be any of type that is or extends `IPointData`
          * @returns The observable point instance itself
          */
-        copyFrom(p3) {
-          return (this._x !== p3.x || this._y !== p3.y) && (this._x = p3.x, this._y = p3.y, this.cb.call(this.scope)), this;
+        copyFrom(p4) {
+          return (this._x !== p4.x || this._y !== p4.y) && (this._x = p4.x, this._y = p4.y, this.cb.call(this.scope)), this;
         }
         /**
          * Copies this point's x and y into that of the given point (`p`)
          * @param p - The point to copy to. Can be any of type that is or extends `IPointData`
          * @returns The point (`p`) with values updated
          */
-        copyTo(p3) {
-          return p3.set(this._x, this._y), p3;
+        copyTo(p4) {
+          return p4.set(this._x, this._y), p4;
         }
         /**
          * Accepts another point (`p`) and returns `true` if the given point is equal to this point
          * @param p - The point to check
          * @returns Returns `true` if both `x` and `y` are equal
          */
-        equals(p3) {
-          return p3.x === this._x && p3.y === this._y;
+        equals(p4) {
+          return p4.x === this._x && p4.y === this._y;
         }
         /** Position of the observable point on the x axis. */
         get x() {
@@ -27390,7 +27389,7 @@ void main(void)
           }
           if (context2.webGLVersion !== 2) {
             const instanceExt = gl.getExtension("ANGLE_instanced_arrays");
-            instanceExt ? (gl.vertexAttribDivisor = (a3, b3) => instanceExt.vertexAttribDivisorANGLE(a3, b3), gl.drawElementsInstanced = (a3, b3, c3, d3, e2) => instanceExt.drawElementsInstancedANGLE(a3, b3, c3, d3, e2), gl.drawArraysInstanced = (a3, b3, c3, d3) => instanceExt.drawArraysInstancedANGLE(a3, b3, c3, d3)) : this.hasInstance = false;
+            instanceExt ? (gl.vertexAttribDivisor = (a3, b3) => instanceExt.vertexAttribDivisorANGLE(a3, b3), gl.drawElementsInstanced = (a3, b3, c3, d3, e3) => instanceExt.drawElementsInstancedANGLE(a3, b3, c3, d3, e3), gl.drawArraysInstanced = (a3, b3, c3, d3) => instanceExt.drawArraysInstancedANGLE(a3, b3, c3, d3)) : this.hasInstance = false;
           }
           this.canUseUInt32ElementIndex = context2.webGLVersion === 2 || !!context2.extensions.uint32ElementIndex;
         }
@@ -28372,9 +28371,11 @@ void main(void)
   });
 
   // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/shader/GLProgram.mjs
-  var GLProgram;
+  var IGLUniformData, GLProgram;
   var init_GLProgram = __esm({
     "node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/shader/GLProgram.mjs"() {
+      IGLUniformData = class {
+      };
       GLProgram = class {
         /**
          * Makes a new Pixi program.
@@ -31339,10 +31340,10 @@ void main(void)
                 return;
               }
               this.source = imageBitmap, this.update(), resolve2(this);
-            } catch (e2) {
+            } catch (e3) {
               if (this.destroyed)
                 return;
-              reject(e2), this.onError.emit(e2);
+              reject(e3), this.onError.emit(e3);
             }
           }), this._load);
         }
@@ -31656,13 +31657,32 @@ void main(void)
   });
 
   // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/transformFeedback/TransformFeedback.mjs
+  var TransformFeedback;
   var init_TransformFeedback = __esm({
     "node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/transformFeedback/TransformFeedback.mjs"() {
       init_lib6();
+      TransformFeedback = class {
+        constructor() {
+          this._glTransformFeedbacks = {}, this.buffers = [], this.disposeRunner = new Runner("disposeTransformFeedback");
+        }
+        /**
+         * Bind buffer to TransformFeedback
+         * @param index - index to bind
+         * @param buffer - buffer to bind
+         */
+        bindBuffer(index, buffer) {
+          this.buffers[index] = buffer;
+        }
+        /** Destroy WebGL resources that are connected to this TransformFeedback. */
+        destroy() {
+          this.disposeRunner.emit(this, false);
+        }
+      };
     }
   });
 
   // node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/index.mjs
+  var VERSION2;
   var init_lib9 = __esm({
     "node_modules/.pnpm/@pixi+core@7.3.2/node_modules/@pixi/core/lib/index.mjs"() {
       init_settings3();
@@ -31753,6 +31773,7 @@ void main(void)
       init_ImageResource();
       init_SVGResource();
       init_VideoResource();
+      VERSION2 = "7.3.2";
     }
   });
 
@@ -34984,22 +35005,22 @@ void main()
          * @param e
          * @param type
          */
-        dispatchEvent(e2, type) {
-          e2.propagationStopped = false, e2.propagationImmediatelyStopped = false, this.propagate(e2, type), this.dispatch.emit(type || e2.type, e2);
+        dispatchEvent(e3, type) {
+          e3.propagationStopped = false, e3.propagationImmediatelyStopped = false, this.propagate(e3, type), this.dispatch.emit(type || e3.type, e3);
         }
         /**
          * Maps the given upstream event through the event boundary and propagates it downstream.
          * @param e
          */
-        mapEvent(e2) {
+        mapEvent(e3) {
           if (!this.rootTarget)
             return;
-          const mappers = this.mappingTable[e2.type];
+          const mappers = this.mappingTable[e3.type];
           if (mappers)
             for (let i2 = 0, j3 = mappers.length; i2 < j3; i2++)
-              mappers[i2].fn(e2);
+              mappers[i2].fn(e3);
           else
-            console.warn(`[EventBoundary]: Event mapping not defined for ${e2.type}`);
+            console.warn(`[EventBoundary]: Event mapping not defined for ${e3.type}`);
         }
         /**
          * Finds the DisplayObject that is the target of a event at the given coordinates.
@@ -35025,18 +35046,18 @@ void main()
          * @param e - The event to propagate.
          * @param type
          */
-        propagate(e2, type) {
-          if (!e2.target)
+        propagate(e3, type) {
+          if (!e3.target)
             return;
-          const composedPath = e2.composedPath();
-          e2.eventPhase = e2.CAPTURING_PHASE;
+          const composedPath = e3.composedPath();
+          e3.eventPhase = e3.CAPTURING_PHASE;
           for (let i2 = 0, j3 = composedPath.length - 1; i2 < j3; i2++)
-            if (e2.currentTarget = composedPath[i2], this.notifyTarget(e2, type), e2.propagationStopped || e2.propagationImmediatelyStopped)
+            if (e3.currentTarget = composedPath[i2], this.notifyTarget(e3, type), e3.propagationStopped || e3.propagationImmediatelyStopped)
               return;
-          if (e2.eventPhase = e2.AT_TARGET, e2.currentTarget = e2.target, this.notifyTarget(e2, type), !(e2.propagationStopped || e2.propagationImmediatelyStopped)) {
-            e2.eventPhase = e2.BUBBLING_PHASE;
+          if (e3.eventPhase = e3.AT_TARGET, e3.currentTarget = e3.target, this.notifyTarget(e3, type), !(e3.propagationStopped || e3.propagationImmediatelyStopped)) {
+            e3.eventPhase = e3.BUBBLING_PHASE;
             for (let i2 = composedPath.length - 2; i2 >= 0; i2--)
-              if (e2.currentTarget = composedPath[i2], this.notifyTarget(e2, type), e2.propagationStopped || e2.propagationImmediatelyStopped)
+              if (e3.currentTarget = composedPath[i2], this.notifyTarget(e3, type), e3.propagationStopped || e3.propagationImmediatelyStopped)
                 return;
           }
         }
@@ -35048,14 +35069,14 @@ void main()
          * @param type - The listeners to notify.
          * @param targets - The targets to notify.
          */
-        all(e2, type, targets = this._allInteractiveElements) {
+        all(e3, type, targets = this._allInteractiveElements) {
           if (targets.length === 0)
             return;
-          e2.eventPhase = e2.BUBBLING_PHASE;
+          e3.eventPhase = e3.BUBBLING_PHASE;
           const events = Array.isArray(type) ? type : [type];
           for (let i2 = targets.length - 1; i2 >= 0; i2--)
             events.forEach((event) => {
-              e2.currentTarget = targets[i2], this.notifyTarget(e2, event);
+              e3.currentTarget = targets[i2], this.notifyTarget(e3, event);
             });
         }
         /**
@@ -35177,12 +35198,12 @@ void main()
          * @param e - The event passed to the target.
          * @param type
          */
-        notifyTarget(e2, type) {
-          type = type ?? e2.type;
+        notifyTarget(e3, type) {
+          type = type ?? e3.type;
           const handlerKey = `on${type}`;
-          e2.currentTarget[handlerKey]?.(e2);
-          const key = e2.eventPhase === e2.CAPTURING_PHASE || e2.eventPhase === e2.AT_TARGET ? `${type}capture` : type;
-          this.notifyListeners(e2, key), e2.eventPhase === e2.AT_TARGET && this.notifyListeners(e2, type);
+          e3.currentTarget[handlerKey]?.(e3);
+          const key = e3.eventPhase === e3.CAPTURING_PHASE || e3.eventPhase === e3.AT_TARGET ? `${type}capture` : type;
+          this.notifyListeners(e3, key), e3.eventPhase === e3.AT_TARGET && this.notifyListeners(e3, type);
         }
         /**
          * Maps the upstream `pointerdown` events to a downstream `pointerdown` event.
@@ -35195,15 +35216,15 @@ void main()
             console.warn("EventBoundary cannot map a non-pointer event as a pointer event");
             return;
           }
-          const e2 = this.createPointerEvent(from);
-          if (this.dispatchEvent(e2, "pointerdown"), e2.pointerType === "touch")
-            this.dispatchEvent(e2, "touchstart");
-          else if (e2.pointerType === "mouse" || e2.pointerType === "pen") {
-            const isRightButton = e2.button === 2;
-            this.dispatchEvent(e2, isRightButton ? "rightdown" : "mousedown");
+          const e3 = this.createPointerEvent(from);
+          if (this.dispatchEvent(e3, "pointerdown"), e3.pointerType === "touch")
+            this.dispatchEvent(e3, "touchstart");
+          else if (e3.pointerType === "mouse" || e3.pointerType === "pen") {
+            const isRightButton = e3.button === 2;
+            this.dispatchEvent(e3, isRightButton ? "rightdown" : "mousedown");
           }
           const trackingData = this.trackingData(from.pointerId);
-          trackingData.pressTargetsByButton[from.button] = e2.composedPath(), this.freeEvent(e2);
+          trackingData.pressTargetsByButton[from.button] = e3.composedPath(), this.freeEvent(e3);
         }
         /**
          * Maps the upstream `pointermove` to downstream `pointerout`, `pointerover`, and `pointermove` events, in that order.
@@ -35218,27 +35239,27 @@ void main()
             return;
           }
           this._allInteractiveElements.length = 0, this._hitElements.length = 0, this._isPointerMoveEvent = true;
-          const e2 = this.createPointerEvent(from);
+          const e3 = this.createPointerEvent(from);
           this._isPointerMoveEvent = false;
-          const isMouse = e2.pointerType === "mouse" || e2.pointerType === "pen", trackingData = this.trackingData(from.pointerId), outTarget = this.findMountedTarget(trackingData.overTargets);
-          if (trackingData.overTargets?.length > 0 && outTarget !== e2.target) {
+          const isMouse = e3.pointerType === "mouse" || e3.pointerType === "pen", trackingData = this.trackingData(from.pointerId), outTarget = this.findMountedTarget(trackingData.overTargets);
+          if (trackingData.overTargets?.length > 0 && outTarget !== e3.target) {
             const outType = from.type === "mousemove" ? "mouseout" : "pointerout", outEvent = this.createPointerEvent(from, outType, outTarget);
-            if (this.dispatchEvent(outEvent, "pointerout"), isMouse && this.dispatchEvent(outEvent, "mouseout"), !e2.composedPath().includes(outTarget)) {
+            if (this.dispatchEvent(outEvent, "pointerout"), isMouse && this.dispatchEvent(outEvent, "mouseout"), !e3.composedPath().includes(outTarget)) {
               const leaveEvent = this.createPointerEvent(from, "pointerleave", outTarget);
-              for (leaveEvent.eventPhase = leaveEvent.AT_TARGET; leaveEvent.target && !e2.composedPath().includes(leaveEvent.target); )
+              for (leaveEvent.eventPhase = leaveEvent.AT_TARGET; leaveEvent.target && !e3.composedPath().includes(leaveEvent.target); )
                 leaveEvent.currentTarget = leaveEvent.target, this.notifyTarget(leaveEvent), isMouse && this.notifyTarget(leaveEvent, "mouseleave"), leaveEvent.target = leaveEvent.target.parent;
               this.freeEvent(leaveEvent);
             }
             this.freeEvent(outEvent);
           }
-          if (outTarget !== e2.target) {
-            const overType = from.type === "mousemove" ? "mouseover" : "pointerover", overEvent = this.clonePointerEvent(e2, overType);
+          if (outTarget !== e3.target) {
+            const overType = from.type === "mousemove" ? "mouseover" : "pointerover", overEvent = this.clonePointerEvent(e3, overType);
             this.dispatchEvent(overEvent, "pointerover"), isMouse && this.dispatchEvent(overEvent, "mouseover");
             let overTargetAncestor = outTarget?.parent;
-            for (; overTargetAncestor && overTargetAncestor !== this.rootTarget.parent && overTargetAncestor !== e2.target; )
+            for (; overTargetAncestor && overTargetAncestor !== this.rootTarget.parent && overTargetAncestor !== e3.target; )
               overTargetAncestor = overTargetAncestor.parent;
             if (!overTargetAncestor || overTargetAncestor === this.rootTarget.parent) {
-              const enterEvent = this.clonePointerEvent(e2, "pointerenter");
+              const enterEvent = this.clonePointerEvent(e3, "pointerenter");
               for (enterEvent.eventPhase = enterEvent.AT_TARGET; enterEvent.target && enterEvent.target !== outTarget && enterEvent.target !== this.rootTarget.parent; )
                 enterEvent.currentTarget = enterEvent.target, this.notifyTarget(enterEvent), isMouse && this.notifyTarget(enterEvent, "mouseenter"), enterEvent.target = enterEvent.target.parent;
               this.freeEvent(enterEvent);
@@ -35246,7 +35267,7 @@ void main()
             this.freeEvent(overEvent);
           }
           const allMethods = [], allowGlobalPointerEvents = this.enableGlobalMoveEvents ?? true;
-          this.moveOnAll ? allMethods.push("pointermove") : this.dispatchEvent(e2, "pointermove"), allowGlobalPointerEvents && allMethods.push("globalpointermove"), e2.pointerType === "touch" && (this.moveOnAll ? allMethods.splice(1, 0, "touchmove") : this.dispatchEvent(e2, "touchmove"), allowGlobalPointerEvents && allMethods.push("globaltouchmove")), isMouse && (this.moveOnAll ? allMethods.splice(1, 0, "mousemove") : this.dispatchEvent(e2, "mousemove"), allowGlobalPointerEvents && allMethods.push("globalmousemove"), this.cursor = e2.target?.cursor), allMethods.length > 0 && this.all(e2, allMethods), this._allInteractiveElements.length = 0, this._hitElements.length = 0, trackingData.overTargets = e2.composedPath(), this.freeEvent(e2);
+          this.moveOnAll ? allMethods.push("pointermove") : this.dispatchEvent(e3, "pointermove"), allowGlobalPointerEvents && allMethods.push("globalpointermove"), e3.pointerType === "touch" && (this.moveOnAll ? allMethods.splice(1, 0, "touchmove") : this.dispatchEvent(e3, "touchmove"), allowGlobalPointerEvents && allMethods.push("globaltouchmove")), isMouse && (this.moveOnAll ? allMethods.splice(1, 0, "mousemove") : this.dispatchEvent(e3, "mousemove"), allowGlobalPointerEvents && allMethods.push("globalmousemove"), this.cursor = e3.target?.cursor), allMethods.length > 0 && this.all(e3, allMethods), this._allInteractiveElements.length = 0, this._hitElements.length = 0, trackingData.overTargets = e3.composedPath(), this.freeEvent(e3);
         }
         /**
          * Maps the upstream `pointerover` to downstream `pointerover` and `pointerenter` events, in that order.
@@ -35259,12 +35280,12 @@ void main()
             console.warn("EventBoundary cannot map a non-pointer event as a pointer event");
             return;
           }
-          const trackingData = this.trackingData(from.pointerId), e2 = this.createPointerEvent(from), isMouse = e2.pointerType === "mouse" || e2.pointerType === "pen";
-          this.dispatchEvent(e2, "pointerover"), isMouse && this.dispatchEvent(e2, "mouseover"), e2.pointerType === "mouse" && (this.cursor = e2.target?.cursor);
-          const enterEvent = this.clonePointerEvent(e2, "pointerenter");
+          const trackingData = this.trackingData(from.pointerId), e3 = this.createPointerEvent(from), isMouse = e3.pointerType === "mouse" || e3.pointerType === "pen";
+          this.dispatchEvent(e3, "pointerover"), isMouse && this.dispatchEvent(e3, "mouseover"), e3.pointerType === "mouse" && (this.cursor = e3.target?.cursor);
+          const enterEvent = this.clonePointerEvent(e3, "pointerenter");
           for (enterEvent.eventPhase = enterEvent.AT_TARGET; enterEvent.target && enterEvent.target !== this.rootTarget.parent; )
             enterEvent.currentTarget = enterEvent.target, this.notifyTarget(enterEvent), isMouse && this.notifyTarget(enterEvent, "mouseenter"), enterEvent.target = enterEvent.target.parent;
-          trackingData.overTargets = e2.composedPath(), this.freeEvent(e2), this.freeEvent(enterEvent);
+          trackingData.overTargets = e3.composedPath(), this.freeEvent(e3), this.freeEvent(enterEvent);
         }
         /**
          * Maps the upstream `pointerout` to downstream `pointerout`, `pointerleave` events, in that order.
@@ -35303,30 +35324,30 @@ void main()
             console.warn("EventBoundary cannot map a non-pointer event as a pointer event");
             return;
           }
-          const now = performance.now(), e2 = this.createPointerEvent(from);
-          if (this.dispatchEvent(e2, "pointerup"), e2.pointerType === "touch")
-            this.dispatchEvent(e2, "touchend");
-          else if (e2.pointerType === "mouse" || e2.pointerType === "pen") {
-            const isRightButton = e2.button === 2;
-            this.dispatchEvent(e2, isRightButton ? "rightup" : "mouseup");
+          const now = performance.now(), e3 = this.createPointerEvent(from);
+          if (this.dispatchEvent(e3, "pointerup"), e3.pointerType === "touch")
+            this.dispatchEvent(e3, "touchend");
+          else if (e3.pointerType === "mouse" || e3.pointerType === "pen") {
+            const isRightButton = e3.button === 2;
+            this.dispatchEvent(e3, isRightButton ? "rightup" : "mouseup");
           }
           const trackingData = this.trackingData(from.pointerId), pressTarget = this.findMountedTarget(trackingData.pressTargetsByButton[from.button]);
           let clickTarget = pressTarget;
-          if (pressTarget && !e2.composedPath().includes(pressTarget)) {
+          if (pressTarget && !e3.composedPath().includes(pressTarget)) {
             let currentTarget = pressTarget;
-            for (; currentTarget && !e2.composedPath().includes(currentTarget); ) {
-              if (e2.currentTarget = currentTarget, this.notifyTarget(e2, "pointerupoutside"), e2.pointerType === "touch")
-                this.notifyTarget(e2, "touchendoutside");
-              else if (e2.pointerType === "mouse" || e2.pointerType === "pen") {
-                const isRightButton = e2.button === 2;
-                this.notifyTarget(e2, isRightButton ? "rightupoutside" : "mouseupoutside");
+            for (; currentTarget && !e3.composedPath().includes(currentTarget); ) {
+              if (e3.currentTarget = currentTarget, this.notifyTarget(e3, "pointerupoutside"), e3.pointerType === "touch")
+                this.notifyTarget(e3, "touchendoutside");
+              else if (e3.pointerType === "mouse" || e3.pointerType === "pen") {
+                const isRightButton = e3.button === 2;
+                this.notifyTarget(e3, isRightButton ? "rightupoutside" : "mouseupoutside");
               }
               currentTarget = currentTarget.parent;
             }
             delete trackingData.pressTargetsByButton[from.button], clickTarget = currentTarget;
           }
           if (clickTarget) {
-            const clickEvent = this.clonePointerEvent(e2, "click");
+            const clickEvent = this.clonePointerEvent(e3, "click");
             clickEvent.target = clickTarget, clickEvent.path = null, trackingData.clicksByButton[from.button] || (trackingData.clicksByButton[from.button] = {
               clickCount: 0,
               target: clickEvent.target,
@@ -35340,7 +35361,7 @@ void main()
               clickEvent.pointerType === "touch" && this.dispatchEvent(clickEvent, "tap");
             this.dispatchEvent(clickEvent, "pointertap"), this.freeEvent(clickEvent);
           }
-          this.freeEvent(e2);
+          this.freeEvent(e3);
         }
         /**
          * Maps the upstream `pointerupoutside` event to a downstream `pointerupoutside` event, bubbling from the original
@@ -35358,14 +35379,14 @@ void main()
             console.warn("EventBoundary cannot map a non-pointer event as a pointer event");
             return;
           }
-          const trackingData = this.trackingData(from.pointerId), pressTarget = this.findMountedTarget(trackingData.pressTargetsByButton[from.button]), e2 = this.createPointerEvent(from);
+          const trackingData = this.trackingData(from.pointerId), pressTarget = this.findMountedTarget(trackingData.pressTargetsByButton[from.button]), e3 = this.createPointerEvent(from);
           if (pressTarget) {
             let currentTarget = pressTarget;
             for (; currentTarget; )
-              e2.currentTarget = currentTarget, this.notifyTarget(e2, "pointerupoutside"), e2.pointerType === "touch" ? this.notifyTarget(e2, "touchendoutside") : (e2.pointerType === "mouse" || e2.pointerType === "pen") && this.notifyTarget(e2, e2.button === 2 ? "rightupoutside" : "mouseupoutside"), currentTarget = currentTarget.parent;
+              e3.currentTarget = currentTarget, this.notifyTarget(e3, "pointerupoutside"), e3.pointerType === "touch" ? this.notifyTarget(e3, "touchendoutside") : (e3.pointerType === "mouse" || e3.pointerType === "pen") && this.notifyTarget(e3, e3.button === 2 ? "rightupoutside" : "mouseupoutside"), currentTarget = currentTarget.parent;
             delete trackingData.pressTargetsByButton[from.button];
           }
-          this.freeEvent(e2);
+          this.freeEvent(e3);
         }
         /**
          * Maps the upstream `wheel` event to a downstream `wheel` event.
@@ -35547,14 +35568,14 @@ void main()
          * @param e - The event to call each listener with.
          * @param type - The event key.
          */
-        notifyListeners(e2, type) {
-          const listeners2 = e2.currentTarget._events[type];
-          if (listeners2 && e2.currentTarget.isInteractive())
+        notifyListeners(e3, type) {
+          const listeners2 = e3.currentTarget._events[type];
+          if (listeners2 && e3.currentTarget.isInteractive())
             if ("fn" in listeners2)
-              listeners2.once && e2.currentTarget.removeListener(type, listeners2.fn, void 0, true), listeners2.fn.call(listeners2.context, e2);
+              listeners2.once && e3.currentTarget.removeListener(type, listeners2.fn, void 0, true), listeners2.fn.call(listeners2.context, e3);
             else
-              for (let i2 = 0, j3 = listeners2.length; i2 < j3 && !e2.propagationImmediatelyStopped; i2++)
-                listeners2[i2].once && e2.currentTarget.removeListener(type, listeners2[i2].fn, void 0, true), listeners2[i2].fn.call(listeners2[i2].context, e2);
+              for (let i2 = 0, j3 = listeners2.length; i2 < j3 && !e3.propagationImmediatelyStopped; i2++)
+                listeners2[i2].once && e3.currentTarget.removeListener(type, listeners2[i2].fn, void 0, true), listeners2[i2].fn.call(listeners2[i2].context, e3);
         }
       };
     }
@@ -36344,10 +36365,10 @@ void main()
          * // Reuse a click event!
          * button.dispatchEvent(clickEvent);
          */
-        dispatchEvent(e2) {
-          if (!(e2 instanceof FederatedEvent))
+        dispatchEvent(e3) {
+          if (!(e3 instanceof FederatedEvent))
             throw new Error("DisplayObject cannot propagate events outside of the Federated Events API");
-          return e2.defaultPrevented = false, e2.path = null, e2.target = this, e2.manager.dispatchEvent(e2), !e2.defaultPrevented;
+          return e3.defaultPrevented = false, e3.path = null, e3.target = this, e3.manager.dispatchEvent(e3), !e3.defaultPrevented;
         }
       };
       DisplayObject.mixin(FederatedDisplayObject);
@@ -36588,8 +36609,8 @@ void main()
          * @param type
          * @private
          */
-        _dispatchEvent(e2, type) {
-          const { displayObject: target2 } = e2.target, boundry = this.renderer.events.rootBoundary, event = Object.assign(new FederatedEvent(boundry), { target: target2 });
+        _dispatchEvent(e3, type) {
+          const { displayObject: target2 } = e3.target, boundry = this.renderer.events.rootBoundary, event = Object.assign(new FederatedEvent(boundry), { target: target2 });
           boundry.rootTarget = this.renderer.lastObjectRendered, type.forEach((type2) => boundry.dispatchEvent(event, type2));
         }
         /**
@@ -36597,40 +36618,40 @@ void main()
          * @private
          * @param {MouseEvent} e - The click event.
          */
-        _onClick(e2) {
-          this._dispatchEvent(e2, ["click", "pointertap", "tap"]);
+        _onClick(e3) {
+          this._dispatchEvent(e3, ["click", "pointertap", "tap"]);
         }
         /**
          * Maps the div focus events to pixi's EventSystem (mouseover)
          * @private
          * @param {FocusEvent} e - The focus event.
          */
-        _onFocus(e2) {
-          e2.target.getAttribute("aria-live") || e2.target.setAttribute("aria-live", "assertive"), this._dispatchEvent(e2, ["mouseover"]);
+        _onFocus(e3) {
+          e3.target.getAttribute("aria-live") || e3.target.setAttribute("aria-live", "assertive"), this._dispatchEvent(e3, ["mouseover"]);
         }
         /**
          * Maps the div focus events to pixi's EventSystem (mouseout)
          * @private
          * @param {FocusEvent} e - The focusout event.
          */
-        _onFocusOut(e2) {
-          e2.target.getAttribute("aria-live") || e2.target.setAttribute("aria-live", "polite"), this._dispatchEvent(e2, ["mouseout"]);
+        _onFocusOut(e3) {
+          e3.target.getAttribute("aria-live") || e3.target.setAttribute("aria-live", "polite"), this._dispatchEvent(e3, ["mouseout"]);
         }
         /**
          * Is called when a key is pressed
          * @private
          * @param {KeyboardEvent} e - The keydown event.
          */
-        _onKeyDown(e2) {
-          e2.keyCode === KEY_CODE_TAB && this.activate();
+        _onKeyDown(e3) {
+          e3.keyCode === KEY_CODE_TAB && this.activate();
         }
         /**
          * Is called when the mouse moves across the renderer element
          * @private
          * @param {MouseEvent} e - The mouse event.
          */
-        _onMouseMove(e2) {
-          e2.movementX === 0 && e2.movementY === 0 || this.deactivate();
+        _onMouseMove(e3) {
+          e3.movementX === 0 && e3.movementY === 0 || this.deactivate();
         }
         /** Destroys the accessibility manager */
         destroy() {
@@ -37105,9 +37126,9 @@ void main()
             if (!assets[asset.src])
               try {
                 this.promiseCache[url2] || (this.promiseCache[url2] = this._getLoadPromiseAndParser(url2, asset)), assets[asset.src] = await this.promiseCache[url2].promise, onProgress && onProgress(++count / total);
-              } catch (e2) {
+              } catch (e3) {
                 throw delete this.promiseCache[url2], delete assets[asset.src], new Error(`[Loader.load] Failed to load ${url2}.
-${e2}`);
+${e3}`);
               }
           });
           return await Promise.all(promises), singleAsset ? assets[assetsToLoad[0].src] : assets;
@@ -37473,7 +37494,7 @@ ${e2}`);
           let src2;
           useImageBitmap ? this.config.preferWorkers && await WorkerManager.isImageBitmapSupported() ? src2 = await WorkerManager.loadImageBitmap(url2) : src2 = await loadImageBitmap(url2) : src2 = await new Promise((resolve2, reject) => {
             const src22 = new Image();
-            src22.crossOrigin = this.config.crossOrigin, src22.src = url2, src22.complete ? resolve2(src22) : (src22.onload = () => resolve2(src22), src22.onerror = (e2) => reject(e2));
+            src22.crossOrigin = this.config.crossOrigin, src22.src = url2, src22.complete ? resolve2(src22) : (src22.onload = () => resolve2(src22), src22.onerror = (e3) => reject(e3));
           });
           const options = { ...asset.data };
           options.resolution ?? (options.resolution = lib_exports.getResolutionOfUrl(url2)), useImageBitmap && options.resourceOptions?.ownsImageBitmap === void 0 && (options.resourceOptions = { ...options.resourceOptions }, options.resourceOptions.ownsImageBitmap = true);
@@ -37574,8 +37595,8 @@ ${e2}`);
             base.resource.src = url2, texture = createTexture(base, loader, url2), texture.baseTexture.once("destroyed", () => {
               URL.revokeObjectURL(blobURL);
             });
-          } catch (e2) {
-            throw URL.revokeObjectURL(blobURL), e2;
+          } catch (e3) {
+            throw URL.revokeObjectURL(blobURL), e3;
           }
           return texture;
         },
@@ -38425,7 +38446,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
           "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A="
         ),
         add: async (formats2) => [...formats2, "avif"],
-        remove: async (formats2) => formats2.filter((f3) => f3 !== "avif")
+        remove: async (formats2) => formats2.filter((f4) => f4 !== "avif")
       };
       extensions2.add(detectAvif);
     }
@@ -38446,7 +38467,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
           "data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA="
         ),
         add: async (formats2) => [...formats2, "webp"],
-        remove: async (formats2) => formats2.filter((f3) => f3 !== "webp")
+        remove: async (formats2) => formats2.filter((f4) => f4 !== "webp")
       };
       extensions2.add(detectWebp);
     }
@@ -38465,7 +38486,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         },
         test: () => Promise.resolve(true),
         add: async (formats2) => [...formats2, ...imageFormats],
-        remove: async (formats2) => formats2.filter((f3) => !imageFormats.includes(f3))
+        remove: async (formats2) => formats2.filter((f4) => !imageFormats.includes(f4))
       };
       extensions2.add(detectDefaults);
     }
@@ -38495,7 +38516,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         },
         test: async () => testVideoFormat("video/webm"),
         add: async (formats2) => [...formats2, "webm"],
-        remove: async (formats2) => formats2.filter((f3) => f3 !== "webm")
+        remove: async (formats2) => formats2.filter((f4) => f4 !== "webm")
       };
       extensions2.add(detectWebm);
     }
@@ -38514,7 +38535,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         },
         test: async () => testVideoFormat("video/mp4"),
         add: async (formats2) => [...formats2, "mp4", "m4v"],
-        remove: async (formats2) => formats2.filter((f3) => f3 !== "mp4" && f3 !== "m4v")
+        remove: async (formats2) => formats2.filter((f4) => f4 !== "mp4" && f4 !== "m4v")
       };
       extensions2.add(detectMp4);
     }
@@ -38533,7 +38554,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         },
         test: async () => testVideoFormat("video/ogg"),
         add: async (formats2) => [...formats2, "ogv"],
-        remove: async (formats2) => formats2.filter((f3) => f3 !== "ogv")
+        remove: async (formats2) => formats2.filter((f4) => f4 !== "ogv")
       };
       extensions2.add(detectOgv);
     }
@@ -38717,7 +38738,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
             extensions3[extensionName] && textureFormats.push(extensionName);
           return [...textureFormats, ...formats2];
         },
-        remove: async (formats2) => (extensions3 || getCompressedTextureExtensions(), formats2.filter((f3) => !(f3 in extensions3)))
+        remove: async (formats2) => (extensions3 || getCompressedTextureExtensions(), formats2.filter((f4) => !(f4 in extensions3)))
       };
       extensions2.add(detectCompressedTextures);
     }
@@ -39662,7 +39683,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   });
 
   // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/const.mjs
-  var LINE_JOIN, LINE_CAP, curves;
+  var LINE_JOIN, LINE_CAP, curves, GRAPHICS_CURVES;
   var init_const5 = __esm({
     "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/const.mjs"() {
       LINE_JOIN = /* @__PURE__ */ ((LINE_JOIN2) => (LINE_JOIN2.MITER = "miter", LINE_JOIN2.BEVEL = "bevel", LINE_JOIN2.ROUND = "round", LINE_JOIN2))(LINE_JOIN || {});
@@ -39680,6 +39701,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
           return result < this.minSegments ? result = this.minSegments : result > this.maxSegments && (result = this.maxSegments), result;
         }
       };
+      GRAPHICS_CURVES = curves;
     }
   });
 
@@ -40401,7 +40423,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         validateBatching() {
           if (this.dirty === this.cacheDirty || !this.graphicsData.length)
             return false;
-          for (let i2 = 0, l4 = this.graphicsData.length; i2 < l4; i2++) {
+          for (let i2 = 0, l5 = this.graphicsData.length; i2 < l5; i2++) {
             const data = this.graphicsData[i2], fill = data.fillStyle, line = data.lineStyle;
             if (fill && !fill.texture.baseTexture.valid || line && !line.texture.baseTexture.valid)
               return false;
@@ -40412,7 +40434,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         packBatches() {
           this.batchDirty++, this.uvsFloat32 = new Float32Array(this.uvs);
           const batches = this.batches;
-          for (let i2 = 0, l4 = batches.length; i2 < l4; i2++) {
+          for (let i2 = 0, l5 = batches.length; i2 < l5; i2++) {
             const batch = batches[i2];
             for (let j3 = 0; j3 < batch.size; j3++) {
               const index = batch.start + j3;
@@ -40453,9 +40475,9 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         /** Packs attributes to single buffer. */
         packAttributes() {
           const verts = this.points, uvs = this.uvs, colors = this.colors, textureIds = this.textureIds, glPoints = new ArrayBuffer(verts.length * 3 * 4), f32 = new Float32Array(glPoints), u32 = new Uint32Array(glPoints);
-          let p3 = 0;
+          let p4 = 0;
           for (let i2 = 0; i2 < verts.length / 2; i2++)
-            f32[p3++] = verts[i2 * 2], f32[p3++] = verts[i2 * 2 + 1], f32[p3++] = uvs[i2 * 2], f32[p3++] = uvs[i2 * 2 + 1], u32[p3++] = colors[i2], f32[p3++] = textureIds[i2];
+            f32[p4++] = verts[i2 * 2], f32[p4++] = verts[i2 * 2 + 1], f32[p4++] = uvs[i2 * 2], f32[p4++] = uvs[i2 * 2 + 1], u32[p4++] = colors[i2], f32[p4++] = textureIds[i2];
           this._buffer.update(glPoints), this._indexBuffer.update(this.indicesUint16);
         }
         /**
@@ -41036,7 +41058,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         _renderBatched(renderer) {
           if (this.batches.length) {
             renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]), this.calculateVertices(), this.calculateTints();
-            for (let i2 = 0, l4 = this.batches.length; i2 < l4; i2++) {
+            for (let i2 = 0, l5 = this.batches.length; i2 < l5; i2++) {
               const batch = this.batches[i2];
               batch.worldAlpha = this.worldAlpha * batch.alpha, renderer.plugins[this.pluginName].render(batch);
             }
@@ -41049,7 +41071,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
         _renderDirect(renderer) {
           const shader = this._resolveDirectShader(renderer), geometry = this._geometry, worldAlpha = this.worldAlpha, uniforms = shader.uniforms, drawCalls = geometry.drawCalls;
           uniforms.translationMatrix = this.transform.worldTransform, Color.shared.setValue(this._tintColor).premultiply(worldAlpha).toArray(uniforms.tint), renderer.shader.bind(shader), renderer.geometry.bind(geometry, shader), renderer.state.set(this.state);
-          for (let i2 = 0, l4 = drawCalls.length; i2 < l4; i2++)
+          for (let i2 = 0, l5 = drawCalls.length; i2 < l5; i2++)
             this._renderDrawCallDirect(renderer, geometry.drawCalls[i2]);
         }
         /**
@@ -41188,6 +41210,7 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
   });
 
   // node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/index.mjs
+  var graphicsUtils;
   var init_lib27 = __esm({
     "node_modules/.pnpm/@pixi+graphics@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/graphics/lib/index.mjs"() {
       init_utils5();
@@ -41206,6 +41229,20 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
       init_BezierUtils();
       init_QuadraticUtils();
       init_BatchPart();
+      graphicsUtils = {
+        buildPoly,
+        buildCircle,
+        buildRectangle,
+        buildRoundedRectangle,
+        buildLine,
+        ArcUtils,
+        BezierUtils,
+        QuadraticUtils,
+        BatchPart,
+        FILL_COMMANDS,
+        BATCH_POOL,
+        DRAW_CALL_POOL
+      };
     }
   });
 
@@ -41578,50 +41615,334 @@ void main(void)
   });
 
   // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs
+  var PlaneGeometry;
   var init_PlaneGeometry = __esm({
     "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/PlaneGeometry.mjs"() {
       init_lib28();
+      PlaneGeometry = class extends MeshGeometry {
+        /**
+         * @param width - The width of the plane.
+         * @param height - The height of the plane.
+         * @param segWidth - Number of horizontal segments.
+         * @param segHeight - Number of vertical segments.
+         */
+        constructor(width = 100, height = 100, segWidth = 10, segHeight = 10) {
+          super(), this.segWidth = segWidth, this.segHeight = segHeight, this.width = width, this.height = height, this.build();
+        }
+        /**
+         * Refreshes plane coordinates
+         * @private
+         */
+        build() {
+          const total = this.segWidth * this.segHeight, verts = [], uvs = [], indices2 = [], segmentsX = this.segWidth - 1, segmentsY = this.segHeight - 1, sizeX = this.width / segmentsX, sizeY = this.height / segmentsY;
+          for (let i2 = 0; i2 < total; i2++) {
+            const x3 = i2 % this.segWidth, y2 = i2 / this.segWidth | 0;
+            verts.push(x3 * sizeX, y2 * sizeY), uvs.push(x3 / segmentsX, y2 / segmentsY);
+          }
+          const totalSub = segmentsX * segmentsY;
+          for (let i2 = 0; i2 < totalSub; i2++) {
+            const xpos = i2 % segmentsX, ypos = i2 / segmentsX | 0, value = ypos * this.segWidth + xpos, value2 = ypos * this.segWidth + xpos + 1, value3 = (ypos + 1) * this.segWidth + xpos, value4 = (ypos + 1) * this.segWidth + xpos + 1;
+            indices2.push(
+              value,
+              value2,
+              value3,
+              value2,
+              value4,
+              value3
+            );
+          }
+          this.buffers[0].data = new Float32Array(verts), this.buffers[1].data = new Float32Array(uvs), this.indexBuffer.data = new Uint16Array(indices2), this.buffers[0].update(), this.buffers[1].update(), this.indexBuffer.update();
+        }
+      };
     }
   });
 
   // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs
+  var RopeGeometry;
   var init_RopeGeometry = __esm({
     "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/geometry/RopeGeometry.mjs"() {
       init_lib28();
+      RopeGeometry = class extends MeshGeometry {
+        /**
+         * @param width - The width (i.e., thickness) of the rope.
+         * @param points - An array of {@link PIXI.Point} objects to construct this rope.
+         * @param textureScale - By default the rope texture will be stretched to match
+         *     rope length. If textureScale is positive this value will be treated as a scaling
+         *     factor and the texture will preserve its aspect ratio instead. To create a tiling rope
+         *     set baseTexture.wrapMode to {@link PIXI.WRAP_MODES.REPEAT} and use a power of two texture,
+         *     then set textureScale=1 to keep the original texture pixel size.
+         *     In order to reduce alpha channel artifacts provide a larger texture and downsample -
+         *     i.e. set textureScale=0.5 to scale it down twice.
+         */
+        constructor(width = 200, points, textureScale = 0) {
+          super(
+            new Float32Array(points.length * 4),
+            new Float32Array(points.length * 4),
+            new Uint16Array((points.length - 1) * 6)
+          ), this.points = points, this._width = width, this.textureScale = textureScale, this.build();
+        }
+        /**
+         * The width (i.e., thickness) of the rope.
+         * @readonly
+         */
+        get width() {
+          return this._width;
+        }
+        /** Refreshes Rope indices and uvs */
+        build() {
+          const points = this.points;
+          if (!points)
+            return;
+          const vertexBuffer = this.getBuffer("aVertexPosition"), uvBuffer = this.getBuffer("aTextureCoord"), indexBuffer = this.getIndex();
+          if (points.length < 1)
+            return;
+          vertexBuffer.data.length / 4 !== points.length && (vertexBuffer.data = new Float32Array(points.length * 4), uvBuffer.data = new Float32Array(points.length * 4), indexBuffer.data = new Uint16Array((points.length - 1) * 6));
+          const uvs = uvBuffer.data, indices2 = indexBuffer.data;
+          uvs[0] = 0, uvs[1] = 0, uvs[2] = 0, uvs[3] = 1;
+          let amount = 0, prev = points[0];
+          const textureWidth = this._width * this.textureScale, total = points.length;
+          for (let i2 = 0; i2 < total; i2++) {
+            const index = i2 * 4;
+            if (this.textureScale > 0) {
+              const dx = prev.x - points[i2].x, dy = prev.y - points[i2].y, distance = Math.sqrt(dx * dx + dy * dy);
+              prev = points[i2], amount += distance / textureWidth;
+            } else
+              amount = i2 / (total - 1);
+            uvs[index] = amount, uvs[index + 1] = 0, uvs[index + 2] = amount, uvs[index + 3] = 1;
+          }
+          let indexCount = 0;
+          for (let i2 = 0; i2 < total - 1; i2++) {
+            const index = i2 * 2;
+            indices2[indexCount++] = index, indices2[indexCount++] = index + 1, indices2[indexCount++] = index + 2, indices2[indexCount++] = index + 2, indices2[indexCount++] = index + 1, indices2[indexCount++] = index + 3;
+          }
+          uvBuffer.update(), indexBuffer.update(), this.updateVertices();
+        }
+        /** refreshes vertices of Rope mesh */
+        updateVertices() {
+          const points = this.points;
+          if (points.length < 1)
+            return;
+          let lastPoint = points[0], nextPoint, perpX = 0, perpY = 0;
+          const vertices = this.buffers[0].data, total = points.length, halfWidth = this.textureScale > 0 ? this.textureScale * this._width / 2 : this._width / 2;
+          for (let i2 = 0; i2 < total; i2++) {
+            const point = points[i2], index = i2 * 4;
+            i2 < points.length - 1 ? nextPoint = points[i2 + 1] : nextPoint = point, perpY = -(nextPoint.x - lastPoint.x), perpX = nextPoint.y - lastPoint.y;
+            let ratio = (1 - i2 / (total - 1)) * 10;
+            ratio > 1 && (ratio = 1);
+            const perpLength = Math.sqrt(perpX * perpX + perpY * perpY);
+            perpLength < 1e-6 ? (perpX = 0, perpY = 0) : (perpX /= perpLength, perpY /= perpLength, perpX *= halfWidth, perpY *= halfWidth), vertices[index] = point.x + perpX, vertices[index + 1] = point.y + perpY, vertices[index + 2] = point.x - perpX, vertices[index + 3] = point.y - perpY, lastPoint = point;
+          }
+          this.buffers[0].update();
+        }
+        update() {
+          this.textureScale > 0 ? this.build() : this.updateVertices();
+        }
+      };
     }
   });
 
   // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs
+  var SimplePlane;
   var init_SimplePlane = __esm({
     "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimplePlane.mjs"() {
       init_lib9();
       init_lib28();
       init_PlaneGeometry();
+      SimplePlane = class extends Mesh {
+        /**
+         * @param texture - The texture to use on the SimplePlane.
+         * @param verticesX - The number of vertices in the x-axis
+         * @param verticesY - The number of vertices in the y-axis
+         */
+        constructor(texture, verticesX, verticesY) {
+          const planeGeometry = new PlaneGeometry(texture.width, texture.height, verticesX, verticesY), meshMaterial = new MeshMaterial(Texture.WHITE);
+          super(planeGeometry, meshMaterial), this.texture = texture, this.autoResize = true;
+        }
+        /**
+         * Method used for overrides, to do something in case texture frame was changed.
+         * Meshes based on plane can override it and change more details based on texture.
+         */
+        textureUpdated() {
+          this._textureID = this.shader.texture._updateID;
+          const geometry = this.geometry, { width, height } = this.shader.texture;
+          this.autoResize && (geometry.width !== width || geometry.height !== height) && (geometry.width = this.shader.texture.width, geometry.height = this.shader.texture.height, geometry.build());
+        }
+        set texture(value) {
+          this.shader.texture !== value && (this.shader.texture = value, this._textureID = -1, value.baseTexture.valid ? this.textureUpdated() : value.once("update", this.textureUpdated, this));
+        }
+        get texture() {
+          return this.shader.texture;
+        }
+        _render(renderer) {
+          this._textureID !== this.shader.texture._updateID && this.textureUpdated(), super._render(renderer);
+        }
+        destroy(options) {
+          this.shader.texture.off("update", this.textureUpdated, this), super.destroy(options);
+        }
+      };
     }
   });
 
   // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs
+  var DEFAULT_BORDER_SIZE, NineSlicePlane;
   var init_NineSlicePlane = __esm({
     "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/NineSlicePlane.mjs"() {
       init_lib9();
       init_SimplePlane();
+      DEFAULT_BORDER_SIZE = 10;
+      NineSlicePlane = class extends SimplePlane {
+        /**
+         * @param texture - The texture to use on the NineSlicePlane.
+         * @param {number} [leftWidth=10] - size of the left vertical bar (A)
+         * @param {number} [topHeight=10] - size of the top horizontal bar (C)
+         * @param {number} [rightWidth=10] - size of the right vertical bar (B)
+         * @param {number} [bottomHeight=10] - size of the bottom horizontal bar (D)
+         */
+        constructor(texture, leftWidth, topHeight, rightWidth, bottomHeight) {
+          super(Texture.WHITE, 4, 4), this._origWidth = texture.orig.width, this._origHeight = texture.orig.height, this._width = this._origWidth, this._height = this._origHeight, this._leftWidth = leftWidth ?? texture.defaultBorders?.left ?? DEFAULT_BORDER_SIZE, this._rightWidth = rightWidth ?? texture.defaultBorders?.right ?? DEFAULT_BORDER_SIZE, this._topHeight = topHeight ?? texture.defaultBorders?.top ?? DEFAULT_BORDER_SIZE, this._bottomHeight = bottomHeight ?? texture.defaultBorders?.bottom ?? DEFAULT_BORDER_SIZE, this.texture = texture;
+        }
+        textureUpdated() {
+          this._textureID = this.shader.texture._updateID, this._refresh();
+        }
+        get vertices() {
+          return this.geometry.getBuffer("aVertexPosition").data;
+        }
+        set vertices(value) {
+          this.geometry.getBuffer("aVertexPosition").data = value;
+        }
+        /** Updates the horizontal vertices. */
+        updateHorizontalVertices() {
+          const vertices = this.vertices, scale = this._getMinScale();
+          vertices[9] = vertices[11] = vertices[13] = vertices[15] = this._topHeight * scale, vertices[17] = vertices[19] = vertices[21] = vertices[23] = this._height - this._bottomHeight * scale, vertices[25] = vertices[27] = vertices[29] = vertices[31] = this._height;
+        }
+        /** Updates the vertical vertices. */
+        updateVerticalVertices() {
+          const vertices = this.vertices, scale = this._getMinScale();
+          vertices[2] = vertices[10] = vertices[18] = vertices[26] = this._leftWidth * scale, vertices[4] = vertices[12] = vertices[20] = vertices[28] = this._width - this._rightWidth * scale, vertices[6] = vertices[14] = vertices[22] = vertices[30] = this._width;
+        }
+        /**
+         * Returns the smaller of a set of vertical and horizontal scale of nine slice corners.
+         * @returns Smaller number of vertical and horizontal scale.
+         */
+        _getMinScale() {
+          const w3 = this._leftWidth + this._rightWidth, scaleW = this._width > w3 ? 1 : this._width / w3, h3 = this._topHeight + this._bottomHeight, scaleH = this._height > h3 ? 1 : this._height / h3;
+          return Math.min(scaleW, scaleH);
+        }
+        /** The width of the NineSlicePlane, setting this will actually modify the vertices and UV's of this plane. */
+        get width() {
+          return this._width;
+        }
+        set width(value) {
+          this._width = value, this._refresh();
+        }
+        /** The height of the NineSlicePlane, setting this will actually modify the vertices and UV's of this plane. */
+        get height() {
+          return this._height;
+        }
+        set height(value) {
+          this._height = value, this._refresh();
+        }
+        /** The width of the left column. */
+        get leftWidth() {
+          return this._leftWidth;
+        }
+        set leftWidth(value) {
+          this._leftWidth = value, this._refresh();
+        }
+        /** The width of the right column. */
+        get rightWidth() {
+          return this._rightWidth;
+        }
+        set rightWidth(value) {
+          this._rightWidth = value, this._refresh();
+        }
+        /** The height of the top row. */
+        get topHeight() {
+          return this._topHeight;
+        }
+        set topHeight(value) {
+          this._topHeight = value, this._refresh();
+        }
+        /** The height of the bottom row. */
+        get bottomHeight() {
+          return this._bottomHeight;
+        }
+        set bottomHeight(value) {
+          this._bottomHeight = value, this._refresh();
+        }
+        /** Refreshes NineSlicePlane coords. All of them. */
+        _refresh() {
+          const texture = this.texture, uvs = this.geometry.buffers[1].data;
+          this._origWidth = texture.orig.width, this._origHeight = texture.orig.height;
+          const _uvw = 1 / this._origWidth, _uvh = 1 / this._origHeight;
+          uvs[0] = uvs[8] = uvs[16] = uvs[24] = 0, uvs[1] = uvs[3] = uvs[5] = uvs[7] = 0, uvs[6] = uvs[14] = uvs[22] = uvs[30] = 1, uvs[25] = uvs[27] = uvs[29] = uvs[31] = 1, uvs[2] = uvs[10] = uvs[18] = uvs[26] = _uvw * this._leftWidth, uvs[4] = uvs[12] = uvs[20] = uvs[28] = 1 - _uvw * this._rightWidth, uvs[9] = uvs[11] = uvs[13] = uvs[15] = _uvh * this._topHeight, uvs[17] = uvs[19] = uvs[21] = uvs[23] = 1 - _uvh * this._bottomHeight, this.updateHorizontalVertices(), this.updateVerticalVertices(), this.geometry.buffers[0].update(), this.geometry.buffers[1].update();
+        }
+      };
     }
   });
 
   // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs
+  var SimpleMesh;
   var init_SimpleMesh = __esm({
     "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleMesh.mjs"() {
       init_lib9();
       init_lib28();
+      SimpleMesh = class extends Mesh {
+        /**
+         * @param texture - The texture to use
+         * @param {Float32Array} [vertices] - if you want to specify the vertices
+         * @param {Float32Array} [uvs] - if you want to specify the uvs
+         * @param {Uint16Array} [indices] - if you want to specify the indices
+         * @param drawMode - the drawMode, can be any of the Mesh.DRAW_MODES consts
+         */
+        constructor(texture = Texture.EMPTY, vertices, uvs, indices2, drawMode) {
+          const geometry = new MeshGeometry(vertices, uvs, indices2);
+          geometry.getBuffer("aVertexPosition").static = false;
+          const meshMaterial = new MeshMaterial(texture);
+          super(geometry, meshMaterial, null, drawMode), this.autoUpdate = true;
+        }
+        /**
+         * Collection of vertices data.
+         * @type {Float32Array}
+         */
+        get vertices() {
+          return this.geometry.getBuffer("aVertexPosition").data;
+        }
+        set vertices(value) {
+          this.geometry.getBuffer("aVertexPosition").data = value;
+        }
+        _render(renderer) {
+          this.autoUpdate && this.geometry.getBuffer("aVertexPosition").update(), super._render(renderer);
+        }
+      };
     }
   });
 
   // node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs
+  var SimpleRope;
   var init_SimpleRope = __esm({
     "node_modules/.pnpm/@pixi+mesh-extras@7.3.2(@pixi+core@7.3.2)(@pixi+mesh@7.3.2)/node_modules/@pixi/mesh-extras/lib/SimpleRope.mjs"() {
       init_lib9();
       init_lib28();
       init_RopeGeometry();
+      SimpleRope = class extends Mesh {
+        /**
+         * Note: The wrap mode of the texture is set to REPEAT if `textureScale` is positive.
+         * @param texture - The texture to use on the rope.
+         * @param points - An array of {@link PIXI.Point} objects to construct this rope.
+         * @param {number} textureScale - Optional. Positive values scale rope texture
+         * keeping its aspect ratio. You can reduce alpha channel artifacts by providing a larger texture
+         * and downsampling here. If set to zero, texture will be stretched instead.
+         */
+        constructor(texture, points, textureScale = 0) {
+          const ropeGeometry = new RopeGeometry(texture.height, points, textureScale), meshMaterial = new MeshMaterial(texture);
+          textureScale > 0 && (texture.baseTexture.wrapMode = WRAP_MODES.REPEAT), super(ropeGeometry, meshMaterial), this.autoUpdate = true;
+        }
+        _render(renderer) {
+          const geometry = this.geometry;
+          (this.autoUpdate || geometry._width !== this.shader.texture.height) && (geometry._width = this.shader.texture.height, geometry.update()), super._render(renderer);
+        }
+      };
     }
   });
 
@@ -41638,10 +41959,92 @@ void main(void)
   });
 
   // node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs
+  var ParticleContainer;
   var init_ParticleContainer = __esm({
     "node_modules/.pnpm/@pixi+particle-container@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/particle-container/lib/ParticleContainer.mjs"() {
       init_lib9();
       init_lib10();
+      ParticleContainer = class extends Container {
+        /**
+         * @param maxSize - The maximum number of particles that can be rendered by the container.
+         *  Affects size of allocated buffers.
+         * @param properties - The properties of children that should be uploaded to the gpu and applied.
+         * @param {boolean} [properties.vertices=false] - When true, vertices be uploaded and applied.
+         *                  if sprite's ` scale/anchor/trim/frame/orig` is dynamic, please set `true`.
+         * @param {boolean} [properties.position=true] - When true, position be uploaded and applied.
+         * @param {boolean} [properties.rotation=false] - When true, rotation be uploaded and applied.
+         * @param {boolean} [properties.uvs=false] - When true, uvs be uploaded and applied.
+         * @param {boolean} [properties.tint=false] - When true, alpha and tint be uploaded and applied.
+         * @param {number} [batchSize=16384] - Number of particles per batch. If less than maxSize, it uses maxSize instead.
+         * @param {boolean} [autoResize=false] - If true, container allocates more batches in case
+         *  there are more than `maxSize` particles.
+         */
+        constructor(maxSize = 1500, properties, batchSize = 16384, autoResize = false) {
+          super();
+          const maxBatchSize = 16384;
+          batchSize > maxBatchSize && (batchSize = maxBatchSize), this._properties = [false, true, false, false, false], this._maxSize = maxSize, this._batchSize = batchSize, this._buffers = null, this._bufferUpdateIDs = [], this._updateID = 0, this.interactiveChildren = false, this.blendMode = BLEND_MODES.NORMAL, this.autoResize = autoResize, this.roundPixels = true, this.baseTexture = null, this.setProperties(properties), this._tintColor = new Color(0), this.tintRgb = new Float32Array(3), this.tint = 16777215;
+        }
+        /**
+         * Sets the private properties array to dynamic / static based on the passed properties object
+         * @param properties - The properties to be uploaded
+         */
+        setProperties(properties) {
+          properties && (this._properties[0] = "vertices" in properties || "scale" in properties ? !!properties.vertices || !!properties.scale : this._properties[0], this._properties[1] = "position" in properties ? !!properties.position : this._properties[1], this._properties[2] = "rotation" in properties ? !!properties.rotation : this._properties[2], this._properties[3] = "uvs" in properties ? !!properties.uvs : this._properties[3], this._properties[4] = "tint" in properties || "alpha" in properties ? !!properties.tint || !!properties.alpha : this._properties[4]);
+        }
+        updateTransform() {
+          this.displayObjectUpdateTransform();
+        }
+        /**
+         * The tint applied to the container. This is a hex value.
+         * A value of 0xFFFFFF will remove any tint effect.
+         * IMPORTANT: This is a WebGL only feature and will be ignored by the canvas renderer.
+         * @default 0xFFFFFF
+         */
+        get tint() {
+          return this._tintColor.value;
+        }
+        set tint(value) {
+          this._tintColor.setValue(value), this._tintColor.toRgbArray(this.tintRgb);
+        }
+        /**
+         * Renders the container using the WebGL renderer.
+         * @param renderer - The WebGL renderer.
+         */
+        render(renderer) {
+          !this.visible || this.worldAlpha <= 0 || !this.children.length || !this.renderable || (this.baseTexture || (this.baseTexture = this.children[0]._texture.baseTexture, this.baseTexture.valid || this.baseTexture.once("update", () => this.onChildrenChange(0))), renderer.batch.setObjectRenderer(renderer.plugins.particle), renderer.plugins.particle.render(this));
+        }
+        /**
+         * Set the flag that static data should be updated to true
+         * @param smallestChildIndex - The smallest child index.
+         */
+        onChildrenChange(smallestChildIndex) {
+          const bufferIndex = Math.floor(smallestChildIndex / this._batchSize);
+          for (; this._bufferUpdateIDs.length < bufferIndex; )
+            this._bufferUpdateIDs.push(0);
+          this._bufferUpdateIDs[bufferIndex] = ++this._updateID;
+        }
+        dispose() {
+          if (this._buffers) {
+            for (let i2 = 0; i2 < this._buffers.length; ++i2)
+              this._buffers[i2].destroy();
+            this._buffers = null;
+          }
+        }
+        /**
+         * Destroys the container
+         * @param options - Options parameter. A boolean will act as if all options
+         *  have been set to that value
+         * @param {boolean} [options.children=false] - if set to true, all the children will have their
+         *  destroy method called as well. 'options' will be passed on to those calls.
+         * @param {boolean} [options.texture=false] - Only used for child Sprites if options.children is set to true
+         *  Should it destroy the texture of the child sprite
+         * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true
+         *  Should it destroy the base texture of the child sprite
+         */
+        destroy(options) {
+          super.destroy(options), this.dispose(), this._properties = null, this._buffers = null, this._bufferUpdateIDs = null;
+        }
+      };
     }
   });
 
@@ -43425,8 +43828,26 @@ void main(void){
   });
 
   // node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/TimeLimiter.mjs
+  var TimeLimiter;
   var init_TimeLimiter = __esm({
     "node_modules/.pnpm/@pixi+prepare@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+graphics@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/prepare/lib/TimeLimiter.mjs"() {
+      TimeLimiter = class {
+        /** @param maxMilliseconds - The maximum milliseconds that can be spent preparing items each frame. */
+        constructor(maxMilliseconds) {
+          this.maxMilliseconds = maxMilliseconds, this.frameStart = 0;
+        }
+        /** Resets any counting properties to start fresh on a new frame. */
+        beginFrame() {
+          this.frameStart = Date.now();
+        }
+        /**
+         * Checks to see if another item can be uploaded. This should only be called once per item.
+         * @returns - If the item is allowed to be uploaded.
+         */
+        allowedToUpload() {
+          return Date.now() - this.frameStart < this.maxMilliseconds;
+        }
+      };
     }
   });
 
@@ -43442,10 +43863,150 @@ void main(void){
   });
 
   // node_modules/.pnpm/@pixi+sprite-animated@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs
+  var AnimatedSprite;
   var init_AnimatedSprite = __esm({
     "node_modules/.pnpm/@pixi+sprite-animated@7.3.2(@pixi+core@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-animated/lib/AnimatedSprite.mjs"() {
       init_lib9();
       init_lib11();
+      AnimatedSprite = class _AnimatedSprite extends Sprite {
+        /**
+         * @param textures - An array of {@link PIXI.Texture} or frame
+         *  objects that make up the animation.
+         * @param {boolean} [autoUpdate=true] - Whether to use Ticker.shared to auto update animation time.
+         */
+        constructor(textures, autoUpdate = true) {
+          super(textures[0] instanceof Texture ? textures[0] : textures[0].texture), this._textures = null, this._durations = null, this._autoUpdate = autoUpdate, this._isConnectedToTicker = false, this.animationSpeed = 1, this.loop = true, this.updateAnchor = false, this.onComplete = null, this.onFrameChange = null, this.onLoop = null, this._currentTime = 0, this._playing = false, this._previousFrame = null, this.textures = textures;
+        }
+        /** Stops the AnimatedSprite. */
+        stop() {
+          this._playing && (this._playing = false, this._autoUpdate && this._isConnectedToTicker && (Ticker.shared.remove(this.update, this), this._isConnectedToTicker = false));
+        }
+        /** Plays the AnimatedSprite. */
+        play() {
+          this._playing || (this._playing = true, this._autoUpdate && !this._isConnectedToTicker && (Ticker.shared.add(this.update, this, UPDATE_PRIORITY.HIGH), this._isConnectedToTicker = true));
+        }
+        /**
+         * Stops the AnimatedSprite and goes to a specific frame.
+         * @param frameNumber - Frame index to stop at.
+         */
+        gotoAndStop(frameNumber) {
+          this.stop(), this.currentFrame = frameNumber;
+        }
+        /**
+         * Goes to a specific frame and begins playing the AnimatedSprite.
+         * @param frameNumber - Frame index to start at.
+         */
+        gotoAndPlay(frameNumber) {
+          this.currentFrame = frameNumber, this.play();
+        }
+        /**
+         * Updates the object transform for rendering.
+         * @param deltaTime - Time since last tick.
+         */
+        update(deltaTime) {
+          if (!this._playing)
+            return;
+          const elapsed = this.animationSpeed * deltaTime, previousFrame = this.currentFrame;
+          if (this._durations !== null) {
+            let lag = this._currentTime % 1 * this._durations[this.currentFrame];
+            for (lag += elapsed / 60 * 1e3; lag < 0; )
+              this._currentTime--, lag += this._durations[this.currentFrame];
+            const sign2 = Math.sign(this.animationSpeed * deltaTime);
+            for (this._currentTime = Math.floor(this._currentTime); lag >= this._durations[this.currentFrame]; )
+              lag -= this._durations[this.currentFrame] * sign2, this._currentTime += sign2;
+            this._currentTime += lag / this._durations[this.currentFrame];
+          } else
+            this._currentTime += elapsed;
+          this._currentTime < 0 && !this.loop ? (this.gotoAndStop(0), this.onComplete && this.onComplete()) : this._currentTime >= this._textures.length && !this.loop ? (this.gotoAndStop(this._textures.length - 1), this.onComplete && this.onComplete()) : previousFrame !== this.currentFrame && (this.loop && this.onLoop && (this.animationSpeed > 0 && this.currentFrame < previousFrame || this.animationSpeed < 0 && this.currentFrame > previousFrame) && this.onLoop(), this.updateTexture());
+        }
+        /** Updates the displayed texture to match the current frame index. */
+        updateTexture() {
+          const currentFrame = this.currentFrame;
+          this._previousFrame !== currentFrame && (this._previousFrame = currentFrame, this._texture = this._textures[currentFrame], this._textureID = -1, this._textureTrimmedID = -1, this._cachedTint = 16777215, this.uvs = this._texture._uvs.uvsFloat32, this.updateAnchor && this._anchor.copyFrom(this._texture.defaultAnchor), this.onFrameChange && this.onFrameChange(this.currentFrame));
+        }
+        /**
+         * Stops the AnimatedSprite and destroys it.
+         * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
+         *  have been set to that value.
+         * @param {boolean} [options.children=false] - If set to true, all the children will have their destroy
+         *      method called as well. 'options' will be passed on to those calls.
+         * @param {boolean} [options.texture=false] - Should it destroy the current texture of the sprite as well.
+         * @param {boolean} [options.baseTexture=false] - Should it destroy the base texture of the sprite as well.
+         */
+        destroy(options) {
+          this.stop(), super.destroy(options), this.onComplete = null, this.onFrameChange = null, this.onLoop = null;
+        }
+        /**
+         * A short hand way of creating an AnimatedSprite from an array of frame ids.
+         * @param frames - The array of frames ids the AnimatedSprite will use as its texture frames.
+         * @returns - The new animated sprite with the specified frames.
+         */
+        static fromFrames(frames) {
+          const textures = [];
+          for (let i2 = 0; i2 < frames.length; ++i2)
+            textures.push(Texture.from(frames[i2]));
+          return new _AnimatedSprite(textures);
+        }
+        /**
+         * A short hand way of creating an AnimatedSprite from an array of image ids.
+         * @param images - The array of image urls the AnimatedSprite will use as its texture frames.
+         * @returns The new animate sprite with the specified images as frames.
+         */
+        static fromImages(images) {
+          const textures = [];
+          for (let i2 = 0; i2 < images.length; ++i2)
+            textures.push(Texture.from(images[i2]));
+          return new _AnimatedSprite(textures);
+        }
+        /**
+         * The total number of frames in the AnimatedSprite. This is the same as number of textures
+         * assigned to the AnimatedSprite.
+         * @readonly
+         * @default 0
+         */
+        get totalFrames() {
+          return this._textures.length;
+        }
+        /** The array of textures used for this AnimatedSprite. */
+        get textures() {
+          return this._textures;
+        }
+        set textures(value) {
+          if (value[0] instanceof Texture)
+            this._textures = value, this._durations = null;
+          else {
+            this._textures = [], this._durations = [];
+            for (let i2 = 0; i2 < value.length; i2++)
+              this._textures.push(value[i2].texture), this._durations.push(value[i2].time);
+          }
+          this._previousFrame = null, this.gotoAndStop(0), this.updateTexture();
+        }
+        /** The AnimatedSprite's current frame index. */
+        get currentFrame() {
+          let currentFrame = Math.floor(this._currentTime) % this._textures.length;
+          return currentFrame < 0 && (currentFrame += this._textures.length), currentFrame;
+        }
+        set currentFrame(value) {
+          if (value < 0 || value > this.totalFrames - 1)
+            throw new Error(`[AnimatedSprite]: Invalid frame index value ${value}, expected to be between 0 and totalFrames ${this.totalFrames}.`);
+          const previousFrame = this.currentFrame;
+          this._currentTime = value, previousFrame !== this.currentFrame && this.updateTexture();
+        }
+        /**
+         * Indicates if the AnimatedSprite is currently playing.
+         * @readonly
+         */
+        get playing() {
+          return this._playing;
+        }
+        /** Whether to use Ticker.shared to auto update animation time. */
+        get autoUpdate() {
+          return this._autoUpdate;
+        }
+        set autoUpdate(value) {
+          value !== this._autoUpdate && (this._autoUpdate = value, !this._autoUpdate && this._isConnectedToTicker ? (Ticker.shared.remove(this.update, this), this._isConnectedToTicker = false) : this._autoUpdate && !this._isConnectedToTicker && this._playing && (Ticker.shared.add(this.update, this), this._isConnectedToTicker = true));
+        }
+      };
     }
   });
 
@@ -43457,12 +44018,136 @@ void main(void){
   });
 
   // node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs
-  var tempPoint3;
+  var tempPoint3, TilingSprite;
   var init_TilingSprite = __esm({
     "node_modules/.pnpm/@pixi+sprite-tiling@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)/node_modules/@pixi/sprite-tiling/lib/TilingSprite.mjs"() {
       init_lib9();
       init_lib11();
       tempPoint3 = new Point();
+      TilingSprite = class _TilingSprite extends Sprite {
+        /**
+         * Note: The wrap mode of the texture is forced to REPEAT on render if the size of the texture
+         * is a power of two, the texture's wrap mode is CLAMP, and the texture hasn't been bound yet.
+         * @param texture - The texture of the tiling sprite.
+         * @param width - The width of the tiling sprite.
+         * @param height - The height of the tiling sprite.
+         */
+        constructor(texture, width = 100, height = 100) {
+          super(texture), this.tileTransform = new Transform(), this._width = width, this._height = height, this.uvMatrix = this.texture.uvMatrix || new TextureMatrix(texture), this.pluginName = "tilingSprite", this.uvRespectAnchor = false;
+        }
+        /**
+         * Changes frame clamping in corresponding textureTransform, shortcut
+         * Change to -0.5 to add a pixel to the edge, recommended for transparent trimmed textures in atlas
+         * @default 0.5
+         * @member {number}
+         */
+        get clampMargin() {
+          return this.uvMatrix.clampMargin;
+        }
+        set clampMargin(value) {
+          this.uvMatrix.clampMargin = value, this.uvMatrix.update(true);
+        }
+        /** The scaling of the image that is being tiled. */
+        get tileScale() {
+          return this.tileTransform.scale;
+        }
+        set tileScale(value) {
+          this.tileTransform.scale.copyFrom(value);
+        }
+        /** The offset of the image that is being tiled. */
+        get tilePosition() {
+          return this.tileTransform.position;
+        }
+        set tilePosition(value) {
+          this.tileTransform.position.copyFrom(value);
+        }
+        /**
+         * @protected
+         */
+        _onTextureUpdate() {
+          this.uvMatrix && (this.uvMatrix.texture = this._texture), this._cachedTint = 16777215;
+        }
+        /**
+         * Renders the object using the WebGL renderer
+         * @param renderer - The renderer
+         */
+        _render(renderer) {
+          const texture = this._texture;
+          !texture || !texture.valid || (this.tileTransform.updateLocalTransform(), this.uvMatrix.update(), renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]), renderer.plugins[this.pluginName].render(this));
+        }
+        /** Updates the bounds of the tiling sprite. */
+        _calculateBounds() {
+          const minX = this._width * -this._anchor._x, minY = this._height * -this._anchor._y, maxX = this._width * (1 - this._anchor._x), maxY = this._height * (1 - this._anchor._y);
+          this._bounds.addFrame(this.transform, minX, minY, maxX, maxY);
+        }
+        /**
+         * Gets the local bounds of the sprite object.
+         * @param rect - Optional output rectangle.
+         * @returns The bounds.
+         */
+        getLocalBounds(rect) {
+          return this.children.length === 0 ? (this._bounds.minX = this._width * -this._anchor._x, this._bounds.minY = this._height * -this._anchor._y, this._bounds.maxX = this._width * (1 - this._anchor._x), this._bounds.maxY = this._height * (1 - this._anchor._y), rect || (this._localBoundsRect || (this._localBoundsRect = new Rectangle()), rect = this._localBoundsRect), this._bounds.getRectangle(rect)) : super.getLocalBounds.call(this, rect);
+        }
+        /**
+         * Checks if a point is inside this tiling sprite.
+         * @param point - The point to check.
+         * @returns Whether or not the sprite contains the point.
+         */
+        containsPoint(point) {
+          this.worldTransform.applyInverse(point, tempPoint3);
+          const width = this._width, height = this._height, x1 = -width * this.anchor._x;
+          if (tempPoint3.x >= x1 && tempPoint3.x < x1 + width) {
+            const y1 = -height * this.anchor._y;
+            if (tempPoint3.y >= y1 && tempPoint3.y < y1 + height)
+              return true;
+          }
+          return false;
+        }
+        /**
+         * Destroys this sprite and optionally its texture and children
+         * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
+         *  have been set to that value
+         * @param {boolean} [options.children=false] - if set to true, all the children will have their destroy
+         *      method called as well. 'options' will be passed on to those calls.
+         * @param {boolean} [options.texture=false] - Should it destroy the current texture of the sprite as well
+         * @param {boolean} [options.baseTexture=false] - Should it destroy the base texture of the sprite as well
+         */
+        destroy(options) {
+          super.destroy(options), this.tileTransform = null, this.uvMatrix = null;
+        }
+        /**
+         * Helper function that creates a new tiling sprite based on the source you provide.
+         * The source can be - frame id, image url, video url, canvas element, video element, base texture
+         * @static
+         * @param {string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source - Source to create texture from
+         * @param {object} options - See {@link PIXI.BaseTexture}'s constructor for options.
+         * @param {number} options.width - required width of the tiling sprite
+         * @param {number} options.height - required height of the tiling sprite
+         * @returns {PIXI.TilingSprite} The newly created texture
+         */
+        static from(source, options) {
+          const texture = source instanceof Texture ? source : Texture.from(source, options);
+          return new _TilingSprite(
+            texture,
+            options.width,
+            options.height
+          );
+        }
+        /** The width of the sprite, setting this will actually modify the scale to achieve the value set. */
+        get width() {
+          return this._width;
+        }
+        set width(value) {
+          this._width = value;
+        }
+        /** The height of the TilingSprite, setting this will actually modify the scale to achieve the value set. */
+        get height() {
+          return this._height;
+        }
+        set height(value) {
+          this._height = value;
+        }
+      };
     }
   });
 
@@ -44540,7 +45225,7 @@ void main(void)\r
   });
 
   // node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapText.mjs
-  var pageMeshDataDefaultPageMeshData, pageMeshDataMSDFPageMeshData, charRenderDataPool, _BitmapText;
+  var pageMeshDataDefaultPageMeshData, pageMeshDataMSDFPageMeshData, charRenderDataPool, _BitmapText, BitmapText;
   var init_BitmapText = __esm({
     "node_modules/.pnpm/@pixi+text-bitmap@7.3.2(@pixi+assets@7.3.2)(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+mesh@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-bitmap/lib/BitmapText.mjs"() {
       init_lib9();
@@ -44865,6 +45550,7 @@ void main(void)\r
         maxWidth: 0,
         letterSpacing: 0
       };
+      BitmapText = _BitmapText;
     }
   });
 
@@ -45206,7 +45892,7 @@ void main(void)\r
   });
 
   // node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/HTMLText.mjs
-  var _HTMLText;
+  var _HTMLText, HTMLText;
   var init_HTMLText = __esm({
     "node_modules/.pnpm/@pixi+text-html@7.3.2(@pixi+core@7.3.2)(@pixi+display@7.3.2)(@pixi+sprite@7.3.2)(@pixi+text@7.3.2)/node_modules/@pixi/text-html/lib/HTMLText.mjs"() {
       init_lib9();
@@ -45414,6 +46100,7 @@ void main(void)\r
       _HTMLText.defaultMaxWidth = 2024, /** Default maxHeight, set at construction */
       _HTMLText.defaultMaxHeight = 2024, /** Default autoResolution for all HTMLText objects */
       _HTMLText.defaultAutoResolution = true;
+      HTMLText = _HTMLText;
     }
   });
 
@@ -45426,6 +46113,247 @@ void main(void)\r
   });
 
   // node_modules/.pnpm/pixi.js@7.3.2/node_modules/pixi.js/lib/index.mjs
+  var lib_exports2 = {};
+  __export(lib_exports2, {
+    ALPHA_MODES: () => ALPHA_MODES,
+    AbstractMultiResource: () => AbstractMultiResource,
+    AccessibilityManager: () => AccessibilityManager,
+    AlphaFilter: () => AlphaFilter,
+    AnimatedSprite: () => AnimatedSprite,
+    Application: () => Application,
+    ArrayResource: () => ArrayResource,
+    Assets: () => Assets,
+    AssetsClass: () => AssetsClass,
+    Attribute: () => Attribute,
+    BLEND_MODES: () => BLEND_MODES,
+    BUFFER_BITS: () => BUFFER_BITS,
+    BUFFER_TYPE: () => BUFFER_TYPE,
+    BackgroundSystem: () => BackgroundSystem,
+    BaseImageResource: () => BaseImageResource,
+    BasePrepare: () => BasePrepare,
+    BaseRenderTexture: () => BaseRenderTexture,
+    BaseTexture: () => BaseTexture,
+    BatchDrawCall: () => BatchDrawCall,
+    BatchGeometry: () => BatchGeometry,
+    BatchRenderer: () => BatchRenderer,
+    BatchShaderGenerator: () => BatchShaderGenerator,
+    BatchSystem: () => BatchSystem,
+    BatchTextureArray: () => BatchTextureArray,
+    BitmapFont: () => BitmapFont,
+    BitmapFontData: () => BitmapFontData,
+    BitmapText: () => BitmapText,
+    BlobResource: () => BlobResource,
+    BlurFilter: () => BlurFilter,
+    BlurFilterPass: () => BlurFilterPass,
+    Bounds: () => Bounds,
+    BrowserAdapter: () => BrowserAdapter,
+    Buffer: () => Buffer3,
+    BufferResource: () => BufferResource,
+    BufferSystem: () => BufferSystem,
+    CLEAR_MODES: () => CLEAR_MODES,
+    COLOR_MASK_BITS: () => COLOR_MASK_BITS,
+    Cache: () => Cache,
+    CanvasResource: () => CanvasResource,
+    Circle: () => Circle,
+    Color: () => Color,
+    ColorMatrixFilter: () => ColorMatrixFilter,
+    CompressedTextureResource: () => CompressedTextureResource,
+    Container: () => Container,
+    ContextSystem: () => ContextSystem,
+    CountLimiter: () => CountLimiter,
+    CubeResource: () => CubeResource,
+    DEG_TO_RAD: () => DEG_TO_RAD,
+    DRAW_MODES: () => DRAW_MODES,
+    DisplacementFilter: () => DisplacementFilter,
+    DisplayObject: () => DisplayObject,
+    ENV: () => ENV,
+    Ellipse: () => Ellipse,
+    EventBoundary: () => EventBoundary,
+    EventSystem: () => EventSystem,
+    ExtensionType: () => ExtensionType,
+    Extract: () => Extract,
+    FORMATS: () => FORMATS,
+    FORMATS_TO_COMPONENTS: () => FORMATS_TO_COMPONENTS,
+    FXAAFilter: () => FXAAFilter,
+    FederatedDisplayObject: () => FederatedDisplayObject,
+    FederatedEvent: () => FederatedEvent,
+    FederatedMouseEvent: () => FederatedMouseEvent,
+    FederatedPointerEvent: () => FederatedPointerEvent,
+    FederatedWheelEvent: () => FederatedWheelEvent,
+    FillStyle: () => FillStyle,
+    Filter: () => Filter,
+    FilterState: () => FilterState,
+    FilterSystem: () => FilterSystem,
+    Framebuffer: () => Framebuffer,
+    FramebufferSystem: () => FramebufferSystem,
+    GC_MODES: () => GC_MODES,
+    GLFramebuffer: () => GLFramebuffer,
+    GLProgram: () => GLProgram,
+    GLTexture: () => GLTexture,
+    GRAPHICS_CURVES: () => GRAPHICS_CURVES,
+    GenerateTextureSystem: () => GenerateTextureSystem,
+    Geometry: () => Geometry,
+    GeometrySystem: () => GeometrySystem,
+    Graphics: () => Graphics,
+    GraphicsData: () => GraphicsData,
+    GraphicsGeometry: () => GraphicsGeometry,
+    HTMLText: () => HTMLText,
+    HTMLTextStyle: () => HTMLTextStyle,
+    IGLUniformData: () => IGLUniformData,
+    INSTALLED: () => INSTALLED,
+    INTERNAL_FORMATS: () => INTERNAL_FORMATS,
+    INTERNAL_FORMAT_TO_BYTES_PER_PIXEL: () => INTERNAL_FORMAT_TO_BYTES_PER_PIXEL,
+    ImageBitmapResource: () => ImageBitmapResource,
+    ImageResource: () => ImageResource,
+    LINE_CAP: () => LINE_CAP,
+    LINE_JOIN: () => LINE_JOIN,
+    LineStyle: () => LineStyle,
+    LoaderParserPriority: () => LoaderParserPriority,
+    MASK_TYPES: () => MASK_TYPES,
+    MIPMAP_MODES: () => MIPMAP_MODES,
+    MSAA_QUALITY: () => MSAA_QUALITY,
+    MaskData: () => MaskData,
+    MaskSystem: () => MaskSystem,
+    Matrix: () => Matrix,
+    Mesh: () => Mesh,
+    MeshBatchUvs: () => MeshBatchUvs,
+    MeshGeometry: () => MeshGeometry,
+    MeshMaterial: () => MeshMaterial,
+    MultisampleSystem: () => MultisampleSystem,
+    NineSlicePlane: () => NineSlicePlane,
+    NoiseFilter: () => NoiseFilter,
+    ObjectRenderer: () => ObjectRenderer,
+    ObjectRendererSystem: () => ObjectRendererSystem,
+    ObservablePoint: () => ObservablePoint,
+    PI_2: () => PI_2,
+    PRECISION: () => PRECISION,
+    ParticleContainer: () => ParticleContainer,
+    ParticleRenderer: () => ParticleRenderer,
+    PlaneGeometry: () => PlaneGeometry,
+    PluginSystem: () => PluginSystem,
+    Point: () => Point,
+    Polygon: () => Polygon,
+    Prepare: () => Prepare,
+    Program: () => Program,
+    ProjectionSystem: () => ProjectionSystem,
+    Quad: () => Quad,
+    QuadUv: () => QuadUv,
+    RAD_TO_DEG: () => RAD_TO_DEG,
+    RENDERER_TYPE: () => RENDERER_TYPE,
+    Rectangle: () => Rectangle,
+    RenderTexture: () => RenderTexture,
+    RenderTexturePool: () => RenderTexturePool,
+    RenderTextureSystem: () => RenderTextureSystem,
+    Renderer: () => Renderer,
+    ResizePlugin: () => ResizePlugin,
+    Resource: () => Resource,
+    RopeGeometry: () => RopeGeometry,
+    RoundedRectangle: () => RoundedRectangle,
+    Runner: () => Runner,
+    SAMPLER_TYPES: () => SAMPLER_TYPES,
+    SCALE_MODES: () => SCALE_MODES,
+    SHAPES: () => SHAPES,
+    SVGResource: () => SVGResource,
+    ScissorSystem: () => ScissorSystem,
+    Shader: () => Shader,
+    ShaderSystem: () => ShaderSystem,
+    SimpleMesh: () => SimpleMesh,
+    SimplePlane: () => SimplePlane,
+    SimpleRope: () => SimpleRope,
+    Sprite: () => Sprite,
+    SpriteMaskFilter: () => SpriteMaskFilter,
+    Spritesheet: () => Spritesheet,
+    StartupSystem: () => StartupSystem,
+    State: () => State2,
+    StateSystem: () => StateSystem,
+    StencilSystem: () => StencilSystem,
+    SystemManager: () => SystemManager,
+    TARGETS: () => TARGETS,
+    TEXT_GRADIENT: () => TEXT_GRADIENT,
+    TYPES: () => TYPES,
+    TYPES_TO_BYTES_PER_COMPONENT: () => TYPES_TO_BYTES_PER_COMPONENT,
+    TYPES_TO_BYTES_PER_PIXEL: () => TYPES_TO_BYTES_PER_PIXEL,
+    TemporaryDisplayObject: () => TemporaryDisplayObject,
+    Text: () => Text,
+    TextFormat: () => TextFormat,
+    TextMetrics: () => TextMetrics,
+    TextStyle: () => TextStyle,
+    Texture: () => Texture,
+    TextureGCSystem: () => TextureGCSystem,
+    TextureMatrix: () => TextureMatrix,
+    TextureSystem: () => TextureSystem,
+    TextureUvs: () => TextureUvs,
+    Ticker: () => Ticker,
+    TickerPlugin: () => TickerPlugin,
+    TilingSprite: () => TilingSprite,
+    TilingSpriteRenderer: () => TilingSpriteRenderer,
+    TimeLimiter: () => TimeLimiter,
+    Transform: () => Transform,
+    TransformFeedback: () => TransformFeedback,
+    TransformFeedbackSystem: () => TransformFeedbackSystem,
+    UPDATE_PRIORITY: () => UPDATE_PRIORITY,
+    UniformGroup: () => UniformGroup,
+    VERSION: () => VERSION2,
+    VideoResource: () => VideoResource,
+    ViewSystem: () => ViewSystem,
+    ViewableBuffer: () => ViewableBuffer,
+    WRAP_MODES: () => WRAP_MODES,
+    XMLFormat: () => XMLFormat,
+    XMLStringFormat: () => XMLStringFormat,
+    accessibleTarget: () => accessibleTarget,
+    autoDetectFormat: () => autoDetectFormat,
+    autoDetectRenderer: () => autoDetectRenderer,
+    autoDetectResource: () => autoDetectResource,
+    cacheTextureArray: () => cacheTextureArray,
+    checkDataUrl: () => checkDataUrl,
+    checkExtension: () => checkExtension,
+    checkMaxIfStatementsInShader: () => checkMaxIfStatementsInShader,
+    convertToList: () => convertToList,
+    copySearchParams: () => copySearchParams,
+    createStringVariations: () => createStringVariations,
+    createTexture: () => createTexture,
+    createUBOElements: () => createUBOElements,
+    curves: () => curves,
+    defaultFilterVertex: () => defaultFilterVertex,
+    defaultVertex: () => defaultVertex4,
+    detectAvif: () => detectAvif,
+    detectCompressedTextures: () => detectCompressedTextures,
+    detectDefaults: () => detectDefaults,
+    detectMp4: () => detectMp4,
+    detectOgv: () => detectOgv,
+    detectWebm: () => detectWebm,
+    detectWebp: () => detectWebp,
+    extensions: () => extensions2,
+    filters: () => filters,
+    generateProgram: () => generateProgram,
+    generateUniformBufferSync: () => generateUniformBufferSync,
+    getFontFamilyName: () => getFontFamilyName,
+    getTestContext: () => getTestContext,
+    getUBOData: () => getUBOData,
+    graphicsUtils: () => graphicsUtils,
+    groupD8: () => groupD8,
+    isMobile: () => isMobile2,
+    isSingleItem: () => isSingleItem,
+    loadBitmapFont: () => loadBitmapFont,
+    loadDDS: () => loadDDS,
+    loadImageBitmap: () => loadImageBitmap,
+    loadJson: () => loadJson,
+    loadKTX: () => loadKTX,
+    loadSVG: () => loadSVG,
+    loadTextures: () => loadTextures,
+    loadTxt: () => loadTxt,
+    loadVideo: () => loadVideo,
+    loadWebFont: () => loadWebFont,
+    parseDDS: () => parseDDS,
+    parseKTX: () => parseKTX,
+    resolveCompressedTextureUrl: () => resolveCompressedTextureUrl,
+    resolveTextureUrl: () => resolveTextureUrl,
+    settings: () => settings,
+    spritesheetAsset: () => spritesheetAsset,
+    uniformParsers: () => uniformParsers,
+    unsafeEvalSupported: () => unsafeEvalSupported,
+    utils: () => lib_exports
+  });
   var init_lib38 = __esm({
     "node_modules/.pnpm/pixi.js@7.3.2/node_modules/pixi.js/lib/index.mjs"() {
       init_lib12();
@@ -45500,8 +46428,18 @@ void main(void)\r
   function setupPixiCanvas(world3) {
     const app = world3.get(Application);
     document.body.appendChild(app.view);
-    const screen = new FixedSizeContainer(256, 256);
+    const screen = new FixedSizeContainer(1e3 * 19 / 9, 1e3);
     screen.sortableChildren = true;
+    const sprite = new Sprite(
+      Texture.from(window.DIST_URL + "/assets/background.jpg")
+    );
+    sprite.KEEP_ALIVE = true;
+    sprite.width = 1e3 * 19 / 9;
+    sprite.height = 1e3;
+    world3.add(sprite.width, "screenWidth");
+    world3.add(sprite.height, "screenHeight");
+    sprite.zIndex = -1;
+    screen.addChild(sprite);
     world3.add(screen, "screen");
     app.stage.addChild(screen);
     resize(app);
@@ -45514,6 +46452,8 @@ void main(void)\r
       "use strict";
       init_lib38();
       init_resize();
+      init_lib38();
+      window.pixi = lib_exports2;
     }
   });
 
@@ -45567,7 +46507,7 @@ void main(void)\r
           this.screen = this.world.get(Application).stage.getChildAt(0);
         }
         update() {
-          const currentChildren = this.screen.children.slice();
+          const currentChildren = this.screen.children.slice().filter((obj) => !obj.KEEP_ALIVE);
           this.entities.static.forEach((ent) => {
             const el = ent.get(Container);
             const idx = currentChildren.indexOf(el);
@@ -45909,7 +46849,7 @@ void main(void)\r
               return;
             window.addEventListener(
               "keydown",
-              (e2) => input.requestInputMethodChange("KBM")
+              (e3) => input.requestInputMethodChange("KBM")
             );
           },
           () => !_InputMethod.isMobile()
@@ -45980,20 +46920,20 @@ void main(void)\r
           this.analog.set(input, value);
         }
         init() {
-          window.addEventListener("keydown", (e2) => {
-            const { code } = e2;
+          window.addEventListener("keydown", (e3) => {
+            const { code } = e3;
             if (this.digital.JUST_PRESSED.has(code) || this.digital.PRESSED.has(code))
               return;
             this.digitalInputPressed(code);
           });
-          window.addEventListener("keyup", (e2) => {
-            this.digitalInputReleased(e2.code);
+          window.addEventListener("keyup", (e3) => {
+            this.digitalInputReleased(e3.code);
           });
-          window.addEventListener("mousedown", (e2) => {
-            this.digitalInputPressed(`Mouse${e2.button}`);
+          window.addEventListener("mousedown", (e3) => {
+            this.digitalInputPressed(`Mouse${e3.button}`);
           });
-          window.addEventListener("mouseup", (e2) => {
-            this.digitalInputReleased(`Mouse${e2.button}`);
+          window.addEventListener("mouseup", (e3) => {
+            this.digitalInputReleased(`Mouse${e3.button}`);
           });
           const mouseMovementParams = [
             ["MouseX", "clientX"],
@@ -46001,62 +46941,79 @@ void main(void)\r
             ["MouseY", "clientY"],
             ["MouseYDelta", "movementY"]
           ];
-          window.addEventListener("mousemove", (e2) => {
+          window.addEventListener("mousemove", (e3) => {
             for (const [input, key] of mouseMovementParams) {
-              this.setAnalog(input, e2[key]);
+              this.setAnalog(input, e3[key]);
             }
           });
-          window.addEventListener("wheel", (e2) => {
-            this.setAnalog("MouseScrollDelta", e2.deltaY);
+          window.addEventListener("wheel", (e3) => {
+            this.setAnalog("MouseScrollDelta", e3.deltaY);
           });
-          window.addEventListener("gamepadconnected", (e2) => {
-            this.connectedGamepads.push(e2.gamepad.index);
-            this.defaultGamepad = e2.gamepad.index;
+          window.addEventListener("gamepadconnected", (e3) => {
+            this.connectedGamepads.push(e3.gamepad.index);
+            this.defaultGamepad = e3.gamepad.index;
           });
-          window.addEventListener("gamepaddisconnected", (e2) => {
+          window.addEventListener("gamepaddisconnected", (e3) => {
             this.connectedGamepads = this.connectedGamepads.filter(
-              (gpi) => gpi !== e2.gamepad.index
+              (gpi) => gpi !== e3.gamepad.index
             );
-            if (this.defaultGamepad === e2.gamepad.index) {
+            if (this.defaultGamepad === e3.gamepad.index) {
               this.defaultGamepad = null;
             }
           });
-          window.addEventListener("joystickconnected", (e2) => {
-            e2.detail.joystick.addEventListener(
+          window.addEventListener("joystickconnected", (e3) => {
+            e3.detail.joystick.addEventListener(
               "inputchange",
               ({ detail: { x: x3, y: y2, angle, full } }) => {
-                this.setAnalog(`Joystick${e2.detail.joystickId}-X`, x3);
-                this.setAnalog(`Joystick${e2.detail.joystickId}-Y`, y2);
-                this.setAnalog(`Joystick${e2.detail.joystickId}-Angle`, angle);
-                this.setAnalog(`Joystick${e2.detail.joystickId}-FireX`, x3);
-                this.setAnalog(`Joystick${e2.detail.joystickId}-FireY`, y2);
-                this.setAnalog(
-                  `Joystick${e2.detail.joystickId}-FireAngle`,
-                  angle
-                );
-                if (full && !this.isRaw(`Joystick${e2.detail.joystickId}-Fire`, "PRESSED"))
-                  this.digitalInputPressed(
-                    `Joystick${e2.detail.joystickId}-Fire`
+                this.setAnalog(`Joystick${e3.detail.joystickId}-X`, x3);
+                this.setAnalog(`Joystick${e3.detail.joystickId}-Y`, y2);
+                this.setAnalog(`Joystick${e3.detail.joystickId}-Angle`, angle);
+                if (angle !== 0) {
+                  this.setAnalog(`Joystick${e3.detail.joystickId}-FireX`, x3);
+                  this.setAnalog(`Joystick${e3.detail.joystickId}-FireY`, y2);
+                  this.setAnalog(
+                    `Joystick${e3.detail.joystickId}-FireAngle`,
+                    angle
                   );
-                else if (!full && this.isRaw(`Joystick${e2.detail.joystickId}-Fire`, "PRESSED"))
+                }
+                if (full && !this.isRaw(`Joystick${e3.detail.joystickId}-Fire`, "PRESSED"))
+                  this.digitalInputPressed(
+                    `Joystick${e3.detail.joystickId}-Fire`
+                  );
+                else if (!full && this.isRaw(`Joystick${e3.detail.joystickId}-Fire`, "PRESSED"))
                   this.digitalInputReleased(
-                    `Joystick${e2.detail.joystickId}-Fire`
+                    `Joystick${e3.detail.joystickId}-Fire`
                   );
               }
             );
+            e3.detail.joystick.addEventListener(
+              "fire",
+              ({ detail: { x: x3, y: y2, angle } }) => {
+                this.digitalInputPressed(
+                  `Joystick${e3.detail.joystickId}-Fire`,
+                  true
+                );
+                this.setAnalog(`Joystick${e3.detail.joystickId}-FireX`, x3);
+                this.setAnalog(`Joystick${e3.detail.joystickId}-FireY`, y2);
+                this.setAnalog(
+                  `Joystick${e3.detail.joystickId}-FireAngle`,
+                  angle
+                );
+              }
+            );
           });
-          window.addEventListener("onscreenbuttonconnceted", (e2) => {
-            const element = e2.detail.button;
-            element.addEventListener("pointerdown", (e3) => {
+          window.addEventListener("onscreenbuttonconnceted", (e3) => {
+            const element = e3.detail.button;
+            element.addEventListener("pointerdown", (e4) => {
               this.digitalInputPressed("");
             });
           });
         }
         attachButtonElement(element) {
-          element.addEventListener("pointerdown", (e2) => {
+          element.addEventListener("pointerdown", (e3) => {
             this.digitalInputPressed("Element" + element.id);
           });
-          element.addEventListener("pointerup", (e2) => {
+          element.addEventListener("pointerup", (e3) => {
             this.digitalInputReleased("Element" + element.id);
           });
         }
@@ -46312,7 +47269,7 @@ void main(void)\r
             this.events.splice(this.events.indexOf(event), 1);
             return;
           }
-          this.events.splice(this.events.findIndex((e2) => e2.name === event), 1);
+          this.events.splice(this.events.findIndex((e3) => e3.name === event), 1);
         }
         wasFired(event, clientId = this.networkConnection.id) {
           return this.buffers[clientId][this.rollbackManager.currentFramesBack].__EVENTS__?.includes(event) || false;
@@ -46618,9 +47575,9 @@ void main(void)\r
       ) {
         static globals = {
           maxHealth: 100,
-          jumpHeight: 9,
-          gravity: 0.6,
-          speed: 2,
+          jumpHeight: 20,
+          gravity: 1,
+          speed: 8,
           fireCooldown: DESIRED_FPS / 6,
           ultLength: DESIRED_FPS * 5,
           targetFunds: 100
@@ -46648,14 +47605,14 @@ void main(void)\r
         update() {
           this.entities.static.forEach((staticEntity) => {
             this.entities.moving.forEach((movingEntity) => {
-              const staticX = staticEntity.get(StaticPosition.x);
-              const staticY = staticEntity.get(StaticPosition.y);
               const staticWidth = staticEntity.get(CollisionHitbox.x);
               const staticHeight = staticEntity.get(CollisionHitbox.y);
-              const movingX = movingEntity.get(Position.x);
-              const movingY = movingEntity.get(Position.y);
+              const staticX = staticEntity.get(StaticPosition.x) - staticWidth / 2;
+              const staticY = staticEntity.get(StaticPosition.y) - staticHeight / 2;
               const movingWidth = movingEntity.get(CollisionHitbox.x);
               const movingHeight = movingEntity.get(CollisionHitbox.y);
+              const movingX = movingEntity.get(Position.x) - movingWidth / 2;
+              const movingY = movingEntity.get(Position.y) - movingHeight / 2;
               const velX = movingEntity.get(Velocity.x);
               const velY = movingEntity.get(Velocity.y);
               if (movingX + movingWidth < staticX || movingX > staticX + staticWidth || movingY + movingHeight < staticY || movingY > staticY + staticHeight)
@@ -46668,14 +47625,17 @@ void main(void)\r
                 return;
               }
               if (movingX + movingWidth > staticX && movingX + movingWidth - velX <= staticX) {
-                movingEntity.set(Position.x, staticX - movingWidth);
+                movingEntity.set(Position.x, staticX - movingWidth / 2);
                 movingEntity.mult(
                   Velocity.x,
                   movingEntity.has(BouncinessFactor) ? -movingEntity.get(BouncinessFactor.x) : 0
                 );
                 return;
               } else if (movingX < staticX + staticWidth && movingX - velX >= staticX + staticWidth) {
-                movingEntity.set(Position.x, staticX + staticWidth);
+                movingEntity.set(
+                  Position.x,
+                  staticX + staticWidth + movingWidth / 2
+                );
                 movingEntity.mult(
                   Velocity.x,
                   movingEntity.has(BouncinessFactor) ? -movingEntity.get(BouncinessFactor.x) : 0
@@ -46683,7 +47643,7 @@ void main(void)\r
                 return;
               }
               if (movingY + movingHeight > staticY && movingY + movingHeight - velY <= staticY) {
-                movingEntity.set(Position.y, staticY - movingHeight);
+                movingEntity.set(Position.y, staticY - movingHeight / 2);
                 movingEntity.mult(
                   Velocity.y,
                   movingEntity.has(BouncinessFactor) ? -movingEntity.get(BouncinessFactor.y) : 0
@@ -46692,7 +47652,10 @@ void main(void)\r
                   movingEntity.set(PlayerInfo.canJump, true);
                 }
               } else if (movingY < staticY + staticHeight && movingY - velY >= staticY + staticHeight) {
-                movingEntity.set(Position.y, staticY + staticHeight);
+                movingEntity.set(
+                  Position.y,
+                  staticY + staticHeight + movingHeight / 2
+                );
                 movingEntity.mult(
                   Velocity.y,
                   movingEntity.has(BouncinessFactor) ? -movingEntity.get(BouncinessFactor.y) : 0
@@ -46755,20 +47718,20 @@ void main(void)\r
           })
         );
         let pointerId = null;
-        container.addEventListener("pointerdown", (e2) => {
+        container.addEventListener("pointerdown", (e3) => {
           if (pointerId !== null)
             return;
-          pointerId = e2.pointerId;
-          correctOffset(e2);
+          pointerId = e3.pointerId;
+          correctOffset(e3);
         });
-        window.addEventListener("pointermove", (e2) => {
-          if (e2.pointerId !== pointerId)
+        window.addEventListener("pointermove", (e3) => {
+          if (e3.pointerId !== pointerId)
             return;
-          correctOffset(e2);
+          correctOffset(e3);
         });
-        window.addEventListener("pointerup", (e2) => {
+        window.addEventListener("pointerup", (e3) => {
           console.log("Up");
-          if (e2.pointerId === pointerId) {
+          if (e3.pointerId === pointerId) {
             pointerId = null;
             thumb.style.transform = "";
             container.dispatchEvent(
@@ -46888,7 +47851,7 @@ void main(void)\r
             this.entities.funds.forEach((fundsEntity) => {
               if (costEntity.get(Cost.payTo) === fundsEntity)
                 return;
-              if (costEntity.get(Position.x) + costEntity.get(CollisionHitbox.x) < fundsEntity.get(Position.x) || costEntity.get(Position.x) > fundsEntity.get(Position.x) + fundsEntity.get(CollisionHitbox.x) || costEntity.get(Position.y) + costEntity.get(CollisionHitbox.y) < fundsEntity.get(Position.y) || costEntity.get(Position.y) > fundsEntity.get(Position.y) + fundsEntity.get(CollisionHitbox.y))
+              if (costEntity.get(Position.x) + costEntity.get(CollisionHitbox.x) < fundsEntity.get(Position.x) - fundsEntity.get(CollisionHitbox.x) / 2 || costEntity.get(Position.x) > fundsEntity.get(Position.x) + fundsEntity.get(CollisionHitbox.x) / 2 || costEntity.get(Position.y) + costEntity.get(CollisionHitbox.y) < fundsEntity.get(Position.y) - fundsEntity.get(CollisionHitbox.y) / 2 || costEntity.get(Position.y) > fundsEntity.get(Position.y) + fundsEntity.get(CollisionHitbox.y) / 2)
                 return;
               const funds = fundsEntity.get(Funds);
               console.log("Taking ", costEntity.get(Cost.price), "from", funds);
@@ -46897,7 +47860,7 @@ void main(void)\r
               if (fundsEntity.has(PlayerStats))
                 fundsEntity.inc(PlayerStats.bulletsReceived);
               const payTo = costEntity.get(Cost.payTo);
-              if (payTo.has(PlayerInfo)) {
+              if (payTo.has(PlayerInfo) && !payTo.get(PlayerInfo.inUlt)) {
                 payTo.inc(PlayerInfo.ultPercent, 10);
                 payTo.set(
                   PlayerInfo.ultPercent,
@@ -46994,8 +47957,8 @@ void main(void)\r
           );
           const sprite = new Sprite(Texture.from("ticket.png"));
           this.update(sprite);
-          sprite.width = 8;
-          sprite.height = 4;
+          sprite.width = 32;
+          sprite.height = 16;
         }
       );
     }
@@ -47029,7 +47992,7 @@ void main(void)\r
           ultPercent: 0,
           inUlt: false
         }),
-        new CollisionHitbox({ x: 32, y: 32 }),
+        new CollisionHitbox({ x: 50, y: 100 }),
         new Funds(0),
         PlayerIdentifier,
         new PlayerStats({
@@ -47049,9 +48012,12 @@ void main(void)\r
           const sprite = new Sprite(
             Texture.from(Players[player].spriteName + "-idleright_00.png")
           );
+          sprite.texture.baseTexture.scaleMode = SCALE_MODES.LINEAR;
+          sprite.texture.baseTexture.mipmap = MIPMAP_MODES.ON;
+          sprite.anchor.set(0.5, 0.5);
           this.set(sprite);
-          sprite.width = 40;
-          sprite.height = 32;
+          sprite.width = 100;
+          sprite.height = 100;
           this.add(
             new AnimatedSprite2({
               spriteName: Players[player].spriteName + "-idle",
@@ -47087,7 +48053,12 @@ void main(void)\r
         ],
         function(color) {
           const graphics = new Graphics();
-          graphics.beginFill(color).drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y)).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
+          graphics.beginFill(color).drawRect(
+            -this.get(CollisionHitbox.x) / 2,
+            -this.get(CollisionHitbox.y) / 2,
+            this.get(CollisionHitbox.x),
+            this.get(CollisionHitbox.y)
+          ).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
           this.set(graphics);
         }
       );
@@ -47133,9 +48104,9 @@ void main(void)\r
           FailButton,
           {
             className: "ml-auto",
-            onclick: function(e2) {
+            onclick: function(e3) {
               closeOpenModal();
-              props.oncancel?.(e2);
+              props.oncancel?.(e3);
             },
             hidden: !!props.hideCancelButton
           },
@@ -47144,8 +48115,8 @@ void main(void)\r
           SuccessButton,
           {
             className: "float-right mr-4 default-close-button",
-            onclick: async function(e2) {
-              if (await props.onok?.(e2) !== KEEP_OPEN)
+            onclick: async function(e3) {
+              if (await props.onok?.(e3) !== KEEP_OPEN)
                 closeOpenModal();
             }
           },
@@ -47503,21 +48474,21 @@ void main(void)\r
             {
               id: "carousel",
               className: "scroll-smooth overflow-x-scroll snap-mandatory snap-x w-full whitespace-nowrap overflow-y-visible mt-[-2rem] pt-8 pb-8 scrollbar-hidden",
-              onmousedown: (e2) => {
-                const target2 = e2.currentTarget;
+              onmousedown: (e3) => {
+                const target2 = e3.currentTarget;
                 target2.dataset.dragging = "true";
                 target2.style.scrollSnapType = "none";
                 target2.style.scrollBehavior = "auto";
               },
-              onmouseup: (e2) => {
-                const target2 = e2.currentTarget;
+              onmouseup: (e3) => {
+                const target2 = e3.currentTarget;
                 target2.dataset.dragging = "false";
                 target2.style.scrollSnapType = "x mandatory";
                 target2.style.scrollBehavior = "smooth";
               },
-              onmousemove: function(e2) {
-                const target2 = e2.currentTarget;
-                target2.dataset.dragging === "true" && (target2.scrollLeft -= e2.movementX);
+              onmousemove: function(e3) {
+                const target2 = e3.currentTarget;
+                target2.dataset.dragging === "true" && (target2.scrollLeft -= e3.movementX);
               }
             },
             Object.values(Players).map((player, i2, { length }) => /* @__PURE__ */ window.jsx(
@@ -47621,7 +48592,6 @@ void main(void)\r
   var init_menu = __esm({
     "src/ts/game/states/menu.tsx"() {
       "use strict";
-      init_bundle();
       init_state_managment();
       init_network();
       init_dialogs();
@@ -47652,7 +48622,7 @@ void main(void)\r
         async onLeave() {
           document.querySelector("#menu")?.remove();
           this.eventListenerIds.forEach(
-            ([e2, id]) => this.world.get(NetworkConnection).removeEventListener(e2, id)
+            ([e3, id]) => this.world.get(NetworkConnection).removeEventListener(e3, id)
           );
         }
         getHTML() {
@@ -47815,13 +48785,13 @@ void main(void)\r
                   this.world.set("selectedGameMode", "localPvP");
                   nc.post("gameModeChange");
                   document.querySelector("#gameModeButton").innerHTML = GameModes[this.world.get("selectedGameMode")].name;
-                } catch (e2) {
+                } catch (e3) {
                   showDialog(
                     /* @__PURE__ */ window.jsx(
                       DialogPopup,
                       {
                         title: "Failed To Connect",
-                        message: e2.message,
+                        message: e3.message,
                         hideCancelButton: true
                       }
                     )
@@ -47865,7 +48835,7 @@ void main(void)\r
               try {
                 await nc.connect(remoteId);
                 this.queueMultiplayerGameStart();
-              } catch (e2) {
+              } catch (e3) {
                 showDialog({
                   title: "Matchmaking error",
                   message: "Failed to establish connection",
@@ -47887,7 +48857,7 @@ void main(void)\r
           });
         }
         async queueMultiplayerGameStart() {
-          const startFrame = this.world.get(NetworkConnection).framesConnected + v + 10;
+          const startFrame = this.world.get(NetworkConnection).framesConnected + 20;
           this.world.get(NetworkConnection).send("start_game", startFrame);
           await awaitFrame(this.world, startFrame);
           this.world.get(StateManager).fadeTo(MultiplayerGame);
@@ -47992,8 +48962,8 @@ void main(void)\r
             theme: "filled_blue"
           });
           document.body.append(this.getHTML());
-          if (localStorage.getItem("email")) {
-            this.signIn({ email: localStorage.getItem("email") });
+          if (localStorage.getItem("jwt")) {
+            this.signIn({ response: { credential: localStorage.getItem("jwt") } });
           }
           return Promise.resolve();
         }
@@ -48026,7 +48996,7 @@ void main(void)\r
                 showDialog({
                   title: "Guest Login",
                   message: "You can still play, but none of your stats will save. If you are a CC student, please use your CC email to login.",
-                  oncancel: (e2) => this.world.get(StateManager).fadeTo(_Login)
+                  oncancel: (e3) => this.world.get(StateManager).fadeTo(_Login)
                 });
               }
             },
@@ -48047,12 +49017,11 @@ void main(void)\r
           if (response) {
             searchParams["jwt"] = response.credential;
             console.log("Siging in with", response, response.credential);
-          } else if (email) {
-            searchParams["email"] = email;
+            localStorage.setItem("jwt", response.credential);
           }
           const info = await this.world.get(ServerConnection).fetch("/accounts/login", {
             searchParams
-          }).catch((e2) => {
+          }).catch((e3) => {
             localStorage.removeItem("email");
             showDialog({
               title: "Failed to login",
@@ -48080,7 +49049,6 @@ void main(void)\r
             });
             this.world.set(AccountInfo.isGuest, true);
           } else {
-            localStorage.setItem("email", info.email);
           }
           this.world.get(StateManager).moveTo(Menu);
         }
@@ -48152,11 +49120,19 @@ void main(void)\r
           this.world.get("local_player_entity").addScript(
             Players[this.world.get("localPlayer")].playerScript
           );
+          const width = this.world.get("screenWidth");
+          const height = this.world.get("screenHeight");
           const walls = [
-            Wall(0, 230, 256, 20, "red"),
-            Wall(50, 170, 50, 10, "red"),
-            Wall(256 - 50 - 50, 170, 50, 10, "red"),
-            Wall(100, 110, 50, 10, "red")
+            Wall(width / 2, height - 20, width, 30, "red"),
+            Wall(width / 4, height - 200, width / 8, 20, "red"),
+            Wall(width * 0.75, height - 200, width / 8, 20, "red"),
+            Wall(width / 2, height - 500, width / 2, 20, "red"),
+            Wall(width / 16, height - 350, width / 8, 20, "red"),
+            Wall(width * (15 / 16), height - 350, width / 8, 20, "red"),
+            Wall(width / 2, height - 700, width / 16, 20, "red")
+            // // Wall(width/4, height -50)
+            // Wall(256 - 50, 175, 50, 10, "red"),
+            // Wall(256 / 2, 110, 50, 10, "red"),
           ];
           this.world.add(new Countdown(3));
           const hud = this.hud;
@@ -48289,6 +49265,10 @@ void main(void)\r
       AnimatedSprite2.changeSprite(entity, spritePrefix + "-idle", 1);
     } else {
     }
+    if (entity.get(Position.y) > entity.world.get("screenHeight") + 100) {
+      entity.set(Position.x, entity.world.get("screenWidth") / 2);
+      entity.set(Position.y, -256);
+    }
   }
   function applyDefaultShooting(entity, input, id) {
     if (entity.world.get(CountdownClass) >= 0)
@@ -48301,8 +49281,8 @@ void main(void)\r
         5,
         entity.get(Position.x),
         entity.get(Position.y),
-        Math.cos(input.get("aim", id)) * 7,
-        Math.sin(input.get("aim", id)) * 7
+        Math.cos(input.get("aim", id)) * 20,
+        Math.sin(input.get("aim", id)) * 20
       );
     } else {
       entity.inc(PlayerInfo.shootCooldown, -1);
@@ -48328,11 +49308,137 @@ void main(void)\r
     }
   });
 
+  // node_modules/.pnpm/@pixi+filter-glow@5.2.1/node_modules/@pixi/filter-glow/dist/filter-glow.mjs
+  var f3, p3, e2, l4;
+  var init_filter_glow = __esm({
+    "node_modules/.pnpm/@pixi+filter-glow@5.2.1/node_modules/@pixi/filter-glow/dist/filter-glow.mjs"() {
+      init_lib9();
+      f3 = `attribute vec2 aVertexPosition;
+attribute vec2 aTextureCoord;
+
+uniform mat3 projectionMatrix;
+
+varying vec2 vTextureCoord;
+
+void main(void)
+{
+    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+    vTextureCoord = aTextureCoord;
+}`;
+      p3 = `varying vec2 vTextureCoord;
+varying vec4 vColor;
+
+uniform sampler2D uSampler;
+
+uniform float outerStrength;
+uniform float innerStrength;
+
+uniform vec4 glowColor;
+
+uniform vec4 filterArea;
+uniform vec4 filterClamp;
+uniform bool knockout;
+uniform float alpha;
+
+const float PI = 3.14159265358979323846264;
+
+const float DIST = __DIST__;
+const float ANGLE_STEP_SIZE = min(__ANGLE_STEP_SIZE__, PI * 2.0);
+const float ANGLE_STEP_NUM = ceil(PI * 2.0 / ANGLE_STEP_SIZE);
+
+const float MAX_TOTAL_ALPHA = ANGLE_STEP_NUM * DIST * (DIST + 1.0) / 2.0;
+
+void main(void) {
+    vec2 px = vec2(1.0 / filterArea.x, 1.0 / filterArea.y);
+
+    float totalAlpha = 0.0;
+
+    vec2 direction;
+    vec2 displaced;
+    vec4 curColor;
+
+    for (float angle = 0.0; angle < PI * 2.0; angle += ANGLE_STEP_SIZE) {
+       direction = vec2(cos(angle), sin(angle)) * px;
+
+       for (float curDistance = 0.0; curDistance < DIST; curDistance++) {
+           displaced = clamp(vTextureCoord + direction * 
+                   (curDistance + 1.0), filterClamp.xy, filterClamp.zw);
+
+           curColor = texture2D(uSampler, displaced);
+
+           totalAlpha += (DIST - curDistance) * curColor.a;
+       }
+    }
+    
+    curColor = texture2D(uSampler, vTextureCoord);
+
+    float alphaRatio = (totalAlpha / MAX_TOTAL_ALPHA);
+
+    float innerGlowAlpha = (1.0 - alphaRatio) * innerStrength * curColor.a;
+    float innerGlowStrength = min(1.0, innerGlowAlpha);
+    
+    vec4 innerColor = mix(curColor, glowColor, innerGlowStrength);
+
+    float outerGlowAlpha = alphaRatio * outerStrength * (1. - curColor.a);
+    float outerGlowStrength = min(1.0 - innerColor.a, outerGlowAlpha);
+
+    if (knockout) {
+      float resultAlpha = (outerGlowAlpha + innerGlowAlpha) * alpha;
+      gl_FragColor = vec4(glowColor.rgb * resultAlpha, resultAlpha);
+    }
+    else {
+      vec4 outerGlowColor = outerGlowStrength * glowColor.rgba * alpha;
+      gl_FragColor = innerColor + outerGlowColor;
+    }
+}
+`;
+      e2 = class extends Filter {
+        constructor(n2) {
+          const r2 = Object.assign({}, e2.defaults, n2), { outerStrength: a3, innerStrength: i2, color: u4, knockout: c3, quality: s3, alpha: h3 } = r2, o2 = Math.round(r2.distance);
+          super(f3, p3.replace(/__ANGLE_STEP_SIZE__/gi, `${(1 / s3 / o2).toFixed(7)}`).replace(/__DIST__/gi, `${o2.toFixed(0)}.0`)), this.uniforms.glowColor = new Float32Array([0, 0, 0, 1]), this.uniforms.alpha = 1, Object.assign(this, { color: u4, outerStrength: a3, innerStrength: i2, padding: o2, knockout: c3, alpha: h3 });
+        }
+        get color() {
+          return lib_exports.rgb2hex(this.uniforms.glowColor);
+        }
+        set color(n2) {
+          lib_exports.hex2rgb(n2, this.uniforms.glowColor);
+        }
+        get outerStrength() {
+          return this.uniforms.outerStrength;
+        }
+        set outerStrength(n2) {
+          this.uniforms.outerStrength = n2;
+        }
+        get innerStrength() {
+          return this.uniforms.innerStrength;
+        }
+        set innerStrength(n2) {
+          this.uniforms.innerStrength = n2;
+        }
+        get knockout() {
+          return this.uniforms.knockout;
+        }
+        set knockout(n2) {
+          this.uniforms.knockout = n2;
+        }
+        get alpha() {
+          return this.uniforms.alpha;
+        }
+        set alpha(n2) {
+          this.uniforms.alpha = n2;
+        }
+      };
+      l4 = e2;
+      l4.defaults = { distance: 10, outerStrength: 4, innerStrength: 0, color: 16777215, quality: 0.1, knockout: false, alpha: 1 };
+    }
+  });
+
   // src/ts/game/scripts/players/carrier.ts
   var MrCarrierPlayer;
   var init_carrier = __esm({
     "src/ts/game/scripts/players/carrier.ts"() {
       "use strict";
+      init_lib38();
       init_multiplayer_input();
       init_network();
       init_animation();
@@ -48341,6 +49447,7 @@ void main(void)\r
       init_player_stats();
       init_velocity();
       init_common();
+      init_filter_glow();
       MrCarrierPlayer = function() {
         const input = this.world.get(MultiplayerInput);
         const id = this.get(PeerId);
@@ -48348,10 +49455,19 @@ void main(void)\r
           this.set(PlayerInfo.inUlt, true);
           this.inc(PlayerStats.ultsUsed);
           this.set(PlayerInfo.ultPercent, 100);
+          this.get(Sprite).filters = [
+            new l4({
+              color: 65280,
+              outerStrength: 3,
+              innerStrength: 1,
+              distance: 15
+            })
+          ];
         }
         if (this.get(PlayerInfo.inUlt) && this.get(PlayerInfo.ultPercent) <= 0) {
           this.set(PlayerInfo.inUlt, false);
           this.set(PlayerInfo.ultPercent, 0);
+          this.get(Sprite).filters = [];
         }
         if (this.get(PlayerInfo.inUlt)) {
           if (input.get("y", id) >= 0) {
@@ -48363,7 +49479,7 @@ void main(void)\r
             }
           }
           this.inc(Velocity.y, Math.min(input.get("y", id), 0));
-          this.inc(PlayerInfo.ultPercent, -1);
+          this.inc(PlayerInfo.ultPercent, -1 / 3);
           this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
           if (this.get(Velocity.x) > 0 && this.get(Facing) !== "right") {
             this.set(Facing.id, "right");
@@ -48393,6 +49509,7 @@ void main(void)\r
       init_common();
       init_lib38();
       init_player_stats();
+      init_filter_glow();
       LaserPlayer = function() {
         const input = this.world.get(MultiplayerInput);
         const id = this.get(PeerId);
@@ -48401,6 +49518,14 @@ void main(void)\r
           this.set(PlayerInfo.inUlt, true);
           this.inc(PlayerStats.ultsUsed);
           this.set(PlayerInfo.ultPercent, 100);
+          this.get(Container).filters = [
+            new l4({
+              color: 65280,
+              outerStrength: 3,
+              innerStrength: 1,
+              distance: 15
+            })
+          ];
         }
         if (this.get(PlayerInfo.inUlt)) {
           if (input.is("shoot", "JUST_RELEASED", id)) {
@@ -48420,6 +49545,7 @@ void main(void)\r
             if (this.get(PlayerInfo.ultPercent) <= 0) {
               this.set(PlayerInfo.inUlt, false);
               this.set(PlayerInfo.ultPercent, 0);
+              this.get(Container).filters = [];
             }
             this.get(Container).getChildByName("aimguide")?.removeFromParent();
           } else if (input.is("shoot", "PRESSED", id)) {
@@ -48662,7 +49788,7 @@ void main(void)\r
           const player2Ult = {};
           this.hud.timer = /* @__PURE__ */ window.jsx("div", { className: "" }, "0:00");
           this.hud.element.append(
-            /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between" }, /* @__PURE__ */ window.jsx("div", { className: "text-left" }, "Player 1", /* @__PURE__ */ window.jsx(
+            /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between pl-3 pr-3" }, /* @__PURE__ */ window.jsx("div", { className: "text-left pl-1" }, /* @__PURE__ */ window.jsx("span", { className: "pl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
               HealthBar,
               {
                 initialPercent: 0,
@@ -48678,7 +49804,7 @@ void main(void)\r
                 handle: player1Ult,
                 color: "bg-indigo-700"
               }
-            )), this.hud.timer, /* @__PURE__ */ window.jsx("div", { className: "text-right" }, "Player 2", /* @__PURE__ */ window.jsx(
+            )), /* @__PURE__ */ window.jsx("div", { className: "text-xl pt-2" }, this.hud.timer), /* @__PURE__ */ window.jsx("div", { className: "text-right " }, /* @__PURE__ */ window.jsx("span", { className: "rl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
               HealthBar,
               {
                 color: "bg-lime-500",
@@ -49008,7 +50134,7 @@ void main(void)\r
   // src/ts/index.ts
   init_state_managment();
   init_preload();
-  mt(100);
+  mt(1e3);
   window.SharedArrayBuffer = ArrayBuffer;
   Object.defineProperty(Error.prototype, "toJSON", {
     value: function() {
@@ -49021,9 +50147,9 @@ void main(void)\r
     configurable: true,
     writable: true
   });
-  window.addEventListener("error", (e2) => {
+  window.addEventListener("error", (e3) => {
     document.body.innerHTML = `<pre>Uncaught error: ${JSON.stringify(
-      e2.error,
+      e3.error,
       void 0,
       4
     )}</pre>`;
@@ -49048,5 +50174,14 @@ tweakpane/dist/tweakpane.js:
 
 punycode/punycode.js:
   (*! https://mths.be/punycode v1.4.1 by @mathias *)
+
+@pixi/filter-glow/dist/filter-glow.mjs:
+  (*!
+   * @pixi/filter-glow - v5.2.1
+   * Compiled Fri, 24 Mar 2023 22:12:11 UTC
+   *
+   * @pixi/filter-glow is licensed under the MIT License.
+   * http://www.opensource.org/licenses/mit-license
+   *)
 */
 //# sourceMappingURL=index.js.map
