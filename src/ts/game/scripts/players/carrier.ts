@@ -1,3 +1,4 @@
+import { Sprite } from "pixi.js";
 import { DESIRED_FPS } from "../../../engine/loop";
 import { MultiplayerInput } from "../../../engine/multiplayer/multiplayer_input";
 import { PeerId } from "../../../engine/multiplayer/network";
@@ -10,6 +11,7 @@ import { PlayerInfo } from "../../components/player_info";
 import { PlayerStats } from "../../components/player_stats";
 import { Velocity } from "../../components/velocity";
 import { applyDefaultMovement, applyDefaultShooting } from "./common";
+import { GlowFilter } from "@pixi/filter-glow";
 
 // export const CARRIER_ULT_COOLDOWN = DESIRED_FPS * 10;
 
@@ -25,6 +27,14 @@ export const MrCarrierPlayer: Script = function () {
         this.set(PlayerInfo.inUlt, true);
         this.inc(PlayerStats.ultsUsed);
         this.set(PlayerInfo.ultPercent, 100);
+        this.get(Sprite).filters = [
+            new GlowFilter({
+                color: 0x00ff00,
+                outerStrength: 3,
+                innerStrength: 1,
+                distance: 15,
+            }),
+        ];
         // this.set(
         //     PlayerInfo.ultPercent,
         //     Math.min(this.get(PlayerInfo.ultPercent) + 1, 100)
@@ -34,6 +44,7 @@ export const MrCarrierPlayer: Script = function () {
     if (this.get(PlayerInfo.inUlt) && this.get(PlayerInfo.ultPercent) <= 0) {
         this.set(PlayerInfo.inUlt, false);
         this.set(PlayerInfo.ultPercent, 0);
+        this.get(Sprite).filters = [];
     }
 
     // Allow flying while ulting
@@ -48,7 +59,7 @@ export const MrCarrierPlayer: Script = function () {
         }
 
         this.inc(Velocity.y, Math.min(input.get("y", id), 0));
-        this.inc(PlayerInfo.ultPercent, -1);
+        this.inc(PlayerInfo.ultPercent, -1 / 3);
 
         // if (this.get(PlayerInfo.ultPercent) <= 0) {
         //     this.set(PlayerInfo.inUlt, false);

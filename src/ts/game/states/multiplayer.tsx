@@ -130,11 +130,20 @@ export class MultiplayerGame extends Game {
                 Players[this.world.get<"carrier">("localPlayer")].playerScript
             );
 
+        const width = this.world.get<number>("screenWidth");
+        const height = this.world.get<number>("screenHeight");
+
         const walls = [
-            Wall(0, 230, 256, 20, "red"),
-            Wall(50, 170, 50, 10, "red"),
-            Wall(256 - 50 - 50, 170, 50, 10, "red"),
-            Wall(100, 110, 50, 10, "red"),
+            Wall(width / 2, height - 20, width, 30, "red"),
+            Wall(width / 4, height - 200, width / 8, 20, "red"),
+            Wall(width * 0.75, height - 200, width / 8, 20, "red"),
+            Wall(width / 2, height - 500, width / 2, 20, "red"),
+            Wall(width / 16, height - 350, width / 8, 20, "red"),
+            Wall(width * (15 / 16), height - 350, width / 8, 20, "red"),
+            Wall(width / 2, height - 700, width / 16, 20, "red"),
+            // // Wall(width/4, height -50)
+            // Wall(256 - 50, 175, 50, 10, "red"),
+            // Wall(256 / 2, 110, 50, 10, "red"),
         ];
         // Wait 3 seconds before starting the input sync
         this.world.add(new Countdown(3));

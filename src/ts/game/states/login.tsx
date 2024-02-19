@@ -48,8 +48,8 @@ export class Login extends State<{ email: string }> {
 
         document.body.append(this.getHTML());
 
-        if (localStorage.getItem("email")) {
-            this.signIn({ email: localStorage.getItem("email")! });
+        if (localStorage.getItem("jwt")) {
+            this.signIn({ response: { credential: localStorage.getItem("jwt")! } });
         }
 
         return Promise.resolve();
@@ -147,8 +147,7 @@ export class Login extends State<{ email: string }> {
         if (response) {
             searchParams["jwt"] = response.credential;
             console.log("Siging in with", response, response.credential);
-        } else if (email) {
-            searchParams["email"] = email;
+            localStorage.setItem("jwt", response.credential);
         }
 
         const info = await this.world
@@ -192,7 +191,6 @@ export class Login extends State<{ email: string }> {
             });
             this.world.set(AccountInfo.isGuest, true);
         } else {
-            localStorage.setItem("email", info.email);
         }
 
         this.world.get(StateManager).moveTo(Menu);

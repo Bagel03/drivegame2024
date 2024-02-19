@@ -215,6 +215,16 @@ export class Input {
                     this.setAnalog(`Joystick${e.detail.joystickId}-X`, x);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Y`, y);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Angle`, angle);
+
+                    if (angle !== 0) {
+                        this.setAnalog(`Joystick${e.detail.joystickId}-FireX`, x);
+                        this.setAnalog(`Joystick${e.detail.joystickId}-FireY`, y);
+                        this.setAnalog(
+                            `Joystick${e.detail.joystickId}-FireAngle`,
+                            angle
+                        );
+                    }
+
                     if (
                         full &&
                         !this.isRaw(`Joystick${e.detail.joystickId}-Fire`, "PRESSED")
@@ -232,21 +242,21 @@ export class Input {
                 }
             );
 
-            // e.detail.joystick.addEventListener(
-            //     "fire",
-            //     ({ detail: { x, y, angle } }) => {
-            //         this.digitalInputPressed(
-            //             `Joystick${e.detail.joystickId}-Fire`,
-            //             true
-            //         );
-            //         this.setAnalog(`Joystick${e.detail.joystickId}-FireX`, x);
-            //         this.setAnalog(`Joystick${e.detail.joystickId}-FireY`, y);
-            //         this.setAnalog(
-            //             `Joystick${e.detail.joystickId}-FireAngle`,
-            //             angle
-            //         );
-            //     }
-            // );
+            e.detail.joystick.addEventListener(
+                "fire",
+                ({ detail: { x, y, angle } }) => {
+                    this.digitalInputPressed(
+                        `Joystick${e.detail.joystickId}-Fire`,
+                        true
+                    );
+                    this.setAnalog(`Joystick${e.detail.joystickId}-FireX`, x);
+                    this.setAnalog(`Joystick${e.detail.joystickId}-FireY`, y);
+                    this.setAnalog(
+                        `Joystick${e.detail.joystickId}-FireAngle`,
+                        angle
+                    );
+                }
+            );
         });
 
         /* ONSCREEN BUTTONS */

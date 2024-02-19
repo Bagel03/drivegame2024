@@ -58,13 +58,6 @@ export class RollbackManager {
             numFramesAgo =
                 this.world.get(NetworkConnection).framesConnected -
                 this.initialRollbackFrame;
-
-            if (
-                this.world.get(NetworkConnection).framesConnected -
-                    this.initialRollbackFrame <=
-                0
-            )
-                return;
         }
 
         if (numFramesAgo > this.world.get(NetworkConnection).framesConnected) {

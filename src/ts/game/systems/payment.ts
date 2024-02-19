@@ -20,15 +20,17 @@ export class PaymentSystem extends System({
                 // Check if they are colliding
                 if (
                     costEntity.get(Position.x) + costEntity.get(CollisionHitbox.x) <
-                        fundsEntity.get(Position.x) ||
+                        fundsEntity.get(Position.x) -
+                            fundsEntity.get(CollisionHitbox.x) / 2 ||
                     costEntity.get(Position.x) >
                         fundsEntity.get(Position.x) +
-                            fundsEntity.get(CollisionHitbox.x) ||
+                            fundsEntity.get(CollisionHitbox.x) / 2 ||
                     costEntity.get(Position.y) + costEntity.get(CollisionHitbox.y) <
-                        fundsEntity.get(Position.y) ||
+                        fundsEntity.get(Position.y) -
+                            fundsEntity.get(CollisionHitbox.y) / 2 ||
                     costEntity.get(Position.y) >
                         fundsEntity.get(Position.y) +
-                            fundsEntity.get(CollisionHitbox.y)
+                            fundsEntity.get(CollisionHitbox.y) / 2
                 )
                     return;
                 const funds = fundsEntity.get(Funds);
@@ -40,7 +42,7 @@ export class PaymentSystem extends System({
                     fundsEntity.inc(PlayerStats.bulletsReceived);
 
                 const payTo = costEntity.get(Cost.payTo);
-                if (payTo.has(PlayerInfo)) {
+                if (payTo.has(PlayerInfo) && !payTo.get(PlayerInfo.inUlt)) {
                     payTo.inc(PlayerInfo.ultPercent, 10);
                     payTo.set(
                         PlayerInfo.ultPercent,

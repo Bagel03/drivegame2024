@@ -25,7 +25,9 @@ export class GraphicsSystem extends System({
         // });
 
         // console.log(this.entities);
-        const currentChildren = this.screen.children.slice();
+        const currentChildren = this.screen.children
+            .slice()
+            .filter((obj) => !obj.KEEP_ALIVE);
         this.entities.static.forEach((ent) => {
             const el = ent.get(Container);
             const idx = currentChildren.indexOf(el);

@@ -17,15 +17,17 @@ export class CollisionSystem extends System({
     update(): void {
         this.entities.static.forEach((staticEntity) => {
             this.entities.moving.forEach((movingEntity) => {
-                const staticX = staticEntity.get(StaticPosition.x);
-                const staticY = staticEntity.get(StaticPosition.y);
                 const staticWidth = staticEntity.get(CollisionHitbox.x);
                 const staticHeight = staticEntity.get(CollisionHitbox.y);
 
-                const movingX = movingEntity.get(Position.x);
-                const movingY = movingEntity.get(Position.y);
+                const staticX = staticEntity.get(StaticPosition.x) - staticWidth / 2;
+                const staticY =
+                    staticEntity.get(StaticPosition.y) - staticHeight / 2;
+
                 const movingWidth = movingEntity.get(CollisionHitbox.x);
                 const movingHeight = movingEntity.get(CollisionHitbox.y);
+                const movingX = movingEntity.get(Position.x) - movingWidth / 2;
+                const movingY = movingEntity.get(Position.y) - movingHeight / 2;
 
                 const velX = movingEntity.get(Velocity.x);
                 const velY = movingEntity.get(Velocity.y);
@@ -54,7 +56,7 @@ export class CollisionSystem extends System({
                     movingX + movingWidth > staticX &&
                     movingX + movingWidth - velX <= staticX
                 ) {
-                    movingEntity.set(Position.x, staticX - movingWidth);
+                    movingEntity.set(Position.x, staticX - movingWidth / 2);
                     movingEntity.mult(
                         Velocity.x,
                         movingEntity.has(BouncinessFactor)
@@ -66,7 +68,10 @@ export class CollisionSystem extends System({
                     movingX < staticX + staticWidth &&
                     movingX - velX >= staticX + staticWidth
                 ) {
-                    movingEntity.set(Position.x, staticX + staticWidth);
+                    movingEntity.set(
+                        Position.x,
+                        staticX + staticWidth + movingWidth / 2
+                    );
                     movingEntity.mult(
                         Velocity.x,
                         movingEntity.has(BouncinessFactor)
@@ -81,7 +86,7 @@ export class CollisionSystem extends System({
                     movingY + movingHeight > staticY &&
                     movingY + movingHeight - velY <= staticY
                 ) {
-                    movingEntity.set(Position.y, staticY - movingHeight);
+                    movingEntity.set(Position.y, staticY - movingHeight / 2);
                     movingEntity.mult(
                         Velocity.y,
                         movingEntity.has(BouncinessFactor)
@@ -95,7 +100,10 @@ export class CollisionSystem extends System({
                     movingY < staticY + staticHeight &&
                     movingY - velY >= staticY + staticHeight
                 ) {
-                    movingEntity.set(Position.y, staticY + staticHeight);
+                    movingEntity.set(
+                        Position.y,
+                        staticY + staticHeight + movingHeight / 2
+                    );
                     movingEntity.mult(
                         Velocity.y,
                         movingEntity.has(BouncinessFactor)

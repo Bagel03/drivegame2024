@@ -17,10 +17,15 @@ export const Wall = AdvancedBlueprintFactory(
         const graphics = new Graphics();
         graphics
             .beginFill(color)
-            .drawRect(0, 0, this.get(CollisionHitbox.x), this.get(CollisionHitbox.y))
+            .drawRect(
+                -this.get(CollisionHitbox.x) / 2,
+                -this.get(CollisionHitbox.y) / 2,
+                this.get(CollisionHitbox.x),
+                this.get(CollisionHitbox.y)
+            )
             .endFill()
             .position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
-
+        // graphics.pivot.set()
         this.set(graphics);
     }
 ) as (

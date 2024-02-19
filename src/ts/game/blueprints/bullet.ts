@@ -27,8 +27,8 @@ export const BulletEnt = AdvancedBlueprintFactory(
         );
         const sprite = new Sprite(Texture.from("ticket.png"));
         this.update(sprite);
-        sprite.width = 8;
-        sprite.height = 4;
+        sprite.width = 32;
+        sprite.height = 16;
     }
 ) as (
     shotFrom: Entity,

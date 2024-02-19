@@ -398,10 +398,7 @@ export class Menu extends State<MenuPayload> {
     }
 
     private async queueMultiplayerGameStart() {
-        const startFrame =
-            this.world.get(NetworkConnection).framesConnected +
-            LOGGED_COMPONENT_STORAGE_BUFFER_SIZE +
-            10;
+        const startFrame = this.world.get(NetworkConnection).framesConnected + 20;
 
         this.world.get(NetworkConnection).send("start_game", startFrame);
         await awaitFrame(this.world, startFrame);

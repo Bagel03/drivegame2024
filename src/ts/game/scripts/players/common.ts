@@ -56,6 +56,11 @@ export function applyDefaultMovement(
         AnimatedSprite.changeSprite(entity, spritePrefix + "-idle", 1);
     } else {
     }
+
+    if (entity.get(Position.y) > entity.world.get<number>("screenHeight") + 100) {
+        entity.set(Position.x, entity.world.get<number>("screenWidth") / 2);
+        entity.set(Position.y, -256);
+    }
 }
 
 export function applyDefaultShooting(
@@ -76,8 +81,8 @@ export function applyDefaultShooting(
             5,
             entity.get(Position.x),
             entity.get(Position.y),
-            Math.cos(input.get("aim", id)) * 7,
-            Math.sin(input.get("aim", id)) * 7
+            Math.cos(input.get("aim", id)) * 20,
+            Math.sin(input.get("aim", id)) * 20
         );
     } else {
         entity.inc(PlayerInfo.shootCooldown, -1);

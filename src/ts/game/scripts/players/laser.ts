@@ -11,6 +11,7 @@ import { Velocity } from "../../components/velocity";
 import { applyDefaultMovement, applyDefaultShooting } from "./common";
 import { Container, Graphics } from "pixi.js";
 import { PlayerStats } from "../../components/player_stats";
+import { GlowFilter } from "@pixi/filter-glow";
 
 export const LaserPlayer: Script = function () {
     const input = this.world.get(MultiplayerInput);
@@ -26,6 +27,14 @@ export const LaserPlayer: Script = function () {
         this.set(PlayerInfo.inUlt, true);
         this.inc(PlayerStats.ultsUsed);
         this.set(PlayerInfo.ultPercent, 100);
+        this.get(Container).filters = [
+            new GlowFilter({
+                color: 0x00ff00,
+                outerStrength: 3,
+                innerStrength: 1,
+                distance: 15,
+            }),
+        ];
     }
 
     if (this.get(PlayerInfo.inUlt)) {
@@ -48,6 +57,7 @@ export const LaserPlayer: Script = function () {
             if (this.get(PlayerInfo.ultPercent) <= 0) {
                 this.set(PlayerInfo.inUlt, false);
                 this.set(PlayerInfo.ultPercent, 0);
+                this.get(Container).filters = [];
             }
 
             this.get(Container).getChildByName("aimguide")?.removeFromParent();
