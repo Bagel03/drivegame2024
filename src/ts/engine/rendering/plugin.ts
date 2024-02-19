@@ -14,7 +14,7 @@ export function pixiRenderingPlugin(world: World) {
         // resolution: 2,
         autoDensity: true,
         resizeTo: window,
-        backgroundColor: "rgb(0, 115, 255)",
+        backgroundColor: "#171717",
     });
     const view = app.view as HTMLCanvasElement;
     view.id = "pixi-canvas";

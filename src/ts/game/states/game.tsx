@@ -77,8 +77,8 @@ export class Game extends State<never> {
         this.hud.timer = (<div className="">0:00</div>) as HTMLDivElement;
 
         this.hud.element.append(
-            <div className="top-0 w-full flex justify-between pl-3 pr-3">
-                <div className="text-left pl-1">
+            <div className="top-0 w-full flex justify-between pl-3 pr-3 bg-base bg-opacity-60">
+                <div className="text-left pl-1 h-12">
                     <span className="pl-2">Player 2</span>
                     <HealthBar
                         initialPercent={0}
@@ -94,7 +94,7 @@ export class Game extends State<never> {
                     ></HealthBar>
                 </div>
                 <div className="text-xl pt-2">{this.hud.timer}</div>
-                <div className="text-right ">
+                <div className="text-right h-12">
                     <span className="rl-2">Player 2</span>
                     <HealthBar
                         color="bg-lime-500"

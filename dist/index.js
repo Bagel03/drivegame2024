@@ -46431,7 +46431,7 @@ void main(void)\r
     const screen = new FixedSizeContainer(1e3 * 19 / 9, 1e3);
     screen.sortableChildren = true;
     const sprite = new Sprite(
-      Texture.from(window.DIST_URL + "/assets/background.jpg")
+      Texture.from(window.DIST_URL + "/assets/background.png")
     );
     sprite.KEEP_ALIVE = true;
     sprite.width = 1e3 * 19 / 9;
@@ -46628,7 +46628,7 @@ void main(void)\r
       // resolution: 2,
       autoDensity: true,
       resizeTo: window,
-      backgroundColor: "rgb(0, 115, 255)"
+      backgroundColor: "#171717"
     });
     const view = app.view;
     view.id = "pixi-canvas";
@@ -49788,7 +49788,7 @@ void main(void) {
           const player2Ult = {};
           this.hud.timer = /* @__PURE__ */ window.jsx("div", { className: "" }, "0:00");
           this.hud.element.append(
-            /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between pl-3 pr-3" }, /* @__PURE__ */ window.jsx("div", { className: "text-left pl-1" }, /* @__PURE__ */ window.jsx("span", { className: "pl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
+            /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between pl-3 pr-3 bg-base bg-opacity-60" }, /* @__PURE__ */ window.jsx("div", { className: "text-left pl-1 h-12" }, /* @__PURE__ */ window.jsx("span", { className: "pl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
               HealthBar,
               {
                 initialPercent: 0,
@@ -49804,7 +49804,7 @@ void main(void) {
                 handle: player1Ult,
                 color: "bg-indigo-700"
               }
-            )), /* @__PURE__ */ window.jsx("div", { className: "text-xl pt-2" }, this.hud.timer), /* @__PURE__ */ window.jsx("div", { className: "text-right " }, /* @__PURE__ */ window.jsx("span", { className: "rl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
+            )), /* @__PURE__ */ window.jsx("div", { className: "text-xl pt-2" }, this.hud.timer), /* @__PURE__ */ window.jsx("div", { className: "text-right h-12" }, /* @__PURE__ */ window.jsx("span", { className: "rl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
               HealthBar,
               {
                 color: "bg-lime-500",

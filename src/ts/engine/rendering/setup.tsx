@@ -20,7 +20,7 @@ export function setupPixiCanvas(world: World) {
     // screen.drawRect(0, 0, 256, 256);
     // screen.endFill();
     const sprite = new Sprite(
-        Texture.from(window.DIST_URL + "/assets/background.jpg")
+        Texture.from(window.DIST_URL + "/assets/background.png")
     );
     sprite.KEEP_ALIVE = true;
     sprite.width = (1000 * 19) / 9;

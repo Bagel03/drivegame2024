@@ -131,8 +131,8 @@ export async function handleMatchmakingRequests(
                 //@ts-expect-error
                 winningRow.assign({
                     trophies: winningRow.get("trophies") + trophiesAwarded,
-                    wins: winningRow.get("wins") + 1,
-                    "total matches": winningRow.get("total matches") + 1,
+                    wins: parseInt(winningRow.get("wins")) + 1,
+                    "total matches": parseInt(winningRow.get("total matches")) + 1,
                 });
                 winningRow.save();
                 const losingRow = rows.find(
@@ -145,7 +145,7 @@ export async function handleMatchmakingRequests(
                 losingRow.assign({
                     "total matches": losingRow.get("total matches") + 1,
                     trophies: Math.max(
-                        losingRow.get("trophies") - trophiesAwarded,
+                        parseInt(losingRow.get("trophies")) - trophiesAwarded,
                         0
                     ),
                 });
