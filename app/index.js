@@ -656,7 +656,7 @@ var GoogleAuth = registerPlugin("GoogleAuth", {
 });
 
 // app/index.ts
-var PROD_URL = "https://bagel03.github.io/drivegame2024/builds/prod";
+var PROD_URL = "https://drivegame24.cc/builds/prod";
 var LOCAL_URL = "http://localhost:5500/dist";
 var DIST_URL = localStorage.getItem("dev-env") ? LOCAL_URL : PROD_URL;
 window.DIST_URL = DIST_URL;
