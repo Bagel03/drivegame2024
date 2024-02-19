@@ -16829,7 +16829,7 @@
       TARGETS = /* @__PURE__ */ ((TARGETS2) => (TARGETS2[TARGETS2.TEXTURE_2D = 3553] = "TEXTURE_2D", TARGETS2[TARGETS2.TEXTURE_CUBE_MAP = 34067] = "TEXTURE_CUBE_MAP", TARGETS2[TARGETS2.TEXTURE_2D_ARRAY = 35866] = "TEXTURE_2D_ARRAY", TARGETS2[TARGETS2.TEXTURE_CUBE_MAP_POSITIVE_X = 34069] = "TEXTURE_CUBE_MAP_POSITIVE_X", TARGETS2[TARGETS2.TEXTURE_CUBE_MAP_NEGATIVE_X = 34070] = "TEXTURE_CUBE_MAP_NEGATIVE_X", TARGETS2[TARGETS2.TEXTURE_CUBE_MAP_POSITIVE_Y = 34071] = "TEXTURE_CUBE_MAP_POSITIVE_Y", TARGETS2[TARGETS2.TEXTURE_CUBE_MAP_NEGATIVE_Y = 34072] = "TEXTURE_CUBE_MAP_NEGATIVE_Y", TARGETS2[TARGETS2.TEXTURE_CUBE_MAP_POSITIVE_Z = 34073] = "TEXTURE_CUBE_MAP_POSITIVE_Z", TARGETS2[TARGETS2.TEXTURE_CUBE_MAP_NEGATIVE_Z = 34074] = "TEXTURE_CUBE_MAP_NEGATIVE_Z", TARGETS2))(TARGETS || {});
       TYPES = /* @__PURE__ */ ((TYPES2) => (TYPES2[TYPES2.UNSIGNED_BYTE = 5121] = "UNSIGNED_BYTE", TYPES2[TYPES2.UNSIGNED_SHORT = 5123] = "UNSIGNED_SHORT", TYPES2[TYPES2.UNSIGNED_SHORT_5_6_5 = 33635] = "UNSIGNED_SHORT_5_6_5", TYPES2[TYPES2.UNSIGNED_SHORT_4_4_4_4 = 32819] = "UNSIGNED_SHORT_4_4_4_4", TYPES2[TYPES2.UNSIGNED_SHORT_5_5_5_1 = 32820] = "UNSIGNED_SHORT_5_5_5_1", TYPES2[TYPES2.UNSIGNED_INT = 5125] = "UNSIGNED_INT", TYPES2[TYPES2.UNSIGNED_INT_10F_11F_11F_REV = 35899] = "UNSIGNED_INT_10F_11F_11F_REV", TYPES2[TYPES2.UNSIGNED_INT_2_10_10_10_REV = 33640] = "UNSIGNED_INT_2_10_10_10_REV", TYPES2[TYPES2.UNSIGNED_INT_24_8 = 34042] = "UNSIGNED_INT_24_8", TYPES2[TYPES2.UNSIGNED_INT_5_9_9_9_REV = 35902] = "UNSIGNED_INT_5_9_9_9_REV", TYPES2[TYPES2.BYTE = 5120] = "BYTE", TYPES2[TYPES2.SHORT = 5122] = "SHORT", TYPES2[TYPES2.INT = 5124] = "INT", TYPES2[TYPES2.FLOAT = 5126] = "FLOAT", TYPES2[TYPES2.FLOAT_32_UNSIGNED_INT_24_8_REV = 36269] = "FLOAT_32_UNSIGNED_INT_24_8_REV", TYPES2[TYPES2.HALF_FLOAT = 36193] = "HALF_FLOAT", TYPES2))(TYPES || {});
       SAMPLER_TYPES = /* @__PURE__ */ ((SAMPLER_TYPES2) => (SAMPLER_TYPES2[SAMPLER_TYPES2.FLOAT = 0] = "FLOAT", SAMPLER_TYPES2[SAMPLER_TYPES2.INT = 1] = "INT", SAMPLER_TYPES2[SAMPLER_TYPES2.UINT = 2] = "UINT", SAMPLER_TYPES2))(SAMPLER_TYPES || {});
-      SCALE_MODES = /* @__PURE__ */ ((SCALE_MODES2) => (SCALE_MODES2[SCALE_MODES2.NEAREST = 0] = "NEAREST", SCALE_MODES2[SCALE_MODES2.LINEAR = 1] = "LINEAR", SCALE_MODES2))(SCALE_MODES || {});
+      SCALE_MODES = /* @__PURE__ */ ((SCALE_MODES22) => (SCALE_MODES22[SCALE_MODES22.NEAREST = 0] = "NEAREST", SCALE_MODES22[SCALE_MODES22.LINEAR = 1] = "LINEAR", SCALE_MODES22))(SCALE_MODES || {});
       WRAP_MODES = /* @__PURE__ */ ((WRAP_MODES2) => (WRAP_MODES2[WRAP_MODES2.CLAMP = 33071] = "CLAMP", WRAP_MODES2[WRAP_MODES2.REPEAT = 10497] = "REPEAT", WRAP_MODES2[WRAP_MODES2.MIRRORED_REPEAT = 33648] = "MIRRORED_REPEAT", WRAP_MODES2))(WRAP_MODES || {});
       MIPMAP_MODES = /* @__PURE__ */ ((MIPMAP_MODES2) => (MIPMAP_MODES2[MIPMAP_MODES2.OFF = 0] = "OFF", MIPMAP_MODES2[MIPMAP_MODES2.POW2 = 1] = "POW2", MIPMAP_MODES2[MIPMAP_MODES2.ON = 2] = "ON", MIPMAP_MODES2[MIPMAP_MODES2.ON_MANUAL = 3] = "ON_MANUAL", MIPMAP_MODES2))(MIPMAP_MODES || {});
       ALPHA_MODES = /* @__PURE__ */ ((ALPHA_MODES2) => (ALPHA_MODES2[ALPHA_MODES2.NPM = 0] = "NPM", ALPHA_MODES2[ALPHA_MODES2.UNPACK = 1] = "UNPACK", ALPHA_MODES2[ALPHA_MODES2.PMA = 2] = "PMA", ALPHA_MODES2[ALPHA_MODES2.NO_PREMULTIPLIED_ALPHA = 0] = "NO_PREMULTIPLIED_ALPHA", ALPHA_MODES2[ALPHA_MODES2.PREMULTIPLY_ON_UPLOAD = 1] = "PREMULTIPLY_ON_UPLOAD", ALPHA_MODES2[ALPHA_MODES2.PREMULTIPLIED_ALPHA = 2] = "PREMULTIPLIED_ALPHA", ALPHA_MODES2))(ALPHA_MODES || {});
@@ -46431,7 +46431,7 @@ void main(void)\r
     const screen = new FixedSizeContainer(1e3 * 19 / 9, 1e3);
     screen.sortableChildren = true;
     const sprite = new Sprite(
-      Texture.from(window.DIST_URL + "/assets/background.jpg")
+      Texture.from(window.DIST_URL + "/assets/background.png")
     );
     sprite.KEEP_ALIVE = true;
     sprite.width = 1e3 * 19 / 9;
@@ -46628,7 +46628,7 @@ void main(void)\r
       // resolution: 2,
       autoDensity: true,
       resizeTo: window,
-      backgroundColor: "rgb(0, 115, 255)"
+      backgroundColor: "#171717"
     });
     const view = app.view;
     view.id = "pixi-canvas";
@@ -47575,7 +47575,7 @@ void main(void)\r
       ) {
         static globals = {
           maxHealth: 100,
-          jumpHeight: 20,
+          jumpHeight: 25,
           gravity: 1,
           speed: 8,
           fireCooldown: DESIRED_FPS / 6,
@@ -48012,8 +48012,8 @@ void main(void)\r
           const sprite = new Sprite(
             Texture.from(Players[player].spriteName + "-idleright_00.png")
           );
-          sprite.texture.baseTexture.scaleMode = SCALE_MODES.LINEAR;
           sprite.texture.baseTexture.mipmap = MIPMAP_MODES.ON;
+          sprite.texture;
           sprite.anchor.set(0.5, 0.5);
           this.set(sprite);
           sprite.width = 100;
@@ -48042,7 +48042,7 @@ void main(void)\r
       init_lib38();
       init_position();
       init_collision();
-      wallBlueprint = new a(Container, StaticPosition, CollisionHitbox);
+      wallBlueprint = new a(StaticPosition, CollisionHitbox);
       Wall = Pe2(
         wallBlueprint,
         [
@@ -48059,7 +48059,6 @@ void main(void)\r
             this.get(CollisionHitbox.x),
             this.get(CollisionHitbox.y)
           ).endFill().position.set(this.get(StaticPosition.x), this.get(StaticPosition.y));
-          this.set(graphics);
         }
       );
     }
@@ -49084,6 +49083,8 @@ void main(void)\r
       init_match_info();
       init_login();
       init_player_stats();
+      init_facing();
+      init_animation();
       Countdown = Pt(At.number.logged());
       console.log("Countdown", Countdown.id);
       MatchTimer = Pt(At.number.logged());
@@ -49099,9 +49100,13 @@ void main(void)\r
           let player2Name = this.world.get(
             this.world.get(NetworkConnection).isPlayer1() ? "remotePlayer" : "localPlayer"
           );
-          const player1 = Player(48, 32, player1Name);
+          const width = this.world.get("screenWidth");
+          const height = this.world.get("screenHeight");
+          const player1 = Player(width / 4, 32, player1Name);
           this.player1 = player1;
-          const player2 = Player(256 - 48 - 32, 32, player2Name);
+          const player2 = Player(width * 3 / 4, 32, player2Name);
+          player2.set(Facing.id, "left");
+          AnimatedSprite2.onChangeDirection(player2);
           this.player2 = player2;
           player1.add(new PeerId(this.world.get(NetworkConnection).player1));
           player2.add(new PeerId(this.world.get(NetworkConnection).player2));
@@ -49120,16 +49125,18 @@ void main(void)\r
           this.world.get("local_player_entity").addScript(
             Players[this.world.get("localPlayer")].playerScript
           );
-          const width = this.world.get("screenWidth");
-          const height = this.world.get("screenHeight");
           const walls = [
-            Wall(width / 2, height - 20, width, 30, "red"),
-            Wall(width / 4, height - 200, width / 8, 20, "red"),
-            Wall(width * 0.75, height - 200, width / 8, 20, "red"),
-            Wall(width / 2, height - 500, width / 2, 20, "red"),
-            Wall(width / 16, height - 350, width / 8, 20, "red"),
-            Wall(width * (15 / 16), height - 350, width / 8, 20, "red"),
-            Wall(width / 2, height - 700, width / 16, 20, "red")
+            Wall(width / 2, height - 200, width - 150, 20, "red"),
+            Wall(width / 4 + 20, height - 450, width / 5 - 30, 20, "red"),
+            Wall(width * 3 / 4 - 30, height - 450, width / 5 - 30, 20, "red"),
+            Wall(width / 2 - 5, height - 680, width / 5 - 30, 20, "red")
+            // Wall(width / 2, height - 20, width, 30, "red"),
+            // Wall(width / 4, height - 200, width / 8, 20, "red"),
+            // Wall(width * 0.75, height - 200, width / 8, 20, "red"),
+            // Wall(width / 2, height - 500, width / 2, 20, "red"),
+            // Wall(width / 16, height - 350, width / 8, 20, "red"),
+            // Wall(width * (15 / 16), height - 350, width / 8, 20, "red"),
+            // Wall(width / 2, height - 700, width / 16, 20, "red"),
             // // Wall(width/4, height -50)
             // Wall(256 - 50, 175, 50, 10, "red"),
             // Wall(256 / 2, 110, 50, 10, "red"),
@@ -49788,7 +49795,7 @@ void main(void) {
           const player2Ult = {};
           this.hud.timer = /* @__PURE__ */ window.jsx("div", { className: "" }, "0:00");
           this.hud.element.append(
-            /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between pl-3 pr-3" }, /* @__PURE__ */ window.jsx("div", { className: "text-left pl-1" }, /* @__PURE__ */ window.jsx("span", { className: "pl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
+            /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between pl-3 pr-3 bg-base bg-opacity-60" }, /* @__PURE__ */ window.jsx("div", { className: "text-left pl-1 h-12" }, /* @__PURE__ */ window.jsx("span", { className: "pl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
               HealthBar,
               {
                 initialPercent: 0,
@@ -49804,7 +49811,7 @@ void main(void) {
                 handle: player1Ult,
                 color: "bg-indigo-700"
               }
-            )), /* @__PURE__ */ window.jsx("div", { className: "text-xl pt-2" }, this.hud.timer), /* @__PURE__ */ window.jsx("div", { className: "text-right " }, /* @__PURE__ */ window.jsx("span", { className: "rl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
+            )), /* @__PURE__ */ window.jsx("div", { className: "text-xl pt-2" }, this.hud.timer), /* @__PURE__ */ window.jsx("div", { className: "text-right h-12" }, /* @__PURE__ */ window.jsx("span", { className: "rl-2" }, "Player 2"), /* @__PURE__ */ window.jsx(
               HealthBar,
               {
                 color: "bg-lime-500",
