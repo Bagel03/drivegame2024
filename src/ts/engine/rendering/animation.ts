@@ -1,5 +1,5 @@
 import { Component, Entity, System, Type, With } from "bagelecs";
-import { Container, Sprite, Texture } from "pixi.js";
+import { Container, MIPMAP_MODES, Sprite, Texture } from "pixi.js";
 import { Facing } from "../../game/components/facing";
 
 export class AnimatedSprite extends Component({
@@ -72,6 +72,8 @@ export class AnimationSystem extends System(With(Container, AnimatedSprite)) {
                 }` as const;
 
                 if (!this.textureCache.has(frameName)) {
+                    const texture = Texture.from(frameName + ".png");
+                    texture.baseTexture.mipmap = MIPMAP_MODES.ON;
                     this.textureCache.set(
                         frameName,
                         Texture.from(frameName + ".png")

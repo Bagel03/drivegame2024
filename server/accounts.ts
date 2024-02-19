@@ -37,27 +37,18 @@ export async function handleAccountRequests(
         const rows = await DATABASE.accounts.getRows<AccountInfo>();
         let row!: GoogleSpreadsheetRow<AccountInfo>;
 
-        if (email) {
-            let foundRow = rows.find((row) => row.get("email") === email);
-            if (!foundRow) {
-                res.statusCode = 404;
-                res.end("Account not found");
-                return;
-            }
-
-            row = foundRow;
-            return;
-        } else if (jwtStr) {
+        if (jwtStr) {
             // decode the JWT
             const jwt = JSON.parse(atob(jwtStr.split(".")[1]));
             let foundRow = rows.find((row) => {
                 return row.get("email") === jwt.email;
             });
+
             // console.log(jwt.email, foundRow?.get("email") || "not found", rows);
             if (!foundRow) {
                 // make a new row
                 const userClass =
-                    classes.reverse()[parseInt(jwt.email.slice(0, 2)) - 24] || "";
+                    classes.toReversed()[parseInt(jwt.email.slice(0, 2)) - 24] || "";
 
                 foundRow = await DATABASE.accounts.addRow({
                     email: jwt.email,

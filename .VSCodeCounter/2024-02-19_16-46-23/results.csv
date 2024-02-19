@@ -1,0 +1,125 @@
+"filename", "language", "TypeScript", "JavaScript", "JSON with Comments", "TypeScript JSX", "CSS", "JSON", "YAML", "Groovy", "Properties", "HTML", "Batch", "Java", "XML", "comment", "blank", "total"
+"c:\Dev Temp\ts\project-b\android\.idea\misc.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4
+"c:\Dev Temp\ts\project-b\android\app\build.gradle", "Groovy", 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 2, 6, 55
+"c:\Dev Temp\ts\project-b\android\app\capacitor.build.gradle", "Groovy", 0, 0, 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 1, 6, 24
+"c:\Dev Temp\ts\project-b\android\app\src\androidTest\java\com\getcapacitor\myapp\ExampleInstrumentedTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 6, 6, 27
+"c:\Dev Temp\ts\project-b\android\app\src\main\AndroidManifest.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 1, 8, 42
+"c:\Dev Temp\ts\project-b\android\app\src\main\java\com\drivegame2024\MainActivity.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 6
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\drawable-v24\ic_launcher_foreground.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 0, 1, 35
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\drawable\ic_launcher_background.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 170, 0, 1, 171
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\layout\activity_main.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 2, 13
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\mipmap-anydpi-v26\ic_launcher.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 5
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\mipmap-anydpi-v26\ic_launcher_round.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 5
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\values\ic_launcher_background.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\values\strings.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 1, 8
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\values\styles.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 2, 4, 22
+"c:\Dev Temp\ts\project-b\android\app\src\main\res\xml\file_paths.xml", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 5
+"c:\Dev Temp\ts\project-b\android\app\src\test\java\com\getcapacitor\myapp\ExampleUnitTest.java", "Java", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 5, 5, 19
+"c:\Dev Temp\ts\project-b\android\build.gradle", "Groovy", 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 3, 7, 30
+"c:\Dev Temp\ts\project-b\android\capacitor.settings.gradle", "Groovy", 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 1, 6, 19
+"c:\Dev Temp\ts\project-b\android\gradle.properties", "Properties", 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 15, 6, 23
+"c:\Dev Temp\ts\project-b\android\gradle\wrapper\gradle-wrapper.properties", "Properties", 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1, 7
+"c:\Dev Temp\ts\project-b\android\gradlew.bat", "Batch", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 0, 0, 30, 22, 93
+"c:\Dev Temp\ts\project-b\android\settings.gradle", "Groovy", 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 5
+"c:\Dev Temp\ts\project-b\android\variables.gradle", "Groovy", 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 16
+"c:\Dev Temp\ts\project-b\app\index.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 0, 0, 0, 23, 4, 85
+"c:\Dev Temp\ts\project-b\app\index.js", "JavaScript", 0, 926, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 6, 968
+"c:\Dev Temp\ts\project-b\app\index.ts", "TypeScript", 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 19, 121
+"c:\Dev Temp\ts\project-b\app\tsconfig.json", "JSON with Comments", 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 9
+"c:\Dev Temp\ts\project-b\capacitor.config.json", "JSON", 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13
+"c:\Dev Temp\ts\project-b\index.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 68, 0, 0, 0, 25, 8, 101
+"c:\Dev Temp\ts\project-b\ionic.config.json", "JSON", 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7
+"c:\Dev Temp\ts\project-b\package.json", "JSON", 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44
+"c:\Dev Temp\ts\project-b\packer.js", "JavaScript", 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4, 27
+"c:\Dev Temp\ts\project-b\server\accounts.ts", "TypeScript", 86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 10, 100
+"c:\Dev Temp\ts\project-b\server\database.ts", "TypeScript", 47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 10, 58
+"c:\Dev Temp\ts\project-b\server\index.ts", "TypeScript", 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 59
+"c:\Dev Temp\ts\project-b\server\matchmaking.ts", "TypeScript", 172, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 121, 41, 334
+"c:\Dev Temp\ts\project-b\server\package.json", "JSON", 0, 0, 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18
+"c:\Dev Temp\ts\project-b\server\pnpm-lock.yaml", "YAML", 0, 0, 0, 0, 0, 0, 441, 0, 0, 0, 0, 0, 0, 0, 62, 503
+"c:\Dev Temp\ts\project-b\server\tsconfig.json", "JSON with Comments", 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 9, 110
+"c:\Dev Temp\ts\project-b\src\styles\index.css", "CSS", 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8
+"c:\Dev Temp\ts\project-b\src\ts\editor\editor.ts", "TypeScript", 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5
+"c:\Dev Temp\ts\project-b\src\ts\editor\inspect.ts", "TypeScript", 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 10, 57
+"c:\Dev Temp\ts\project-b\src\ts\engine\diagnostics.ts", "TypeScript", 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 16, 74
+"c:\Dev Temp\ts\project-b\src\ts\engine\engine.ts", "TypeScript", 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 24
+"c:\Dev Temp\ts\project-b\src\ts\engine\input\input.ts", "TypeScript", 410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 87, 517
+"c:\Dev Temp\ts\project-b\src\ts\engine\input\input_bindings.ts", "TypeScript", 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 38, 236
+"c:\Dev Temp\ts\project-b\src\ts\engine\input\input_types.ts", "TypeScript", 218, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 21, 244
+"c:\Dev Temp\ts\project-b\src\ts\engine\jsx-runtime.ts", "TypeScript", 82, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 22, 132
+"c:\Dev Temp\ts\project-b\src\ts\engine\jsx-types.d.ts", "TypeScript", 89, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 98, 32, 219
+"c:\Dev Temp\ts\project-b\src\ts\engine\loop.ts", "TypeScript", 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 9, 93
+"c:\Dev Temp\ts\project-b\src\ts\engine\multiplayer\archetype.ts", "TypeScript", 103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 23, 131
+"c:\Dev Temp\ts\project-b\src\ts\engine\multiplayer\catch_up.ts", "TypeScript", 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 24
+"c:\Dev Temp\ts\project-b\src\ts\engine\multiplayer\entities.ts", "TypeScript", 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 10, 62
+"c:\Dev Temp\ts\project-b\src\ts\engine\multiplayer\multiplayer_input.ts", "TypeScript", 269, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 64, 380
+"c:\Dev Temp\ts\project-b\src\ts\engine\multiplayer\network.ts", "TypeScript", 410, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 73, 521
+"c:\Dev Temp\ts\project-b\src\ts\engine\multiplayer\rollback.ts", "TypeScript", 95, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 20, 124
+"c:\Dev Temp\ts\project-b\src\ts\engine\polyfills.ts", "TypeScript", 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 20
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\animation.ts", "TypeScript", 81, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 88
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\blueprints\graphics.ts", "TypeScript", 79, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 15, 101
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\blueprints\sprite.ts", "TypeScript", 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 19
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\hud.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\plugin.ts", "TypeScript", 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 16, 92
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\position.ts", "TypeScript", 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 27
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\resize.ts", "TypeScript", 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 11, 57
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\setup.tsx", "TypeScript JSX", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 9, 47
+"c:\Dev Temp\ts\project-b\src\ts\engine\rendering\system.ts", "TypeScript", 46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 14, 82
+"c:\Dev Temp\ts\project-b\src\ts\engine\resource.ts", "TypeScript", 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 31
+"c:\Dev Temp\ts\project-b\src\ts\engine\script.ts", "TypeScript", 78, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 19, 101
+"c:\Dev Temp\ts\project-b\src\ts\engine\server.ts", "TypeScript", 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 39
+"c:\Dev Temp\ts\project-b\src\ts\engine\state_managment.ts", "TypeScript", 86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 106
+"c:\Dev Temp\ts\project-b\src\ts\engine\utils.ts", "TypeScript", 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 15
+"c:\Dev Temp\ts\project-b\src\ts\game\blueprints\bullet.ts", "TypeScript", 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 41
+"c:\Dev Temp\ts\project-b\src\ts\game\blueprints\missile.ts", "TypeScript", 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 24
+"c:\Dev Temp\ts\project-b\src\ts\game\blueprints\player.ts", "TypeScript", 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 5, 82
+"c:\Dev Temp\ts\project-b\src\ts\game\blueprints\wall.ts", "TypeScript", 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 38
+"c:\Dev Temp\ts\project-b\src\ts\game\components\collision.ts", "TypeScript", 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5, 12
+"c:\Dev Temp\ts\project-b\src\ts\game\components\cost.ts", "TypeScript", 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9
+"c:\Dev Temp\ts\project-b\src\ts\game\components\facing.ts", "TypeScript", 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4
+"c:\Dev Temp\ts\project-b\src\ts\game\components\funds.ts", "TypeScript", 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5
+"c:\Dev Temp\ts\project-b\src\ts\game\components\ground_enemy.ts", "TypeScript", 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 6
+"c:\Dev Temp\ts\project-b\src\ts\game\components\match_info.ts", "TypeScript", 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 43
+"c:\Dev Temp\ts\project-b\src\ts\game\components\player_info.ts", "TypeScript", 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 25
+"c:\Dev Temp\ts\project-b\src\ts\game\components\player_stats.ts", "TypeScript", 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 11
+"c:\Dev Temp\ts\project-b\src\ts\game\components\timed.ts", "TypeScript", 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4
+"c:\Dev Temp\ts\project-b\src\ts\game\components\velocity.ts", "TypeScript", 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 18
+"c:\Dev Temp\ts\project-b\src\ts\game\game_modes.ts", "TypeScript", 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 3, 50
+"c:\Dev Temp\ts\project-b\src\ts\game\hud\background.tsx", "TypeScript JSX", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 16
+"c:\Dev Temp\ts\project-b\src\ts\game\hud\components\button.tsx", "TypeScript JSX", 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 7, 64
+"c:\Dev Temp\ts\project-b\src\ts\game\hud\components\dialogs.tsx", "TypeScript JSX", 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 58
+"c:\Dev Temp\ts\project-b\src\ts\game\hud\components\health.tsx", "TypeScript JSX", 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 41
+"c:\Dev Temp\ts\project-b\src\ts\game\hud\components\joystick.tsx", "TypeScript JSX", 0, 0, 0, 109, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 19, 130
+"c:\Dev Temp\ts\project-b\src\ts\game\hud\debug\log.tsx", "TypeScript JSX", 0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8, 44
+"c:\Dev Temp\ts\project-b\src\ts\game\levels.ts", "TypeScript", 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 7, 37
+"c:\Dev Temp\ts\project-b\src\ts\game\players.ts", "TypeScript", 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 3, 59
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\bosses\frank.ts", "TypeScript", 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\gravity.ts", "TypeScript", 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 8
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\missile.ts", "TypeScript", 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 7, 26
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\players\bombs.ts", "TypeScript", 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 7, 77
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\players\carrier.ts", "TypeScript", 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 12, 102
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\players\common.ts", "TypeScript", 76, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 12, 91
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\players\frank.ts", "TypeScript", 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 41
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\players\griffin.ts", "TypeScript", 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 6, 37
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\players\laser.ts", "TypeScript", 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 11, 101
+"c:\Dev Temp\ts\project-b\src\ts\game\scripts\shotgun.ts", "TypeScript", 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 46
+"c:\Dev Temp\ts\project-b\src\ts\game\settings\settings.ts", "TypeScript", 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 13
+"c:\Dev Temp\ts\project-b\src\ts\game\states\choose_game.tsx", "TypeScript JSX", 0, 0, 0, 146, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 14, 162
+"c:\Dev Temp\ts\project-b\src\ts\game\states\fade.tsx", "TypeScript JSX", 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7, 63
+"c:\Dev Temp\ts\project-b\src\ts\game\states\game.tsx", "TypeScript JSX", 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 22, 154
+"c:\Dev Temp\ts\project-b\src\ts\game\states\game_over.tsx", "TypeScript JSX", 0, 0, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 14, 174
+"c:\Dev Temp\ts\project-b\src\ts\game\states\login.tsx", "TypeScript JSX", 0, 0, 0, 171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 22, 199
+"c:\Dev Temp\ts\project-b\src\ts\game\states\menu.tsx", "TypeScript JSX", 0, 0, 0, 418, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 43, 489
+"c:\Dev Temp\ts\project-b\src\ts\game\states\multiplayer.tsx", "TypeScript JSX", 0, 0, 0, 210, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80, 38, 328
+"c:\Dev Temp\ts\project-b\src\ts\game\states\player_select.tsx", "TypeScript JSX", 0, 0, 0, 145, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 22, 172
+"c:\Dev Temp\ts\project-b\src\ts\game\states\preload.tsx", "TypeScript JSX", 0, 0, 0, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 21, 164
+"c:\Dev Temp\ts\project-b\src\ts\game\states\solo.tsx", "TypeScript JSX", 0, 0, 0, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 74
+"c:\Dev Temp\ts\project-b\src\ts\game\systems\collision.ts", "TypeScript", 107, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 13, 123
+"c:\Dev Temp\ts\project-b\src\ts\game\systems\movement.ts", "TypeScript", 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 4, 44
+"c:\Dev Temp\ts\project-b\src\ts\game\systems\payment.ts", "TypeScript", 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7, 63
+"c:\Dev Temp\ts\project-b\src\ts\game\systems\timed.ts", "TypeScript", 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 14
+"c:\Dev Temp\ts\project-b\src\ts\index.ts", "TypeScript", 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 11, 68
+"c:\Dev Temp\ts\project-b\src\ts\test.ts", "TypeScript", 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 27
+"c:\Dev Temp\ts\project-b\tailwind.config.js", "JavaScript", 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 30
+"c:\Dev Temp\ts\project-b\tsconfig.json", "JSON with Comments", 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 84, 10, 115
+"Total", "-", 4157, 974, 40, 1916, 6, 82, 441, 116, 8, 126, 41, 27, 294, 1200, 1274, 10702

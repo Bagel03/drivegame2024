@@ -38,8 +38,6 @@ export async function handleMatchmakingRequests(
                 playerEmails: [queuedPlayer.email, email],
             };
 
-            ongoingGames.set(match.id, match);
-
             res.write(
                 JSON.stringify({
                     remoteId: queuedPlayer.id,
@@ -90,145 +88,225 @@ export async function handleMatchmakingRequests(
         const clientEmail = url.searchParams.get("email")!;
         const winner = url.searchParams.get("winner")!;
 
-        const match = ongoingGames.get(matchId);
+        let match = ongoingGames.get(matchId);
         if (!match) {
-            res.writeHead(400);
-            res.end();
-            return;
-        }
+            ongoingGames.set(matchId, {
+                id: matchId,
+                players: [clientId],
+                playerResults: [winner],
+                playerEmails: [clientEmail],
+                playerGameOverRes: res,
+            });
+            match = ongoingGames.get(matchId)!;
+        } else {
+            match.playerEmails.push(clientEmail);
+            match.players.push(clientId);
+            match.playerResults.push(winner);
 
-        match.playerResults[match.players.indexOf(clientId)] = winner;
+            const trophiesAwarded = 25 + Math.floor(Math.random() * 10);
+            const winningId = match.playerResults[0];
+            for (const response of [res, match.playerGameOverRes!]) {
+                response.write(
+                    JSON.stringify({ winner: winningId, trophiesAwarded })
+                );
+                response.end();
+            }
 
-        if (match.playerGameOverRes) {
-            // Make sure they agree
-            if (match.playerResults[0] == match.playerResults[1]) {
-                // Can't make it too normal can we 😉
-                const trophiesAwarded = 25 + Math.floor(Math.random() * 10);
-                const winningId = match.playerResults[0];
+            DATABASE.matches.addRow({
+                id: matchId,
+                player1: match.playerEmails[0],
+                player2: match.playerEmails[1],
+                winner: match.playerEmails[match.players.indexOf(winningId)],
+                trophiesAwarded,
+            });
 
-                for (const response of [res, match.playerGameOverRes]) {
-                    response.write(
-                        JSON.stringify({ winner: winningId, trophiesAwarded })
-                    );
-                    response.end();
-                }
-
-                DATABASE.matches.addRow({
-                    id: matchId,
-                    player1: match.playerEmails[0],
-                    player2: match.playerEmails[1],
-                    winner: match.playerEmails[match.players.indexOf(winningId)],
-                    trophiesAwarded,
-                });
-
-                const rows = await DATABASE.accounts.getRows<AccountInfo>();
-                const winningRow = rows.find(
-                    (row) =>
-                        row.get("email") ==
-                        match.playerEmails[match.players.indexOf(winningId)]
-                )!;
-
+            const rows = await DATABASE.accounts.getRows<AccountInfo>();
+            const winningRow = rows.find(
+                (row) =>
+                    row.get("email") ==
+                    match!.playerEmails[match!.players.indexOf(winningId)]
+            );
+            if (!winningRow) {
+                console.error(
+                    "Couldn't find winning row",
+                    match.playerEmails[match.players.indexOf(winningId)]
+                );
+            } else {
                 //@ts-expect-error
                 winningRow.assign({
-                    trophies: winningRow.get("trophies") + trophiesAwarded,
+                    trophies: parseInt(winningRow.get("trophies")) + trophiesAwarded,
                     wins: parseInt(winningRow.get("wins")) + 1,
                     "total matches": parseInt(winningRow.get("total matches")) + 1,
                 });
-                winningRow.save();
-                const losingRow = rows.find(
-                    (row) =>
-                        row.get("email") ==
-                        match.playerEmails[1 - match.players.indexOf(winningId)]
-                )!;
-                //@ts-expect-error
+                await winningRow.save();
+            }
 
+            const losingRow = rows.find(
+                (row) =>
+                    row.get("email") ==
+                    match!.playerEmails[1 - match!.players.indexOf(winningId)]
+            )!;
+            if (!losingRow) {
+                console.error(
+                    "Couldn't find losing row",
+                    match.playerEmails[1 - match.players.indexOf(winningId)]
+                );
+            } else {
+                //@ts-expect-error
                 losingRow.assign({
-                    "total matches": losingRow.get("total matches") + 1,
+                    "total matches": parseInt(losingRow.get("total matches")) + 1,
                     trophies: Math.max(
                         parseInt(losingRow.get("trophies")) - trophiesAwarded,
                         0
                     ),
                 });
-
-                losingRow.save();
-
-                console.log(
-                    `Match ${matchId} over: (${winningId}) v ${
-                        match.players[1 - match.players.indexOf(winningId)]
-                    } - ${trophiesAwarded} trophies`
-                );
-
-                reorderRanks(rows);
-
-                ongoingGames.delete(matchId);
-            } else {
-                // Ill do this later (to avoid hackers)
+                await losingRow.save();
             }
-        } else {
-            // Append for later
-            match.playerGameOverRes = res;
 
-            // Set a timeout if we don't get a response in like 10 seconds
-            setTimeout(async () => {
-                const trophiesAwarded = 25 + Math.floor(Math.random() * 10);
-                const winningId = match.playerResults[0];
-
-                // If we still haven't gotten a response, assume the 1 user quit and give the other guy the win
-                if (ongoingGames.has(matchId)) {
-                    DATABASE.matches.addRow({
-                        id: matchId,
-                        player1: match.playerEmails[0],
-                        player2: match.playerEmails[1],
-                        winner: match.playerEmails[match.players.indexOf(winningId)],
-                        trophiesAwarded,
-                    });
-
-                    const rows = await DATABASE.accounts.getRows<AccountInfo>();
-                    const winningRow = rows.find(
-                        (row) =>
-                            row.get("email") ==
-                            match.playerEmails[match.players.indexOf(winningId)]
-                    )!;
-                    //@ts-expect-error
-                    winningRow.assign({
-                        trophies: winningRow.get("trophies") + trophiesAwarded,
-                        wins: winningRow.get("wins") + 1,
-                        "total matches": winningRow.get("total matches") + 1,
-                    });
-                    winningRow.save();
-                    const losingRow = rows.find(
-                        (row) =>
-                            row.get("email") ==
-                            match.playerEmails[1 - match.players.indexOf(winningId)]
-                    )!;
-                    //@ts-expect-error
-
-                    losingRow.assign({
-                        "total matches": losingRow.get("total matches") + 1,
-                        trophies: Math.max(
-                            losingRow.get("trophies") - trophiesAwarded,
-                            0
-                        ),
-                    });
-
-                    losingRow.save();
-
-                    reorderRanks(rows);
-
-                    ongoingGames.delete(matchId);
-
-                    console.log(
-                        `Match ${matchId} over: (${winningId}) v ${
-                            match.players[1 - match.players.indexOf(winningId)]
-                        } (timeout)`
-                    );
-                }
-            }, 5000);
+            await reorderRanks(rows);
+            ongoingGames.delete(matchId);
         }
+
+        // match.playerResults[match.players.indexOf(clientId)] = winner;
+
+        // if (match.playerGameOverRes) {
+        //     // Make sure they agree
+        //     if (match.playerResults[0] == match.playerResults[1]) {
+        //         // Can't make it too normal can we 😉
+        //         const trophiesAwarded = 25 + Math.floor(Math.random() * 10);
+        //         const winningId = match.playerResults[0];
+
+        //         for (const response of [res, match.playerGameOverRes]) {
+        //             response.write(
+        //                 JSON.stringify({ winner: winningId, trophiesAwarded })
+        //             );
+        //             response.end();
+        //         }
+
+        //         DATABASE.matches.addRow({
+        //             id: matchId,
+        //             player1: match.playerEmails[0],
+        //             player2: match.playerEmails[1],
+        //             winner: match.playerEmails[match.players.indexOf(winningId)],
+        //             trophiesAwarded,
+        //         });
+
+        //         const rows = await DATABASE.accounts.getRows<AccountInfo>();
+        //         const winningRow = rows.find(
+        //             (row) =>
+        //                 row.get("email") ==
+        //                 match.playerEmails[match.players.indexOf(winningId)]
+        //         )!;
+
+        //         //@ts-expect-error
+        //         winningRow.assign({
+        //             trophies: winningRow.get("trophies") + trophiesAwarded,
+        //             wins: parseInt(winningRow.get("wins")) + 1,
+        //             "total matches": parseInt(winningRow.get("total matches")) + 1,
+        //         });
+        //         winningRow.save();
+        //         const losingRow = rows.find(
+        //             (row) =>
+        //                 row.get("email") ==
+        //                 match.playerEmails[1 - match.players.indexOf(winningId)]
+        //         )!;
+        //         //@ts-expect-error
+
+        //         losingRow.assign({
+        //             "total matches": losingRow.get("total matches") + 1,
+        //             trophies: Math.max(
+        //                 parseInt(losingRow.get("trophies")) - trophiesAwarded,
+        //                 0
+        //             ),
+        //         });
+
+        //         losingRow.save();
+
+        //         console.log(
+        //             `Match ${matchId} over: (${winningId}) v ${
+        //                 match.players[1 - match.players.indexOf(winningId)]
+        //             } - ${trophiesAwarded} trophies`
+        //         );
+
+        //         reorderRanks(rows);
+
+        //         ongoingGames.delete(matchId);
+        //     } else {
+        //         // Ill do this later (to avoid hackers)
+        //     }
+        // } else {
+        //     // Append for later
+        //     match.playerGameOverRes = res;
+
+        //     // Set a timeout if we don't get a response in like 10 seconds
+        //     setTimeout(async () => {
+        //         const trophiesAwarded = 25 + Math.floor(Math.random() * 10);
+        //         const winningId = match.playerResults[0];
+
+        //         // If we still haven't gotten a response, assume the 1 user quit and give the other guy the win
+        //         if (ongoingGames.has(matchId)) {
+        //             DATABASE.matches.addRow({
+        //                 id: matchId,
+        //                 player1: match.playerEmails[0],
+        //                 player2: match.playerEmails[1],
+        //                 winner: match.playerEmails[match.players.indexOf(winningId)],
+        //                 trophiesAwarded,
+        //             });
+
+        //             const rows = await DATABASE.accounts.getRows<AccountInfo>();
+        //             const winningRow = rows.find(
+        //                 (row) =>
+        //                     row.get("email") ==
+        //                     match.playerEmails[match.players.indexOf(winningId)]
+        //             );
+
+        //             if (!winningRow) {
+        //                 console.error(
+        //                     "Couldn't find winning row",
+        //                     match.playerEmails[match.players.indexOf(winningId)]
+        //                 );
+        //             }
+        //             //@ts-expect-error
+        //             winningRow.assign({
+        //                 trophies: winningRow.get("trophies") + trophiesAwarded,
+        //                 wins: winningRow.get("wins") + 1,
+        //                 "total matches": winningRow.get("total matches") + 1,
+        //             });
+        //             winningRow.save();
+        //             const losingRow = rows.find(
+        //                 (row) =>
+        //                     row.get("email") ==
+        //                     match.playerEmails[1 - match.players.indexOf(winningId)]
+        //             )!;
+        //             //@ts-expect-error
+
+        //             losingRow.assign({
+        //                 "total matches": losingRow.get("total matches") + 1,
+        //                 trophies: Math.max(
+        //                     losingRow.get("trophies") - trophiesAwarded,
+        //                     0
+        //                 ),
+        //             });
+
+        //             losingRow.save();
+
+        //             reorderRanks(rows);
+
+        //             ongoingGames.delete(matchId);
+
+        //             console.log(
+        //                 `Match ${matchId} over: (${winningId}) v ${
+        //                     match.players[1 - match.players.indexOf(winningId)]
+        //                 } (timeout)`
+        //             );
+        //         }
+        //     }, 5000);
+        // }
     }
 }
 
 function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
+    const promises = [];
     rows.filter((row) => {
         const email = row.get("email");
         return email.endsWith("@catholiccentral.net");
@@ -239,7 +317,7 @@ function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
         .forEach((row, i) => {
             // @ts-expect-error
             row.assign({ overallRank: i + 1 });
-            row.save();
+            promises.push(row.save());
         });
 
     for (const c of classes) {
@@ -248,7 +326,8 @@ function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
         for (let i = 0; i < classRows.length; i++) {
             // @ts-expect-error
             classRows[i].assign({ classRank: i + 1 });
-            classRows[i].save();
+            promises.push(classRows[i].save());
         }
     }
+    return Promise.all(promises);
 }
