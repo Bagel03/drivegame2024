@@ -1,5 +1,6 @@
 import { Component, Entity, System, Type, With } from "bagelecs";
 import { Container, Sprite, Texture } from "pixi.js";
+import { Facing } from "../../game/components/facing";
 
 export class AnimatedSprite extends Component({
     spriteName: Type.string,
@@ -21,7 +22,16 @@ export class AnimatedSprite extends Component({
         entity.set(AnimatedSprite.frameCount, frameCount);
         entity.set(AnimatedSprite.loops, loops);
         entity.set(AnimatedSprite.thisFrameTotal, frameLength);
-        entity.get(Sprite).texture = Texture.from(spriteName + "_00.png");
+        let dir = entity.has(Facing) ? entity.get(Facing) : "";
+        entity.get(Sprite).texture = Texture.from(spriteName + dir + "_00.png");
+    }
+
+    static onChangeDirection(entity: Entity) {
+        let dir = entity.has(Facing) ? entity.get(Facing) : "";
+        let spriteName = entity.get(AnimatedSprite.spriteName);
+        entity.get(Sprite).texture = Texture.from(spriteName + dir + "_00.png");
+        entity.set(AnimatedSprite.currentFrame, 0);
+        entity.set(AnimatedSprite.thisFrameElapsed, 0);
     }
 }
 
@@ -52,7 +62,9 @@ export class AnimationSystem extends System(With(Container, AnimatedSprite)) {
                         )
                     );
                 }
-                const frameName = `${ent.get(AnimatedSprite.spriteName)}_${
+                const frameName = `${ent.get(AnimatedSprite.spriteName)}${
+                    ent.has(Facing) ? ent.get(Facing) : ""
+                }_${
                     ent
                         .get(AnimatedSprite.currentFrame)
                         .toString()

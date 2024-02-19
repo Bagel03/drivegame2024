@@ -18,6 +18,7 @@ import { AccountInfo } from "./login";
 import { PlayerStats } from "../components/player_stats";
 
 export const Countdown = Resource(Type.number.logged());
+console.log("Countdown", Countdown.id);
 export const MatchTimer = Resource(Type.number.logged());
 
 export class MultiplayerGame extends Game {
@@ -128,41 +129,13 @@ export class MultiplayerGame extends Game {
             .addScript(
                 Players[this.world.get<"carrier">("localPlayer")].playerScript
             );
-        // player1.remove(Graphics);
-        // player1.add(new Sprite(Texture.from("walk_00.png")));
-        // player1.get(Sprite).width = 40;
-        // player1.get(Sprite).height = 32;
-        // player1.addScript(MrCarrierPlayer);
-        // player1.add(new Velocity({ x: 0, y: 0 }));
-        // player1.add(
-        //     new PlayerInfo({
-        //         canJump: true,
-        //         heath: 100,
-        //         shootCooldown: 0,
-        //         ultPercent: 0,
-        //         ultTimeLeft: 0,
-        //     })
-        // );
-        // player1.add(new CollisionHitbox({ x: 32, y: 32 }));
-        // // Look into removing this
-        // player1.add(new PeerId(this.world.get(NetworkConnection).id));
-        // player1.add(
-        //     new AnimatedSprite({
-        //         spriteName: "walk",
-        //         currentFrame: 0,
-        //         thisFrameElapsed: 0, // Note that both of these are in frames, not ms or seconds
-        //         thisFrameTotal: 15,
-        //         frameCount: 8,
-        //     })
-        // );
 
-        // this.world.add(player1, "local_player_entity");
-
-        Wall(0, 230, 256, 20, "red");
-        Wall(50, 170, 50, 10, "red");
-        Wall(256 - 50 - 50, 170, 50, 10, "red");
-        Wall(100, 110, 50, 10, "red");
-
+        const walls = [
+            Wall(0, 230, 256, 20, "red"),
+            Wall(50, 170, 50, 10, "red"),
+            Wall(256 - 50 - 50, 170, 50, 10, "red"),
+            Wall(100, 110, 50, 10, "red"),
+        ];
         // Wait 3 seconds before starting the input sync
         this.world.add(new Countdown(3));
 
@@ -212,7 +185,7 @@ export class MultiplayerGame extends Game {
                 }, 1000);
             }
 
-            if (this.get(Countdown) <= 0) {
+            if (this.get(Countdown) <= 0 && !this.has(MatchTimer)) {
                 this.get(RollbackManager).enableRollback();
                 this.add(new MatchTimer(0));
                 this.addScript(() =>
@@ -221,7 +194,8 @@ export class MultiplayerGame extends Game {
                         this.get(MatchTimer) + DESIRED_FRAME_TIME / 1000
                     )
                 );
-                this.removeScript(countdownScript);
+
+                // this.removeScript(countdownScript);
             }
         };
         this.world.addScript(countdownScript);
@@ -250,6 +224,9 @@ export class MultiplayerGame extends Game {
         this.hud.updatePlayer2HealthBar(
             (this.player2.get(Funds) * 100) / PlayerInfo.globals.targetFunds
         );
+
+        this.hud.updatePlayer1UltBar(this.player1.get(PlayerInfo.ultPercent));
+        this.hud.updatePlayer2UltBar(this.player2.get(PlayerInfo.ultPercent));
 
         if (
             this.player1.get(Funds) >= PlayerInfo.globals.targetFunds ||

@@ -9,6 +9,7 @@ import { PlayerStats } from "../../components/player_stats";
 import { AnimatedSprite } from "../../../engine/rendering/animation";
 import { PlayerIdentifier } from "../../blueprints/player";
 import { Players } from "../../players";
+import { Facing } from "../../components/facing";
 
 let CountdownClass: typeof Countdown;
 import("../../states/multiplayer").then((module) => {
@@ -22,11 +23,22 @@ export function applyDefaultMovement(
     input: MultiplayerInput,
     id: string
 ) {
-    if (entity.world.get(CountdownClass) > 0) return;
+    if (entity.world.get(CountdownClass) >= 0) return;
 
     const spritePrefix =
         Players[entity.get(PlayerIdentifier) as "carrier"].spriteName;
     const spritePostfix = entity.get(AnimatedSprite.spriteName).split("-")[1];
+    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+
+    if (entity.get(Velocity.x) > 0 && entity.get(Facing) !== "right") {
+        entity.set(Facing.id, "right");
+        AnimatedSprite.onChangeDirection(entity);
+        // console.log("changed direction to right");
+    } else if (entity.get(Velocity.x) < 0 && entity.get(Facing) !== "left") {
+        // console.log("Changing to left");
+        entity.set(Facing.id, "left");
+        AnimatedSprite.onChangeDirection(entity);
+    }
 
     if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
         AnimatedSprite.changeSprite(entity, spritePrefix + "-jump", 3, false, 8);
@@ -34,17 +46,15 @@ export function applyDefaultMovement(
         entity.set(PlayerInfo.canJump, false);
     }
 
-    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
     entity.inc(Velocity.y, PlayerInfo.globals.gravity);
 
     if (!entity.get(PlayerInfo.canJump)) return;
 
-    if (entity.get(Velocity.x) > 0 && spritePostfix !== "runright") {
-        AnimatedSprite.changeSprite(entity, spritePrefix + "-runright", 4);
-    } else if (entity.get(Velocity.x) === 0 && spritePostfix !== "idleright") {
-        AnimatedSprite.changeSprite(entity, spritePrefix + "-idleright", 1);
+    if (entity.get(Velocity.x) !== 0 && spritePostfix !== "run") {
+        AnimatedSprite.changeSprite(entity, spritePrefix + "-run", 4);
+    } else if (entity.get(Velocity.x) === 0 && spritePostfix !== "idle") {
+        AnimatedSprite.changeSprite(entity, spritePrefix + "-idle", 1);
     } else {
-        // Change to walking left
     }
 }
 
@@ -53,7 +63,7 @@ export function applyDefaultShooting(
     input: MultiplayerInput,
     id: string
 ) {
-    if (entity.world.get(CountdownClass) > 0) return;
+    if (entity.world.get(CountdownClass) >= 0) return;
 
     if (
         input.is("shoot", "PRESSED", id) &&

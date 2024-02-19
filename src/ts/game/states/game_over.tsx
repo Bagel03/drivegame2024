@@ -10,6 +10,8 @@ import { AccentButton, PrimaryButton } from "../hud/components/button";
 import type { Menu } from "./menu";
 import { MatchInfo } from "../components/match_info";
 import { Players } from "../players";
+import { ServerConnection } from "../../engine/server";
+import { AccountInfo } from "./login";
 
 export class GameOverState extends State<never> {
     public element = (
@@ -28,7 +30,41 @@ export class GameOverState extends State<never> {
         document.body.appendChild(this.element);
         this.element.appendChild(this.getHTML());
 
+        const winner =
+            this.world.get(MatchInfo).info.winner === "player1"
+                ? this.world.get(NetworkConnection).player1
+                : this.world.get(NetworkConnection).player2;
+
+        console.log(winner);
         this.world.get(NetworkConnection).close();
+
+        const results = await this.world
+            .get(ServerConnection)
+            .fetch("/matchmaking/gameOver", {
+                searchParams: {
+                    isGuest: this.world.get(AccountInfo.isGuest).toString(),
+                    id: this.world.get(NetworkConnection).id,
+                    matchId: this.world.get("matchId"),
+                    email: this.world.get(AccountInfo.email),
+                    winner,
+                },
+            });
+
+        console.log("Got game over results", results);
+
+        if (this.world.get(NetworkConnection).id === results.winner) {
+            this.world.set(
+                AccountInfo.trophies,
+                this.world.get(AccountInfo.trophies) + results.trophiesAwarded
+            );
+            this.world.set(AccountInfo.wins, this.world.get(AccountInfo.wins) + 1);
+            // Play some animation
+        } else {
+            this.world.set(
+                AccountInfo.trophies,
+                this.world.get(AccountInfo.trophies) - results.trophiesAwarded
+            );
+        }
     }
 
     private getHTML() {
@@ -82,10 +118,21 @@ export class GameOverState extends State<never> {
                         ></img>
                         {this.world.get(MatchInfo).info.player1.name}
                     </div>
-                    {statEls.map((stats) => (
+                    {statEls.map((stats, i) => (
                         <div className=" flex flex-col justify-center">
-                            {stats.map((stat, i) => (
-                                <div className="text-center">{stat}</div>
+                            {stats.map((stat, j) => (
+                                <div
+                                    className={
+                                        "text-center " +
+                                        (i !== 1 &&
+                                        parseFloat(stat + "") >=
+                                            parseFloat(statEls[2 - i][j] + "")
+                                            ? "underline"
+                                            : "")
+                                    }
+                                >
+                                    {stat}
+                                </div>
                             ))}
                         </div>
                     ))}
@@ -93,7 +140,10 @@ export class GameOverState extends State<never> {
                         <span className="text-2xl">
                             {info.winner == "player2" ? "WINNER" : <br />}
                         </span>
-                        <img src={Players[info.player2.player].menuPic}></img>
+                        <img
+                            src={Players[info.player2.player].menuPic}
+                            className="-scale-x-100"
+                        ></img>
                         {info.player2.name}
                     </div>
                 </div>

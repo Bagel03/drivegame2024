@@ -211,28 +211,42 @@ export class Input {
         window.addEventListener("joystickconnected", (e) => {
             e.detail.joystick.addEventListener(
                 "inputchange",
-                ({ detail: { x, y, angle } }) => {
+                ({ detail: { x, y, angle, full } }) => {
                     this.setAnalog(`Joystick${e.detail.joystickId}-X`, x);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Y`, y);
                     this.setAnalog(`Joystick${e.detail.joystickId}-Angle`, angle);
+                    if (
+                        full &&
+                        !this.isRaw(`Joystick${e.detail.joystickId}-Fire`, "PRESSED")
+                    )
+                        this.digitalInputPressed(
+                            `Joystick${e.detail.joystickId}-Fire`
+                        );
+                    else if (
+                        !full &&
+                        this.isRaw(`Joystick${e.detail.joystickId}-Fire`, "PRESSED")
+                    )
+                        this.digitalInputReleased(
+                            `Joystick${e.detail.joystickId}-Fire`
+                        );
                 }
             );
 
-            e.detail.joystick.addEventListener(
-                "fire",
-                ({ detail: { x, y, angle } }) => {
-                    this.digitalInputPressed(
-                        `Joystick${e.detail.joystickId}-Fire`,
-                        true
-                    );
-                    this.setAnalog(`Joystick${e.detail.joystickId}-FireX`, x);
-                    this.setAnalog(`Joystick${e.detail.joystickId}-FireY`, y);
-                    this.setAnalog(
-                        `Joystick${e.detail.joystickId}-FireAngle`,
-                        angle
-                    );
-                }
-            );
+            // e.detail.joystick.addEventListener(
+            //     "fire",
+            //     ({ detail: { x, y, angle } }) => {
+            //         this.digitalInputPressed(
+            //             `Joystick${e.detail.joystickId}-Fire`,
+            //             true
+            //         );
+            //         this.setAnalog(`Joystick${e.detail.joystickId}-FireX`, x);
+            //         this.setAnalog(`Joystick${e.detail.joystickId}-FireY`, y);
+            //         this.setAnalog(
+            //             `Joystick${e.detail.joystickId}-FireAngle`,
+            //             angle
+            //         );
+            //     }
+            // );
         });
 
         /* ONSCREEN BUTTONS */
@@ -241,6 +255,16 @@ export class Input {
             element.addEventListener("pointerdown", (e) => {
                 this.digitalInputPressed("");
             });
+        });
+    }
+
+    attachButtonElement(element: HTMLElement) {
+        element.addEventListener("pointerdown", (e) => {
+            this.digitalInputPressed("Element" + element.id);
+        });
+
+        element.addEventListener("pointerup", (e) => {
+            this.digitalInputReleased("Element" + element.id);
         });
     }
 

@@ -6,7 +6,7 @@ export class PlayerInfo extends Component(
         canJump: Type.bool,
         heath: Type.number,
         ultPercent: Type.number,
-        ultTimeLeft: Type.number,
+        inUlt: Type.bool,
         shootCooldown: Type.number,
     }).logged()
 ) {
@@ -20,3 +20,5 @@ export class PlayerInfo extends Component(
         targetFunds: 100,
     };
 }
+
+console.log("Ult precent", PlayerInfo.ultPercent);

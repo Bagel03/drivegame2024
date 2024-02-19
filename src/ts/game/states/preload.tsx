@@ -136,12 +136,24 @@ export class Preload extends State {
             ult: new DirectDigitalBinding("DefaultGamepad-B"),
         });
 
+        const mobileUltButton = (
+            <div
+                id="Ult"
+                className="rounded-2xl aspect-square w-10 fixed flex text-center justify-center text-xl items-center bg-base bg-opacity-30  bottom-0 mb-6 right-28"
+            >
+                <i className="fa-solid fa-location-crosshairs"></i>
+            </div>
+        ) as HTMLDivElement;
+        this.world.add(mobileUltButton, "mobileUltButton");
+
+        input.attachButtonElement(mobileUltButton);
+
         input.addInputMethod("MOBILE", {
             x: new DirectAnalogBinding("JoystickMovement-X"),
             y: new DirectAnalogBinding("JoystickMovement-Y"),
             aim: new DirectAnalogBinding("JoystickShoot-FireAngle"),
             shoot: new DirectDigitalBinding("JoystickShoot-Fire"),
-            ult: new DirectDigitalBinding("KeyE"),
+            ult: new DirectDigitalBinding("ElementUlt"),
         });
     }
 

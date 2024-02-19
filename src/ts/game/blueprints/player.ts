@@ -14,6 +14,7 @@ import { Funds } from "../components/funds";
 import { Players } from "../players";
 import { AnimatedSprite } from "../../engine/rendering/animation";
 import { PlayerStats } from "../components/player_stats";
+import { Facing } from "../components/facing";
 
 export const PlayerIdentifier = Component(Type.string);
 
@@ -26,7 +27,7 @@ const playerBlueprint = new Blueprint(
         heath: 100,
         shootCooldown: 0,
         ultPercent: 0,
-        ultTimeLeft: 0,
+        inUlt: false,
     }),
     new CollisionHitbox({ x: 32, y: 32 }),
     new Funds(0),
@@ -36,7 +37,8 @@ const playerBlueprint = new Blueprint(
         bulletsHit: 0,
         bulletsReceived: 0,
         ultsUsed: 0,
-    })
+    }),
+    new Facing("right")
 );
 
 export const Player = AdvancedBlueprintFactory(
@@ -53,7 +55,7 @@ export const Player = AdvancedBlueprintFactory(
         sprite.height = 32;
         this.add(
             new AnimatedSprite({
-                spriteName: Players[player].spriteName + "-idleright",
+                spriteName: Players[player].spriteName + "-idle",
                 currentFrame: 0,
                 thisFrameElapsed: 0,
                 thisFrameTotal: 10,

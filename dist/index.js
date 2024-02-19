@@ -116,6 +116,9 @@
     let n2 = Ie[r2.type](t2, r2);
     return l.set(t2, n2), Q.set(t2, r2), t2;
   }
+  function mt(r2) {
+    v = r2;
+  }
   function je(r2, { backingStorageId: e2 }) {
     let t2 = l.get(e2);
     return class extends t2 {
@@ -16691,6 +16694,8 @@
               "Will only roll back that many frames, so desync could occur "
             );
             numFramesAgo = this.world.get(NetworkConnection).framesConnected - this.initialRollbackFrame;
+            if (this.world.get(NetworkConnection).framesConnected - this.initialRollbackFrame <= 0)
+              return;
           }
           if (numFramesAgo > this.world.get(NetworkConnection).framesConnected) {
             this.logger.warn(
@@ -45595,6 +45600,16 @@ void main(void)\r
     }
   });
 
+  // src/ts/game/components/facing.ts
+  var Facing;
+  var init_facing = __esm({
+    "src/ts/game/components/facing.ts"() {
+      "use strict";
+      init_bundle();
+      Facing = Ye(At.enum("left", "right"));
+    }
+  });
+
   // src/ts/engine/rendering/animation.ts
   var AnimatedSprite2, AnimationSystem;
   var init_animation = __esm({
@@ -45602,6 +45617,7 @@ void main(void)\r
       "use strict";
       init_bundle();
       init_lib38();
+      init_facing();
       AnimatedSprite2 = class _AnimatedSprite extends Ye({
         spriteName: At.string,
         currentFrame: At.number,
@@ -45617,7 +45633,15 @@ void main(void)\r
           entity.set(_AnimatedSprite.frameCount, frameCount);
           entity.set(_AnimatedSprite.loops, loops);
           entity.set(_AnimatedSprite.thisFrameTotal, frameLength);
-          entity.get(Sprite).texture = Texture.from(spriteName + "_00.png");
+          let dir = entity.has(Facing) ? entity.get(Facing) : "";
+          entity.get(Sprite).texture = Texture.from(spriteName + dir + "_00.png");
+        }
+        static onChangeDirection(entity) {
+          let dir = entity.has(Facing) ? entity.get(Facing) : "";
+          let spriteName = entity.get(_AnimatedSprite.spriteName);
+          entity.get(Sprite).texture = Texture.from(spriteName + dir + "_00.png");
+          entity.set(_AnimatedSprite.currentFrame, 0);
+          entity.set(_AnimatedSprite.thisFrameElapsed, 0);
         }
       };
       AnimationSystem = class extends Zt(D(Container, AnimatedSprite2)) {
@@ -45639,7 +45663,7 @@ void main(void)\r
                   )
                 );
               }
-              const frameName = `${ent.get(AnimatedSprite2.spriteName)}_${ent.get(AnimatedSprite2.currentFrame).toString().padStart(2, "0")}`;
+              const frameName = `${ent.get(AnimatedSprite2.spriteName)}${ent.has(Facing) ? ent.get(Facing) : ""}_${ent.get(AnimatedSprite2.currentFrame).toString().padStart(2, "0")}`;
               if (!this.textureCache.has(frameName)) {
                 this.textureCache.set(
                   frameName,
@@ -45780,7 +45804,7 @@ void main(void)\r
           this.yInput = yInput;
         }
         get(input) {
-          return Math.atan2(input.get(this.yInput), input.get(this.xInput));
+          return Math.atan2(input.getRaw(this.yInput), input.getRaw(this.xInput));
         }
       };
       AdvancedAngleBinding = class extends AnalogBinding {
@@ -46000,25 +46024,18 @@ void main(void)\r
           window.addEventListener("joystickconnected", (e2) => {
             e2.detail.joystick.addEventListener(
               "inputchange",
-              ({ detail: { x: x3, y: y2, angle } }) => {
+              ({ detail: { x: x3, y: y2, angle, full } }) => {
                 this.setAnalog(`Joystick${e2.detail.joystickId}-X`, x3);
                 this.setAnalog(`Joystick${e2.detail.joystickId}-Y`, y2);
                 this.setAnalog(`Joystick${e2.detail.joystickId}-Angle`, angle);
-              }
-            );
-            e2.detail.joystick.addEventListener(
-              "fire",
-              ({ detail: { x: x3, y: y2, angle } }) => {
-                this.digitalInputPressed(
-                  `Joystick${e2.detail.joystickId}-Fire`,
-                  true
-                );
-                this.setAnalog(`Joystick${e2.detail.joystickId}-FireX`, x3);
-                this.setAnalog(`Joystick${e2.detail.joystickId}-FireY`, y2);
-                this.setAnalog(
-                  `Joystick${e2.detail.joystickId}-FireAngle`,
-                  angle
-                );
+                if (full && !this.isRaw(`Joystick${e2.detail.joystickId}-Fire`, "PRESSED"))
+                  this.digitalInputPressed(
+                    `Joystick${e2.detail.joystickId}-Fire`
+                  );
+                else if (!full && this.isRaw(`Joystick${e2.detail.joystickId}-Fire`, "PRESSED"))
+                  this.digitalInputReleased(
+                    `Joystick${e2.detail.joystickId}-Fire`
+                  );
               }
             );
           });
@@ -46027,6 +46044,14 @@ void main(void)\r
             element.addEventListener("pointerdown", (e3) => {
               this.digitalInputPressed("");
             });
+          });
+        }
+        attachButtonElement(element) {
+          element.addEventListener("pointerdown", (e2) => {
+            this.digitalInputPressed("Element" + element.id);
+          });
+          element.addEventListener("pointerup", (e2) => {
+            this.digitalInputReleased("Element" + element.id);
           });
         }
         update() {
@@ -46270,6 +46295,9 @@ void main(void)\r
           this.localInput.init();
           this.ready = true;
         }
+        attachButtonElement(element) {
+          this.localInput.attachButtonElement(element);
+        }
         addEvent(event) {
           this.events.push(event);
         }
@@ -46452,7 +46480,7 @@ void main(void)\r
     "src/ts/engine/server.ts"() {
       "use strict";
       ServerConnection = class {
-        url = "https://drivegame2024.onrender.com/api/v1";
+        url = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080/api/v1" : "https://drivegame2024.onrender.com/api/v1";
         //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
         fetch(path2, options) {
           const url2 = new URL(this.url + path2);
@@ -46578,7 +46606,7 @@ void main(void)\r
           canJump: At.bool,
           heath: At.number,
           ultPercent: At.number,
-          ultTimeLeft: At.number,
+          inUlt: At.bool,
           shootCooldown: At.number
         }).logged()
       ) {
@@ -46592,6 +46620,7 @@ void main(void)\r
           targetFunds: 100
         };
       };
+      console.log("Ult precent", PlayerInfo.ultPercent);
     }
   });
 
@@ -46683,7 +46712,7 @@ void main(void)\r
         const innerBar = /* @__PURE__ */ window.jsx(
           "div",
           {
-            className: "bg-green-700 h-full rounded-full " + (props.growLeft ? "ml-auto" : ""),
+            className: "h-full rounded-full  " + props.color + (props.growLeft ? " ml-auto" : " "),
             style: { width: props.initialPercent + "%" }
           },
           ...props.children
@@ -46694,7 +46723,7 @@ void main(void)\r
         const cleansedProps = { ...props };
         delete cleansedProps.handle;
         delete cleansedProps.initialPercent;
-        const el = /* @__PURE__ */ window.jsx("div", { ...cleansedProps }, /* @__PURE__ */ window.jsx("div", { className: "w-full bg-gray-200 rounded-full h-full " }, innerBar));
+        const el = /* @__PURE__ */ window.jsx("div", { ...cleansedProps }, /* @__PURE__ */ window.jsx("div", { className: "w-full bg-gray-200 bg-opacity-20 rounded-full h-full " }, innerBar));
         return el;
       };
     }
@@ -46840,6 +46869,7 @@ void main(void)\r
       init_funds();
       init_position();
       init_collision();
+      init_player_info();
       init_player_stats();
       PaymentSystem = class extends Zt({
         cost: D(Cost),
@@ -46858,8 +46888,17 @@ void main(void)\r
               console.log("Taking ", costEntity.get(Cost.price), "from", funds);
               fundsEntity.inc(Funds, -Math.min(costEntity.get(Cost.price), funds));
               costEntity.get(Cost.payTo).inc(Funds, costEntity.get(Cost.price));
-              fundsEntity.inc(PlayerStats.bulletsReceived);
-              costEntity.get(Cost.payTo).inc(PlayerStats.bulletsHit);
+              if (fundsEntity.has(PlayerStats))
+                fundsEntity.inc(PlayerStats.bulletsReceived);
+              const payTo = costEntity.get(Cost.payTo);
+              if (payTo.has(PlayerInfo)) {
+                payTo.inc(PlayerInfo.ultPercent, 10);
+                payTo.set(
+                  PlayerInfo.ultPercent,
+                  Math.min(payTo.get(PlayerInfo.ultPercent), 100)
+                );
+              }
+              payTo.inc(PlayerStats.bulletsHit);
               this.toRemoveQueue.add(costEntity);
             });
           });
@@ -46971,6 +47010,7 @@ void main(void)\r
       init_players();
       init_animation();
       init_player_stats();
+      init_facing();
       PlayerIdentifier = Ye(At.string);
       playerBlueprint = new a(
         Sprite,
@@ -46981,7 +47021,7 @@ void main(void)\r
           heath: 100,
           shootCooldown: 0,
           ultPercent: 0,
-          ultTimeLeft: 0
+          inUlt: false
         }),
         new CollisionHitbox({ x: 32, y: 32 }),
         new Funds(0),
@@ -46991,7 +47031,8 @@ void main(void)\r
           bulletsHit: 0,
           bulletsReceived: 0,
           ultsUsed: 0
-        })
+        }),
+        new Facing("right")
       );
       Player = Pe2(
         playerBlueprint,
@@ -47007,7 +47048,7 @@ void main(void)\r
           sprite.height = 32;
           this.add(
             new AnimatedSprite2({
-              spriteName: Players[player].spriteName + "-idleright",
+              spriteName: Players[player].spriteName + "-idle",
               currentFrame: 0,
               thisFrameElapsed: 0,
               thisFrameTotal: 10,
@@ -47044,6 +47085,24 @@ void main(void)\r
           this.set(graphics);
         }
       );
+    }
+  });
+
+  // src/ts/game/hud/background.tsx
+  var MenuBackground;
+  var init_background = __esm({
+    "src/ts/game/hud/background.tsx"() {
+      "use strict";
+      MenuBackground = (props) => {
+        return /* @__PURE__ */ window.jsx(
+          "div",
+          {
+            className: "absolute top-0 left-0 bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full " + (props.className || ""),
+            id: props.id || "menuBackground"
+          },
+          ...props.children
+        );
+      };
     }
   });
 
@@ -47090,6 +47149,38 @@ void main(void)\r
     }
   });
 
+  // src/ts/game/states/fade.tsx
+  var duration, fadeElement;
+  var init_fade = __esm({
+    "src/ts/game/states/fade.tsx"() {
+      "use strict";
+      init_state_managment();
+      init_background();
+      duration = 150;
+      fadeElement = /* @__PURE__ */ window.jsx(MenuBackground, { className: "z-50 transition-opacity opacity-0 pointer-events-none" });
+      StateManager.prototype.fadeTo = async function(state, payload) {
+        document.body.appendChild(fadeElement);
+        await Promise.timeout(0);
+        fadeElement.style.opacity = "1";
+        await Promise.timeout(duration);
+        await this.currentStateInstance.onLeave(state);
+        let newStateInstance;
+        if (this.states.has(state))
+          newStateInstance = this.states.get(state);
+        else {
+          newStateInstance = new state(this.world);
+          this.states.set(state, newStateInstance);
+        }
+        let oldState = this.currentState;
+        this.currentState = state;
+        this.currentStateInstance = newStateInstance;
+        await this.currentStateInstance.onEnter(payload, oldState);
+        fadeElement.style.opacity = "0";
+        await Promise.timeout(duration);
+      };
+    }
+  });
+
   // src/ts/game/game_modes.ts
   var GameModes;
   var init_game_modes = __esm({
@@ -47124,24 +47215,6 @@ void main(void)\r
           icon: "fa-people-arrows",
           getIsAvailable: (world3) => world3.get(NetworkConnection).isConnected ? "CO - OP is coming soon!" : "Party size is too small"
         }
-      };
-    }
-  });
-
-  // src/ts/game/hud/background.tsx
-  var MenuBackground;
-  var init_background = __esm({
-    "src/ts/game/hud/background.tsx"() {
-      "use strict";
-      MenuBackground = (props) => {
-        return /* @__PURE__ */ window.jsx(
-          "div",
-          {
-            className: "absolute top-0 left-0 bg-gradient-radial from-menuBackgroundAccent to-menuBackground w-full h-full " + (props.className || ""),
-            id: props.id || "menuBackground"
-          },
-          ...props.children
-        );
       };
     }
   });
@@ -47398,7 +47471,7 @@ void main(void)\r
           active.style.scale = "1.4";
           active.querySelector(".description").style.opacity = "1";
           active?.parentElement?.scroll({
-            left: active.offsetLeft - 100,
+            left: active.offsetLeft,
             behavior: "smooth"
           });
           this.inManualMode = false;
@@ -47756,13 +47829,29 @@ void main(void)\r
         }
         enterQueue() {
           return new Promise((res, rej) => {
-            const play = document.querySelector("#playButton");
+            const old = document.querySelector("#playButton");
+            const play = old.cloneNode(true);
+            old.replaceWith(play);
+            play.addEventListener("click", () => {
+              this.world.get(ServerConnection).fetch("/matchmaking/exitQueue", {
+                searchParams: {
+                  id: this.world.get(NetworkConnection).id,
+                  email: this.world.get(AccountInfo.email)
+                }
+              }).then(() => {
+                play.replaceWith(old);
+                res();
+              });
+            });
             this.world.get(ServerConnection).fetch("/matchmaking/enterQueue", {
               searchParams: {
-                id: this.world.get(NetworkConnection).id
+                id: this.world.get(NetworkConnection).id,
+                email: this.world.get(AccountInfo.email)
               }
             }).then(async (serverRes) => {
-              const { remoteId, isHost } = serverRes;
+              const { remoteId, isHost, matchId } = serverRes;
+              this.world.add(matchId, "matchId");
+              this.world.add(true, "rankedGame");
               if (!isHost)
                 return res();
               play.innerHTML = "Establishing Connection";
@@ -47859,50 +47948,18 @@ void main(void)\r
     }
   });
 
-  // src/ts/game/states/fade.tsx
-  var duration, fadeElement;
-  var init_fade = __esm({
-    "src/ts/game/states/fade.tsx"() {
-      "use strict";
-      init_state_managment();
-      init_background();
-      duration = 150;
-      fadeElement = /* @__PURE__ */ window.jsx(MenuBackground, { className: "z-50 transition-opacity opacity-0 pointer-events-none" });
-      StateManager.prototype.fadeTo = async function(state, payload) {
-        document.body.appendChild(fadeElement);
-        await Promise.timeout(0);
-        fadeElement.style.opacity = "1";
-        await Promise.timeout(duration);
-        await this.currentStateInstance.onLeave(state);
-        let newStateInstance;
-        if (this.states.has(state))
-          newStateInstance = this.states.get(state);
-        else {
-          newStateInstance = new state(this.world);
-          this.states.set(state, newStateInstance);
-        }
-        let oldState = this.currentState;
-        this.currentState = state;
-        this.currentStateInstance = newStateInstance;
-        await this.currentStateInstance.onEnter(payload, oldState);
-        fadeElement.style.opacity = "0";
-        await Promise.timeout(duration);
-      };
-    }
-  });
-
   // src/ts/game/states/login.tsx
   var AccountInfo, Login;
   var init_login = __esm({
     "src/ts/game/states/login.tsx"() {
       "use strict";
       init_state_managment();
-      init_menu();
       init_background();
       init_server();
       init_dialogs();
       init_bundle();
       init_fade();
+      init_menu();
       AccountInfo = Ye({
         email: At.string,
         isGuest: At.bool,
@@ -47971,7 +48028,7 @@ void main(void)\r
           )));
         }
         getLoggingInHTML() {
-          let elements = /* @__PURE__ */ window.jsx("div", { id: "loggingIn", className: "w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "w-full h-full flex justify-center items-center" }, /* @__PURE__ */ window.jsx("div", { className: "" }, /* @__PURE__ */ window.jsx("h1", { className: "text-center text-white text-3xl mb-2" }, "Logging In...")))));
+          let elements = /* @__PURE__ */ window.jsx("div", { id: "login", className: "w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "w-full h-full flex justify-center items-center" }, /* @__PURE__ */ window.jsx("div", { className: "" }, /* @__PURE__ */ window.jsx("h1", { className: "text-center text-white text-3xl mb-2" }, "Logging In...")))));
           return elements;
         }
         async signIn({
@@ -48054,6 +48111,7 @@ void main(void)\r
       init_login();
       init_player_stats();
       Countdown = Pt(At.number.logged());
+      console.log("Countdown", Countdown.id);
       MatchTimer = Pt(At.number.logged());
       MultiplayerGame = class extends Game {
         player1;
@@ -48088,10 +48146,12 @@ void main(void)\r
           this.world.get("local_player_entity").addScript(
             Players[this.world.get("localPlayer")].playerScript
           );
-          Wall(0, 230, 256, 20, "red");
-          Wall(50, 170, 50, 10, "red");
-          Wall(256 - 50 - 50, 170, 50, 10, "red");
-          Wall(100, 110, 50, 10, "red");
+          const walls = [
+            Wall(0, 230, 256, 20, "red"),
+            Wall(50, 170, 50, 10, "red"),
+            Wall(256 - 50 - 50, 170, 50, 10, "red"),
+            Wall(100, 110, 50, 10, "red")
+          ];
           this.world.add(new Countdown(3));
           const hud = this.hud;
           const player1Username = this.world.get(NetworkConnection).isPlayer1() ? this.world.get(AccountInfo.username) : this.world.get("remoteUser");
@@ -48116,7 +48176,7 @@ void main(void)\r
                 el.remove();
               }, 1e3);
             }
-            if (this.get(Countdown) <= 0) {
+            if (this.get(Countdown) <= 0 && !this.has(MatchTimer)) {
               this.get(RollbackManager).enableRollback();
               this.add(new MatchTimer(0));
               this.addScript(
@@ -48125,7 +48185,6 @@ void main(void)\r
                   this.get(MatchTimer) + DESIRED_FRAME_TIME / 1e3
                 )
               );
-              this.removeScript(countdownScript);
             }
           };
           this.world.addScript(countdownScript);
@@ -48143,6 +48202,8 @@ void main(void)\r
           this.hud.updatePlayer2HealthBar(
             this.player2.get(Funds) * 100 / PlayerInfo.globals.targetFunds
           );
+          this.hud.updatePlayer1UltBar(this.player1.get(PlayerInfo.ultPercent));
+          this.hud.updatePlayer2UltBar(this.player2.get(PlayerInfo.ultPercent));
           if (this.player1.get(Funds) >= PlayerInfo.globals.targetFunds || this.player2.get(Funds) >= PlayerInfo.globals.targetFunds) {
             this.world.get(StateManager).moveTo(GameOverState);
           }
@@ -48196,28 +48257,35 @@ void main(void)\r
 
   // src/ts/game/scripts/players/common.ts
   function applyDefaultMovement(entity, input, id) {
-    if (entity.world.get(CountdownClass) > 0)
+    if (entity.world.get(CountdownClass) >= 0)
       return;
     const spritePrefix = Players[entity.get(PlayerIdentifier)].spriteName;
     const spritePostfix = entity.get(AnimatedSprite2.spriteName).split("-")[1];
+    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+    if (entity.get(Velocity.x) > 0 && entity.get(Facing) !== "right") {
+      entity.set(Facing.id, "right");
+      AnimatedSprite2.onChangeDirection(entity);
+    } else if (entity.get(Velocity.x) < 0 && entity.get(Facing) !== "left") {
+      entity.set(Facing.id, "left");
+      AnimatedSprite2.onChangeDirection(entity);
+    }
     if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
       AnimatedSprite2.changeSprite(entity, spritePrefix + "-jump", 3, false, 8);
       entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
       entity.set(PlayerInfo.canJump, false);
     }
-    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
     entity.inc(Velocity.y, PlayerInfo.globals.gravity);
     if (!entity.get(PlayerInfo.canJump))
       return;
-    if (entity.get(Velocity.x) > 0 && spritePostfix !== "runright") {
-      AnimatedSprite2.changeSprite(entity, spritePrefix + "-runright", 4);
-    } else if (entity.get(Velocity.x) === 0 && spritePostfix !== "idleright") {
-      AnimatedSprite2.changeSprite(entity, spritePrefix + "-idleright", 1);
+    if (entity.get(Velocity.x) !== 0 && spritePostfix !== "run") {
+      AnimatedSprite2.changeSprite(entity, spritePrefix + "-run", 4);
+    } else if (entity.get(Velocity.x) === 0 && spritePostfix !== "idle") {
+      AnimatedSprite2.changeSprite(entity, spritePrefix + "-idle", 1);
     } else {
     }
   }
   function applyDefaultShooting(entity, input, id) {
-    if (entity.world.get(CountdownClass) > 0)
+    if (entity.world.get(CountdownClass) >= 0)
       return;
     if (input.is("shoot", "PRESSED", id) && entity.get(PlayerInfo.shootCooldown) <= 0) {
       entity.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
@@ -48246,6 +48314,7 @@ void main(void)\r
       init_animation();
       init_player();
       init_players();
+      init_facing();
       Promise.resolve().then(() => (init_multiplayer(), multiplayer_exports)).then((module) => {
         CountdownClass = module.Countdown;
         console.log("CountdownClass", CountdownClass);
@@ -48254,27 +48323,31 @@ void main(void)\r
   });
 
   // src/ts/game/scripts/players/carrier.ts
-  var CARRIER_ULT_COOLDOWN, MrCarrierPlayer;
+  var MrCarrierPlayer;
   var init_carrier = __esm({
     "src/ts/game/scripts/players/carrier.ts"() {
       "use strict";
-      init_loop();
       init_multiplayer_input();
       init_network();
+      init_animation();
+      init_facing();
       init_player_info();
       init_player_stats();
       init_velocity();
       init_common();
-      CARRIER_ULT_COOLDOWN = DESIRED_FPS * 10;
       MrCarrierPlayer = function() {
         const input = this.world.get(MultiplayerInput);
         const id = this.get(PeerId);
-        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-          this.set(PlayerInfo.ultPercent, 0);
-          this.set(PlayerInfo.ultTimeLeft, CARRIER_ULT_COOLDOWN);
+        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id) && !this.get(PlayerInfo.inUlt)) {
+          this.set(PlayerInfo.inUlt, true);
           this.inc(PlayerStats.ultsUsed);
+          this.set(PlayerInfo.ultPercent, 100);
         }
-        if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+        if (this.get(PlayerInfo.inUlt) && this.get(PlayerInfo.ultPercent) <= 0) {
+          this.set(PlayerInfo.inUlt, false);
+          this.set(PlayerInfo.ultPercent, 0);
+        }
+        if (this.get(PlayerInfo.inUlt)) {
           if (input.get("y", id) >= 0) {
             this.inc(Velocity.y, PlayerInfo.globals.gravity / 2);
           } else {
@@ -48284,10 +48357,16 @@ void main(void)\r
             }
           }
           this.inc(Velocity.y, Math.min(input.get("y", id), 0));
-          this.inc(PlayerInfo.ultTimeLeft, -1);
+          this.inc(PlayerInfo.ultPercent, -1);
           this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+          if (this.get(Velocity.x) > 0 && this.get(Facing) !== "right") {
+            this.set(Facing.id, "right");
+            AnimatedSprite2.onChangeDirection(this);
+          } else if (this.get(Velocity.x) < 0 && this.get(Facing) !== "left") {
+            this.set(Facing.id, "left");
+            AnimatedSprite2.onChangeDirection(this);
+          }
         } else {
-          this.inc(PlayerInfo.ultPercent);
           applyDefaultMovement(this, input, id);
         }
         applyDefaultShooting(this, input, id);
@@ -48307,37 +48386,43 @@ void main(void)\r
       init_player_info();
       init_common();
       init_lib38();
+      init_player_stats();
       LaserPlayer = function() {
         const input = this.world.get(MultiplayerInput);
         const id = this.get(PeerId);
         applyDefaultMovement(this, input, id);
-        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-          this.set(PlayerInfo.ultPercent, 0);
-          this.set(PlayerInfo.ultTimeLeft, 1);
-        } else {
-          this.inc(PlayerInfo.ultPercent);
+        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id) && !this.get(PlayerInfo.inUlt)) {
+          this.set(PlayerInfo.inUlt, true);
+          this.inc(PlayerStats.ultsUsed);
+          this.set(PlayerInfo.ultPercent, 100);
         }
-        if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+        if (this.get(PlayerInfo.inUlt)) {
           if (input.is("shoot", "JUST_RELEASED", id)) {
             for (let i2 = 0; i2 < 10; i2++) {
               const velX = Math.cos(input.get("aim", id));
               const velY = Math.sin(input.get("aim", id));
               BulletEnt(
+                this,
+                5,
                 this.get(Position.x) + velX * i2 * 30,
                 this.get(Position.y) + velY * i2 * 30,
                 velX * 20,
                 velY * 20
               );
             }
-            this.inc(PlayerInfo.ultTimeLeft, -1 / 3);
+            this.inc(PlayerInfo.ultPercent, -34);
+            if (this.get(PlayerInfo.ultPercent) <= 0) {
+              this.set(PlayerInfo.inUlt, false);
+              this.set(PlayerInfo.ultPercent, 0);
+            }
             this.get(Container).getChildByName("aimguide")?.removeFromParent();
           } else if (input.is("shoot", "PRESSED", id)) {
             const container = this.get(Container);
             if (container.children.length == 0) {
               const graphics = new Graphics();
-              graphics.lineStyle(5, 16711680, 0.5);
+              graphics.lineStyle(50, 16711680, 0.5);
               graphics.moveTo(0, 0);
-              graphics.lineTo(1e3, 0);
+              graphics.lineTo(1e6, 0);
               graphics.name = "aimguide";
               container.addChild(graphics);
             }
@@ -48393,7 +48478,7 @@ void main(void)\r
           name: "carrier",
           displayName: "Mr. Carrier",
           available: true,
-          menuPic: window.DIST_URL + "/assets/carrier.png",
+          menuPic: window.DIST_URL + "/assets/Carrier.png",
           //http://localhost:5500/src/assets/carrier.png",
           spriteName: "Carrier",
           playerScript: MrCarrierPlayer,
@@ -48404,6 +48489,10 @@ void main(void)\r
   });
 
   // src/ts/game/states/game_over.tsx
+  var game_over_exports = {};
+  __export(game_over_exports, {
+    GameOverState: () => GameOverState
+  });
   var GameOverState;
   var init_game_over = __esm({
     "src/ts/game/states/game_over.tsx"() {
@@ -48413,6 +48502,8 @@ void main(void)\r
       init_button();
       init_match_info();
       init_players();
+      init_server();
+      init_login();
       GameOverState = class extends State {
         element = /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 w-full h-full z-50" });
         menuState;
@@ -48425,7 +48516,31 @@ void main(void)\r
         async onEnter() {
           document.body.appendChild(this.element);
           this.element.appendChild(this.getHTML());
+          const winner = this.world.get(MatchInfo).info.winner === "player1" ? this.world.get(NetworkConnection).player1 : this.world.get(NetworkConnection).player2;
+          console.log(winner);
           this.world.get(NetworkConnection).close();
+          const results = await this.world.get(ServerConnection).fetch("/matchmaking/gameOver", {
+            searchParams: {
+              isGuest: this.world.get(AccountInfo.isGuest).toString(),
+              id: this.world.get(NetworkConnection).id,
+              matchId: this.world.get("matchId"),
+              email: this.world.get(AccountInfo.email),
+              winner
+            }
+          });
+          console.log("Got game over results", results);
+          if (this.world.get(NetworkConnection).id === results.winner) {
+            this.world.set(
+              AccountInfo.trophies,
+              this.world.get(AccountInfo.trophies) + results.trophiesAwarded
+            );
+            this.world.set(AccountInfo.wins, this.world.get(AccountInfo.wins) + 1);
+          } else {
+            this.world.set(
+              AccountInfo.trophies,
+              this.world.get(AccountInfo.trophies) - results.trophiesAwarded
+            );
+          }
         }
         getHTML() {
           const playerStats = [
@@ -48464,7 +48579,19 @@ void main(void)\r
             {
               src: Players[this.world.get(MatchInfo).info.player1.player].menuPic
             }
-          ), this.world.get(MatchInfo).info.player1.name), statEls.map((stats) => /* @__PURE__ */ window.jsx("div", { className: " flex flex-col justify-center" }, stats.map((stat, i2) => /* @__PURE__ */ window.jsx("div", { className: "text-center" }, stat)))), /* @__PURE__ */ window.jsx("div", { className: "flex flex-col justify-center text-center" }, /* @__PURE__ */ window.jsx("span", { className: "text-2xl" }, info.winner == "player2" ? "WINNER" : /* @__PURE__ */ window.jsx("br", null)), /* @__PURE__ */ window.jsx("img", { src: Players[info.player2.player].menuPic }), info.player2.name)), /* @__PURE__ */ window.jsx("div", { className: "bottom-0 flex p-1 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, { onclick: () => null }, "Play Again"), /* @__PURE__ */ window.jsx(
+          ), this.world.get(MatchInfo).info.player1.name), statEls.map((stats, i2) => /* @__PURE__ */ window.jsx("div", { className: " flex flex-col justify-center" }, stats.map((stat, j3) => /* @__PURE__ */ window.jsx(
+            "div",
+            {
+              className: "text-center " + (i2 !== 1 && parseFloat(stat + "") >= parseFloat(statEls[2 - i2][j3] + "") ? "underline" : "")
+            },
+            stat
+          )))), /* @__PURE__ */ window.jsx("div", { className: "flex flex-col justify-center text-center" }, /* @__PURE__ */ window.jsx("span", { className: "text-2xl" }, info.winner == "player2" ? "WINNER" : /* @__PURE__ */ window.jsx("br", null)), /* @__PURE__ */ window.jsx(
+            "img",
+            {
+              src: Players[info.player2.player].menuPic,
+              className: "-scale-x-100"
+            }
+          ), info.player2.name)), /* @__PURE__ */ window.jsx("div", { className: "bottom-0 flex p-1 bg-base bg-opacity-20 m-2 rounded-md" }, /* @__PURE__ */ window.jsx(AccentButton, { onclick: () => null }, "Play Again"), /* @__PURE__ */ window.jsx(
             PrimaryButton,
             {
               className: "ml-auto",
@@ -48497,7 +48624,6 @@ void main(void)\r
       init_input();
       init_joystick();
       init_payment();
-      init_game_over();
       init_lib38();
       init_bundle();
       Game = class extends State {
@@ -48513,7 +48639,9 @@ void main(void)\r
           this.world.addSystem(PaymentSystem);
           this.world.addSystem(PaymentSystem, "rollback");
           this.loadHUD();
+          Promise.resolve().then(() => (init_game_over(), game_over_exports)).then((m3) => this.gameOver = m3.GameOverState);
         }
+        gameOver;
         // private readonly hud = (
         //     <div className="z-10 absolute top-0 left-0 w-full h-full"></div>
         // ) as HTMLDivElement;
@@ -48524,27 +48652,50 @@ void main(void)\r
           document.body.appendChild(this.hud.element);
           const player1Handle = {};
           const player2Handle = {};
+          const player1Ult = {};
+          const player2Ult = {};
           this.hud.timer = /* @__PURE__ */ window.jsx("div", { className: "" }, "0:00");
           this.hud.element.append(
             /* @__PURE__ */ window.jsx("div", { className: "top-0 w-full flex justify-between" }, /* @__PURE__ */ window.jsx("div", { className: "text-left" }, "Player 1", /* @__PURE__ */ window.jsx(
               HealthBar,
               {
-                initialPercent: 50,
+                initialPercent: 0,
                 className: "w-52 h-2",
-                handle: player1Handle
+                handle: player1Handle,
+                color: "bg-lime-500"
+              }
+            ), /* @__PURE__ */ window.jsx(
+              HealthBar,
+              {
+                initialPercent: 0,
+                className: "w-52 h-2 pt-1",
+                handle: player1Ult,
+                color: "bg-indigo-700"
               }
             )), this.hud.timer, /* @__PURE__ */ window.jsx("div", { className: "text-right" }, "Player 2", /* @__PURE__ */ window.jsx(
               HealthBar,
               {
-                initialPercent: 50,
+                color: "bg-lime-500",
+                initialPercent: 0,
                 className: "w-52 h-2",
                 growLeft: true,
                 handle: player2Handle
+              }
+            ), /* @__PURE__ */ window.jsx(
+              HealthBar,
+              {
+                color: "bg-indigo-700",
+                initialPercent: 0,
+                className: "w-52 h-2 pt-1",
+                growLeft: true,
+                handle: player2Ult
               }
             )))
           );
           this.hud.updatePlayer1HealthBar = player1Handle.update;
           this.hud.updatePlayer2HealthBar = player2Handle.update;
+          this.hud.updatePlayer1UltBar = player1Ult.update;
+          this.hud.updatePlayer2UltBar = player2Ult.update;
           if (InputMethod.isMobile()) {
             this.hud.joysticks = [
               /* @__PURE__ */ window.jsx(Joystick, { id: "Movement", side: "left" }),
@@ -48554,15 +48705,16 @@ void main(void)\r
             this.hud.joysticks = [];
           }
           this.hud.element.append(...this.hud.joysticks);
-        }
-        playerInfo() {
-          const handle = {};
-          return /* @__PURE__ */ window.jsx("div", null, /* @__PURE__ */ window.jsx("div", null, /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-user" }), /* @__PURE__ */ window.jsx("span", null, "Player 1")), /* @__PURE__ */ window.jsx(HealthBar, { handle, initialPercent: 0 }));
+          if (InputMethod.isMobile()) {
+            this.hud.element.append(
+              this.world.get("mobileUltButton")
+            );
+          }
         }
         update() {
         }
         async onLeave(to) {
-          if (to === GameOverState) {
+          if (to === this.gameOver) {
             disablePixiRendering(this.world, false);
           } else {
             disablePixiRendering(this.world, true);
@@ -48655,12 +48807,22 @@ void main(void)\r
             shoot: new DirectDigitalBinding("DefaultGamepad-A"),
             ult: new DirectDigitalBinding("DefaultGamepad-B")
           });
+          const mobileUltButton = /* @__PURE__ */ window.jsx(
+            "div",
+            {
+              id: "Ult",
+              className: "rounded-2xl aspect-square w-10 fixed flex text-center justify-center text-xl items-center bg-base bg-opacity-30  bottom-0 mb-6 right-28"
+            },
+            /* @__PURE__ */ window.jsx("i", { className: "fa-solid fa-location-crosshairs" })
+          );
+          this.world.add(mobileUltButton, "mobileUltButton");
+          input.attachButtonElement(mobileUltButton);
           input.addInputMethod("MOBILE", {
             x: new DirectAnalogBinding("JoystickMovement-X"),
             y: new DirectAnalogBinding("JoystickMovement-Y"),
             aim: new DirectAnalogBinding("JoystickShoot-FireAngle"),
             shoot: new DirectDigitalBinding("JoystickShoot-Fire"),
-            ult: new DirectDigitalBinding("KeyE")
+            ult: new DirectDigitalBinding("ElementUlt")
           });
         }
         update() {
@@ -48840,6 +49002,7 @@ void main(void)\r
   // src/ts/index.ts
   init_state_managment();
   init_preload();
+  mt(100);
   window.SharedArrayBuffer = ArrayBuffer;
   Object.defineProperty(Error.prototype, "toJSON", {
     value: function() {

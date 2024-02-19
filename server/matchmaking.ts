@@ -103,11 +103,10 @@ export async function handleMatchmakingRequests(
             // Make sure they agree
             if (match.playerResults[0] == match.playerResults[1]) {
                 // Can't make it too normal can we 😉
-                const trophiesAwarded = 28 + Math.floor(Math.random() * 5);
+                const trophiesAwarded = 25 + Math.floor(Math.random() * 10);
                 const winningId = match.playerResults[0];
 
                 for (const response of [res, match.playerGameOverRes]) {
-                    response.writeHead(200);
                     response.write(
                         JSON.stringify({ winner: winningId, trophiesAwarded })
                     );
@@ -123,20 +122,19 @@ export async function handleMatchmakingRequests(
                 });
 
                 const rows = await DATABASE.accounts.getRows<AccountInfo>();
-                const winningRow =
-                    rows[
-                        rows.findIndex(
-                            (row) =>
-                                row.get("email") ==
-                                match.playerEmails[match.players.indexOf(winningId)]
-                        )
-                    ]!;
+                const winningRow = rows.find(
+                    (row) =>
+                        row.get("email") ==
+                        match.playerEmails[match.players.indexOf(winningId)]
+                )!;
+
                 //@ts-expect-error
                 winningRow.assign({
                     trophies: winningRow.get("trophies") + trophiesAwarded,
                     wins: winningRow.get("wins") + 1,
                     "total matches": winningRow.get("total matches") + 1,
                 });
+                winningRow.save();
                 const losingRow = rows.find(
                     (row) =>
                         row.get("email") ==
@@ -152,14 +150,15 @@ export async function handleMatchmakingRequests(
                     ),
                 });
 
+                losingRow.save();
+
                 console.log(
                     `Match ${matchId} over: (${winningId}) v ${
                         match.players[1 - match.players.indexOf(winningId)]
-                    }`
+                    } - ${trophiesAwarded} trophies`
                 );
 
                 reorderRanks(rows);
-                await DATABASE.accounts.saveUpdatedCells();
 
                 ongoingGames.delete(matchId);
             } else {
@@ -170,16 +169,12 @@ export async function handleMatchmakingRequests(
             match.playerGameOverRes = res;
 
             // Set a timeout if we don't get a response in like 10 seconds
-            setTimeout(() => {
+            setTimeout(async () => {
+                const trophiesAwarded = 25 + Math.floor(Math.random() * 10);
+                const winningId = match.playerResults[0];
+
                 // If we still haven't gotten a response, assume the 1 user quit and give the other guy the win
                 if (ongoingGames.has(matchId)) {
-                    const winningId = match.playerResults[0];
-                    const trophiesAwarded = 28 + Math.floor(Math.random() * 5);
-
-                    res.writeHead(200);
-                    res.write(
-                        JSON.stringify({ winner: winningId, trophiesAwarded })
-                    );
                     DATABASE.matches.addRow({
                         id: matchId,
                         player1: match.playerEmails[0],
@@ -187,7 +182,41 @@ export async function handleMatchmakingRequests(
                         winner: match.playerEmails[match.players.indexOf(winningId)],
                         trophiesAwarded,
                     });
-                    res.end();
+
+                    const rows = await DATABASE.accounts.getRows<AccountInfo>();
+                    const winningRow = rows.find(
+                        (row) =>
+                            row.get("email") ==
+                            match.playerEmails[match.players.indexOf(winningId)]
+                    )!;
+
+                    //@ts-expect-error
+                    winningRow.assign({
+                        trophies: winningRow.get("trophies") + trophiesAwarded,
+                        wins: winningRow.get("wins") + 1,
+                        "total matches": winningRow.get("total matches") + 1,
+                    });
+                    winningRow.save();
+                    const losingRow = rows.find(
+                        (row) =>
+                            row.get("email") ==
+                            match.playerEmails[1 - match.players.indexOf(winningId)]
+                    )!;
+                    //@ts-expect-error
+
+                    losingRow.assign({
+                        "total matches": losingRow.get("total matches") + 1,
+                        trophies: Math.max(
+                            losingRow.get("trophies") - trophiesAwarded,
+                            0
+                        ),
+                    });
+
+                    losingRow.save();
+
+                    reorderRanks(rows);
+
+                    ongoingGames.delete(matchId);
 
                     console.log(
                         `Match ${matchId} over: (${winningId}) v ${
@@ -201,14 +230,18 @@ export async function handleMatchmakingRequests(
 }
 
 function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
-    rows.sort((a, b) => {
-        return b.get("trophies") - a.get("trophies");
-    });
-
-    for (let i = 0; i < rows.length; i++) {
-        // @ts-expect-error
-        rows[i].assign({ overallRank: i + 1 });
-    }
+    rows.filter((row) => {
+        const email = row.get("email");
+        return email.endsWith("@catholiccentral.net");
+    })
+        .sort((a, b) => {
+            return b.get("trophies") - a.get("trophies");
+        })
+        .forEach((row, i) => {
+            // @ts-expect-error
+            row.assign({ overallRank: i + 1 });
+            row.save();
+        });
 
     for (const c of classes) {
         const classRows = rows.filter((r) => r.get("class") == c);
@@ -216,6 +249,7 @@ function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
         for (let i = 0; i < classRows.length; i++) {
             // @ts-expect-error
             classRows[i].assign({ classRank: i + 1 });
+            classRows[i].save();
         }
     }
 }

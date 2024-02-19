@@ -10,6 +10,7 @@ import { PlayerInfo } from "../../components/player_info";
 import { Velocity } from "../../components/velocity";
 import { applyDefaultMovement, applyDefaultShooting } from "./common";
 import { Container, Graphics } from "pixi.js";
+import { PlayerStats } from "../../components/player_stats";
 
 export const LaserPlayer: Script = function () {
     const input = this.world.get(MultiplayerInput);
@@ -17,14 +18,17 @@ export const LaserPlayer: Script = function () {
 
     applyDefaultMovement(this, input, id);
 
-    if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-        this.set(PlayerInfo.ultPercent, 0);
-        this.set(PlayerInfo.ultTimeLeft, 1);
-    } else {
-        this.inc(PlayerInfo.ultPercent);
+    if (
+        this.get(PlayerInfo.ultPercent) >= 100 &&
+        input.is("ult", "PRESSED", id) &&
+        !this.get(PlayerInfo.inUlt)
+    ) {
+        this.set(PlayerInfo.inUlt, true);
+        this.inc(PlayerStats.ultsUsed);
+        this.set(PlayerInfo.ultPercent, 100);
     }
 
-    if (this.get(PlayerInfo.ultTimeLeft) > 0) {
+    if (this.get(PlayerInfo.inUlt)) {
         // Laser
         if (input.is("shoot", "JUST_RELEASED", id)) {
             for (let i = 0; i < 10; i++) {
@@ -32,22 +36,28 @@ export const LaserPlayer: Script = function () {
                 const velY = Math.sin(input.get("aim", id));
 
                 BulletEnt(
+                    this,
+                    5,
                     this.get(Position.x) + velX * i * 30,
                     this.get(Position.y) + velY * i * 30,
                     velX * 20,
                     velY * 20
                 );
             }
-            this.inc(PlayerInfo.ultTimeLeft, -1 / 3);
+            this.inc(PlayerInfo.ultPercent, -34);
+            if (this.get(PlayerInfo.ultPercent) <= 0) {
+                this.set(PlayerInfo.inUlt, false);
+                this.set(PlayerInfo.ultPercent, 0);
+            }
 
             this.get(Container).getChildByName("aimguide")?.removeFromParent();
         } else if (input.is("shoot", "PRESSED", id)) {
             const container = this.get(Container);
             if (container.children.length == 0) {
                 const graphics = new Graphics();
-                graphics.lineStyle(5, 0xff0000, 0.5);
+                graphics.lineStyle(50, 0xff0000, 0.5);
                 graphics.moveTo(0, 0);
-                graphics.lineTo(1000, 0);
+                graphics.lineTo(1000000, 0);
                 graphics.name = "aimguide";
                 container.addChild(graphics);
             }
@@ -76,10 +86,5 @@ export const LaserPlayer: Script = function () {
     //     );
     // } else {
     //     this.inc(PlayerInfo.shootCooldown, -1);
-    // }
-
-    // if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id)) {
-    //     this.set(PlayerInfo.ultPercent, 0);
-    //     this.set(PlayerInfo.ultTimeLeft, PlayerInfo.globals.ultLength);
     // }
 };

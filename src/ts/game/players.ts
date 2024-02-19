@@ -49,7 +49,7 @@ export const Players = {
         name: "carrier",
         displayName: "Mr. Carrier",
         available: true,
-        menuPic: window.DIST_URL + "/assets/carrier.png", //http://localhost:5500/src/assets/carrier.png",
+        menuPic: window.DIST_URL + "/assets/Carrier.png", //http://localhost:5500/src/assets/carrier.png",
         spriteName: "Carrier",
         playerScript: MrCarrierPlayer,
         description:

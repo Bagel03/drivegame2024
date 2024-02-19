@@ -26,7 +26,7 @@ export class PlayerSelect extends State<never> {
         active!.querySelector<HTMLElement>(".description")!.style.opacity = "1";
 
         active?.parentElement?.scroll({
-            left: active.offsetLeft - 100,
+            left: active.offsetLeft,
             behavior: "smooth",
         });
 

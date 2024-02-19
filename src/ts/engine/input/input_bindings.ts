@@ -188,7 +188,7 @@ export class AngleBinding extends AnalogBinding {
     }
 
     get(input: Input): number {
-        return Math.atan2(input.get(this.yInput), input.get(this.xInput));
+        return Math.atan2(input.getRaw(this.yInput), input.getRaw(this.xInput));
     }
 }
 

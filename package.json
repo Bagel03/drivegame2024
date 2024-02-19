@@ -11,7 +11,7 @@
     "build-app": "esbuild ./app/index.ts --bundle --outfile=./app/index.js --sourcemap --format=esm --watch",
     "ionic:build": "npm run build",
     "ionic:serve": "npm run dev",
-    "assets": "spritesheet-js -f pixi.js -n atlas -p dist/assets --trim ./src/assets/sprites/*.png"
+    "assets": "spritesheet-js -f pixi.js -n atlas -p dist/assets --trim ./build_temp/*.png"
   },
   "dependencies": {
     "@capacitor/android": "5.6.0",
@@ -36,6 +36,7 @@
     "@tweakpane/core": "^2.0.1",
     "@types/google-one-tap": "^1.2.6",
     "@types/node": "^18.17.15",
+    "jimp": "^0.22.10",
     "spritesheet-js": "^1.2.8",
     "tailwindcss": "^3.3.5"
   }

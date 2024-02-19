@@ -334,17 +334,37 @@ export class Menu extends State<MenuPayload> {
 
     private enterQueue() {
         return new Promise<void>((res, rej) => {
-            const play = document.querySelector<HTMLButtonElement>("#playButton")!;
+            const old = document.querySelector<HTMLButtonElement>("#playButton")!;
+            const play = old.cloneNode(true) as HTMLButtonElement;
+            old.replaceWith(play);
+            play.addEventListener("click", () => {
+                this.world
+                    .get(ServerConnection)
+                    .fetch("/matchmaking/exitQueue", {
+                        searchParams: {
+                            id: this.world.get(NetworkConnection).id,
+                            email: this.world.get(AccountInfo.email),
+                        },
+                    })
+                    .then(() => {
+                        play.replaceWith(old);
+                        res();
+                    });
+            });
 
             this.world
                 .get(ServerConnection)
                 .fetch("/matchmaking/enterQueue", {
                     searchParams: {
                         id: this.world.get(NetworkConnection).id,
+                        email: this.world.get(AccountInfo.email),
                     },
                 })
                 .then(async (serverRes) => {
-                    const { remoteId, isHost } = serverRes;
+                    const { remoteId, isHost, matchId } = serverRes;
+                    this.world.add(matchId, "matchId");
+                    this.world.add(true, "rankedGame");
+
                     if (!isHost) return res();
 
                     // Connect to the other guy

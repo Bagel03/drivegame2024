@@ -12,6 +12,7 @@ export type JoystickInputChangeEvent = CustomEvent<{
     x: number;
     y: number;
     angle: number;
+    full: boolean;
 }>;
 
 export type JoystickFireEvent = CustomEvent<{

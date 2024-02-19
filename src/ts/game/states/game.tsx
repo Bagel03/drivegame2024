@@ -11,9 +11,10 @@ import { HealthBar } from "../hud/components/health";
 import { InputMethod } from "../../engine/input/input";
 import { Joystick } from "../hud/components/joystick";
 import { PaymentSystem } from "../systems/payment";
-import { GameOverState } from "./game_over";
+// import { GameOverState } from "./game_over";
 import { Container } from "pixi.js";
 import { With } from "bagelecs";
+import type { GameOverState } from "./game_over";
 
 export class Game extends State<never> {
     async onEnter<From extends StateClass<any>>(
@@ -37,7 +38,10 @@ export class Game extends State<never> {
         this.world.addSystem(PaymentSystem, "rollback");
 
         this.loadHUD();
+        import("./game_over").then((m) => (this.gameOver = m.GameOverState));
     }
+
+    public gameOver!: typeof GameOverState;
 
     // private readonly hud = (
     //     <div className="z-10 absolute top-0 left-0 w-full h-full"></div>
@@ -47,6 +51,9 @@ export class Game extends State<never> {
         element: HTMLDivElement;
         updatePlayer1HealthBar: (percent: number) => void;
         updatePlayer2HealthBar: (percent: number) => void;
+
+        updatePlayer1UltBar: (percent: number) => void;
+        updatePlayer2UltBar: (percent: number) => void;
         timer: HTMLDivElement;
         joysticks: HTMLDivElement[];
     } = {} as any;
@@ -59,12 +66,13 @@ export class Game extends State<never> {
 
         document.body.appendChild(this.hud.element);
 
-        const player1Handle: {
+        type HealthBarHandle = {
             update?: ((percent: number) => void) | undefined;
-        } = {};
-        const player2Handle: {
-            update?: ((percent: number) => void) | undefined;
-        } = {};
+        };
+        const player1Handle: HealthBarHandle = {};
+        const player2Handle: HealthBarHandle = {};
+        const player1Ult: HealthBarHandle = {};
+        const player2Ult: HealthBarHandle = {};
 
         this.hud.timer = (<div className="">0:00</div>) as HTMLDivElement;
 
@@ -73,19 +81,34 @@ export class Game extends State<never> {
                 <div className="text-left">
                     Player 1
                     <HealthBar
-                        initialPercent={50}
+                        initialPercent={0}
                         className="w-52 h-2"
                         handle={player1Handle}
+                        color="bg-lime-500"
+                    ></HealthBar>
+                    <HealthBar
+                        initialPercent={0}
+                        className="w-52 h-2 pt-1"
+                        handle={player1Ult}
+                        color="bg-indigo-700"
                     ></HealthBar>
                 </div>
                 {this.hud.timer}
                 <div className="text-right">
                     Player 2
                     <HealthBar
-                        initialPercent={50}
+                        color="bg-lime-500"
+                        initialPercent={0}
                         className="w-52 h-2"
                         growLeft
                         handle={player2Handle}
+                    ></HealthBar>
+                    <HealthBar
+                        color="bg-indigo-700"
+                        initialPercent={0}
+                        className="w-52 h-2 pt-1"
+                        growLeft
+                        handle={player2Ult}
                     ></HealthBar>
                 </div>
             </div>
@@ -93,6 +116,8 @@ export class Game extends State<never> {
 
         this.hud.updatePlayer1HealthBar = player1Handle.update!;
         this.hud.updatePlayer2HealthBar = player2Handle.update!;
+        this.hud.updatePlayer1UltBar = player1Ult.update!;
+        this.hud.updatePlayer2UltBar = player2Ult.update!;
         // window.handles = { player1Handle, player2Handle };
 
         if (InputMethod.isMobile()) {
@@ -105,24 +130,16 @@ export class Game extends State<never> {
         }
 
         this.hud.element.append(...this.hud.joysticks);
-    }
-
-    playerInfo() {
-        const handle = {};
-        return (
-            <div>
-                <div>
-                    <i className="fa-solid fa-user"></i>
-                    <span>Player 1</span>
-                </div>
-                <HealthBar handle={handle} initialPercent={0}></HealthBar>
-            </div>
-        );
+        if (InputMethod.isMobile()) {
+            this.hud.element.append(
+                this.world.get<HTMLDivElement>("mobileUltButton")
+            );
+        }
     }
 
     update() {}
     async onLeave(to: StateClass<any>) {
-        if (to === GameOverState) {
+        if (to === this.gameOver) {
             disablePixiRendering(this.world, false);
         } else {
             disablePixiRendering(this.world, true);
@@ -132,3 +149,5 @@ export class Game extends State<never> {
         this.hud.element.remove();
     }
 }
+
+<div className="h-16"></div>;

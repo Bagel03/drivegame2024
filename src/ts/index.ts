@@ -16,6 +16,7 @@ import { Menu } from "./game/states/menu";
 import { ChooseGameMode } from "./game/states/choose_game";
 import { Preload } from "./game/states/preload";
 
+setDefaultLoggedStorageBufferSize(100);
 // Logger.prototype.log = function () {};
 
 //@ts-ignore

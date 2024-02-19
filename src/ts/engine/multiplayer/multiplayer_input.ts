@@ -115,6 +115,10 @@ export class MultiplayerInput {
         this.ready = true;
     }
 
+    attachButtonElement(element: HTMLElement) {
+        this.localInput.attachButtonElement(element);
+    }
+
     addEvent(event: InputEvent) {
         this.events.push(event);
     }

@@ -24,7 +24,7 @@ class DriveGameDB extends GoogleSpreadsheet {
     }
 
     get matches() {
-        return this.sheetsByTitle["Matches"];
+        return this.sheetsByTitle["Games"];
     }
 }
 
@@ -35,20 +35,23 @@ export const reset = "\u001b[0m";
 export const cyan = "\u001b[36m";
 export const purple = "\u001b[35m";
 
-DATABASE.loadInfo()
-    .then(() => {
-        console.log(
-            [
-                `${green}Database loaded: ${DATABASE.title}${reset}`,
-                `${green}\t↳ Loaded ${cyan}${DATABASE.sheetCount}${green} tables:${reset}`,
-                ...Object.keys(DATABASE.sheetsByTitle).map(
-                    (title) =>
-                        `\t\t↳ ${purple}${title}${reset} (${cyan}${DATABASE.sheetsByTitle[title].sheetId}${reset}) - ${cyan}${DATABASE.sheetsByTitle[title].rowCount}${reset} rows`
-                ),
-            ].join("\n")
-        );
-        // console.log(`\u001b[32m  ↳ ${DATABASE.sheetCount} tables:\u001b[.${Object.keys(DATABASE.sheetsByTitle).map(title => )}`);
-    })
-    .catch((e) => {
-        console.log("Error loading database", e.name);
-    });
+export const awaitDatabase = new Promise((resolve, reject) => {
+    DATABASE.loadInfo()
+        .then(() => {
+            console.log(
+                [
+                    `${green}Database loaded: ${DATABASE.title}${reset}`,
+                    `${green}\t↳ Loaded ${cyan}${DATABASE.sheetCount}${green} tables:${reset}`,
+                    ...Object.keys(DATABASE.sheetsByTitle).map(
+                        (title) =>
+                            `\t\t↳ ${purple}${title}${reset} (${cyan}${DATABASE.sheetsByTitle[title].sheetId}${reset}) - ${cyan}${DATABASE.sheetsByTitle[title].rowCount}${reset} rows`
+                    ),
+                ].join("\n")
+            );
+            // console.log(`\u001b[32m  ↳ ${DATABASE.sheetCount} tables:\u001b[.${Object.keys(DATABASE.sheetsByTitle).map(title => )}`);
+        })
+        .then(resolve)
+        .catch((e) => {
+            console.log("Error loading database", e.name);
+        });
+});

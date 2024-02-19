@@ -36,9 +36,19 @@ export class PaymentSystem extends System({
 
                 fundsEntity.inc(Funds, -Math.min(costEntity.get(Cost.price), funds));
                 costEntity.get(Cost.payTo).inc(Funds, costEntity.get(Cost.price));
-                fundsEntity.inc(PlayerStats.bulletsReceived);
+                if (fundsEntity.has(PlayerStats))
+                    fundsEntity.inc(PlayerStats.bulletsReceived);
 
-                costEntity.get(Cost.payTo).inc(PlayerStats.bulletsHit);
+                const payTo = costEntity.get(Cost.payTo);
+                if (payTo.has(PlayerInfo)) {
+                    payTo.inc(PlayerInfo.ultPercent, 10);
+                    payTo.set(
+                        PlayerInfo.ultPercent,
+                        Math.min(payTo.get(PlayerInfo.ultPercent), 100)
+                    );
+                }
+
+                payTo.inc(PlayerStats.bulletsHit);
 
                 this.toRemoveQueue.add(costEntity);
             });

@@ -1,13 +1,14 @@
 import { Server } from "http";
 import { handleAccountRequests } from "./accounts.js";
 import { handleMatchmakingRequests } from "./matchmaking.js";
-import { cyan, green } from "./database.js";
+import { awaitDatabase, cyan, green } from "./database.js";
 
 const server = new Server(async (req, res) => {
     try {
         const url = new URL(req.url!, `http://${req.headers.host}`);
 
         res.setHeader("Access-Control-Allow-Origin", "*");
+
         if (url.pathname == "/healthcheck") {
             res.statusCode = 200;
             res.end("OK");
@@ -17,11 +18,15 @@ const server = new Server(async (req, res) => {
 
         if (url.pathname.startsWith("/api/v1")) {
             const path = url.pathname.slice("/api/v1".length);
-            console.log(path);
             if (path.startsWith("/accounts")) {
-                handleAccountRequests(req, res, path.slice("/accounts".length), url);
+                await handleAccountRequests(
+                    req,
+                    res,
+                    path.slice("/accounts".length),
+                    url
+                );
             } else if (path.startsWith("/matchmaking")) {
-                handleMatchmakingRequests(
+                await handleMatchmakingRequests(
                     req,
                     res,
                     path.slice("/matchmaking".length),
@@ -42,10 +47,12 @@ const server = new Server(async (req, res) => {
     }
 });
 
-server.listen(process.env.PORT || 8080, () => {
-    console.log(
-        `${green}Server is running on port ${cyan}${
-            process.env.PORT || 8080
-        }${green}!`
-    );
+awaitDatabase.then(() => {
+    server.listen(process.env.PORT || 8080, () => {
+        console.log(
+            `${green}Server is running on port ${cyan}${
+                process.env.PORT || 8080
+            }${green}!`
+        );
+    });
 });

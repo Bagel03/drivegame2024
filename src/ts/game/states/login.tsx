@@ -5,13 +5,12 @@ import {
     StateClass,
     StateManager,
 } from "../../engine/state_managment";
-import { MultiplayerGame } from "./multiplayer";
-import { Menu } from "./menu";
 import { MenuBackground } from "../hud/background";
 import { ServerConnection } from "../../engine/server";
 import { showDialog } from "../hud/components/dialogs";
 import { Component, Type } from "bagelecs";
 import "./fade";
+import { Menu } from "./menu";
 
 export const AccountInfo = Component({
     email: Type.string,
@@ -52,6 +51,7 @@ export class Login extends State<{ email: string }> {
         if (localStorage.getItem("email")) {
             this.signIn({ email: localStorage.getItem("email")! });
         }
+
         return Promise.resolve();
     }
 
@@ -117,7 +117,7 @@ export class Login extends State<{ email: string }> {
 
     private getLoggingInHTML() {
         let elements = (
-            <div id="loggingIn" className="w-full h-full">
+            <div id="login" className="w-full h-full">
                 <MenuBackground>
                     <div className="w-full h-full flex justify-center items-center">
                         <div className="">
