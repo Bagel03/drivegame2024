@@ -49677,7 +49677,10 @@ void main(void) {
           } else {
             this.world.set(
               AccountInfo.trophies,
-              this.world.get(AccountInfo.trophies) - results.trophiesAwarded
+              Math.max(
+                this.world.get(AccountInfo.trophies) - results.trophiesAwarded,
+                0
+              )
             );
           }
         }
