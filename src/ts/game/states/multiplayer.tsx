@@ -9,7 +9,7 @@ import { Players } from "../players";
 import { Entity, Resource, Type, World } from "bagelecs";
 import { Funds } from "../components/funds";
 import { GameOverState } from "./game_over";
-import { DESIRED_FRAME_TIME } from "../../engine/loop";
+import { DESIRED_FRAME_TIME, LoopPlugin, pause, resume } from "../../engine/loop";
 import { Script } from "../../engine/script";
 import { MultiplayerInput } from "../../engine/multiplayer/multiplayer_input";
 import { Player } from "../blueprints/player";
@@ -262,7 +262,11 @@ export class MultiplayerGame extends Game {
             this.player1.get(Funds) >= PlayerInfo.globals.targetFunds ||
             this.player2.get(Funds) >= PlayerInfo.globals.targetFunds
         ) {
-            this.world.get(StateManager).moveTo(GameOverState);
+            pause();
+            this.world
+                .get(StateManager)
+                .moveTo(GameOverState)
+                .then(() => resume(this.world));
         }
     }
 

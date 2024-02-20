@@ -1,7 +1,7 @@
 import { Server } from "http";
 import { handleAccountRequests } from "./accounts.js";
 import { handleMatchmakingRequests } from "./matchmaking.js";
-import { awaitDatabase, cyan, green } from "./database.js";
+import { awaitDatabase, cyan, green, reset } from "./database.js";
 
 const server = new Server(async (req, res) => {
     try {
@@ -52,7 +52,7 @@ awaitDatabase.then(() => {
         console.log(
             `${green}Server is running on port ${cyan}${
                 process.env.PORT || 8080
-            }${green}!`
+            }${green}!${reset}`
         );
     });
 });

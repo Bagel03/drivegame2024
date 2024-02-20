@@ -16,7 +16,8 @@ export interface AccountInfo {
     overallRank: number;
 }
 
-export const classes = ["Freshman", "Sophomore", "Junior", "Senior"];
+export const CLASSES = ["Freshman", "Sophomore", "Junior", "Senior"];
+export const REVERSED_CLASSES = CLASSES.slice().reverse();
 
 export async function handleAccountRequests(
     req: IncomingMessage,
@@ -48,7 +49,7 @@ export async function handleAccountRequests(
             if (!foundRow) {
                 // make a new row
                 const userClass =
-                    classes.toReversed()[parseInt(jwt.email.slice(0, 2)) - 24] || "";
+                    REVERSED_CLASSES[parseInt(jwt.email.slice(0, 2)) - 24] || "";
 
                 foundRow = await DATABASE.accounts.addRow({
                     email: jwt.email,

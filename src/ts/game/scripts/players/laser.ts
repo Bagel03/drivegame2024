@@ -44,6 +44,7 @@ export const LaserPlayer: Script = function () {
                 const velX = Math.cos(input.get("aim", id));
                 const velY = Math.sin(input.get("aim", id));
 
+                this.inc(PlayerStats.bulletsShot);
                 BulletEnt(
                     this,
                     5,

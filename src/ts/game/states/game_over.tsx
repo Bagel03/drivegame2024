@@ -27,6 +27,7 @@ export class GameOverState extends State<never> {
     }
 
     async onEnter() {
+        console.trace("Entered Game Over state");
         document.body.appendChild(this.element);
         this.element.appendChild(this.getHTML());
 

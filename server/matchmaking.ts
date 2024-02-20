@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { DATABASE } from "./database";
-import { AccountInfo, classes } from "./accounts";
+import { AccountInfo, CLASSES } from "./accounts";
 import { GoogleSpreadsheetRow } from "google-spreadsheet";
 
 let queuedPlayer: {
@@ -88,6 +88,8 @@ export async function handleMatchmakingRequests(
         const clientEmail = url.searchParams.get("email")!;
         const winner = url.searchParams.get("winner")!;
 
+        console.log(clientEmail);
+
         let match = ongoingGames.get(matchId);
         if (!match) {
             ongoingGames.set(matchId, {
@@ -98,6 +100,21 @@ export async function handleMatchmakingRequests(
                 playerGameOverRes: res,
             });
             match = ongoingGames.get(matchId)!;
+
+            setTimeout(() => {
+                try {
+                    if (!ongoingGames.has(matchId)) return;
+
+                    const trophiesAwarded = 0; //25 + Math.floor(Math.random() * 10);
+                    const winningId = match!.playerResults[0];
+                    res.write(
+                        JSON.stringify({ winner: winningId, trophiesAwarded })
+                    );
+                    res.end();
+
+                    // Dont award any trophies
+                } catch (e) {}
+            }, 1000);
         } else {
             match.playerEmails.push(clientEmail);
             match.players.push(clientId);
@@ -132,39 +149,73 @@ export async function handleMatchmakingRequests(
                     match.playerEmails[match.players.indexOf(winningId)]
                 );
             } else {
-                //@ts-expect-error
-                winningRow.assign({
-                    trophies: parseInt(winningRow.get("trophies")) + trophiesAwarded,
-                    wins: parseInt(winningRow.get("wins")) + 1,
-                    "total matches": parseInt(winningRow.get("total matches")) + 1,
-                });
-                await winningRow.save();
+                DATABASE.set(
+                    winningRow,
+                    "trophies",
+                    parseInt(winningRow.get("trophies")) + trophiesAwarded
+                );
+                DATABASE.set(
+                    winningRow,
+                    "wins",
+                    parseInt(winningRow.get("wins")) + 1
+                );
+                DATABASE.set(
+                    winningRow,
+                    "total matches",
+                    parseInt(winningRow.get("total matches")) + 1
+                );
+
+                // winningRow.assign({
+                //     trophies: parseInt(winningRow.get("trophies")) + trophiesAwarded,
+                //     wins: parseInt(winningRow.get("wins")) + 1,
+                //     "total matches": parseInt(winningRow.get("total matches")) + 1,
+                // });
             }
 
             const losingRow = rows.find(
                 (row) =>
                     row.get("email") ==
                     match!.playerEmails[1 - match!.players.indexOf(winningId)]
-            )!;
+            );
             if (!losingRow) {
                 console.error(
                     "Couldn't find losing row",
                     match.playerEmails[1 - match.players.indexOf(winningId)]
                 );
             } else {
-                //@ts-expect-error
-                losingRow.assign({
-                    "total matches": parseInt(losingRow.get("total matches")) + 1,
-                    trophies: Math.max(
+                DATABASE.set(
+                    losingRow,
+                    "total matches",
+                    parseInt(losingRow.get("total matches")) + 1
+                );
+                DATABASE.set(
+                    losingRow,
+                    "trophies",
+                    Math.max(
                         parseInt(losingRow.get("trophies")) - trophiesAwarded,
                         0
-                    ),
-                });
-                await losingRow.save();
+                    )
+                );
+                // losingRow.assign({
+                //     "total matches": parseInt(losingRow.get("total matches")) + 1,
+                //     trophies: Math.max(
+                //         parseInt(losingRow.get("trophies")) - trophiesAwarded,
+                //         0
+                //     ),
+                // });
+                // await losingRow.save();
             }
 
-            await reorderRanks(rows);
+            reorderRanks(rows);
+            await DATABASE.save(DATABASE.accounts);
+            // await DATABASE.save(DATABASE.matches);
             ongoingGames.delete(matchId);
+
+            console.log(
+                `Match ${matchId} over: (${winningRow?.get(
+                    "email"
+                )}) v ${losingRow?.get("email")} - ${trophiesAwarded} trophies`
+            );
         }
 
         // match.playerResults[match.players.indexOf(clientId)] = winner;
@@ -306,7 +357,6 @@ export async function handleMatchmakingRequests(
 }
 
 function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
-    const promises = [];
     rows.filter((row) => {
         const email = row.get("email");
         return email.endsWith("@catholiccentral.net");
@@ -315,19 +365,17 @@ function reorderRanks(rows: GoogleSpreadsheetRow<AccountInfo>[]) {
             return b.get("trophies") - a.get("trophies");
         })
         .forEach((row, i) => {
-            // @ts-expect-error
-            row.assign({ overallRank: i + 1 });
-            promises.push(row.save());
+            DATABASE.set(row, "overallRank", i + 1);
+            // row.assign({ overallRank: i + 1 });
         });
 
-    for (const c of classes) {
+    for (const c of CLASSES) {
         const classRows = rows.filter((r) => r.get("class") == c);
         classRows.sort((a, b) => b.get("trophies") - a.get("trophies"));
         for (let i = 0; i < classRows.length; i++) {
-            // @ts-expect-error
-            classRows[i].assign({ classRank: i + 1 });
-            promises.push(classRows[i].save());
+            DATABASE.set(classRows[i], "overallRank", i + 1);
+
+            // classRows[i].assign({ classRank: i + 1 });
         }
     }
-    return Promise.all(promises);
 }

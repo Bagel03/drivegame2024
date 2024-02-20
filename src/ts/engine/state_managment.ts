@@ -56,6 +56,8 @@ export class StateManager {
         payload = undefined,
         useExitPayloadIfAvailable = false
     ) {
+        if (this.currentState === state) return;
+
         let stateInstance: State<any>;
         if (this.states.has(state)) stateInstance = this.states.get(state)!;
         else {

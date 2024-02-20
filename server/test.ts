@@ -1,9 +1,5 @@
 import { JWT } from "google-auth-library";
-import {
-    GoogleSpreadsheet,
-    GoogleSpreadsheetRow,
-    GoogleSpreadsheetWorksheet,
-} from "google-spreadsheet";
+import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 
 import creds from "./auth_creds.json";
 
@@ -31,19 +27,8 @@ class DriveGameDB extends GoogleSpreadsheet {
         return this.sheetsByTitle["Games"];
     }
 
-    set(row: GoogleSpreadsheetRow, header: string, value: any) {
-        const column = row._worksheet.headerValues.indexOf(header);
-        if (column === -1)
-            throw new Error(`Header ${header} not found in ${row._worksheet.title}`);
-        // console.log(`Setting ${header} to ${value} in ${row._worksheet.title}`);
-
-        row._worksheet.getCell(row.rowNumber - 1, column).value = value;
-    }
-
     save(worksheet: GoogleSpreadsheetWorksheet) {
-        return worksheet
-            .saveUpdatedCells()
-            .catch((e) => console.error("Error saving db"));
+        worksheet.saveUpdatedCells();
     }
 }
 
@@ -56,8 +41,6 @@ export const purple = "\u001b[35m";
 
 export const awaitDatabase = new Promise((resolve, reject) => {
     DATABASE.loadInfo()
-        .then(() => DATABASE.sheetsByTitle["Accounts"].loadCells())
-        .then(() => DATABASE.sheetsByTitle["Games"].loadCells())
         .then(() => {
             console.log(
                 [
@@ -65,7 +48,7 @@ export const awaitDatabase = new Promise((resolve, reject) => {
                     `${green}\t↳ Loaded ${cyan}${DATABASE.sheetCount}${green} tables:${reset}`,
                     ...Object.keys(DATABASE.sheetsByTitle).map(
                         (title) =>
-                            `\t\t↳ ${purple}${title}${reset} (${cyan}${DATABASE.sheetsByTitle[title].sheetId}${reset}) - ${cyan}${DATABASE.sheetsByTitle[title].cellStats.loaded}${reset} cells loaded`
+                            `\t\t↳ ${purple}${title}${reset} (${cyan}${DATABASE.sheetsByTitle[title].sheetId}${reset}) - ${cyan}${DATABASE.sheetsByTitle[title].rowCount}${reset} rows`
                     ),
                 ].join("\n")
             );
