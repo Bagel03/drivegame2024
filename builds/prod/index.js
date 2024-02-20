@@ -48620,6 +48620,14 @@ void main(void)\r
           const nc = this.world.get(NetworkConnection);
           document.body.append(this.getHTML());
           nc.post("playerChange");
+          window.addEventListener("beforeunload", () => {
+            this.world.get(ServerConnection).fetch("/matchmaking/exitQueue", {
+              searchParams: {
+                id: this.world.get(NetworkConnection).id,
+                email: this.world.get(AccountInfo.email)
+              }
+            });
+          });
         }
         async fetchServerInfo() {
           const serverResponse = await fetch("");
@@ -48813,7 +48821,7 @@ void main(void)\r
         enterQueue() {
           return new Promise((res, rej) => {
             const old = document.querySelector("#playButton");
-            const play = old.cloneNode(true);
+            const play = old.cloneNode();
             old.replaceWith(play);
             play.addEventListener("click", () => {
               this.world.get(ServerConnection).fetch("/matchmaking/exitQueue", {
@@ -48822,6 +48830,7 @@ void main(void)\r
                   email: this.world.get(AccountInfo.email)
                 }
               }).then(() => {
+                console.log(old.innerHTML);
                 play.replaceWith(old);
                 res();
               });
