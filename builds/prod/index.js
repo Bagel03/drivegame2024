@@ -8806,6 +8806,10 @@
   }
   function LoopPlugin(world3) {
   }
+  function pause() {
+    window.clearTimeout(cancelTimeoutId);
+    paused = true;
+  }
   function resume(world3) {
     lastPhysicsTime = performance.now();
     window.setTimeout(() => runPhysicsUpdate(world3), DESIRED_FRAME_TIME);
@@ -16779,6 +16783,8 @@
         currentStateInstance;
         history = [];
         async moveTo(state, payload = void 0, useExitPayloadIfAvailable = false) {
+          if (this.currentState === state)
+            return;
           let stateInstance;
           if (this.states.has(state))
             stateInstance = this.states.get(state);
@@ -49206,7 +49212,8 @@ void main(void)\r
           this.hud.updatePlayer1UltBar(this.player1.get(PlayerInfo.ultPercent));
           this.hud.updatePlayer2UltBar(this.player2.get(PlayerInfo.ultPercent));
           if (this.player1.get(Funds) >= PlayerInfo.globals.targetFunds || this.player2.get(Funds) >= PlayerInfo.globals.targetFunds) {
-            this.world.get(StateManager).moveTo(GameOverState);
+            pause();
+            this.world.get(StateManager).moveTo(GameOverState).then(() => resume(this.world));
           }
         }
         async onLeave(to) {
@@ -49551,6 +49558,7 @@ void main(void) {
             for (let i2 = 0; i2 < 10; i2++) {
               const velX = Math.cos(input.get("aim", id));
               const velY = Math.sin(input.get("aim", id));
+              this.inc(PlayerStats.bulletsShot);
               BulletEnt(
                 this,
                 5,
@@ -49665,6 +49673,7 @@ void main(void) {
           });
         }
         async onEnter() {
+          console.trace("Entered Game Over state");
           document.body.appendChild(this.element);
           this.element.appendChild(this.getHTML());
           const winner = this.world.get(MatchInfo).info.winner === "player1" ? this.world.get(NetworkConnection).player1 : this.world.get(NetworkConnection).player2;
