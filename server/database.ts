@@ -33,8 +33,8 @@ class DriveGameDB extends GoogleSpreadsheet {
 
     set(row: GoogleSpreadsheetRow, header: string, value: any) {
         const column = row._worksheet.headerValues.indexOf(header);
-        if (column === -1)
-            throw new Error(`Header ${header} not found in ${row._worksheet.title}`);
+        if (column === -1 || row.rowNumber - 1 <= 0)
+            throw new Error(`Invalid cell row ${row.rowNumber - 1} col ${column}`);
         // console.log(`Setting ${header} to ${value} in ${row._worksheet.title}`);
 
         row._worksheet.getCell(row.rowNumber - 1, column).value = value;
