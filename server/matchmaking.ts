@@ -73,7 +73,8 @@ export async function handleMatchmakingRequests(
         } else {
             console.warn("Got message to exit queue from user not in queue");
         }
-
+        res.write("{}");
+        res.end();
         return;
     }
 

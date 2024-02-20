@@ -35,6 +35,15 @@ export class Menu extends State<MenuPayload> {
         // nc.waitForConnection.then(() => {
         //     this.world.get(StateManager).moveTo(MultiplayerGameState, null);
         // });
+
+        window.addEventListener("beforeunload", () => {
+            this.world.get(ServerConnection).fetch("/matchmaking/exitQueue", {
+                searchParams: {
+                    id: this.world.get(NetworkConnection).id,
+                    email: this.world.get(AccountInfo.email),
+                },
+            });
+        });
     }
 
     private async fetchServerInfo() {
@@ -335,7 +344,7 @@ export class Menu extends State<MenuPayload> {
     private enterQueue() {
         return new Promise<void>((res, rej) => {
             const old = document.querySelector<HTMLButtonElement>("#playButton")!;
-            const play = old.cloneNode(true) as HTMLButtonElement;
+            const play = old.cloneNode() as HTMLButtonElement;
             old.replaceWith(play);
             play.addEventListener("click", () => {
                 this.world
@@ -347,6 +356,8 @@ export class Menu extends State<MenuPayload> {
                         },
                     })
                     .then(() => {
+                        console.log(old.innerHTML);
+
                         play.replaceWith(old);
                         res();
                     });
