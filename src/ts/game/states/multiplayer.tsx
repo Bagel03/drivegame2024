@@ -18,6 +18,7 @@ import { AccountInfo } from "./login";
 import { PlayerStats } from "../components/player_stats";
 import { Facing } from "../components/facing";
 import { AnimatedSprite } from "../../engine/rendering/animation";
+import { sound } from "@pixi/sound";
 
 export const Countdown = Resource(Type.number.logged());
 console.log("Countdown", Countdown.id);
@@ -45,6 +46,8 @@ export class MultiplayerGame extends Game {
                 ? "remotePlayer"
                 : "localPlayer"
         );
+
+        sound.play("ingame", { loop: true });
 
         const width = this.world.get<number>("screenWidth");
         const height = this.world.get<number>("screenHeight");
@@ -259,18 +262,16 @@ export class MultiplayerGame extends Game {
         this.hud.updatePlayer2UltBar(this.player2.get(PlayerInfo.ultPercent));
 
         if (
-            this.player1.get(Funds) >= PlayerInfo.globals.targetFunds ||
-            this.player2.get(Funds) >= PlayerInfo.globals.targetFunds
+            (this.player1.get(Funds) >= PlayerInfo.globals.targetFunds ||
+                this.player2.get(Funds) >= PlayerInfo.globals.targetFunds) &&
+            this.world.get(StateManager).currentlyMovingTo !== GameOverState
         ) {
-            pause();
-            this.world
-                .get(StateManager)
-                .moveTo(GameOverState)
-                .then(() => resume(this.world));
+            this.world.get(StateManager).moveTo(GameOverState);
         }
     }
 
     async onLeave(to: StateClass<any>): Promise<void> {
+        sound.stopAll();
         const nc = this.world.get(NetworkConnection);
         this.world.add(
             new MatchInfo({
@@ -318,12 +319,12 @@ export class MultiplayerGame extends Game {
         this.world.remove(Countdown);
         this.world.clearScripts();
         this.world.get(RollbackManager).disableRollback();
-        const mi = this.world.get(MultiplayerInput);
-        mi.knownFutureInputs.clear();
-        //@ts-ignore
-        mi.buffers = {};
-        mi.ready = false;
-        mi.init();
+        // const mi = this.world.get(MultiplayerInput);
+        // mi.knownFutureInputs.clear();
+        // //@ts-ignore
+        // mi.buffers = {};
+        // mi.ready = false;
+        // mi.init();
         // this.world.get(MultiplayerInput).knownFutureInputs.clear();
         // this.world.get(MultiplayerInput).buffers = {};
         await super.onLeave(to);

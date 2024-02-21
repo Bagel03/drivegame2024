@@ -18,7 +18,6 @@ export const AccountInfo = Component({
     username: Type.string,
     trophies: Type.number,
     wins: Type.number,
-    totalWins: Type.number,
     class: Type.enum("Freshman", "Sophomore", "Junior", "Senior"),
     classRank: Type.number,
     overallRank: Type.number,
@@ -165,6 +164,8 @@ export class Login extends State<{ email: string }> {
 
         if (!info) return;
 
+        console.log(info);
+
         // if (info.status !== 200) {
         //     console.error(info);
         //     showDialog({ title: "Failed to login", message: "Please try again" });
@@ -176,7 +177,7 @@ export class Login extends State<{ email: string }> {
                 isGuest: false,
                 username: info.username,
                 trophies: info.trophies,
-                totalWins: info.wins,
+                wins: info.wins,
                 class: info.class,
                 classRank: info.classRank,
                 overallRank: info.overallRank,

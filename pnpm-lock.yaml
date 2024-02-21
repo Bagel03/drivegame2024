@@ -31,6 +31,9 @@ dependencies:
   '@pixi/filter-glow':
     specifier: ^5.2.1
     version: 5.2.1
+  '@pixi/sound':
+    specifier: ^5.2.3
+    version: 5.2.3
   bagelecs:
     specifier: ^0.0.3
     version: 0.0.3
@@ -1192,6 +1195,13 @@ packages:
       '@pixi/constants': 7.3.2
       '@types/css-font-loading-module': 0.0.7
       ismobilejs: 1.1.1
+    dev: false
+
+  /@pixi/sound@5.2.3:
+    resolution: {integrity: sha512-PMWZv3su6ykBUA6roN5OYMOCdl03eunK4iCB4rBbhxCM2qt6h0MFQNymr/DLBOa6AjV3ilOseHLu/9s/YKxYZw==}
+    peerDependencies:
+      '@pixi/assets': ^7.0.0
+      '@pixi/core': ^7.0.0
     dev: false
 
   /@pixi/sprite-animated@7.3.2(@pixi/core@7.3.2)(@pixi/sprite@7.3.2):

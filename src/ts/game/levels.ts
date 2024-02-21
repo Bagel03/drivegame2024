@@ -27,6 +27,36 @@ export const Levels: LevelDescriptor[] = [
         wins: 20,
         prevWins: 25,
     },
+
+    // Level 4
+    {
+        wins: 20,
+        prevWins: 45,
+    },
+
+    // Level 5
+    {
+        wins: 30,
+        prevWins: 65,
+    },
+
+    // Level 6
+    {
+        wins: 40,
+        prevWins: 95,
+    },
+
+    // Level 7
+    {
+        wins: 50,
+        prevWins: 135,
+    },
+
+    // Level 8 (No ones beating it)
+    {
+        wins: 1_000_000,
+        prevWins: 185,
+    },
 ];
 
 export function totalWinsToLevel(wins: number) {

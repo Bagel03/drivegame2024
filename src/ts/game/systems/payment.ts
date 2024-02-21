@@ -34,7 +34,6 @@ export class PaymentSystem extends System({
                 )
                     return;
                 const funds = fundsEntity.get(Funds);
-                console.log("Taking ", costEntity.get(Cost.price), "from", funds);
 
                 fundsEntity.inc(Funds, -Math.min(costEntity.get(Cost.price), funds));
                 costEntity.get(Cost.payTo).inc(Funds, costEntity.get(Cost.price));

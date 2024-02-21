@@ -18,6 +18,8 @@ import { PlayerSelect } from "./player_select";
 import { Menu } from "./menu";
 import { Players } from "../players";
 import { NetworkConnection } from "../../engine/multiplayer/network";
+import { ServerConnection } from "../../engine/server";
+import { showDialog } from "../hud/components/dialogs";
 
 declare module "../../engine/input/input" {
     interface Bindings {
@@ -55,7 +57,22 @@ export class Preload extends State {
             loader.remove();
         }, 1000);
 
-        this.world.get(StateManager).moveTo(Login);
+        let shouldContinue = true;
+        await this.world
+            .get(ServerConnection)
+            .fetch("/healthcheck", { useBaseUrl: true, leaveRaw: true })
+            .catch((e) => {
+                console.error("Server not available", e);
+                showDialog({
+                    title: "Couldn't reach server",
+                    message:
+                        "School WIFI sometimes blocks the server, if you are connected to the school network, try using your phone's hotspot and reloading. If not, more than likely the servers are crashed, try again later.",
+                    hideCancelButton: true,
+                });
+                shouldContinue = false;
+            });
+
+        if (shouldContinue) this.world.get(StateManager).moveTo(Login);
 
         // const requestFullScreen = () => {
         //     const fullScreenMethod =
@@ -69,7 +86,27 @@ export class Preload extends State {
         // document.body.addEventListener("pointerdown", requestFullScreen);
     }
 
+    loadImage(url: string) {
+        return new Promise<HTMLImageElement>((resolve, reject) => {
+            const img = new Image();
+            img.src = window.DIST_URL + url;
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+        });
+    }
+
     async loadAssets() {
+        await this.loadImage("/assets/Carrier.png");
+        await this.loadImage("/assets/Gismo.png");
+        await this.loadImage("/assets/background.png");
+        await Assets.load({
+            src: window.DIST_URL + "/assets/menu.mp3",
+            alias: "menu",
+        });
+        await Assets.load({
+            src: window.DIST_URL + "/assets/ingame_music.mp3",
+            alias: "ingame",
+        });
         await Assets.load(window.DIST_URL + "/assets/atlas.json");
     }
 
@@ -79,7 +116,10 @@ export class Preload extends State {
         const zero = new Point(0, 0);
         input.addInputMethod("KBM", {
             x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
-            y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
+            y: new CombinedBinding(
+                { KeyW: -1, KeyS: 1, Space: -1 },
+                { max: 1, min: -1 }
+            ),
             // aim: new AdvancedAngleBinding({
             //     originX: () => 0,
             //     // this.world.get(StateManager).currentState === MultiplayerGameState

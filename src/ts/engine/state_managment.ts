@@ -51,12 +51,15 @@ export class StateManager {
         U extends T extends StateClass<infer U> ? U : never
     >(state: T, payload: U, useExitPayloadIfAvailable?: boolean): Promise<void>;
 
+    public currentlyMovingTo: StateClass | null = null;
     async moveTo(
         state: StateClass,
         payload = undefined,
         useExitPayloadIfAvailable = false
     ) {
         if (this.currentState === state) return;
+
+        this.currentlyMovingTo = state;
 
         let stateInstance: State<any>;
         if (this.states.has(state)) stateInstance = this.states.get(state)!;
@@ -76,6 +79,7 @@ export class StateManager {
 
         this.currentState = state;
         this.currentStateInstance = stateInstance;
+        this.currentlyMovingTo = null;
     }
 
     async back(

@@ -1,6 +1,10 @@
 import { World } from "bagelecs";
 
 export class ServerConnection {
+    private readonly baseUrl =
+        localStorage.getItem("dev-env") === "true"
+            ? "http://localhost:8080"
+            : "https://drivegame2024.onrender.com"; //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
     private readonly url =
         localStorage.getItem("dev-env") === "true"
             ? "http://localhost:8080/api/v1"
@@ -11,15 +15,19 @@ export class ServerConnection {
         options?: {
             options?: RequestInit;
             searchParams?: Record<string, string>;
+            useBaseUrl?: boolean;
+            leaveRaw?: boolean;
         }
     ) {
-        const url = new URL(this.url + path);
+        const url = new URL((options?.useBaseUrl ? this.baseUrl : this.url) + path);
         if (options?.searchParams) {
             for (const [key, value] of Object.entries(options.searchParams)) {
                 url.searchParams.set(key, value);
             }
         }
-        return fetch(url, options?.options).then((res) => res.json());
+        return fetch(url, options?.options).then((res) =>
+            options?.leaveRaw ? res : res.json()
+        );
     }
 
     post(url: string, body: any) {

@@ -30,7 +30,7 @@ const playerBlueprint = new Blueprint(
         ultPercent: 0,
         inUlt: false,
     }),
-    new CollisionHitbox({ x: 50, y: 100 }),
+    new CollisionHitbox({ x: 50, y: 125 }),
     new Funds(0),
     PlayerIdentifier,
     new PlayerStats({
@@ -65,8 +65,8 @@ export const Player = AdvancedBlueprintFactory(
 
         this.set(sprite);
         // sprite.width = 40;
-        sprite.width = 100;
-        sprite.height = 100;
+        sprite.width = 125;
+        sprite.height = 125;
         this.add(
             new AnimatedSprite({
                 spriteName: Players[player].spriteName + "-idle",

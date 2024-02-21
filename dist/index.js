@@ -3350,12 +3350,12 @@
     }
     return elem;
   }
-  function embedStyle(doc, id, css) {
-    if (doc.querySelector(`style[data-tp-style=${id}]`)) {
+  function embedStyle(doc, id3, css) {
+    if (doc.querySelector(`style[data-tp-style=${id3}]`)) {
       return;
     }
     const styleElem = doc.createElement("style");
-    styleElem.dataset.tpStyle = id;
+    styleElem.dataset.tpStyle = id3;
     styleElem.textContent = css;
     doc.head.appendChild(styleElem);
   }
@@ -3381,11 +3381,11 @@
             type: "notbindable"
           });
         }
-        static notCompatible(bundleId, id) {
+        static notCompatible(bundleId, id3) {
           return new _TpError({
             type: "notcompatible",
             context: {
-              id: `${bundleId}.${id}`
+              id: `${bundleId}.${id3}`
             }
           });
         }
@@ -9457,8 +9457,8 @@
       if (name.endsWith("Id")) {
         walkStats(stats, stats.get(base[name]), resultSet);
       } else if (name.endsWith("Ids")) {
-        base[name].forEach((id) => {
-          walkStats(stats, stats.get(id), resultSet);
+        base[name].forEach((id3) => {
+          walkStats(stats, stats.get(id3), resultSet);
         });
       }
     });
@@ -12233,9 +12233,9 @@
           if (token < 65536) {
             if (token == RECORD_INLINE_ID) {
               let length = readJustLength();
-              let id = read();
+              let id3 = read();
               let structure2 = read();
-              recordDefinition(id, structure2);
+              recordDefinition(id3, structure2);
               let object = {};
               if (currentDecoder.keyMap)
                 for (let i2 = 2; i2 < length; i2++) {
@@ -12250,9 +12250,9 @@
               return object;
             } else if (token == RECORD_DEFINITIONS_ID) {
               let length = readJustLength();
-              let id = read();
+              let id3 = read();
               for (let i2 = 2; i2 < length; i2++) {
-                recordDefinition(id++, read());
+                recordDefinition(id3++, read());
               }
               return read();
             } else if (token == BUNDLED_STRINGS_ID) {
@@ -12923,13 +12923,13 @@
       currentExtensions[5] = (fraction) => {
         return fraction[1] * Math.exp(fraction[0] * Math.log(2));
       };
-      recordDefinition = (id, structure) => {
-        id = id - 57344;
-        let existingStructure = currentStructures[id];
+      recordDefinition = (id3, structure) => {
+        id3 = id3 - 57344;
+        let existingStructure = currentStructures[id3];
         if (existingStructure && existingStructure.isShared) {
-          (currentStructures.restoreStructures || (currentStructures.restoreStructures = []))[id] = existingStructure;
+          (currentStructures.restoreStructures || (currentStructures.restoreStructures = []))[id3] = existingStructure;
         }
-        currentStructures[id] = structure;
+        currentStructures[id3] = structure;
         structure.read = createStructureReader(structure);
       };
       currentExtensions[LEGACY_RECORD_INLINE_ID] = (data) => {
@@ -12984,7 +12984,7 @@
           referenceMap = /* @__PURE__ */ new Map();
           referenceMap.id = 0;
         }
-        let id = referenceMap.id++;
+        let id3 = referenceMap.id++;
         let token = src[position];
         let target2;
         if (token >> 5 == 4)
@@ -12992,7 +12992,7 @@
         else
           target2 = {};
         let refEntry = { target: target2 };
-        referenceMap.set(id, refEntry);
+        referenceMap.set(id3, refEntry);
         let targetProperties = read2();
         if (refEntry.used)
           return Object.assign(target2, targetProperties);
@@ -13000,8 +13000,8 @@
         return targetProperties;
       };
       currentExtensions[28].handlesRead = true;
-      currentExtensions[29] = (id) => {
-        let refEntry = referenceMap.get(id);
+      currentExtensions[29] = (id3) => {
+        let refEntry = referenceMap.get(id3);
         refEntry.used = true;
         return refEntry.target;
       };
@@ -13199,12 +13199,12 @@
     let distanceToMove = idsToInsert.length * 2;
     let lastEnd = serialized.length - distanceToMove;
     idsToInsert.sort((a3, b3) => a3.offset > b3.offset ? 1 : -1);
-    for (let id = 0; id < idsToInsert.length; id++) {
-      let referee = idsToInsert[id];
-      referee.id = id;
+    for (let id3 = 0; id3 < idsToInsert.length; id3++) {
+      let referee = idsToInsert[id3];
+      referee.id = id3;
       for (let position3 of referee.references) {
-        serialized[position3++] = id >> 8;
-        serialized[position3] = id & 255;
+        serialized[position3++] = id3 >> 8;
+        serialized[position3] = id3 & 255;
       }
     }
     while (nextId = idsToInsert.pop()) {
@@ -14395,17 +14395,17 @@
           if (!window.RTCRtpTransceiver || !("currentDirection" in RTCRtpTransceiver.prototype))
             return false;
           let tempPc;
-          let supported2 = false;
+          let supported3 = false;
           try {
             tempPc = new RTCPeerConnection();
             tempPc.addTransceiver("audio");
-            supported2 = true;
+            supported3 = true;
           } catch (e3) {
           } finally {
             if (tempPc)
               tempPc.close();
           }
-          return supported2;
+          return supported3;
         }
         toString() {
           return `Supports:
@@ -14432,8 +14432,8 @@
           this.minSafariVersion = 605;
         }
       }();
-      $9a84a32bf0bf36bb$export$f35f128fd59ea256 = (id) => {
-        return !id || /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/.test(id);
+      $9a84a32bf0bf36bb$export$f35f128fd59ea256 = (id3) => {
+        return !id3 || /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/.test(id3);
       };
       $0e5fd1585784c252$export$4e61f672936bec77 = () => Math.random().toString(36).slice(2);
       $4f4134156c446392$var$DEFAULT_CONFIG = {
@@ -14487,7 +14487,7 @@
           this.pack = $0cfd7828ad59115f$export$2a703dbb0cb35339;
           this.unpack = $0cfd7828ad59115f$export$417857010dc9287f;
           this.supports = function() {
-            const supported2 = {
+            const supported3 = {
               browser: (0, $fb63e766cfafaab9$export$25be9502477c137d).isBrowserSupported(),
               webRTC: (0, $fb63e766cfafaab9$export$25be9502477c137d).isWebRTCSupported(),
               audioVideo: false,
@@ -14495,22 +14495,22 @@
               binaryBlob: false,
               reliable: false
             };
-            if (!supported2.webRTC)
-              return supported2;
+            if (!supported3.webRTC)
+              return supported3;
             let pc;
             try {
               pc = new RTCPeerConnection($4f4134156c446392$var$DEFAULT_CONFIG);
-              supported2.audioVideo = true;
+              supported3.audioVideo = true;
               let dc;
               try {
                 dc = pc.createDataChannel("_PEERJSTEST", {
                   ordered: true
                 });
-                supported2.data = true;
-                supported2.reliable = !!dc.ordered;
+                supported3.data = true;
+                supported3.reliable = !!dc.ordered;
                 try {
                   dc.binaryType = "blob";
-                  supported2.binaryBlob = !(0, $fb63e766cfafaab9$export$25be9502477c137d).isIOS;
+                  supported3.binaryBlob = !(0, $fb63e766cfafaab9$export$25be9502477c137d).isIOS;
                 } catch (e3) {
                 }
               } catch (e3) {
@@ -14523,7 +14523,7 @@
               if (pc)
                 pc.close();
             }
-            return supported2;
+            return supported3;
           }();
           this.validateId = (0, $9a84a32bf0bf36bb$export$f35f128fd59ea256);
           this.randomToken = (0, $0e5fd1585784c252$export$4e61f672936bec77);
@@ -14872,9 +14872,9 @@
           const wsProtocol = secure ? "wss://" : "ws://";
           this._baseUrl = wsProtocol + host + ":" + port + path2 + "peerjs?key=" + key;
         }
-        start(id, token) {
-          this._id = id;
-          const wsUrl = `${this._baseUrl}&id=${id}&token=${token}`;
+        start(id3, token) {
+          this._id = id3;
+          const wsUrl = `${this._baseUrl}&id=${id3}&token=${token}`;
           if (!!this._socket || !this._disconnected)
             return;
           this._socket = new WebSocket(wsUrl + "&version=" + (0, $f5f881ec4575f1fc$exports.version));
@@ -15580,17 +15580,17 @@
           this.emit("data", deserializedData);
         }
         _handleChunk(data) {
-          const id = data.__peerData;
-          const chunkInfo = this._chunkedData[id] || {
+          const id3 = data.__peerData;
+          const chunkInfo = this._chunkedData[id3] || {
             data: [],
             count: 0,
             total: data.total
           };
           chunkInfo.data[data.n] = new Uint8Array(data.data);
           chunkInfo.count++;
-          this._chunkedData[id] = chunkInfo;
+          this._chunkedData[id3] = chunkInfo;
           if (chunkInfo.total === chunkInfo.count) {
-            delete this._chunkedData[id];
+            delete this._chunkedData[id3];
             const data2 = (0, $fcbcc7538a6776d5$export$52c89ebcdc4f53f2)(chunkInfo.data);
             this._handleDataMessage({
               data: data2
@@ -15704,7 +15704,7 @@
         get disconnected() {
           return this._disconnected;
         }
-        constructor(id, options) {
+        constructor(id3, options) {
           super();
           this._serializers = {
             raw: (0, $bbaee3f15f714663$export$6f88fe47d32c9c94),
@@ -15721,10 +15721,10 @@
           this._connections = /* @__PURE__ */ new Map();
           this._lostMessages = /* @__PURE__ */ new Map();
           let userId;
-          if (id && id.constructor == Object)
-            options = id;
-          else if (id)
-            userId = id.toString();
+          if (id3 && id3.constructor == Object)
+            options = id3;
+          else if (id3)
+            userId = id3.toString();
           options = {
             debug: 0,
             host: (0, $4f4134156c446392$export$7debb50ef11d5e0b).CLOUD_HOST,
@@ -15770,7 +15770,7 @@
           if (userId)
             this._initialize(userId);
           else
-            this._api.retrieveId().then((id2) => this._initialize(id2)).catch((error) => this._abort((0, $78455e22dea96b8c$export$9547aaa2e39030ff).ServerError, error));
+            this._api.retrieveId().then((id4) => this._initialize(id4)).catch((error) => this._abort((0, $78455e22dea96b8c$export$9547aaa2e39030ff).ServerError, error));
         }
         _createServerConnection() {
           const socket = new (0, $8f5bfa60836d261d$export$4798917dbf149b79)(this._options.secure, this._options.host, this._options.port, this._options.path, this._options.key, this._options.pingInterval);
@@ -15794,9 +15794,9 @@
           return socket;
         }
         /** Initialize a connection with the server. */
-        _initialize(id) {
-          this._id = id;
-          this.socket.start(id, this._options.token);
+        _initialize(id3) {
+          this._id = id3;
+          this.socket.start(id3, this._options.token);
         }
         /** Handles messages from the server. */
         _handleMessage(message) {
@@ -16148,21 +16148,21 @@
         //#region Server Connection
         async tryFindId() {
           const iceServers = await this.fetchCredentials();
-          const id = _NetworkConnection.generateId();
-          const peer = new $416260bce337df90$export$ecd1fc136c422448(_NetworkConnection.idPrefix + id, {
+          const id3 = _NetworkConnection.generateId();
+          const peer = new $416260bce337df90$export$ecd1fc136c422448(_NetworkConnection.idPrefix + id3, {
             config: {
               iceServers
             }
           });
-          this.logger.log("Trying to connect with id", id);
+          this.logger.log("Trying to connect with id", id3);
           return await new Promise((res, rej) => {
             peer.on("open", () => {
-              res({ id, peer });
+              res({ id: id3, peer });
             });
             peer.on("error", async (error) => {
               if (error.type === "unavailable-id") {
                 peer.disconnect();
-                this.logger.log("Failed to connect with id", id);
+                this.logger.log("Failed to connect with id", id3);
                 res(await this.tryFindId());
                 return;
               }
@@ -16177,8 +16177,8 @@
           });
         }
         async connectToBrokageServer() {
-          const { id, peer } = await this.tryFindId();
-          this.id = id;
+          const { id: id3, peer } = await this.tryFindId();
+          this.id = id3;
           this.peer = peer;
         }
         //#endregion
@@ -16241,25 +16241,25 @@
           this.remoteConnection.close();
         }
         // Established locally
-        async connect(id, timeout = 5e3) {
+        async connect(id3, timeout = 5e3) {
           if (this.isConnected) {
             this.logger.log(
               "Can not connect to",
-              id,
+              id3,
               "(Already connected to",
               this.remoteId,
               ")"
             );
             return Promise.reject();
           }
-          const remoteConnection = this.peer.connect(_NetworkConnection.idPrefix + id, {
+          const remoteConnection = this.peer.connect(_NetworkConnection.idPrefix + id3, {
             metadata: {
               id: this.id
             }
           });
           this.logger.log(
             "Establishing connection with",
-            id,
+            id3,
             "... (Initiated locally)"
           );
           this.setupPing(remoteConnection);
@@ -16413,9 +16413,9 @@
           this.remoteConnection.on("data", fn);
           return this.nextEndpointId;
         }
-        removeEndpoint(id) {
-          this.remoteConnection.off("data", this.endpoints.get(id));
-          this.endpoints.delete(id);
+        removeEndpoint(id3) {
+          this.remoteConnection.off("data", this.endpoints.get(id3));
+          this.endpoints.delete(id3);
         }
         //#region Utils
         waitForConnectionCB(connection, ev) {
@@ -16451,19 +16451,19 @@
           }
         }
         addEventListener(ev, cb) {
-          const id = ++this.nextEndpointId;
+          const id3 = ++this.nextEndpointId;
           if (ev === "connect") {
-            this.onConnectListeners.set(id, cb);
+            this.onConnectListeners.set(id3, cb);
           } else if (ev === "close") {
-            this.onCloseListeners.set(id, cb);
+            this.onCloseListeners.set(id3, cb);
           }
-          return id;
+          return id3;
         }
-        removeEventListener(ev, id) {
+        removeEventListener(ev, id3) {
           if (ev === "connect") {
-            this.onConnectListeners.delete(id);
+            this.onConnectListeners.delete(id3);
           } else if (ev === "close") {
-            this.onCloseListeners.delete(id);
+            this.onCloseListeners.delete(id3);
           }
         }
       };
@@ -16632,7 +16632,6 @@
           for (let i2 = numFrames; i2 >= 0; i2--) {
             if (!this.log[i2])
               continue;
-            console.log("Entity manager rollback ", this.log[i2]);
             this.entities = this.log[i2];
             break;
           }
@@ -16782,9 +16781,11 @@
         currentState;
         currentStateInstance;
         history = [];
+        currentlyMovingTo = null;
         async moveTo(state, payload = void 0, useExitPayloadIfAvailable = false) {
           if (this.currentState === state)
             return;
+          this.currentlyMovingTo = state;
           let stateInstance;
           if (this.states.has(state))
             stateInstance = this.states.get(state);
@@ -16802,6 +16803,7 @@
             this.history.push(this.currentState);
           this.currentState = state;
           this.currentStateInstance = stateInstance;
+          this.currentlyMovingTo = null;
         }
         async back(payload, useExitPayloadIfAvailable = false) {
           if (this.history.length === 0)
@@ -22611,8 +22613,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
          * @param {PIXI.BaseTexture} baseTexture - The BaseTexture to add to the cache.
          * @param {string} id - The id that the BaseTexture will be stored against.
          */
-        static addToCache(baseTexture, id) {
-          id && (baseTexture.textureCacheIds.includes(id) || baseTexture.textureCacheIds.push(id), BaseTextureCache[id] && BaseTextureCache[id] !== baseTexture && console.warn(`BaseTexture added to the cache with an id [${id}] that already had an entry`), BaseTextureCache[id] = baseTexture);
+        static addToCache(baseTexture, id3) {
+          id3 && (baseTexture.textureCacheIds.includes(id3) || baseTexture.textureCacheIds.push(id3), BaseTextureCache[id3] && BaseTextureCache[id3] !== baseTexture && console.warn(`BaseTexture added to the cache with an id [${id3}] that already had an entry`), BaseTextureCache[id3] = baseTexture);
         }
         /**
          * Remove a BaseTexture from the global BaseTextureCache.
@@ -22772,8 +22774,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
          * @param [instance=false] - Whether the geometry is instanced.
          * @param [divisor=1] - Divisor to use when doing instanced rendering
          */
-        constructor(buffer, size = 0, normalized = false, type = TYPES.FLOAT, stride, start, instance, divisor = 1) {
-          this.buffer = buffer, this.size = size, this.normalized = normalized, this.type = type, this.stride = stride, this.start = start, this.instance = instance, this.divisor = divisor;
+        constructor(buffer, size = 0, normalized = false, type = TYPES.FLOAT, stride, start, instance2, divisor = 1) {
+          this.buffer = buffer, this.size = size, this.normalized = normalized, this.type = type, this.stride = stride, this.start = start, this.instance = instance2, this.divisor = divisor;
         }
         /** Destroys the Attribute. */
         destroy() {
@@ -22868,34 +22870,34 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
          * @param instance - Instancing flag
          * @returns - Returns self, useful for chaining.
          */
-        addAttribute(id, buffer, size = 0, normalized = false, type, stride, start, instance = false) {
+        addAttribute(id3, buffer, size = 0, normalized = false, type, stride, start, instance2 = false) {
           if (!buffer)
             throw new Error("You must pass a buffer when creating an attribute");
           buffer instanceof Buffer3 || (buffer instanceof Array && (buffer = new Float32Array(buffer)), buffer = new Buffer3(buffer));
-          const ids = id.split("|");
+          const ids = id3.split("|");
           if (ids.length > 1) {
             for (let i2 = 0; i2 < ids.length; i2++)
               this.addAttribute(ids[i2], buffer, size, normalized, type);
             return this;
           }
           let bufferIndex = this.buffers.indexOf(buffer);
-          return bufferIndex === -1 && (this.buffers.push(buffer), bufferIndex = this.buffers.length - 1), this.attributes[id] = new Attribute(bufferIndex, size, normalized, type, stride, start, instance), this.instanced = this.instanced || instance, this;
+          return bufferIndex === -1 && (this.buffers.push(buffer), bufferIndex = this.buffers.length - 1), this.attributes[id3] = new Attribute(bufferIndex, size, normalized, type, stride, start, instance2), this.instanced = this.instanced || instance2, this;
         }
         /**
          * Returns the requested attribute.
          * @param id - The name of the attribute required
          * @returns - The attribute requested.
          */
-        getAttribute(id) {
-          return this.attributes[id];
+        getAttribute(id3) {
+          return this.attributes[id3];
         }
         /**
          * Returns the requested buffer.
          * @param id - The name of the buffer required.
          * @returns - The buffer requested.
          */
-        getBuffer(id) {
-          return this.buffers[this.getAttribute(id).buffer];
+        getBuffer(id3) {
+          return this.buffers[this.getAttribute(id3).buffer];
         }
         /**
          *
@@ -23532,8 +23534,8 @@ else `), i2 < maxIfs - 1 && (src2 += `if(test == ${i2}.0){}`);
          */
         applyInverse(pos, newPos) {
           newPos = newPos || new Point();
-          const id = 1 / (this.a * this.d + this.c * -this.b), x3 = pos.x, y2 = pos.y;
-          return newPos.x = this.d * id * x3 + -this.c * id * y2 + (this.ty * this.c - this.tx * this.d) * id, newPos.y = this.a * id * y2 + -this.b * id * x3 + (-this.ty * this.a + this.tx * this.b) * id, newPos;
+          const id3 = 1 / (this.a * this.d + this.c * -this.b), x3 = pos.x, y2 = pos.y;
+          return newPos.x = this.d * id3 * x3 + -this.c * id3 * y2 + (this.ty * this.c - this.tx * this.d) * id3, newPos.y = this.a * id3 * y2 + -this.b * id3 * x3 + (-this.ty * this.a + this.tx * this.b) * id3, newPos;
         }
         /**
          * Translates the matrix on the x and y.
@@ -26445,8 +26447,8 @@ void main(void)
          * @param texture - The Texture to add to the cache.
          * @param id - The id that the Texture will be stored against.
          */
-        static addToCache(texture, id) {
-          id && (texture.textureCacheIds.includes(id) || texture.textureCacheIds.push(id), TextureCache[id] && TextureCache[id] !== texture && console.warn(`Texture added to the cache with an id [${id}] that already had an entry`), TextureCache[id] = texture);
+        static addToCache(texture, id3) {
+          id3 && (texture.textureCacheIds.includes(id3) || texture.textureCacheIds.push(id3), TextureCache[id3] && TextureCache[id3] !== texture && console.warn(`Texture added to the cache with an id [${id3}] that already had an entry`), TextureCache[id3] = texture);
         }
         /**
          * Remove a Texture from the global TextureCache.
@@ -28728,8 +28730,8 @@ void main(void)
           (group.syncUniforms[this.shader.program.id] || this.createSyncGroups(group))(glProgram.uniformData, group.uniforms, this.renderer, syncData);
         }
         createSyncGroups(group) {
-          const id = this.getSignature(group, this.shader.program.uniformData, "u");
-          return this.cache[id] || (this.cache[id] = generateUniformsSync(group, this.shader.program.uniformData)), group.syncUniforms[this.shader.program.id] = this.cache[id], group.syncUniforms[this.shader.program.id];
+          const id3 = this.getSignature(group, this.shader.program.uniformData, "u");
+          return this.cache[id3] || (this.cache[id3] = generateUniformsSync(group, this.shader.program.uniformData)), group.syncUniforms[this.shader.program.id] = this.cache[id3], group.syncUniforms[this.shader.program.id];
         }
         /**
          * Syncs uniform buffers
@@ -28764,9 +28766,9 @@ void main(void)
           this.renderer.buffer.bind(group.buffer);
           const uniformBlockIndex = this.gl.getUniformBlockIndex(glProgram.program, name);
           glProgram.uniformBufferBindings[name] = this.shader.uniformBindCount, gl.uniformBlockBinding(glProgram.program, uniformBlockIndex, this.shader.uniformBindCount), this.shader.uniformBindCount++;
-          const id = this.getSignature(group, this.shader.program.uniformData, "ubo");
-          let uboData = this._uboCache[id];
-          if (uboData || (uboData = this._uboCache[id] = generateUniformBufferSync(group, this.shader.program.uniformData)), group.autoManage) {
+          const id3 = this.getSignature(group, this.shader.program.uniformData, "ubo");
+          let uboData = this._uboCache[id3];
+          if (uboData || (uboData = this._uboCache[id3] = generateUniformBufferSync(group, this.shader.program.uniformData)), group.autoManage) {
             const data = new Float32Array(uboData.size / 4);
             group.buffer.update(data);
           }
@@ -35532,12 +35534,12 @@ void main()
          * @returns The tracking data stored for the given pointer. If no data exists, a blank
          *  state will be created.
          */
-        trackingData(id) {
-          return this.mappingState.trackingData[id] || (this.mappingState.trackingData[id] = {
+        trackingData(id3) {
+          return this.mappingState.trackingData[id3] || (this.mappingState.trackingData[id3] = {
             pressTargetsByButton: {},
             clicksByButton: {},
             overTarget: null
-          }), this.mappingState.trackingData[id];
+          }), this.mappingState.trackingData[id3];
         }
         /**
          * Allocate a specific type of event from {@link PIXI.EventBoundary#eventPool this.eventPool}.
@@ -36892,14 +36894,14 @@ void main()
   });
 
   // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/checkDataUrl.mjs
-  function checkDataUrl(url2, mimes) {
-    if (Array.isArray(mimes)) {
-      for (const mime of mimes)
+  function checkDataUrl(url2, mimes2) {
+    if (Array.isArray(mimes2)) {
+      for (const mime of mimes2)
         if (url2.startsWith(`data:${mime}`))
           return true;
       return false;
     }
-    return url2.startsWith(`data:${mimes}`);
+    return url2.startsWith(`data:${mimes2}`);
   }
   var init_checkDataUrl = __esm({
     "node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/checkDataUrl.mjs"() {
@@ -36938,9 +36940,9 @@ void main()
 
   // node_modules/.pnpm/@pixi+assets@7.3.2(@pixi+core@7.3.2)/node_modules/@pixi/assets/lib/utils/createStringVariations.mjs
   function processX(base, ids, depth, result, tags) {
-    const id = ids[depth];
-    for (let i2 = 0; i2 < id.length; i2++) {
-      const value = id[i2];
+    const id3 = ids[depth];
+    for (let i2 = 0; i2 < id3.length; i2++) {
+      const value = id3[i2];
       depth < ids.length - 1 ? processX(base.replace(result[depth], value), ids, depth + 1, result, tags) : tags.push(base.replace(result[depth], value));
     }
   }
@@ -37413,10 +37415,10 @@ ${e3}`);
         complete(data) {
           data.error !== void 0 ? this.resolveHash[data.uuid].reject(data.error) : this.resolveHash[data.uuid].resolve(data.data), this.resolveHash[data.uuid] = null;
         }
-        async _run(id, args) {
+        async _run(id3, args) {
           await this._initWorkers();
           const promise2 = new Promise((resolve2, reject) => {
-            this.queue.push({ id, arguments: args, resolve: resolve2, reject });
+            this.queue.push({ id: id3, arguments: args, resolve: resolve2, reject });
           });
           return this.next(), promise2;
         }
@@ -37426,11 +37428,11 @@ ${e3}`);
           const worker = this.getWorker();
           if (!worker)
             return;
-          const toDo = this.queue.pop(), id = toDo.id;
+          const toDo = this.queue.pop(), id3 = toDo.id;
           this.resolveHash[UUID] = { resolve: toDo.resolve, reject: toDo.reject }, worker.postMessage({
             data: toDo.arguments,
             uuid: UUID++,
-            id
+            id: id3
           });
         }
       };
@@ -40549,10 +40551,10 @@ Please use Assets.add({ alias, src, data, format, loadParser }) instead.`), asse
          * @param size
          * @param offset
          */
-        addTextureIds(textureIds, id, size, offset = 0) {
+        addTextureIds(textureIds, id3, size, offset = 0) {
           textureIds.length = Math.max(textureIds.length, offset + size);
           for (let i2 = 0; i2 < size; i2++)
-            textureIds[offset + i2] = id;
+            textureIds[offset + i2] = id3;
         }
         /**
          * Generates the UVs for a shape.
@@ -44947,11 +44949,11 @@ void main(void)
           const [info] = data.info, [common] = data.common, [page] = data.page, [distanceField] = data.distanceField, res = lib_exports.getResolutionOfUrl(page.file), pageTextures = {};
           this._ownsTextures = ownsTextures, this.font = info.face, this.size = info.size, this.lineHeight = common.lineHeight / res, this.chars = {}, this.pageTextures = pageTextures;
           for (let i2 = 0; i2 < data.page.length; i2++) {
-            const { id, file } = data.page[i2];
-            pageTextures[id] = textures instanceof Array ? textures[i2] : textures[file], distanceField?.fieldType && distanceField.fieldType !== "none" && (pageTextures[id].baseTexture.alphaMode = ALPHA_MODES.NO_PREMULTIPLIED_ALPHA, pageTextures[id].baseTexture.mipmap = MIPMAP_MODES.OFF);
+            const { id: id3, file } = data.page[i2];
+            pageTextures[id3] = textures instanceof Array ? textures[i2] : textures[file], distanceField?.fieldType && distanceField.fieldType !== "none" && (pageTextures[id3].baseTexture.alphaMode = ALPHA_MODES.NO_PREMULTIPLIED_ALPHA, pageTextures[id3].baseTexture.mipmap = MIPMAP_MODES.OFF);
           }
           for (let i2 = 0; i2 < data.char.length; i2++) {
-            const { id, page: page2 } = data.char[i2];
+            const { id: id3, page: page2 } = data.char[i2];
             let { x: x3, y: y2, width, height, xoffset, yoffset, xadvance } = data.char[i2];
             x3 /= res, y2 /= res, width /= res, height /= res, xoffset /= res, yoffset /= res, xadvance /= res;
             const rect = new Rectangle(
@@ -44960,7 +44962,7 @@ void main(void)
               width,
               height
             );
-            this.chars[id] = {
+            this.chars[id3] = {
               xOffset: xoffset,
               yOffset: yoffset,
               xAdvance: xadvance,
@@ -44980,10 +44982,10 @@ void main(void)
         }
         /** Remove references to created glyph textures. */
         destroy() {
-          for (const id in this.chars)
-            this.chars[id].texture.destroy(), this.chars[id].texture = null;
-          for (const id in this.pageTextures)
-            this._ownsTextures && this.pageTextures[id].destroy(true), this.pageTextures[id] = null;
+          for (const id3 in this.chars)
+            this.chars[id3].texture.destroy(), this.chars[id3].texture = null;
+          for (const id3 in this.pageTextures)
+            this._ownsTextures && this.pageTextures[id3].destroy(true), this.pageTextures[id3] = null;
           this.chars = null, this.pageTextures = null;
         }
         /**
@@ -45096,9 +45098,9 @@ void main(void)
               continue;
             }
             drawGlyph(canvas, context2, metrics, positionX, positionY, resolution, style);
-            const id = extractCharCode(metrics.text);
+            const id3 = extractCharCode(metrics.text);
             fontData.char.push({
-              id,
+              id: id3,
               page: textures.length - 1,
               x: positionX / resolution,
               y: positionY / resolution,
@@ -45545,8 +45547,8 @@ void main(void)\r
           this._activePagesMeshData = [], pageMeshDataPool.filter((page) => _textureCache[page.mesh.texture.baseTexture.uid]).forEach((page) => {
             page.mesh.texture = Texture.EMPTY;
           });
-          for (const id in _textureCache)
-            _textureCache[id].destroy(), delete _textureCache[id];
+          for (const id3 in _textureCache)
+            _textureCache[id3].destroy(), delete _textureCache[id3];
           this._font = null, this._tintColor = null, this._textureCache = null, super.destroy(options);
         }
       };
@@ -46730,8 +46732,15 @@ void main(void)\r
       CombinedBinding = class extends AnalogBinding {
         inputs;
         weights;
-        constructor(inputsAndWeights) {
+        max;
+        min;
+        constructor(inputsAndWeights, { max, min } = {
+          max: Infinity,
+          min: -Infinity
+        }) {
           super();
+          this.max = max;
+          this.min = min;
           this.inputs = Object.keys(inputsAndWeights);
           this.weights = Object.values(inputsAndWeights).filter(
             (n2) => n2 !== void 0
@@ -46742,7 +46751,7 @@ void main(void)\r
           for (let i2 = 0; i2 < this.inputs.length; i2++) {
             sum += input.getRaw(this.inputs[i2]) * this.weights[i2];
           }
-          return sum;
+          return Math.max(this.min, Math.min(this.max, sum));
         }
       };
       AngleBinding = class extends AnalogBinding {
@@ -47451,16 +47460,20 @@ void main(void)\r
     "src/ts/engine/server.ts"() {
       "use strict";
       ServerConnection = class {
+        baseUrl = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080" : "https://drivegame2024.onrender.com";
+        //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
         url = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080/api/v1" : "https://drivegame2024.onrender.com/api/v1";
         //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
         fetch(path2, options) {
-          const url2 = new URL(this.url + path2);
+          const url2 = new URL((options?.useBaseUrl ? this.baseUrl : this.url) + path2);
           if (options?.searchParams) {
             for (const [key, value] of Object.entries(options.searchParams)) {
               url2.searchParams.set(key, value);
             }
           }
-          return fetch(url2, options?.options).then((res) => res.json());
+          return fetch(url2, options?.options).then(
+            (res) => options?.leaveRaw ? res : res.json()
+          );
         }
         post(url2, body) {
           return fetch(this.url + url2, {
@@ -47862,7 +47875,6 @@ void main(void)\r
               if (costEntity.get(Position.x) + costEntity.get(CollisionHitbox.x) < fundsEntity.get(Position.x) - fundsEntity.get(CollisionHitbox.x) / 2 || costEntity.get(Position.x) > fundsEntity.get(Position.x) + fundsEntity.get(CollisionHitbox.x) / 2 || costEntity.get(Position.y) + costEntity.get(CollisionHitbox.y) < fundsEntity.get(Position.y) - fundsEntity.get(CollisionHitbox.y) / 2 || costEntity.get(Position.y) > fundsEntity.get(Position.y) + fundsEntity.get(CollisionHitbox.y) / 2)
                 return;
               const funds = fundsEntity.get(Funds);
-              console.log("Taking ", costEntity.get(Cost.price), "from", funds);
               fundsEntity.inc(Funds, -Math.min(costEntity.get(Cost.price), funds));
               costEntity.get(Cost.payTo).inc(Funds, costEntity.get(Cost.price));
               if (fundsEntity.has(PlayerStats))
@@ -48000,7 +48012,7 @@ void main(void)\r
           ultPercent: 0,
           inUlt: false
         }),
-        new CollisionHitbox({ x: 50, y: 100 }),
+        new CollisionHitbox({ x: 50, y: 125 }),
         new Funds(0),
         PlayerIdentifier,
         new PlayerStats({
@@ -48024,8 +48036,8 @@ void main(void)\r
           sprite.texture;
           sprite.anchor.set(0.5, 0.5);
           this.set(sprite);
-          sprite.width = 100;
-          sprite.height = 100;
+          sprite.width = 125;
+          sprite.height = 125;
           this.add(
             new AnimatedSprite2({
               spriteName: Players[player].spriteName + "-idle",
@@ -48315,9 +48327,9 @@ void main(void)\r
   // src/ts/engine/utils.ts
   function awaitFrame(world3, frame) {
     return new Promise((resolve2) => {
-      const id = setInterval(() => {
+      const id3 = setInterval(() => {
         if (world3.get(NetworkConnection).framesConnected >= frame) {
-          clearInterval(id);
+          clearInterval(id3);
           resolve2();
         }
       }, DESIRED_FRAME_TIME / 2);
@@ -48585,8 +48597,2608 @@ void main(void)\r
         {
           wins: 20,
           prevWins: 25
+        },
+        // Level 4
+        {
+          wins: 20,
+          prevWins: 45
+        },
+        // Level 5
+        {
+          wins: 30,
+          prevWins: 65
+        },
+        // Level 6
+        {
+          wins: 40,
+          prevWins: 95
+        },
+        // Level 7
+        {
+          wins: 50,
+          prevWins: 135
+        },
+        // Level 8 (No ones beating it)
+        {
+          wins: 1e6,
+          prevWins: 185
         }
       ];
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/instance.mjs
+  function setInstance(sound2) {
+    instance = sound2;
+    return sound2;
+  }
+  function getInstance() {
+    return instance;
+  }
+  var instance;
+  var init_instance = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/instance.mjs"() {
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/HTMLAudioInstance.mjs
+  var id, _HTMLAudioInstance, HTMLAudioInstance;
+  var init_HTMLAudioInstance = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/HTMLAudioInstance.mjs"() {
+      init_lib9();
+      id = 0;
+      _HTMLAudioInstance = class extends lib_exports.EventEmitter {
+        /** @param parent - Parent element */
+        constructor(parent) {
+          super();
+          this.id = id++;
+          this.init(parent);
+        }
+        /**
+         * Set a property by name, this makes it easy to chain values
+         * @param name - Name of the property to set
+         * @param value - Value to set property to
+         */
+        set(name, value) {
+          if (this[name] === void 0) {
+            throw new Error(`Property with name ${name} does not exist.`);
+          } else {
+            switch (name) {
+              case "speed":
+                this.speed = value;
+                break;
+              case "volume":
+                this.volume = value;
+                break;
+              case "paused":
+                this.paused = value;
+                break;
+              case "loop":
+                this.loop = value;
+                break;
+              case "muted":
+                this.muted = value;
+                break;
+            }
+          }
+          return this;
+        }
+        /** The current playback progress from 0 to 1. */
+        get progress() {
+          const { currentTime } = this._source;
+          return currentTime / this._duration;
+        }
+        /** Pauses the sound. */
+        get paused() {
+          return this._paused;
+        }
+        set paused(paused2) {
+          this._paused = paused2;
+          this.refreshPaused();
+        }
+        /**
+         * Reference: http://stackoverflow.com/a/40370077
+         * @private
+         */
+        _onPlay() {
+          this._playing = true;
+        }
+        /**
+         * Reference: http://stackoverflow.com/a/40370077
+         * @private
+         */
+        _onPause() {
+          this._playing = false;
+        }
+        /**
+         * Initialize the instance.
+         * @param {htmlaudio.HTMLAudioMedia} media - Same as constructor
+         */
+        init(media) {
+          this._playing = false;
+          this._duration = media.source.duration;
+          const source = this._source = media.source.cloneNode(false);
+          source.src = media.parent.url;
+          source.onplay = this._onPlay.bind(this);
+          source.onpause = this._onPause.bind(this);
+          media.context.on("refresh", this.refresh, this);
+          media.context.on("refreshPaused", this.refreshPaused, this);
+          this._media = media;
+        }
+        /**
+         * Stop the sound playing
+         * @private
+         */
+        _internalStop() {
+          if (this._source && this._playing) {
+            this._source.onended = null;
+            this._source.pause();
+          }
+        }
+        /** Stop the sound playing */
+        stop() {
+          this._internalStop();
+          if (this._source) {
+            this.emit("stop");
+          }
+        }
+        /** Set the instance speed from 0 to 1 */
+        get speed() {
+          return this._speed;
+        }
+        set speed(speed) {
+          this._speed = speed;
+          this.refresh();
+        }
+        /** Get the set the volume for this instance from 0 to 1 */
+        get volume() {
+          return this._volume;
+        }
+        set volume(volume) {
+          this._volume = volume;
+          this.refresh();
+        }
+        /** If the sound instance should loop playback */
+        get loop() {
+          return this._loop;
+        }
+        set loop(loop) {
+          this._loop = loop;
+          this.refresh();
+        }
+        /** `true` if the sound is muted */
+        get muted() {
+          return this._muted;
+        }
+        set muted(muted) {
+          this._muted = muted;
+          this.refresh();
+        }
+        /**
+         * HTML Audio does not support filters, this is non-functional API.
+         */
+        get filters() {
+          console.warn("HTML Audio does not support filters");
+          return null;
+        }
+        set filters(_filters) {
+          console.warn("HTML Audio does not support filters");
+        }
+        /** Call whenever the loop, speed or volume changes */
+        refresh() {
+          const global2 = this._media.context;
+          const sound2 = this._media.parent;
+          this._source.loop = this._loop || sound2.loop;
+          const globalVolume = global2.volume * (global2.muted ? 0 : 1);
+          const soundVolume = sound2.volume * (sound2.muted ? 0 : 1);
+          const instanceVolume = this._volume * (this._muted ? 0 : 1);
+          this._source.volume = instanceVolume * globalVolume * soundVolume;
+          this._source.playbackRate = this._speed * global2.speed * sound2.speed;
+        }
+        /** Handle changes in paused state, either globally or sound or instance */
+        refreshPaused() {
+          const global2 = this._media.context;
+          const sound2 = this._media.parent;
+          const pausedReal = this._paused || sound2.paused || global2.paused;
+          if (pausedReal !== this._pausedReal) {
+            this._pausedReal = pausedReal;
+            if (pausedReal) {
+              this._internalStop();
+              this.emit("paused");
+            } else {
+              this.emit("resumed");
+              this.play({
+                start: this._source.currentTime,
+                end: this._end,
+                volume: this._volume,
+                speed: this._speed,
+                loop: this._loop
+              });
+            }
+            this.emit("pause", pausedReal);
+          }
+        }
+        /** Start playing the sound/ */
+        play(options) {
+          const { start, end, speed, loop, volume, muted } = options;
+          if (end) {
+            console.assert(end > start, "End time is before start time");
+          }
+          this._speed = speed;
+          this._volume = volume;
+          this._loop = !!loop;
+          this._muted = muted;
+          this.refresh();
+          if (this.loop && end !== null) {
+            console.warn('Looping not support when specifying an "end" time');
+            this.loop = false;
+          }
+          this._start = start;
+          this._end = end || this._duration;
+          this._start = Math.max(0, this._start - _HTMLAudioInstance.PADDING);
+          this._end = Math.min(this._end + _HTMLAudioInstance.PADDING, this._duration);
+          this._source.onloadedmetadata = () => {
+            if (this._source) {
+              this._source.currentTime = start;
+              this._source.onloadedmetadata = null;
+              this.emit("progress", start, this._duration);
+              Ticker.shared.add(this._onUpdate, this);
+            }
+          };
+          this._source.onended = this._onComplete.bind(this);
+          this._source.play();
+          this.emit("start");
+        }
+        /**
+         * Handle time update on sound.
+         * @private
+         */
+        _onUpdate() {
+          this.emit("progress", this.progress, this._duration);
+          if (this._source.currentTime >= this._end && !this._source.loop) {
+            this._onComplete();
+          }
+        }
+        /**
+         * Callback when completed.
+         * @private
+         */
+        _onComplete() {
+          Ticker.shared.remove(this._onUpdate, this);
+          this._internalStop();
+          this.emit("progress", 1, this._duration);
+          this.emit("end", this);
+        }
+        /** Don't use after this. */
+        destroy() {
+          Ticker.shared.remove(this._onUpdate, this);
+          this.removeAllListeners();
+          const source = this._source;
+          if (source) {
+            source.onended = null;
+            source.onplay = null;
+            source.onpause = null;
+            this._internalStop();
+          }
+          this._source = null;
+          this._speed = 1;
+          this._volume = 1;
+          this._loop = false;
+          this._end = null;
+          this._start = 0;
+          this._duration = 0;
+          this._playing = false;
+          this._pausedReal = false;
+          this._paused = false;
+          this._muted = false;
+          if (this._media) {
+            this._media.context.off("refresh", this.refresh, this);
+            this._media.context.off("refreshPaused", this.refreshPaused, this);
+            this._media = null;
+          }
+        }
+        /**
+         * To string method for instance.
+         * @return The string representation of instance.
+         */
+        toString() {
+          return `[HTMLAudioInstance id=${this.id}]`;
+        }
+      };
+      HTMLAudioInstance = _HTMLAudioInstance;
+      HTMLAudioInstance.PADDING = 0.1;
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/HTMLAudioMedia.mjs
+  var HTMLAudioMedia;
+  var init_HTMLAudioMedia = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/HTMLAudioMedia.mjs"() {
+      init_lib9();
+      init_HTMLAudioInstance();
+      HTMLAudioMedia = class extends lib_exports.EventEmitter {
+        init(parent) {
+          this.parent = parent;
+          this._source = parent.options.source || new Audio();
+          if (parent.url) {
+            this._source.src = parent.url;
+          }
+        }
+        // Implement create
+        create() {
+          return new HTMLAudioInstance(this);
+        }
+        /**
+         * If the audio media is playable (ready).
+         * @readonly
+         */
+        get isPlayable() {
+          return !!this._source && this._source.readyState === 4;
+        }
+        /**
+         * THe duration of the media in seconds.
+         * @readonly
+         */
+        get duration() {
+          return this._source.duration;
+        }
+        /**
+         * Reference to the context.
+         * @readonly
+         */
+        get context() {
+          return this.parent.context;
+        }
+        /** The collection of filters, does not apply to HTML Audio. */
+        get filters() {
+          return null;
+        }
+        set filters(_filters) {
+          console.warn("HTML Audio does not support filters");
+        }
+        // Override the destroy
+        destroy() {
+          this.removeAllListeners();
+          this.parent = null;
+          if (this._source) {
+            this._source.src = "";
+            this._source.load();
+            this._source = null;
+          }
+        }
+        /**
+         * Get the audio source element.
+         * @type {HTMLAudioElement}
+         * @readonly
+         */
+        get source() {
+          return this._source;
+        }
+        // Implement the method to being preloading
+        load(callback) {
+          const source = this._source;
+          const sound2 = this.parent;
+          if (source.readyState === 4) {
+            sound2.isLoaded = true;
+            const instance2 = sound2.autoPlayStart();
+            if (callback) {
+              setTimeout(() => {
+                callback(null, sound2, instance2);
+              }, 0);
+            }
+            return;
+          }
+          if (!sound2.url) {
+            callback(new Error("sound.url or sound.source must be set"));
+            return;
+          }
+          source.src = sound2.url;
+          const onLoad = () => {
+            removeListeners();
+            sound2.isLoaded = true;
+            const instance2 = sound2.autoPlayStart();
+            if (callback) {
+              callback(null, sound2, instance2);
+            }
+          };
+          const onAbort = () => {
+            removeListeners();
+            if (callback) {
+              callback(new Error("Sound loading has been aborted"));
+            }
+          };
+          const onError = () => {
+            removeListeners();
+            const message = `Failed to load audio element (code: ${source.error.code})`;
+            if (callback) {
+              callback(new Error(message));
+            } else {
+              console.error(message);
+            }
+          };
+          const removeListeners = () => {
+            source.removeEventListener("canplaythrough", onLoad);
+            source.removeEventListener("load", onLoad);
+            source.removeEventListener("abort", onAbort);
+            source.removeEventListener("error", onError);
+          };
+          source.addEventListener("canplaythrough", onLoad, false);
+          source.addEventListener("load", onLoad, false);
+          source.addEventListener("abort", onAbort, false);
+          source.addEventListener("error", onError, false);
+          source.load();
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/SoundSprite.mjs
+  var SoundSprite;
+  var init_SoundSprite = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/SoundSprite.mjs"() {
+      SoundSprite = class {
+        /**
+         * @param parent - The parent sound
+         * @param options - Data associated with object.
+         */
+        constructor(parent, options) {
+          this.parent = parent;
+          Object.assign(this, options);
+          this.duration = this.end - this.start;
+          console.assert(this.duration > 0, "End time must be after start time");
+        }
+        /**
+         * Play the sound sprite.
+         * @param {Function} [complete] - Function call when complete
+         * @return Sound instance being played.
+         */
+        play(complete) {
+          return this.parent.play({
+            complete,
+            speed: this.speed || this.parent.speed,
+            end: this.end,
+            start: this.start,
+            loop: this.loop
+          });
+        }
+        /** Destroy and don't use after this */
+        destroy() {
+          this.parent = null;
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/supported.mjs
+  function validateFormats(typeOverrides) {
+    const overrides = {
+      m4a: "audio/mp4",
+      oga: "audio/ogg",
+      opus: 'audio/ogg; codecs="opus"',
+      caf: 'audio/x-caf; codecs="opus"',
+      ...typeOverrides || {}
+    };
+    const audio = document.createElement("audio");
+    const formats2 = {};
+    const no = /^no$/;
+    extensions4.forEach((ext) => {
+      const canByExt = audio.canPlayType(`audio/${ext}`).replace(no, "");
+      const canByType = overrides[ext] ? audio.canPlayType(overrides[ext]).replace(no, "") : "";
+      formats2[ext] = !!canByExt || !!canByType;
+    });
+    Object.assign(supported2, formats2);
+  }
+  var extensions4, mimes, supported2;
+  var init_supported = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/supported.mjs"() {
+      extensions4 = [
+        "ogg",
+        "oga",
+        "opus",
+        "m4a",
+        "mp3",
+        "mpeg",
+        "wav",
+        "aiff",
+        "wma",
+        "mid",
+        "caf"
+      ];
+      mimes = [
+        "audio/mpeg",
+        "audio/ogg"
+      ];
+      supported2 = {};
+      validateFormats();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioUtils.mjs
+  var WebAudioUtils;
+  var init_WebAudioUtils = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioUtils.mjs"() {
+      init_instance();
+      WebAudioUtils = class {
+        /**
+         * Dezippering is removed in the future Web Audio API, instead
+         * we use the `setValueAtTime` method, however, this is not available
+         * in all environments (e.g., Android webview), so we fallback to the `value` setter.
+         * @param param - AudioNode parameter object
+         * @param value - Value to set
+         * @return The value set
+         */
+        static setParamValue(param, value) {
+          if (param.setValueAtTime) {
+            const context2 = getInstance().context;
+            param.setValueAtTime(value, context2.audioContext.currentTime);
+          } else {
+            param.value = value;
+          }
+          return value;
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioInstance.mjs
+  var id2, WebAudioInstance;
+  var init_WebAudioInstance = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioInstance.mjs"() {
+      init_lib9();
+      init_WebAudioUtils();
+      id2 = 0;
+      WebAudioInstance = class extends lib_exports.EventEmitter {
+        constructor(media) {
+          super();
+          this.id = id2++;
+          this._media = null;
+          this._paused = false;
+          this._muted = false;
+          this._elapsed = 0;
+          this.init(media);
+        }
+        /**
+         * Set a property by name, this makes it easy to chain values
+         * @param name - Name of the property to set.
+         * @param value - Value to set property to.
+         */
+        set(name, value) {
+          if (this[name] === void 0) {
+            throw new Error(`Property with name ${name} does not exist.`);
+          } else {
+            switch (name) {
+              case "speed":
+                this.speed = value;
+                break;
+              case "volume":
+                this.volume = value;
+                break;
+              case "muted":
+                this.muted = value;
+                break;
+              case "loop":
+                this.loop = value;
+                break;
+              case "paused":
+                this.paused = value;
+                break;
+            }
+          }
+          return this;
+        }
+        /** Stops the instance, don't use after this. */
+        stop() {
+          if (this._source) {
+            this._internalStop();
+            this.emit("stop");
+          }
+        }
+        /** Set the instance speed from 0 to 1 */
+        get speed() {
+          return this._speed;
+        }
+        set speed(speed) {
+          this._speed = speed;
+          this.refresh();
+          this._update(true);
+        }
+        /** Get the set the volume for this instance from 0 to 1 */
+        get volume() {
+          return this._volume;
+        }
+        set volume(volume) {
+          this._volume = volume;
+          this.refresh();
+        }
+        /** `true` if the sound is muted */
+        get muted() {
+          return this._muted;
+        }
+        set muted(muted) {
+          this._muted = muted;
+          this.refresh();
+        }
+        /** If the sound instance should loop playback */
+        get loop() {
+          return this._loop;
+        }
+        set loop(loop) {
+          this._loop = loop;
+          this.refresh();
+        }
+        /** The collection of filters. */
+        get filters() {
+          return this._filters;
+        }
+        set filters(filters2) {
+          if (this._filters) {
+            this._filters?.filter((filter) => filter).forEach((filter) => filter.disconnect());
+            this._filters = null;
+            this._source.connect(this._gain);
+          }
+          this._filters = filters2?.length ? filters2.slice(0) : null;
+          this.refresh();
+        }
+        /** Refresh loop, volume and speed based on changes to parent */
+        refresh() {
+          if (!this._source) {
+            return;
+          }
+          const global2 = this._media.context;
+          const sound2 = this._media.parent;
+          this._source.loop = this._loop || sound2.loop;
+          const globalVolume = global2.volume * (global2.muted ? 0 : 1);
+          const soundVolume = sound2.volume * (sound2.muted ? 0 : 1);
+          const instanceVolume = this._volume * (this._muted ? 0 : 1);
+          WebAudioUtils.setParamValue(this._gain.gain, instanceVolume * soundVolume * globalVolume);
+          WebAudioUtils.setParamValue(this._source.playbackRate, this._speed * sound2.speed * global2.speed);
+          this.applyFilters();
+        }
+        /** Connect filters nodes to audio context */
+        applyFilters() {
+          if (this._filters?.length) {
+            this._source.disconnect();
+            let source = this._source;
+            this._filters.forEach((filter) => {
+              source.connect(filter.destination);
+              source = filter;
+            });
+            source.connect(this._gain);
+          }
+        }
+        /** Handle changes in paused state, either globally or sound or instance */
+        refreshPaused() {
+          const global2 = this._media.context;
+          const sound2 = this._media.parent;
+          const pausedReal = this._paused || sound2.paused || global2.paused;
+          if (pausedReal !== this._pausedReal) {
+            this._pausedReal = pausedReal;
+            if (pausedReal) {
+              this._internalStop();
+              this.emit("paused");
+            } else {
+              this.emit("resumed");
+              this.play({
+                start: this._elapsed % this._duration,
+                end: this._end,
+                speed: this._speed,
+                loop: this._loop,
+                volume: this._volume
+              });
+            }
+            this.emit("pause", pausedReal);
+          }
+        }
+        /**
+         * Plays the sound.
+         * @param options - Play options.
+         */
+        play(options) {
+          const { start, end, speed, loop, volume, muted, filters: filters2 } = options;
+          if (end) {
+            console.assert(end > start, "End time is before start time");
+          }
+          this._paused = false;
+          const { source, gain } = this._media.nodes.cloneBufferSource();
+          this._source = source;
+          this._gain = gain;
+          this._speed = speed;
+          this._volume = volume;
+          this._loop = !!loop;
+          this._muted = muted;
+          this._filters = filters2;
+          this.refresh();
+          const duration2 = this._source.buffer.duration;
+          this._duration = duration2;
+          this._end = end;
+          this._lastUpdate = this._now();
+          this._elapsed = start;
+          this._source.onended = this._onComplete.bind(this);
+          if (this._loop) {
+            this._source.loopEnd = end;
+            this._source.loopStart = start;
+            this._source.start(0, start);
+          } else if (end) {
+            this._source.start(0, start, end - start);
+          } else {
+            this._source.start(0, start);
+          }
+          this.emit("start");
+          this._update(true);
+          this.enableTicker(true);
+        }
+        /** Start the update progress. */
+        enableTicker(enabled) {
+          Ticker.shared.remove(this._updateListener, this);
+          if (enabled) {
+            Ticker.shared.add(this._updateListener, this);
+          }
+        }
+        /** The current playback progress from 0 to 1. */
+        get progress() {
+          return this._progress;
+        }
+        /** Pauses the sound. */
+        get paused() {
+          return this._paused;
+        }
+        set paused(paused2) {
+          this._paused = paused2;
+          this.refreshPaused();
+        }
+        /** Don't use after this. */
+        destroy() {
+          this.removeAllListeners();
+          this._internalStop();
+          if (this._gain) {
+            this._gain.disconnect();
+            this._gain = null;
+          }
+          if (this._media) {
+            this._media.context.events.off("refresh", this.refresh, this);
+            this._media.context.events.off("refreshPaused", this.refreshPaused, this);
+            this._media = null;
+          }
+          this._filters?.forEach((filter) => filter.disconnect());
+          this._filters = null;
+          this._end = null;
+          this._speed = 1;
+          this._volume = 1;
+          this._loop = false;
+          this._elapsed = 0;
+          this._duration = 0;
+          this._paused = false;
+          this._muted = false;
+          this._pausedReal = false;
+        }
+        /**
+         * To string method for instance.
+         * @return The string representation of instance.
+         */
+        toString() {
+          return `[WebAudioInstance id=${this.id}]`;
+        }
+        /**
+         * Get the current time in seconds.
+         * @return Seconds since start of context
+         */
+        _now() {
+          return this._media.context.audioContext.currentTime;
+        }
+        /** Callback for update listener */
+        _updateListener() {
+          this._update();
+        }
+        /** Internal update the progress. */
+        _update(force = false) {
+          if (this._source) {
+            const now = this._now();
+            const delta = now - this._lastUpdate;
+            if (delta > 0 || force) {
+              const speed = this._source.playbackRate.value;
+              this._elapsed += delta * speed;
+              this._lastUpdate = now;
+              const duration2 = this._duration;
+              let progress;
+              if (this._source.loopStart) {
+                const soundLength = this._source.loopEnd - this._source.loopStart;
+                progress = (this._source.loopStart + this._elapsed % soundLength) / duration2;
+              } else {
+                progress = this._elapsed % duration2 / duration2;
+              }
+              this._progress = progress;
+              this.emit("progress", this._progress, duration2);
+            }
+          }
+        }
+        /** Initializes the instance. */
+        init(media) {
+          this._media = media;
+          media.context.events.on("refresh", this.refresh, this);
+          media.context.events.on("refreshPaused", this.refreshPaused, this);
+        }
+        /** Stops the instance. */
+        _internalStop() {
+          if (this._source) {
+            this.enableTicker(false);
+            this._source.onended = null;
+            this._source.stop(0);
+            this._source.disconnect();
+            try {
+              this._source.buffer = null;
+            } catch (err) {
+              console.warn("Failed to set AudioBufferSourceNode.buffer to null:", err);
+            }
+            this._source = null;
+          }
+        }
+        /** Callback when completed. */
+        _onComplete() {
+          if (this._source) {
+            this.enableTicker(false);
+            this._source.onended = null;
+            this._source.disconnect();
+            try {
+              this._source.buffer = null;
+            } catch (err) {
+              console.warn("Failed to set AudioBufferSourceNode.buffer to null:", err);
+            }
+          }
+          this._source = null;
+          this._progress = 1;
+          this.emit("progress", 1, this._duration);
+          this.emit("end", this);
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/Filterable.mjs
+  var Filterable;
+  var init_Filterable = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/Filterable.mjs"() {
+      Filterable = class {
+        /**
+         * @param input - The source audio node
+         * @param output - The output audio node
+         */
+        constructor(input, output) {
+          this._output = output;
+          this._input = input;
+        }
+        /** The destination output audio node */
+        get destination() {
+          return this._input;
+        }
+        /** The collection of filters. */
+        get filters() {
+          return this._filters;
+        }
+        set filters(filters2) {
+          if (this._filters) {
+            this._filters.forEach((filter) => {
+              if (filter) {
+                filter.disconnect();
+              }
+            });
+            this._filters = null;
+            this._input.connect(this._output);
+          }
+          if (filters2 && filters2.length) {
+            this._filters = filters2.slice(0);
+            this._input.disconnect();
+            let prevFilter = null;
+            filters2.forEach((filter) => {
+              if (prevFilter === null) {
+                this._input.connect(filter.destination);
+              } else {
+                prevFilter.connect(filter.destination);
+              }
+              prevFilter = filter;
+            });
+            prevFilter.connect(this._output);
+          }
+        }
+        /** Cleans up. */
+        destroy() {
+          this.filters = null;
+          this._input = null;
+          this._output = null;
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioNodes.mjs
+  var _WebAudioNodes, WebAudioNodes;
+  var init_WebAudioNodes = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioNodes.mjs"() {
+      init_Filterable();
+      init_WebAudioUtils();
+      _WebAudioNodes = class extends Filterable {
+        /**
+         * @param context - The audio context.
+         */
+        constructor(context2) {
+          const audioContext = context2.audioContext;
+          const bufferSource = audioContext.createBufferSource();
+          const gain = audioContext.createGain();
+          const analyser = audioContext.createAnalyser();
+          bufferSource.connect(analyser);
+          analyser.connect(gain);
+          gain.connect(context2.destination);
+          super(analyser, gain);
+          this.context = context2;
+          this.bufferSource = bufferSource;
+          this.gain = gain;
+          this.analyser = analyser;
+        }
+        /**
+         * Get the script processor node.
+         * @readonly
+         */
+        get script() {
+          if (!this._script) {
+            this._script = this.context.audioContext.createScriptProcessor(_WebAudioNodes.BUFFER_SIZE);
+            this._script.connect(this.context.destination);
+          }
+          return this._script;
+        }
+        /** Cleans up. */
+        destroy() {
+          super.destroy();
+          this.bufferSource.disconnect();
+          if (this._script) {
+            this._script.disconnect();
+          }
+          this.gain.disconnect();
+          this.analyser.disconnect();
+          this.bufferSource = null;
+          this._script = null;
+          this.gain = null;
+          this.analyser = null;
+          this.context = null;
+        }
+        /**
+         * Clones the bufferSource. Used just before playing a sound.
+         * @returns {SourceClone} The clone AudioBufferSourceNode.
+         */
+        cloneBufferSource() {
+          const orig = this.bufferSource;
+          const source = this.context.audioContext.createBufferSource();
+          source.buffer = orig.buffer;
+          WebAudioUtils.setParamValue(source.playbackRate, orig.playbackRate.value);
+          source.loop = orig.loop;
+          const gain = this.context.audioContext.createGain();
+          source.connect(gain);
+          gain.connect(this.destination);
+          return { source, gain };
+        }
+        /**
+         * Get buffer size of `ScriptProcessorNode`.
+         * @readonly
+         */
+        get bufferSize() {
+          return this.script.bufferSize;
+        }
+      };
+      WebAudioNodes = _WebAudioNodes;
+      WebAudioNodes.BUFFER_SIZE = 0;
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioMedia.mjs
+  var WebAudioMedia;
+  var init_WebAudioMedia = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioMedia.mjs"() {
+      init_lib9();
+      init_WebAudioInstance();
+      init_WebAudioNodes();
+      WebAudioMedia = class {
+        /**
+         * Re-initialize without constructing.
+         * @param parent - - Instance of parent Sound container
+         */
+        init(parent) {
+          this.parent = parent;
+          this._nodes = new WebAudioNodes(this.context);
+          this._source = this._nodes.bufferSource;
+          this.source = parent.options.source;
+        }
+        /** Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound. */
+        destroy() {
+          this.parent = null;
+          this._nodes.destroy();
+          this._nodes = null;
+          try {
+            this._source.buffer = null;
+          } catch (err) {
+            console.warn("Failed to set AudioBufferSourceNode.buffer to null:", err);
+          }
+          this._source = null;
+          this.source = null;
+        }
+        // Implement create
+        create() {
+          return new WebAudioInstance(this);
+        }
+        // Implement context
+        get context() {
+          return this.parent.context;
+        }
+        // Implement isPlayable
+        get isPlayable() {
+          return !!this._source && !!this._source.buffer;
+        }
+        // Implement filters
+        get filters() {
+          return this._nodes.filters;
+        }
+        set filters(filters2) {
+          this._nodes.filters = filters2;
+        }
+        // Implements duration
+        get duration() {
+          console.assert(this.isPlayable, "Sound not yet playable, no duration");
+          return this._source.buffer.duration;
+        }
+        /** Gets and sets the buffer. */
+        get buffer() {
+          return this._source.buffer;
+        }
+        set buffer(buffer) {
+          this._source.buffer = buffer;
+        }
+        /** Get the current chained nodes object */
+        get nodes() {
+          return this._nodes;
+        }
+        // Implements load
+        load(callback) {
+          if (this.source) {
+            this._decode(this.source, callback);
+          } else if (this.parent.url) {
+            this._loadUrl(callback);
+          } else if (callback) {
+            callback(new Error("sound.url or sound.source must be set"));
+          } else {
+            console.error("sound.url or sound.source must be set");
+          }
+        }
+        /** Loads a sound using XHMLHttpRequest object. */
+        async _loadUrl(callback) {
+          const url2 = this.parent.url;
+          const response = await settings.ADAPTER.fetch(url2);
+          this._decode(await response.arrayBuffer(), callback);
+        }
+        /**
+         * Decodes the array buffer.
+         * @param arrayBuffer - From load.
+         * @param {Function} callback - Callback optional
+         */
+        _decode(arrayBuffer, callback) {
+          const audioBufferReadyFn = (err, buffer) => {
+            if (err) {
+              if (callback) {
+                callback(err);
+              }
+            } else {
+              this.parent.isLoaded = true;
+              this.buffer = buffer;
+              const instance2 = this.parent.autoPlayStart();
+              if (callback) {
+                callback(null, this.parent, instance2);
+              }
+            }
+          };
+          if (arrayBuffer instanceof AudioBuffer) {
+            audioBufferReadyFn(null, arrayBuffer);
+          } else {
+            const context2 = this.parent.context;
+            context2.decode(arrayBuffer, audioBufferReadyFn);
+          }
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/Sound.mjs
+  var _Sound, Sound;
+  var init_Sound = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/Sound.mjs"() {
+      init_lib9();
+      init_HTMLAudioMedia();
+      init_instance();
+      init_SoundSprite();
+      init_supported();
+      init_WebAudioMedia();
+      _Sound = class {
+        /**
+         * Create a new sound instance from source.
+         * @param source - Either the path or url to the source file.
+         *        or the object of options to use.
+         * @return Created sound instance.
+         */
+        static from(source) {
+          let options = {};
+          if (typeof source === "string") {
+            options.url = source;
+          } else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement) {
+            options.source = source;
+          } else if (Array.isArray(source)) {
+            options.url = source;
+          } else {
+            options = source;
+          }
+          options = {
+            autoPlay: false,
+            singleInstance: false,
+            url: null,
+            source: null,
+            preload: false,
+            volume: 1,
+            speed: 1,
+            complete: null,
+            loaded: null,
+            loop: false,
+            ...options
+          };
+          Object.freeze(options);
+          const media = getInstance().useLegacy ? new HTMLAudioMedia() : new WebAudioMedia();
+          return new _Sound(media, options);
+        }
+        /**
+         * Use `Sound.from`
+         * @ignore
+         */
+        constructor(media, options) {
+          this.media = media;
+          this.options = options;
+          this._instances = [];
+          this._sprites = {};
+          this.media.init(this);
+          const complete = options.complete;
+          this._autoPlayOptions = complete ? { complete } : null;
+          this.isLoaded = false;
+          this._preloadQueue = null;
+          this.isPlaying = false;
+          this.autoPlay = options.autoPlay;
+          this.singleInstance = options.singleInstance;
+          this.preload = options.preload || this.autoPlay;
+          this.url = Array.isArray(options.url) ? this.preferUrl(options.url) : options.url;
+          this.speed = options.speed;
+          this.volume = options.volume;
+          this.loop = options.loop;
+          if (options.sprites) {
+            this.addSprites(options.sprites);
+          }
+          if (this.preload) {
+            this._preload(options.loaded);
+          }
+        }
+        /**
+         * Internal help for resolving which file to use if there are multiple provide
+         * this is especially helpful for working with bundlers (non Assets loading).
+         */
+        preferUrl(urls) {
+          const [file] = urls.map((url2) => ({ url: url2, ext: lib_exports.path.extname(url2).slice(1) })).filter(({ ext }) => supported2[ext]).sort((a3, b3) => extensions4.indexOf(a3.ext) - extensions4.indexOf(b3.ext));
+          if (!file) {
+            throw new Error("No supported file type found");
+          }
+          return file.url;
+        }
+        /** Instance of the media context. */
+        get context() {
+          return getInstance().context;
+        }
+        /** Stops all the instances of this sound from playing. */
+        pause() {
+          this.isPlaying = false;
+          this.paused = true;
+          return this;
+        }
+        /** Resuming all the instances of this sound from playing */
+        resume() {
+          this.isPlaying = this._instances.length > 0;
+          this.paused = false;
+          return this;
+        }
+        /** Stops all the instances of this sound from playing. */
+        get paused() {
+          return this._paused;
+        }
+        set paused(paused2) {
+          this._paused = paused2;
+          this.refreshPaused();
+        }
+        /** The playback rate. */
+        get speed() {
+          return this._speed;
+        }
+        set speed(speed) {
+          this._speed = speed;
+          this.refresh();
+        }
+        /** Set the filters. Only supported with WebAudio. */
+        get filters() {
+          return this.media.filters;
+        }
+        set filters(filters2) {
+          this.media.filters = filters2;
+        }
+        /**
+         * @ignore
+         */
+        addSprites(source, data) {
+          if (typeof source === "object") {
+            const results = {};
+            for (const alias in source) {
+              results[alias] = this.addSprites(alias, source[alias]);
+            }
+            return results;
+          }
+          console.assert(!this._sprites[source], `Alias ${source} is already taken`);
+          const sprite = new SoundSprite(this, data);
+          this._sprites[source] = sprite;
+          return sprite;
+        }
+        /** Destructor, safer to use `SoundLibrary.remove(alias)` to remove this sound. */
+        destroy() {
+          this._removeInstances();
+          this.removeSprites();
+          this.media.destroy();
+          this.media = null;
+          this._sprites = null;
+          this._instances = null;
+        }
+        /**
+         * Remove a sound sprite.
+         * @param alias - The unique name of the sound sprite, if alias is omitted, removes all sprites.
+         */
+        removeSprites(alias) {
+          if (!alias) {
+            for (const name in this._sprites) {
+              this.removeSprites(name);
+            }
+          } else {
+            const sprite = this._sprites[alias];
+            if (sprite !== void 0) {
+              sprite.destroy();
+              delete this._sprites[alias];
+            }
+          }
+          return this;
+        }
+        /** If the current sound is playable (loaded). */
+        get isPlayable() {
+          return this.isLoaded && this.media && this.media.isPlayable;
+        }
+        /** Stops all the instances of this sound from playing. */
+        stop() {
+          if (!this.isPlayable) {
+            this.autoPlay = false;
+            this._autoPlayOptions = null;
+            return this;
+          }
+          this.isPlaying = false;
+          for (let i2 = this._instances.length - 1; i2 >= 0; i2--) {
+            this._instances[i2].stop();
+          }
+          return this;
+        }
+        // Overloaded function
+        play(source, complete) {
+          let options;
+          if (typeof source === "string") {
+            const sprite = source;
+            options = { sprite, loop: this.loop, complete };
+          } else if (typeof source === "function") {
+            options = {};
+            options.complete = source;
+          } else {
+            options = source;
+          }
+          options = {
+            complete: null,
+            loaded: null,
+            sprite: null,
+            end: null,
+            start: 0,
+            volume: 1,
+            speed: 1,
+            muted: false,
+            loop: false,
+            ...options || {}
+          };
+          if (options.sprite) {
+            const alias = options.sprite;
+            console.assert(!!this._sprites[alias], `Alias ${alias} is not available`);
+            const sprite = this._sprites[alias];
+            options.start = sprite.start + (options.start || 0);
+            options.end = sprite.end;
+            options.speed = sprite.speed || 1;
+            options.loop = sprite.loop || options.loop;
+            delete options.sprite;
+          }
+          if (options.offset) {
+            options.start = options.offset;
+          }
+          if (!this.isLoaded) {
+            if (this._preloadQueue) {
+              return new Promise((resolve2) => {
+                this._preloadQueue.push(() => {
+                  resolve2(this.play(options));
+                });
+              });
+            }
+            this._preloadQueue = [];
+            this.autoPlay = true;
+            this._autoPlayOptions = options;
+            return new Promise((resolve2, reject) => {
+              this._preload((err, sound2, media) => {
+                this._preloadQueue.forEach((resolve22) => resolve22());
+                this._preloadQueue = null;
+                if (err) {
+                  reject(err);
+                } else {
+                  if (options.loaded) {
+                    options.loaded(err, sound2, media);
+                  }
+                  resolve2(media);
+                }
+              });
+            });
+          }
+          if (this.singleInstance || options.singleInstance) {
+            this._removeInstances();
+          }
+          const instance2 = this._createInstance();
+          this._instances.push(instance2);
+          this.isPlaying = true;
+          instance2.once("end", () => {
+            if (options.complete) {
+              options.complete(this);
+            }
+            this._onComplete(instance2);
+          });
+          instance2.once("stop", () => {
+            this._onComplete(instance2);
+          });
+          instance2.play(options);
+          return instance2;
+        }
+        /** Internal only, speed, loop, volume change occured. */
+        refresh() {
+          const len = this._instances.length;
+          for (let i2 = 0; i2 < len; i2++) {
+            this._instances[i2].refresh();
+          }
+        }
+        /** Handle changes in paused state. Internal only. */
+        refreshPaused() {
+          const len = this._instances.length;
+          for (let i2 = 0; i2 < len; i2++) {
+            this._instances[i2].refreshPaused();
+          }
+        }
+        /** Gets and sets the volume. */
+        get volume() {
+          return this._volume;
+        }
+        set volume(volume) {
+          this._volume = volume;
+          this.refresh();
+        }
+        /** Gets and sets the muted flag. */
+        get muted() {
+          return this._muted;
+        }
+        set muted(muted) {
+          this._muted = muted;
+          this.refresh();
+        }
+        /** Gets and sets the looping. */
+        get loop() {
+          return this._loop;
+        }
+        set loop(loop) {
+          this._loop = loop;
+          this.refresh();
+        }
+        /** Starts the preloading of sound. */
+        _preload(callback) {
+          this.media.load(callback);
+        }
+        /** Gets the list of instances that are currently being played of this sound. */
+        get instances() {
+          return this._instances;
+        }
+        /** Get the map of sprites. */
+        get sprites() {
+          return this._sprites;
+        }
+        /** Get the duration of the audio in seconds. */
+        get duration() {
+          return this.media.duration;
+        }
+        /** Auto play the first instance. */
+        autoPlayStart() {
+          let instance2;
+          if (this.autoPlay) {
+            instance2 = this.play(this._autoPlayOptions);
+          }
+          return instance2;
+        }
+        /** Removes all instances. */
+        _removeInstances() {
+          for (let i2 = this._instances.length - 1; i2 >= 0; i2--) {
+            this._poolInstance(this._instances[i2]);
+          }
+          this._instances.length = 0;
+        }
+        /**
+         * Sound instance completed.
+         * @param instance
+         */
+        _onComplete(instance2) {
+          if (this._instances) {
+            const index = this._instances.indexOf(instance2);
+            if (index > -1) {
+              this._instances.splice(index, 1);
+            }
+            this.isPlaying = this._instances.length > 0;
+          }
+          this._poolInstance(instance2);
+        }
+        /** Create a new instance. */
+        _createInstance() {
+          if (_Sound._pool.length > 0) {
+            const instance2 = _Sound._pool.pop();
+            instance2.init(this.media);
+            return instance2;
+          }
+          return this.media.create();
+        }
+        /**
+         * Destroy/recycling the instance object.
+         * @param instance - Instance to recycle
+         */
+        _poolInstance(instance2) {
+          instance2.destroy();
+          if (_Sound._pool.indexOf(instance2) < 0) {
+            _Sound._pool.push(instance2);
+          }
+        }
+      };
+      Sound = _Sound;
+      Sound._pool = [];
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/HTMLAudioContext.mjs
+  var HTMLAudioContext;
+  var init_HTMLAudioContext = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/HTMLAudioContext.mjs"() {
+      init_lib9();
+      HTMLAudioContext = class extends lib_exports.EventEmitter {
+        constructor() {
+          super(...arguments);
+          this.speed = 1;
+          this.muted = false;
+          this.volume = 1;
+          this.paused = false;
+        }
+        /** Internal trigger when volume, mute or speed changes */
+        refresh() {
+          this.emit("refresh");
+        }
+        /** Internal trigger paused changes */
+        refreshPaused() {
+          this.emit("refreshPaused");
+        }
+        /**
+         * HTML Audio does not support filters, this is non-functional API.
+         */
+        get filters() {
+          console.warn("HTML Audio does not support filters");
+          return null;
+        }
+        set filters(_filters) {
+          console.warn("HTML Audio does not support filters");
+        }
+        /**
+         * HTML Audio does not support `audioContext`
+         * @readonly
+         * @type {AudioContext}
+         */
+        get audioContext() {
+          console.warn("HTML Audio does not support audioContext");
+          return null;
+        }
+        /**
+         * Toggles the muted state.
+         * @return The current muted state.
+         */
+        toggleMute() {
+          this.muted = !this.muted;
+          this.refresh();
+          return this.muted;
+        }
+        /**
+         * Toggles the paused state.
+         * @return The current paused state.
+         */
+        togglePause() {
+          this.paused = !this.paused;
+          this.refreshPaused();
+          return this.paused;
+        }
+        /** Destroy and don't use after this */
+        destroy() {
+          this.removeAllListeners();
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioContext.mjs
+  var WebAudioContext;
+  var init_WebAudioContext = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/WebAudioContext.mjs"() {
+      init_lib9();
+      init_Filterable();
+      WebAudioContext = class _WebAudioContext extends Filterable {
+        constructor() {
+          const win = window;
+          const ctx = new _WebAudioContext.AudioContext();
+          const compressor = ctx.createDynamicsCompressor();
+          const analyser = ctx.createAnalyser();
+          analyser.connect(compressor);
+          compressor.connect(ctx.destination);
+          super(analyser, compressor);
+          this.autoPause = true;
+          this._ctx = ctx;
+          this._offlineCtx = new _WebAudioContext.OfflineAudioContext(
+            1,
+            2,
+            win.OfflineAudioContext ? Math.max(8e3, Math.min(96e3, ctx.sampleRate)) : 44100
+          );
+          this.compressor = compressor;
+          this.analyser = analyser;
+          this.events = new lib_exports.EventEmitter();
+          this.volume = 1;
+          this.speed = 1;
+          this.muted = false;
+          this.paused = false;
+          this._locked = ctx.state === "suspended" && ("ontouchstart" in globalThis || "onclick" in globalThis);
+          if (this._locked) {
+            this._unlock();
+            this._unlock = this._unlock.bind(this);
+            document.addEventListener("mousedown", this._unlock, true);
+            document.addEventListener("touchstart", this._unlock, true);
+            document.addEventListener("touchend", this._unlock, true);
+          }
+          this.onFocus = this.onFocus.bind(this);
+          this.onBlur = this.onBlur.bind(this);
+          globalThis.addEventListener("focus", this.onFocus);
+          globalThis.addEventListener("blur", this.onBlur);
+        }
+        /** Handle mobile WebAudio context resume */
+        onFocus() {
+          if (!this.autoPause) {
+            return;
+          }
+          const state = this._ctx.state;
+          if (state === "suspended" || state === "interrupted" || !this._locked) {
+            this.paused = this._pausedOnBlur;
+            this.refreshPaused();
+          }
+        }
+        /** Handle mobile WebAudio context suspend */
+        onBlur() {
+          if (!this.autoPause) {
+            return;
+          }
+          if (!this._locked) {
+            this._pausedOnBlur = this._paused;
+            this.paused = true;
+            this.refreshPaused();
+          }
+        }
+        /**
+         * Try to unlock audio on iOS. This is triggered from either WebAudio plugin setup (which will work if inside of
+         * a `mousedown` or `touchend` event stack), or the first document touchend/mousedown event. If it fails (touchend
+         * will fail if the user presses for too long, indicating a scroll event instead of a click event.
+         *
+         * Note that earlier versions of iOS supported `touchstart` for this, but iOS9 removed this functionality. Adding
+         * a `touchstart` event to support older platforms may preclude a `mousedown` even from getting fired on iOS9, so we
+         * stick with `mousedown` and `touchend`.
+         */
+        _unlock() {
+          if (!this._locked) {
+            return;
+          }
+          this.playEmptySound();
+          if (this._ctx.state === "running") {
+            document.removeEventListener("mousedown", this._unlock, true);
+            document.removeEventListener("touchend", this._unlock, true);
+            document.removeEventListener("touchstart", this._unlock, true);
+            this._locked = false;
+          }
+        }
+        /**
+         * Plays an empty sound in the web audio context.  This is used to enable web audio on iOS devices, as they
+         * require the first sound to be played inside of a user initiated event (touch/click).
+         */
+        playEmptySound() {
+          const source = this._ctx.createBufferSource();
+          source.buffer = this._ctx.createBuffer(1, 1, 22050);
+          source.connect(this._ctx.destination);
+          source.start(0, 0, 0);
+          if (source.context.state === "suspended") {
+            source.context.resume();
+          }
+        }
+        /**
+         * Get AudioContext class, if not supported returns `null`
+         * @type {AudioContext}
+         * @readonly
+         */
+        static get AudioContext() {
+          const win = window;
+          return win.AudioContext || win.webkitAudioContext || null;
+        }
+        /**
+         * Get OfflineAudioContext class, if not supported returns `null`
+         * @type {OfflineAudioContext}
+         * @readonly
+         */
+        static get OfflineAudioContext() {
+          const win = window;
+          return win.OfflineAudioContext || win.webkitOfflineAudioContext || null;
+        }
+        /** Destroy this context. */
+        destroy() {
+          super.destroy();
+          const ctx = this._ctx;
+          if (typeof ctx.close !== "undefined") {
+            ctx.close();
+          }
+          globalThis.removeEventListener("focus", this.onFocus);
+          globalThis.removeEventListener("blur", this.onBlur);
+          this.events.removeAllListeners();
+          this.analyser.disconnect();
+          this.compressor.disconnect();
+          this.analyser = null;
+          this.compressor = null;
+          this.events = null;
+          this._offlineCtx = null;
+          this._ctx = null;
+        }
+        /**
+         * The WebAudio API AudioContext object.
+         * @readonly
+         * @type {AudioContext}
+         */
+        get audioContext() {
+          return this._ctx;
+        }
+        /**
+         * The WebAudio API OfflineAudioContext object.
+         * @readonly
+         * @type {OfflineAudioContext}
+         */
+        get offlineContext() {
+          return this._offlineCtx;
+        }
+        /**
+         * Pauses all sounds, even though we handle this at the instance
+         * level, we'll also pause the audioContext so that the
+         * time used to compute progress isn't messed up.
+         * @default false
+         */
+        set paused(paused2) {
+          if (paused2 && this._ctx.state === "running") {
+            this._ctx.suspend();
+          } else if (!paused2 && this._ctx.state === "suspended") {
+            this._ctx.resume();
+          }
+          this._paused = paused2;
+        }
+        get paused() {
+          return this._paused;
+        }
+        /** Emit event when muted, volume or speed changes */
+        refresh() {
+          this.events.emit("refresh");
+        }
+        /** Emit event when muted, volume or speed changes */
+        refreshPaused() {
+          this.events.emit("refreshPaused");
+        }
+        /**
+         * Toggles the muted state.
+         * @return The current muted state.
+         */
+        toggleMute() {
+          this.muted = !this.muted;
+          this.refresh();
+          return this.muted;
+        }
+        /**
+         * Toggles the paused state.
+         * @return The current muted state.
+         */
+        togglePause() {
+          this.paused = !this.paused;
+          this.refreshPaused();
+          return this._paused;
+        }
+        /**
+         * Decode the audio data
+         * @param arrayBuffer - Buffer from loader
+         * @param callback - When completed, error and audioBuffer are parameters.
+         */
+        decode(arrayBuffer, callback) {
+          const handleError = (err) => {
+            callback(new Error(err?.message || "Unable to decode file"));
+          };
+          const result = this._offlineCtx.decodeAudioData(
+            arrayBuffer,
+            (buffer) => {
+              callback(null, buffer);
+            },
+            handleError
+          );
+          if (result) {
+            result.catch(handleError);
+          }
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/SoundLibrary.mjs
+  var SoundLibrary;
+  var init_SoundLibrary = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/SoundLibrary.mjs"() {
+      init_Sound();
+      init_HTMLAudioContext();
+      init_WebAudioContext();
+      SoundLibrary = class {
+        constructor() {
+          this.init();
+        }
+        /**
+         * Re-initialize the sound library, this will
+         * recreate the AudioContext. If there's a hardware-failure
+         * call `close` and then `init`.
+         * @return Sound instance
+         */
+        init() {
+          if (this.supported) {
+            this._webAudioContext = new WebAudioContext();
+          }
+          this._htmlAudioContext = new HTMLAudioContext();
+          this._sounds = {};
+          this.useLegacy = !this.supported;
+          return this;
+        }
+        /**
+         * The global context to use.
+         * @readonly
+         */
+        get context() {
+          return this._context;
+        }
+        /**
+         * Apply filters to all sounds. Can be useful
+         * for setting global planning or global effects.
+         * **Only supported with WebAudio.**
+         * @example
+         * import { sound, filters } from '@pixi/sound';
+         * // Adds a filter to pan all output left
+         * sound.filtersAll = [
+         *     new filters.StereoFilter(-1)
+         * ];
+         */
+        get filtersAll() {
+          if (!this.useLegacy) {
+            return this._context.filters;
+          }
+          return [];
+        }
+        set filtersAll(filtersAll) {
+          if (!this.useLegacy) {
+            this._context.filters = filtersAll;
+          }
+        }
+        /**
+         * `true` if WebAudio is supported on the current browser.
+         */
+        get supported() {
+          return WebAudioContext.AudioContext !== null;
+        }
+        /**
+         * @ignore
+         */
+        add(source, sourceOptions) {
+          if (typeof source === "object") {
+            const results = {};
+            for (const alias in source) {
+              const options2 = this._getOptions(
+                source[alias],
+                sourceOptions
+              );
+              results[alias] = this.add(alias, options2);
+            }
+            return results;
+          }
+          console.assert(!this._sounds[source], `Sound with alias ${source} already exists.`);
+          if (sourceOptions instanceof Sound) {
+            this._sounds[source] = sourceOptions;
+            return sourceOptions;
+          }
+          const options = this._getOptions(sourceOptions);
+          const sound2 = Sound.from(options);
+          this._sounds[source] = sound2;
+          return sound2;
+        }
+        /**
+         * Internal methods for getting the options object
+         * @private
+         * @param source - The source options
+         * @param overrides - Override default options
+         * @return The construction options
+         */
+        _getOptions(source, overrides) {
+          let options;
+          if (typeof source === "string") {
+            options = { url: source };
+          } else if (Array.isArray(source)) {
+            options = { url: source };
+          } else if (source instanceof ArrayBuffer || source instanceof AudioBuffer || source instanceof HTMLAudioElement) {
+            options = { source };
+          } else {
+            options = source;
+          }
+          options = { ...options, ...overrides || {} };
+          return options;
+        }
+        /**
+         * Do not use WebAudio, force the use of legacy. This **must** be called before loading any files.
+         */
+        get useLegacy() {
+          return this._useLegacy;
+        }
+        set useLegacy(legacy) {
+          this._useLegacy = legacy;
+          this._context = !legacy && this.supported ? this._webAudioContext : this._htmlAudioContext;
+        }
+        /**
+         * This disables auto-pause all playback when the window blurs (WebAudio only).
+         * This is helpful to keep from playing sounds when the user switches tabs.
+         * However, if you're running content within an iframe, this may be undesirable
+         * and you should disable (set to `true`) this behavior.
+         * @default false
+         */
+        get disableAutoPause() {
+          return !this._webAudioContext.autoPause;
+        }
+        set disableAutoPause(autoPause) {
+          this._webAudioContext.autoPause = !autoPause;
+        }
+        /**
+         * Removes a sound by alias.
+         * @param alias - The sound alias reference.
+         * @return Instance for chaining.
+         */
+        remove(alias) {
+          this.exists(alias, true);
+          this._sounds[alias].destroy();
+          delete this._sounds[alias];
+          return this;
+        }
+        /**
+         * Set the global volume for all sounds. To set per-sound volume see {@link SoundLibrary#volume}.
+         */
+        get volumeAll() {
+          return this._context.volume;
+        }
+        set volumeAll(volume) {
+          this._context.volume = volume;
+          this._context.refresh();
+        }
+        /**
+         * Set the global speed for all sounds. To set per-sound speed see {@link SoundLibrary#speed}.
+         */
+        get speedAll() {
+          return this._context.speed;
+        }
+        set speedAll(speed) {
+          this._context.speed = speed;
+          this._context.refresh();
+        }
+        /**
+         * Toggle paused property for all sounds.
+         * @return `true` if all sounds are paused.
+         */
+        togglePauseAll() {
+          return this._context.togglePause();
+        }
+        /**
+         * Pauses any playing sounds.
+         * @return Instance for chaining.
+         */
+        pauseAll() {
+          this._context.paused = true;
+          this._context.refreshPaused();
+          return this;
+        }
+        /**
+         * Resumes any sounds.
+         * @return Instance for chaining.
+         */
+        resumeAll() {
+          this._context.paused = false;
+          this._context.refreshPaused();
+          return this;
+        }
+        /**
+         * Toggle muted property for all sounds.
+         * @return `true` if all sounds are muted.
+         */
+        toggleMuteAll() {
+          return this._context.toggleMute();
+        }
+        /**
+         * Mutes all playing sounds.
+         * @return Instance for chaining.
+         */
+        muteAll() {
+          this._context.muted = true;
+          this._context.refresh();
+          return this;
+        }
+        /**
+         * Unmutes all playing sounds.
+         * @return Instance for chaining.
+         */
+        unmuteAll() {
+          this._context.muted = false;
+          this._context.refresh();
+          return this;
+        }
+        /**
+         * Stops and removes all sounds. They cannot be used after this.
+         * @return Instance for chaining.
+         */
+        removeAll() {
+          for (const alias in this._sounds) {
+            this._sounds[alias].destroy();
+            delete this._sounds[alias];
+          }
+          return this;
+        }
+        /**
+         * Stops all sounds.
+         * @return Instance for chaining.
+         */
+        stopAll() {
+          for (const alias in this._sounds) {
+            this._sounds[alias].stop();
+          }
+          return this;
+        }
+        /**
+         * Checks if a sound by alias exists.
+         * @param alias - Check for alias.
+         * @param assert - Whether enable console.assert.
+         * @return true if the sound exists.
+         */
+        exists(alias, assert = false) {
+          const exists = !!this._sounds[alias];
+          if (assert) {
+            console.assert(exists, `No sound matching alias '${alias}'.`);
+          }
+          return exists;
+        }
+        /**
+         * Convenience function to check to see if any sound is playing.
+         * @returns `true` if any sound is currently playing.
+         */
+        isPlaying() {
+          for (const alias in this._sounds) {
+            if (this._sounds[alias].isPlaying) {
+              return true;
+            }
+          }
+          return false;
+        }
+        /**
+         * Find a sound by alias.
+         * @param alias - The sound alias reference.
+         * @return Sound object.
+         */
+        find(alias) {
+          this.exists(alias, true);
+          return this._sounds[alias];
+        }
+        /**
+         * Plays a sound.
+         * @method play
+         * @instance
+         * @param {string} alias - The sound alias reference.
+         * @param {string} sprite - The alias of the sprite to play.
+         * @return {IMediaInstance|null} The sound instance, this cannot be reused
+         *         after it is done playing. Returns `null` if the sound has not yet loaded.
+         */
+        /**
+         * Plays a sound.
+         * @param alias - The sound alias reference.
+         * @param {PlayOptions|Function} options - The options or callback when done.
+         * @return The sound instance,
+         *        this cannot be reused after it is done playing. Returns a Promise if the sound
+         *        has not yet loaded.
+         */
+        play(alias, options) {
+          return this.find(alias).play(options);
+        }
+        /**
+         * Stops a sound.
+         * @param alias - The sound alias reference.
+         * @return Sound object.
+         */
+        stop(alias) {
+          return this.find(alias).stop();
+        }
+        /**
+         * Pauses a sound.
+         * @param alias - The sound alias reference.
+         * @return Sound object.
+         */
+        pause(alias) {
+          return this.find(alias).pause();
+        }
+        /**
+         * Resumes a sound.
+         * @param alias - The sound alias reference.
+         * @return Instance for chaining.
+         */
+        resume(alias) {
+          return this.find(alias).resume();
+        }
+        /**
+         * Get or set the volume for a sound.
+         * @param alias - The sound alias reference.
+         * @param volume - Optional current volume to set.
+         * @return The current volume.
+         */
+        volume(alias, volume) {
+          const sound2 = this.find(alias);
+          if (volume !== void 0) {
+            sound2.volume = volume;
+          }
+          return sound2.volume;
+        }
+        /**
+         * Get or set the speed for a sound.
+         * @param alias - The sound alias reference.
+         * @param speed - Optional current speed to set.
+         * @return The current speed.
+         */
+        speed(alias, speed) {
+          const sound2 = this.find(alias);
+          if (speed !== void 0) {
+            sound2.speed = speed;
+          }
+          return sound2.speed;
+        }
+        /**
+         * Get the length of a sound in seconds.
+         * @param alias - The sound alias reference.
+         * @return The current duration in seconds.
+         */
+        duration(alias) {
+          return this.find(alias).duration;
+        }
+        /**
+         * Closes the sound library. This will release/destroy
+         * the AudioContext(s). Can be used safely if you want to
+         * initialize the sound library later. Use `init` method.
+         */
+        close() {
+          this.removeAll();
+          this._sounds = null;
+          if (this._webAudioContext) {
+            this._webAudioContext.destroy();
+            this._webAudioContext = null;
+          }
+          if (this._htmlAudioContext) {
+            this._htmlAudioContext.destroy();
+            this._htmlAudioContext = null;
+          }
+          this._context = null;
+          return this;
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/index.mjs
+  var init_htmlaudio = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/htmlaudio/index.mjs"() {
+      init_HTMLAudioMedia();
+      init_HTMLAudioInstance();
+      init_HTMLAudioContext();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/Filter.mjs
+  var Filter2;
+  var init_Filter2 = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/Filter.mjs"() {
+      Filter2 = class {
+        /**
+         * @param {AudioNode} destination - The audio node to use as the destination for the input AudioNode
+         * @param {AudioNode} [source] - Optional output node, defaults to destination node. This is useful
+         *        when creating filters which contains multiple AudioNode elements chained together.
+         */
+        constructor(destination, source) {
+          this.init(destination, source);
+        }
+        /** Reinitialize */
+        init(destination, source) {
+          this.destination = destination;
+          this.source = source || destination;
+        }
+        /**
+         * Connect to the destination.
+         * @param {AudioNode} destination - The destination node to connect the output to
+         */
+        connect(destination) {
+          this.source?.connect(destination);
+        }
+        /** Completely disconnect filter from destination and source nodes. */
+        disconnect() {
+          this.source?.disconnect();
+        }
+        /** Destroy the filter and don't use after this. */
+        destroy() {
+          this.disconnect();
+          this.destination = null;
+          this.source = null;
+        }
+      };
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/EqualizerFilter.mjs
+  var _EqualizerFilter, EqualizerFilter;
+  var init_EqualizerFilter = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/EqualizerFilter.mjs"() {
+      init_instance();
+      init_WebAudioUtils();
+      init_Filter2();
+      _EqualizerFilter = class extends Filter2 {
+        /**
+         * @param f32 - Default gain for 32 Hz
+         * @param f64 - Default gain for 64 Hz
+         * @param f125 - Default gain for 125 Hz
+         * @param f250 - Default gain for 250 Hz
+         * @param f500 - Default gain for 500 Hz
+         * @param f1k - Default gain for 1000 Hz
+         * @param f2k - Default gain for 2000 Hz
+         * @param f4k - Default gain for 4000 Hz
+         * @param f8k - Default gain for 8000 Hz
+         * @param f16k - Default gain for 16000 Hz
+         */
+        constructor(f32 = 0, f64 = 0, f125 = 0, f250 = 0, f500 = 0, f1k = 0, f2k = 0, f4k = 0, f8k = 0, f16k = 0) {
+          let bands = [];
+          const equalizerBands = [
+            {
+              f: _EqualizerFilter.F32,
+              type: "lowshelf",
+              gain: f32
+            },
+            {
+              f: _EqualizerFilter.F64,
+              type: "peaking",
+              gain: f64
+            },
+            {
+              f: _EqualizerFilter.F125,
+              type: "peaking",
+              gain: f125
+            },
+            {
+              f: _EqualizerFilter.F250,
+              type: "peaking",
+              gain: f250
+            },
+            {
+              f: _EqualizerFilter.F500,
+              type: "peaking",
+              gain: f500
+            },
+            {
+              f: _EqualizerFilter.F1K,
+              type: "peaking",
+              gain: f1k
+            },
+            {
+              f: _EqualizerFilter.F2K,
+              type: "peaking",
+              gain: f2k
+            },
+            {
+              f: _EqualizerFilter.F4K,
+              type: "peaking",
+              gain: f4k
+            },
+            {
+              f: _EqualizerFilter.F8K,
+              type: "peaking",
+              gain: f8k
+            },
+            {
+              f: _EqualizerFilter.F16K,
+              type: "highshelf",
+              gain: f16k
+            }
+          ];
+          if (!getInstance().useLegacy) {
+            bands = equalizerBands.map((band) => {
+              const node = getInstance().context.audioContext.createBiquadFilter();
+              node.type = band.type;
+              WebAudioUtils.setParamValue(node.Q, 1);
+              node.frequency.value = band.f;
+              WebAudioUtils.setParamValue(node.gain, band.gain);
+              return node;
+            });
+          }
+          super(bands[0], bands[bands.length - 1]);
+          this.bands = bands;
+          this.bandsMap = {};
+          for (let i2 = 0; i2 < this.bands.length; i2++) {
+            const node = this.bands[i2];
+            if (i2 > 0) {
+              this.bands[i2 - 1].connect(node);
+            }
+            this.bandsMap[node.frequency.value] = node;
+          }
+        }
+        /**
+         * Set gain on a specific frequency.
+         * @param frequency - The frequency, see EqualizerFilter.F* for bands
+         * @param gain - Recommended -40 to 40.
+         */
+        setGain(frequency, gain = 0) {
+          if (!this.bandsMap[frequency]) {
+            throw new Error(`No band found for frequency ${frequency}`);
+          }
+          WebAudioUtils.setParamValue(this.bandsMap[frequency].gain, gain);
+        }
+        /**
+         * Get gain amount on a specific frequency.
+         * @return The amount of gain set.
+         */
+        getGain(frequency) {
+          if (!this.bandsMap[frequency]) {
+            throw new Error(`No band found for frequency ${frequency}`);
+          }
+          return this.bandsMap[frequency].gain.value;
+        }
+        /**
+         * Gain at 32 Hz frequencey.
+         * @default 0
+         */
+        set f32(value) {
+          this.setGain(_EqualizerFilter.F32, value);
+        }
+        get f32() {
+          return this.getGain(_EqualizerFilter.F32);
+        }
+        /**
+         * Gain at 64 Hz frequencey.
+         * @default 0
+         */
+        set f64(value) {
+          this.setGain(_EqualizerFilter.F64, value);
+        }
+        get f64() {
+          return this.getGain(_EqualizerFilter.F64);
+        }
+        /**
+         * Gain at 125 Hz frequencey.
+         * @default 0
+         */
+        set f125(value) {
+          this.setGain(_EqualizerFilter.F125, value);
+        }
+        get f125() {
+          return this.getGain(_EqualizerFilter.F125);
+        }
+        /**
+         * Gain at 250 Hz frequencey.
+         * @default 0
+         */
+        set f250(value) {
+          this.setGain(_EqualizerFilter.F250, value);
+        }
+        get f250() {
+          return this.getGain(_EqualizerFilter.F250);
+        }
+        /**
+         * Gain at 500 Hz frequencey.
+         * @default 0
+         */
+        set f500(value) {
+          this.setGain(_EqualizerFilter.F500, value);
+        }
+        get f500() {
+          return this.getGain(_EqualizerFilter.F500);
+        }
+        /**
+         * Gain at 1 KHz frequencey.
+         * @default 0
+         */
+        set f1k(value) {
+          this.setGain(_EqualizerFilter.F1K, value);
+        }
+        get f1k() {
+          return this.getGain(_EqualizerFilter.F1K);
+        }
+        /**
+         * Gain at 2 KHz frequencey.
+         * @default 0
+         */
+        set f2k(value) {
+          this.setGain(_EqualizerFilter.F2K, value);
+        }
+        get f2k() {
+          return this.getGain(_EqualizerFilter.F2K);
+        }
+        /**
+         * Gain at 4 KHz frequencey.
+         * @default 0
+         */
+        set f4k(value) {
+          this.setGain(_EqualizerFilter.F4K, value);
+        }
+        get f4k() {
+          return this.getGain(_EqualizerFilter.F4K);
+        }
+        /**
+         * Gain at 8 KHz frequencey.
+         * @default 0
+         */
+        set f8k(value) {
+          this.setGain(_EqualizerFilter.F8K, value);
+        }
+        get f8k() {
+          return this.getGain(_EqualizerFilter.F8K);
+        }
+        /**
+         * Gain at 16 KHz frequencey.
+         * @default 0
+         */
+        set f16k(value) {
+          this.setGain(_EqualizerFilter.F16K, value);
+        }
+        get f16k() {
+          return this.getGain(_EqualizerFilter.F16K);
+        }
+        /** Reset all frequency bands to have gain of 0 */
+        reset() {
+          this.bands.forEach((band) => {
+            WebAudioUtils.setParamValue(band.gain, 0);
+          });
+        }
+        destroy() {
+          this.bands.forEach((band) => {
+            band.disconnect();
+          });
+          this.bands = null;
+          this.bandsMap = null;
+        }
+      };
+      EqualizerFilter = _EqualizerFilter;
+      EqualizerFilter.F32 = 32;
+      EqualizerFilter.F64 = 64;
+      EqualizerFilter.F125 = 125;
+      EqualizerFilter.F250 = 250;
+      EqualizerFilter.F500 = 500;
+      EqualizerFilter.F1K = 1e3;
+      EqualizerFilter.F2K = 2e3;
+      EqualizerFilter.F4K = 4e3;
+      EqualizerFilter.F8K = 8e3;
+      EqualizerFilter.F16K = 16e3;
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/DistortionFilter.mjs
+  var init_DistortionFilter = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/DistortionFilter.mjs"() {
+      init_instance();
+      init_Filter2();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/StereoFilter.mjs
+  var init_StereoFilter = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/StereoFilter.mjs"() {
+      init_instance();
+      init_WebAudioUtils();
+      init_Filter2();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/ReverbFilter.mjs
+  var init_ReverbFilter = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/ReverbFilter.mjs"() {
+      init_instance();
+      init_Filter2();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/MonoFilter.mjs
+  var init_MonoFilter = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/MonoFilter.mjs"() {
+      init_instance();
+      init_Filter2();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/StreamFilter.mjs
+  var init_StreamFilter = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/StreamFilter.mjs"() {
+      init_instance();
+      init_Filter2();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/TelephoneFilter.mjs
+  var init_TelephoneFilter = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/TelephoneFilter.mjs"() {
+      init_instance();
+      init_WebAudioUtils();
+      init_Filter2();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/index.mjs
+  var init_filters2 = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/filters/index.mjs"() {
+      init_Filter2();
+      init_EqualizerFilter();
+      init_DistortionFilter();
+      init_StereoFilter();
+      init_ReverbFilter();
+      init_MonoFilter();
+      init_StreamFilter();
+      init_TelephoneFilter();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/index.mjs
+  var init_webaudio = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/webaudio/index.mjs"() {
+      init_WebAudioMedia();
+      init_WebAudioInstance();
+      init_WebAudioNodes();
+      init_WebAudioContext();
+      init_WebAudioUtils();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/playOnce.mjs
+  var init_playOnce = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/playOnce.mjs"() {
+      init_instance();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/render.mjs
+  var init_render = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/render.mjs"() {
+      init_lib9();
+      init_WebAudioMedia();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/sineTone.mjs
+  var init_sineTone = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/sineTone.mjs"() {
+      init_Sound();
+      init_WebAudioMedia();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/index.mjs
+  var init_utils8 = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/utils/index.mjs"() {
+      init_playOnce();
+      init_render();
+      init_sineTone();
+      init_supported();
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/soundAsset.mjs
+  var getAlias, soundAsset;
+  var init_soundAsset = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/soundAsset.mjs"() {
+      init_lib9();
+      init_lib24();
+      init_supported();
+      init_Sound();
+      init_instance();
+      getAlias = (asset) => {
+        const url2 = asset.src;
+        return asset?.alias?.[0] ?? lib_exports.path.basename(url2, lib_exports.path.extname(url2));
+      };
+      soundAsset = {
+        extension: ExtensionType.Asset,
+        detection: {
+          test: async () => true,
+          add: async (formats2) => [...formats2, ...extensions4.filter((ext) => supported2[ext])],
+          remove: async (formats2) => formats2.filter((ext) => formats2.includes(ext))
+        },
+        loader: {
+          extension: {
+            type: [ExtensionType.LoadParser],
+            priority: LoaderParserPriority.High
+          },
+          /** Should we attempt to load this file? */
+          test(url2) {
+            const ext = lib_exports.path.extname(url2).slice(1);
+            return !!supported2[ext] || mimes.some((mime) => url2.startsWith(`data:${mime}`));
+          },
+          /** Load the sound file, this is mostly handled by Sound.from() */
+          async load(url2, asset) {
+            const sound2 = await new Promise((resolve2, reject) => Sound.from({
+              ...asset.data,
+              url: url2,
+              preload: true,
+              loaded(err, sound22) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve2(sound22);
+                }
+                asset.data?.loaded?.(err, sound22);
+              }
+            }));
+            getInstance().add(getAlias(asset), sound2);
+            return sound2;
+          },
+          /** Remove the sound from the library */
+          async unload(_sound, asset) {
+            getInstance().remove(getAlias(asset));
+          }
+        }
+      };
+      extensions2.add(soundAsset);
+    }
+  });
+
+  // node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/index.mjs
+  var sound;
+  var init_lib39 = __esm({
+    "node_modules/.pnpm/@pixi+sound@5.2.3/node_modules/@pixi/sound/lib/index.mjs"() {
+      init_instance();
+      init_SoundLibrary();
+      init_htmlaudio();
+      init_filters2();
+      init_webaudio();
+      init_utils8();
+      init_Sound();
+      init_soundAsset();
+      init_Filterable();
+      init_Filter2();
+      init_SoundSprite();
+      sound = setInstance(new SoundLibrary());
     }
   });
 
@@ -48614,12 +51226,18 @@ void main(void)\r
       init_server();
       init_login();
       init_levels();
+      init_lib39();
+      init_game_over();
       Menu = class _Menu extends State {
+        element = /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" });
         async onEnter(payload, from) {
           this.setupEndpoints();
           const nc = this.world.get(NetworkConnection);
-          document.body.append(this.getHTML());
+          this.element.innerHTML = "";
+          this.element.append(this.getHTML());
+          document.body.append(this.element);
           nc.post("playerChange");
+          sound.play("menu", { loop: true, volume: 0.2 });
           window.addEventListener("beforeunload", () => {
             this.world.get(ServerConnection).fetch("/matchmaking/exitQueue", {
               searchParams: {
@@ -48634,24 +51252,27 @@ void main(void)\r
           const data = await serverResponse.json();
           console.log(data);
         }
-        async onLeave() {
-          document.querySelector("#menu")?.remove();
+        async onLeave(to) {
+          if (to === MultiplayerGame) {
+            sound.stop("menu");
+          }
+          this.element.remove();
           this.eventListenerIds.forEach(
-            ([e3, id]) => this.world.get(NetworkConnection).removeEventListener(e3, id)
+            ([e3, id3]) => this.world.get(NetworkConnection).removeEventListener(e3, id3)
           );
         }
         getHTML() {
           const lastCommitHash = "cddec57";
           const devMode = false;
           const buildTime = 1708187242171;
-          const timeAgo = Math.round((Date.now() - buildTime) / 1e3);
+          const timeAgo = Math.round((Date.now() - buildTime) / (1e3 * 60));
           const { level, winsIntoLevel } = totalWinsToLevel(
-            this.world.get(AccountInfo.totalWins)
+            this.world.get(AccountInfo.wins)
           );
           const levelTotalWins = Levels[level].wins;
           const text = winsIntoLevel + "/" + Levels[level].wins + " Wins";
           console.log(text);
-          return /* @__PURE__ */ window.jsx("div", { id: "menu", className: "absolute top-0 left-0  w-full h-full" }, /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 p-2 flex text-white bg-menuBackground bg-opacity-50 rounded-br-md w-auto h-auto" }, /* @__PURE__ */ window.jsx("div", { className: "h-12 w-60 bg-menuBackgroundAccent rounded-md pt-1" }, /* @__PURE__ */ window.jsx("div", { className: "w-full pl-4 pr-4 text-center" }, this.world.get(AccountInfo.username), ": ", /* @__PURE__ */ window.jsx("span", { className: "text-yellow-400  w-auto" }, "\u{1F3C6}", this.world.get(AccountInfo.trophies))), /* @__PURE__ */ window.jsx("div", { className: "flex" }, /* @__PURE__ */ window.jsx("div", { className: "w-3/4 h-4 ml-2 bg-menuBackground rounded-full flex" }, /* @__PURE__ */ window.jsx(
+          return /* @__PURE__ */ window.jsx(MenuBackground, null, /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 p-2 flex text-white bg-menuBackground bg-opacity-50 rounded-br-md w-auto h-auto" }, /* @__PURE__ */ window.jsx("div", { className: "h-12 w-60 bg-menuBackgroundAccent rounded-md pt-1" }, /* @__PURE__ */ window.jsx("div", { className: "w-full pl-4 pr-4 text-center" }, this.world.get(AccountInfo.username), ": ", /* @__PURE__ */ window.jsx("span", { className: "text-yellow-400  w-auto" }, "\u{1F3C6}", this.world.get(AccountInfo.trophies))), /* @__PURE__ */ window.jsx("div", { className: "flex" }, /* @__PURE__ */ window.jsx("div", { className: "w-3/4 h-4 ml-2 bg-menuBackground rounded-full flex" }, /* @__PURE__ */ window.jsx(
             "div",
             {
               className: "h-full bg-primary rounded-full brightness-150 text-center justify-center flex items-center text-sm text-black",
@@ -48660,7 +51281,7 @@ void main(void)\r
               }
             },
             winsIntoLevel / levelTotalWins > 0.5 ? text : ""
-          ), /* @__PURE__ */ window.jsx("div", { className: "h-full flex-grow text-white text-center justify-center flex align-middle items-center text-sm" }, winsIntoLevel / levelTotalWins < 0.5 ? text : "")), /* @__PURE__ */ window.jsx("div", { className: "flex items-center h-4 pl-2" }, "Lvl ", level + 1))), this.world.get(AccountInfo.isGuest) ? "" : /* @__PURE__ */ window.jsx("div", { className: "ml-2 h-12 w-20 bg-menuBackgroundAccent rounded-md text-center flex justify-center flex-col" }, /* @__PURE__ */ window.jsx("h1", { className: "text-xl" }, "#", this.world.get(AccountInfo.classRank)), /* @__PURE__ */ window.jsx("h5", { className: "text-sm" }, this.world.get(AccountInfo.class)))), /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build " : "Production build ", " @", lastCommitHash + " ", " (", "Built ", Math.round(timeAgo / 60) + " min ", "ago)"), /* @__PURE__ */ window.jsx(
+          ), /* @__PURE__ */ window.jsx("div", { className: "h-full flex-grow text-white text-center justify-center flex align-middle items-center text-sm" }, winsIntoLevel / levelTotalWins < 0.5 ? text : "")), /* @__PURE__ */ window.jsx("div", { className: "flex items-center h-4 pl-2" }, "Lvl ", level + 1))), this.world.get(AccountInfo.isGuest) ? "" : /* @__PURE__ */ window.jsx("div", { className: "ml-2 h-12 w-20 bg-menuBackgroundAccent rounded-md text-center flex justify-center flex-col" }, /* @__PURE__ */ window.jsx("h1", { className: "text-xl" }, "#", this.world.get(AccountInfo.classRank)), /* @__PURE__ */ window.jsx("h5", { className: "text-sm" }, this.world.get(AccountInfo.class)))), /* @__PURE__ */ window.jsx("div", { className: "absolute left-0 bottom-0 m-2 text-white" }, devMode ? "Development Build " : "Production build ", " @", lastCommitHash + " ", " (", "Built ", Math.round(timeAgo / 60) + " hrs ", "ago)"), /* @__PURE__ */ window.jsx(
             "div",
             {
               className: "absolute pr-2 w-16 h-52 left-0 top-[50%] transform -translate-y-1/2 text-white bg-menuBackground rounded-tr-md rounded-br-md\r\n                     bg-opacity-50 flex items-center justify-center flex-col"
@@ -48764,7 +51385,7 @@ void main(void)\r
               }
             },
             "PLAY"
-          ))));
+          )));
         }
         connectToRemote() {
           const input = /* @__PURE__ */ window.jsx(
@@ -48837,19 +51458,28 @@ void main(void)\r
             });
             this.world.get(ServerConnection).fetch("/matchmaking/enterQueue", {
               searchParams: {
-                id: this.world.get(NetworkConnection).id,
                 email: this.world.get(AccountInfo.email)
               }
+            }).then(async ({ gameId }) => {
+              play.innerHTML = "Verifying Opponent...";
+              return this.world.get(ServerConnection).fetch("/matchmaking/startGame", {
+                searchParams: {
+                  gameId,
+                  id: this.world.get(NetworkConnection).id
+                }
+              });
             }).then(async (serverRes) => {
-              const { remoteId, isHost, matchId } = serverRes;
-              this.world.add(matchId, "matchId");
+              const { remoteId, isHost, gameId } = serverRes;
+              this.world.add(gameId, "matchId");
               this.world.add(true, "rankedGame");
+              play.innerHTML = "Connecting...";
+              console.log(isHost);
               if (!isHost)
                 return res();
-              play.innerHTML = "Establishing Connection";
               const nc = this.world.get(NetworkConnection);
               try {
                 await nc.connect(remoteId);
+                console.log("Queueing start");
                 this.queueMultiplayerGameStart();
               } catch (e3) {
                 showDialog({
@@ -48874,6 +51504,7 @@ void main(void)\r
         }
         async queueMultiplayerGameStart() {
           const startFrame = this.world.get(NetworkConnection).framesConnected + 20;
+          document.querySelector("#playButton").innerHTML = "Starting...";
           this.world.get(NetworkConnection).send("start_game", startFrame);
           await awaitFrame(this.world, startFrame);
           this.world.get(StateManager).fadeTo(MultiplayerGame);
@@ -48922,6 +51553,7 @@ void main(void)\r
             nc.post("playerChange");
             this.world.set("remotePlayer", await nc.fetch("currentPlayer"));
             this.world.set("remoteUser", await nc.fetch("username"));
+            this.world.set("remoteEmail", await nc.fetch("email"));
           });
           nc.addEndpoint("currentGameMode", () => {
             return this.world.get("selectedGameMode");
@@ -48932,9 +51564,15 @@ void main(void)\r
             document.querySelector("#gameModeButton").innerHTML = GameModes[mode].name;
           });
           nc.on("start_game", async (frame) => {
+            document.querySelector("#playButton").innerHTML = "Starting...";
             await awaitFrame(this.world, frame);
             this.world.get(StateManager).fadeTo(MultiplayerGame);
           });
+          nc.addEndpoint(
+            "gameOver",
+            () => this.world.get(StateManager).currentState === GameOverState
+          );
+          nc.addEndpoint("email", () => this.world.get(AccountInfo.email));
         }
       };
     }
@@ -48958,7 +51596,6 @@ void main(void)\r
         username: At.string,
         trophies: At.number,
         wins: At.number,
-        totalWins: At.number,
         class: At.enum("Freshman", "Sophomore", "Junior", "Senior"),
         classRank: At.number,
         overallRank: At.number
@@ -49046,13 +51683,14 @@ void main(void)\r
           });
           if (!info)
             return;
+          console.log(info);
           this.world.add(
             new AccountInfo({
               email: info.email,
               isGuest: false,
               username: info.username,
               trophies: info.trophies,
-              totalWins: info.wins,
+              wins: info.wins,
               class: info.class,
               classRank: info.classRank,
               overallRank: info.overallRank
@@ -49095,13 +51733,13 @@ void main(void)\r
       init_funds();
       init_game_over();
       init_loop();
-      init_multiplayer_input();
       init_player();
       init_match_info();
       init_login();
       init_player_stats();
       init_facing();
       init_animation();
+      init_lib39();
       Countdown = Pt(At.number.logged());
       console.log("Countdown", Countdown.id);
       MatchTimer = Pt(At.number.logged());
@@ -49117,6 +51755,7 @@ void main(void)\r
           let player2Name = this.world.get(
             this.world.get(NetworkConnection).isPlayer1() ? "remotePlayer" : "localPlayer"
           );
+          sound.play("ingame", { loop: true });
           const width = this.world.get("screenWidth");
           const height = this.world.get("screenHeight");
           const player1 = Player(width / 4, 32, player1Name);
@@ -49220,12 +51859,12 @@ void main(void)\r
           );
           this.hud.updatePlayer1UltBar(this.player1.get(PlayerInfo.ultPercent));
           this.hud.updatePlayer2UltBar(this.player2.get(PlayerInfo.ultPercent));
-          if (this.player1.get(Funds) >= PlayerInfo.globals.targetFunds || this.player2.get(Funds) >= PlayerInfo.globals.targetFunds) {
-            pause();
-            this.world.get(StateManager).moveTo(GameOverState).then(() => resume(this.world));
+          if ((this.player1.get(Funds) >= PlayerInfo.globals.targetFunds || this.player2.get(Funds) >= PlayerInfo.globals.targetFunds) && this.world.get(StateManager).currentlyMovingTo !== GameOverState) {
+            this.world.get(StateManager).moveTo(GameOverState);
           }
         }
         async onLeave(to) {
+          sound.stopAll();
           const nc = this.world.get(NetworkConnection);
           this.world.add(
             new MatchInfo({
@@ -49261,11 +51900,6 @@ void main(void)\r
           this.world.remove(Countdown);
           this.world.clearScripts();
           this.world.get(RollbackManager).disableRollback();
-          const mi = this.world.get(MultiplayerInput);
-          mi.knownFutureInputs.clear();
-          mi.buffers = {};
-          mi.ready = false;
-          mi.init();
           await super.onLeave(to);
         }
       };
@@ -49273,12 +51907,12 @@ void main(void)\r
   });
 
   // src/ts/game/scripts/players/common.ts
-  function applyDefaultMovement(entity, input, id) {
+  function applyDefaultMovement(entity, input, id3) {
     if (entity.world.get(CountdownClass) >= 0)
       return;
     const spritePrefix = Players[entity.get(PlayerIdentifier)].spriteName;
     const spritePostfix = entity.get(AnimatedSprite2.spriteName).split("-")[1];
-    entity.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+    entity.update(Velocity.x, input.get("x", id3) * PlayerInfo.globals.speed);
     if (entity.get(Velocity.x) > 0 && entity.get(Facing) !== "right") {
       entity.set(Facing.id, "right");
       AnimatedSprite2.onChangeDirection(entity);
@@ -49286,7 +51920,7 @@ void main(void)\r
       entity.set(Facing.id, "left");
       AnimatedSprite2.onChangeDirection(entity);
     }
-    if (input.get("y", id) < -0.3 && entity.get(PlayerInfo.canJump)) {
+    if (input.get("y", id3) < -0.3 && entity.get(PlayerInfo.canJump)) {
       AnimatedSprite2.changeSprite(entity, spritePrefix + "-jump", 3, false, 8);
       entity.set(Velocity.y, -PlayerInfo.globals.jumpHeight);
       entity.set(PlayerInfo.canJump, false);
@@ -49305,10 +51939,10 @@ void main(void)\r
       entity.set(Position.y, -256);
     }
   }
-  function applyDefaultShooting(entity, input, id) {
+  function applyDefaultShooting(entity, input, id3) {
     if (entity.world.get(CountdownClass) >= 0)
       return;
-    if (input.is("shoot", "PRESSED", id) && entity.get(PlayerInfo.shootCooldown) <= 0) {
+    if (input.is("shoot", "PRESSED", id3) && entity.get(PlayerInfo.shootCooldown) <= 0) {
       entity.set(PlayerInfo.shootCooldown, PlayerInfo.globals.fireCooldown);
       entity.inc(PlayerStats.bulletsShot);
       BulletEnt(
@@ -49316,8 +51950,8 @@ void main(void)\r
         5,
         entity.get(Position.x),
         entity.get(Position.y),
-        Math.cos(input.get("aim", id)) * 20,
-        Math.sin(input.get("aim", id)) * 20
+        Math.cos(input.get("aim", id3)) * 20,
+        Math.sin(input.get("aim", id3)) * 20
       );
     } else {
       entity.inc(PlayerInfo.shootCooldown, -1);
@@ -49485,8 +52119,8 @@ void main(void) {
       init_filter_glow();
       MrCarrierPlayer = function() {
         const input = this.world.get(MultiplayerInput);
-        const id = this.get(PeerId);
-        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id) && !this.get(PlayerInfo.inUlt)) {
+        const id3 = this.get(PeerId);
+        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id3) && !this.get(PlayerInfo.inUlt)) {
           this.set(PlayerInfo.inUlt, true);
           this.inc(PlayerStats.ultsUsed);
           this.set(PlayerInfo.ultPercent, 100);
@@ -49505,17 +52139,17 @@ void main(void) {
           this.get(Sprite).filters = [];
         }
         if (this.get(PlayerInfo.inUlt)) {
-          if (input.get("y", id) >= 0) {
+          if (input.get("y", id3) >= 0) {
             this.inc(Velocity.y, PlayerInfo.globals.gravity / 2);
           } else {
-            this.inc(Velocity.y, input.get("y", id) / 100);
+            this.inc(Velocity.y, input.get("y", id3) / 100);
             if (this.get(Velocity.y) < -PlayerInfo.globals.gravity) {
               this.set(Velocity.y, -PlayerInfo.globals.gravity);
             }
           }
-          this.inc(Velocity.y, Math.min(input.get("y", id), 0));
+          this.inc(Velocity.y, Math.min(input.get("y", id3), 0));
           this.inc(PlayerInfo.ultPercent, -1 / 3);
-          this.update(Velocity.x, input.get("x", id) * PlayerInfo.globals.speed);
+          this.update(Velocity.x, input.get("x", id3) * PlayerInfo.globals.speed);
           if (this.get(Velocity.x) > 0 && this.get(Facing) !== "right") {
             this.set(Facing.id, "right");
             AnimatedSprite2.onChangeDirection(this);
@@ -49524,9 +52158,9 @@ void main(void) {
             AnimatedSprite2.onChangeDirection(this);
           }
         } else {
-          applyDefaultMovement(this, input, id);
+          applyDefaultMovement(this, input, id3);
         }
-        applyDefaultShooting(this, input, id);
+        applyDefaultShooting(this, input, id3);
       };
     }
   });
@@ -49547,9 +52181,9 @@ void main(void) {
       init_filter_glow();
       LaserPlayer = function() {
         const input = this.world.get(MultiplayerInput);
-        const id = this.get(PeerId);
-        applyDefaultMovement(this, input, id);
-        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id) && !this.get(PlayerInfo.inUlt)) {
+        const id3 = this.get(PeerId);
+        applyDefaultMovement(this, input, id3);
+        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id3) && !this.get(PlayerInfo.inUlt)) {
           this.set(PlayerInfo.inUlt, true);
           this.inc(PlayerStats.ultsUsed);
           this.set(PlayerInfo.ultPercent, 100);
@@ -49563,10 +52197,10 @@ void main(void) {
           ];
         }
         if (this.get(PlayerInfo.inUlt)) {
-          if (input.is("shoot", "JUST_RELEASED", id)) {
+          if (input.is("shoot", "JUST_RELEASED", id3)) {
             for (let i2 = 0; i2 < 10; i2++) {
-              const velX = Math.cos(input.get("aim", id));
-              const velY = Math.sin(input.get("aim", id));
+              const velX = Math.cos(input.get("aim", id3));
+              const velY = Math.sin(input.get("aim", id3));
               this.inc(PlayerStats.bulletsShot);
               BulletEnt(
                 this,
@@ -49584,7 +52218,7 @@ void main(void) {
               this.get(Container).filters = [];
             }
             this.get(Container).getChildByName("aimguide")?.removeFromParent();
-          } else if (input.is("shoot", "PRESSED", id)) {
+          } else if (input.is("shoot", "PRESSED", id3)) {
             const container = this.get(Container);
             if (container.children.length == 0) {
               const graphics = new Graphics();
@@ -49594,10 +52228,10 @@ void main(void) {
               graphics.name = "aimguide";
               container.addChild(graphics);
             }
-            container.getChildByName("aimguide").rotation = input.get("aim", id);
+            container.getChildByName("aimguide").rotation = input.get("aim", id3);
           }
         } else {
-          applyDefaultShooting(this, input, id);
+          applyDefaultShooting(this, input, id3);
         }
       };
     }
@@ -49672,6 +52306,8 @@ void main(void) {
       init_players();
       init_server();
       init_login();
+      init_multiplayer_input();
+      init_loop();
       GameOverState = class extends State {
         element = /* @__PURE__ */ window.jsx("div", { className: "absolute top-0 left-0 w-full h-full z-50" });
         menuState;
@@ -49682,35 +52318,52 @@ void main(void) {
           });
         }
         async onEnter() {
-          console.trace("Entered Game Over state");
+          const nc = this.world.get(NetworkConnection);
           document.body.appendChild(this.element);
           this.element.appendChild(this.getHTML());
-          const winner = this.world.get(MatchInfo).info.winner === "player1" ? this.world.get(NetworkConnection).player1 : this.world.get(NetworkConnection).player2;
-          console.log(winner);
-          this.world.get(NetworkConnection).close();
+          const player1Email = this.world.get(
+            nc.isPlayer1() ? AccountInfo.email : "remoteEmail"
+          );
+          const player2Email = this.world.get(
+            nc.isPlayer1() ? "remoteEmail" : AccountInfo.email
+          );
+          const winner = this.world.get(MatchInfo).info.winner === "player1" ? player1Email : player2Email;
+          pause();
+          this.world.remove(MatchInfo);
+          const mi = this.world.get(MultiplayerInput);
+          mi.knownFutureInputs.clear();
+          mi.buffers = {};
+          mi.ready = false;
+          mi.init();
           const results = await this.world.get(ServerConnection).fetch("/matchmaking/gameOver", {
             searchParams: {
               isGuest: this.world.get(AccountInfo.isGuest).toString(),
               id: this.world.get(NetworkConnection).id,
-              matchId: this.world.get("matchId"),
+              gameId: this.world.get("matchId"),
               email: this.world.get(AccountInfo.email),
               winner
             }
           });
           console.log("Got game over results", results);
-          if (this.world.get(NetworkConnection).id === results.winner) {
+          if (this.world.get(AccountInfo.email) === results.winner) {
+            console.log(
+              "Adding winnings",
+              this.world.get(AccountInfo.trophies) + results.trophies,
+              this.world.get(AccountInfo.wins)
+            );
             this.world.set(
               AccountInfo.trophies,
-              this.world.get(AccountInfo.trophies) + results.trophiesAwarded
+              this.world.get(AccountInfo.trophies) + results.trophies
             );
             this.world.set(AccountInfo.wins, this.world.get(AccountInfo.wins) + 1);
           } else {
+            console.log(
+              "Removing trophies",
+              Math.max(this.world.get(AccountInfo.trophies) - results.trophies, 0)
+            );
             this.world.set(
               AccountInfo.trophies,
-              Math.max(
-                this.world.get(AccountInfo.trophies) - results.trophiesAwarded,
-                0
-              )
+              Math.max(this.world.get(AccountInfo.trophies) - results.trophies, 0)
             );
           }
         }
@@ -49768,7 +52421,10 @@ void main(void) {
             {
               className: "ml-auto",
               id: "playButton",
-              onclick: () => this.world.get(StateManager).moveTo(this.menuState)
+              onclick: () => {
+                this.world.get(StateManager).moveTo(this.menuState);
+                this.world.get(NetworkConnection).close();
+              }
             },
             "Exit"
           )));
@@ -49776,6 +52432,7 @@ void main(void) {
         async onLeave() {
           this.element.remove();
           this.element.innerHTML = "";
+          resume(this.world);
         }
       };
     }
@@ -49911,6 +52568,8 @@ void main(void) {
       init_login();
       init_players();
       init_network();
+      init_server();
+      init_dialogs();
       Preload = class extends State {
         async onEnter(payload, from) {
           const loader = document.querySelector("#preloadScreen");
@@ -49929,9 +52588,39 @@ void main(void) {
           setTimeout(() => {
             loader.remove();
           }, 1e3);
-          this.world.get(StateManager).moveTo(Login);
+          let shouldContinue = true;
+          await this.world.get(ServerConnection).fetch("/healthcheck", { useBaseUrl: true, leaveRaw: true }).catch((e3) => {
+            console.error("Server not available", e3);
+            showDialog({
+              title: "Couldn't reach server",
+              message: "School WIFI sometimes blocks the server, if you are connected to the school network, try using your phone's hotspot and reloading. If not, more than likely the servers are crashed, try again later.",
+              hideCancelButton: true
+            });
+            shouldContinue = false;
+          });
+          if (shouldContinue)
+            this.world.get(StateManager).moveTo(Login);
+        }
+        loadImage(url2) {
+          return new Promise((resolve2, reject) => {
+            const img = new Image();
+            img.src = window.DIST_URL + url2;
+            img.onload = () => resolve2(img);
+            img.onerror = reject;
+          });
         }
         async loadAssets() {
+          await this.loadImage("/assets/Carrier.png");
+          await this.loadImage("/assets/Gismo.png");
+          await this.loadImage("/assets/background.png");
+          await Assets.load({
+            src: window.DIST_URL + "/assets/menu.mp3",
+            alias: "menu"
+          });
+          await Assets.load({
+            src: window.DIST_URL + "/assets/ingame_music.mp3",
+            alias: "ingame"
+          });
           await Assets.load(window.DIST_URL + "/assets/atlas.json");
         }
         initBindings() {
@@ -49939,7 +52628,10 @@ void main(void) {
           const zero = new Point(0, 0);
           input.addInputMethod("KBM", {
             x: new CombinedBinding({ KeyA: -1, KeyD: 1 }),
-            y: new CombinedBinding({ KeyW: -1, KeyS: 1 }),
+            y: new CombinedBinding(
+              { KeyW: -1, KeyS: 1, Space: -1 },
+              { max: 1, min: -1 }
+            ),
             // aim: new AdvancedAngleBinding({
             //     originX: () => 0,
             //     // this.world.get(StateManager).currentState === MultiplayerGameState

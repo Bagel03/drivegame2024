@@ -1,7 +1,7 @@
 import { Server } from "http";
 import { handleAccountRequests } from "./accounts.js";
-import { handleMatchmakingRequests } from "./matchmaking.js";
-import { awaitDatabase, cyan, green, reset } from "./database.js";
+import { handleMatchmakingRequests } from "./matchmaking2.js";
+import { DATABASE, awaitDatabase, cyan, green, reset } from "./database.js";
 
 const server = new Server(async (req, res) => {
     try {
@@ -55,4 +55,11 @@ awaitDatabase.then(() => {
             }${green}!${reset}`
         );
     });
+
+    setInterval(() => {
+        console.log("Saving database...");
+        DATABASE.accounts.save();
+        DATABASE.matches.save();
+        console.log("Saved database");
+    }, 1000 * 60 * 2);
 });

@@ -27,7 +27,6 @@ export class MultiplayerEntityManager extends EntityManager {
     rollback(numFrames: number) {
         for (let i = numFrames; i >= 0; i--) {
             if (!this.log[i]) continue;
-            console.log("Entity manager rollback ", this.log[i]);
             //@ts-ignore
             this.entities = this.log[i];
             break;

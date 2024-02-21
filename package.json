@@ -24,6 +24,7 @@
     "@capacitor/status-bar": "5.0.6",
     "@codetrix-studio/capacitor-google-auth": "^3.3.6",
     "@pixi/filter-glow": "^5.2.1",
+    "@pixi/sound": "^5.2.3",
     "bagelecs": "^0.0.3",
     "esbuild": "^0.20.0",
     "peerjs": "^1.5.1",

@@ -85,11 +85,20 @@ type PartialRecord<K extends string | number | symbol, T> = { [key in K]?: T };
 export class CombinedBinding<T extends number> extends AnalogBinding {
     public readonly inputs: (AnalogInput | DigitalInput)[];
     public readonly weights: number[];
+
+    public readonly max: number;
+    public readonly min: number;
+
     constructor(
-        inputsAndWeights: { [key in AnalogInput | DigitalInput]?: number } //<AnalogInput | DigitalInput, number>
+        inputsAndWeights: { [key in AnalogInput | DigitalInput]?: number },
+        { max, min }: { max: number; min: number } = {
+            max: Infinity,
+            min: -Infinity,
+        }
     ) {
         super();
-
+        this.max = max;
+        this.min = min;
         this.inputs = Object.keys(inputsAndWeights);
         this.weights = Object.values(inputsAndWeights).filter(
             (n): n is number => n !== undefined
@@ -101,7 +110,7 @@ export class CombinedBinding<T extends number> extends AnalogBinding {
         for (let i = 0; i < this.inputs.length; i++) {
             sum += input.getRaw(this.inputs[i]) * this.weights[i];
         }
-        return sum;
+        return Math.max(this.min, Math.min(this.max, sum));
     }
 }
 

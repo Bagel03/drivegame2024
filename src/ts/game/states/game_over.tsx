@@ -7,11 +7,14 @@ import {
     StateManager,
 } from "../../engine/state_managment";
 import { AccentButton, PrimaryButton } from "../hud/components/button";
-import type { Menu } from "./menu";
+import { Menu } from "./menu";
 import { MatchInfo } from "../components/match_info";
 import { Players } from "../players";
 import { ServerConnection } from "../../engine/server";
 import { AccountInfo } from "./login";
+import { showDialog } from "../hud/components/dialogs";
+import { MultiplayerInput } from "../../engine/multiplayer/multiplayer_input";
+import { pause, resume } from "../../engine/loop";
 
 export class GameOverState extends State<never> {
     public element = (
@@ -27,17 +30,45 @@ export class GameOverState extends State<never> {
     }
 
     async onEnter() {
-        console.trace("Entered Game Over state");
+        // await Promise.timeout(100);
+        const nc = this.world.get(NetworkConnection);
+        // if (!(await nc.fetch("gameOver")) && nc.isConnected) {
+        //     showDialog({
+        //         title: "Unstable Connection",
+        //         message:
+        //             "Your client believes it has won, while the remote client does not. This match will not count",
+        //         hideCancelButton: true,
+        //         onok: async () => {
+        //             this.world.get(StateManager).fadeTo(this.menuState);
+        //         },
+        //     });
+        //     return;
+        // }
+
         document.body.appendChild(this.element);
         this.element.appendChild(this.getHTML());
 
+        const player1Email = this.world.get<string>(
+            nc.isPlayer1() ? AccountInfo.email : "remoteEmail"
+        );
+        const player2Email = this.world.get<string>(
+            nc.isPlayer1() ? "remoteEmail" : AccountInfo.email
+        );
+
         const winner =
             this.world.get(MatchInfo).info.winner === "player1"
-                ? this.world.get(NetworkConnection).player1
-                : this.world.get(NetworkConnection).player2;
+                ? player1Email // this.world.get(NetworkConnection).player1
+                : player2Email; //this.world.get(NetworkConnection).player2;
 
-        console.log(winner);
-        this.world.get(NetworkConnection).close();
+        pause();
+        this.world.remove(MatchInfo);
+        const mi = this.world.get(MultiplayerInput);
+        mi.knownFutureInputs.clear();
+        //@ts-ignore
+        mi.buffers = {};
+        mi.ready = false;
+        mi.init();
+        // this.world.get(NetworkConnection).close();
 
         const results = await this.world
             .get(ServerConnection)
@@ -45,7 +76,7 @@ export class GameOverState extends State<never> {
                 searchParams: {
                     isGuest: this.world.get(AccountInfo.isGuest).toString(),
                     id: this.world.get(NetworkConnection).id,
-                    matchId: this.world.get("matchId"),
+                    gameId: this.world.get("matchId"),
                     email: this.world.get(AccountInfo.email),
                     winner,
                 },
@@ -53,20 +84,26 @@ export class GameOverState extends State<never> {
 
         console.log("Got game over results", results);
 
-        if (this.world.get(NetworkConnection).id === results.winner) {
+        if (this.world.get(AccountInfo.email) === results.winner) {
+            console.log(
+                "Adding winnings",
+                this.world.get(AccountInfo.trophies) + results.trophies,
+                this.world.get(AccountInfo.wins)
+            );
             this.world.set(
                 AccountInfo.trophies,
-                this.world.get(AccountInfo.trophies) + results.trophiesAwarded
+                this.world.get(AccountInfo.trophies) + results.trophies
             );
             this.world.set(AccountInfo.wins, this.world.get(AccountInfo.wins) + 1);
             // Play some animation
         } else {
+            console.log(
+                "Removing trophies",
+                Math.max(this.world.get(AccountInfo.trophies) - results.trophies, 0)
+            );
             this.world.set(
                 AccountInfo.trophies,
-                Math.max(
-                    this.world.get(AccountInfo.trophies) - results.trophiesAwarded,
-                    0
-                )
+                Math.max(this.world.get(AccountInfo.trophies) - results.trophies, 0)
             );
         }
     }
@@ -156,9 +193,10 @@ export class GameOverState extends State<never> {
                     <PrimaryButton
                         className="ml-auto"
                         id="playButton"
-                        onclick={() =>
-                            this.world.get(StateManager).moveTo(this.menuState)
-                        }
+                        onclick={() => {
+                            this.world.get(StateManager).moveTo(this.menuState);
+                            this.world.get(NetworkConnection).close();
+                        }}
                     >
                         Exit
                     </PrimaryButton>
@@ -170,5 +208,6 @@ export class GameOverState extends State<never> {
     async onLeave() {
         this.element.remove();
         this.element.innerHTML = "";
+        resume(this.world);
     }
 }
