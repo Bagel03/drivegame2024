@@ -47388,7 +47388,10 @@ void main(void)\r
             }
           }
           this.hashState(newLocalState);
-          if (this.oldHash !== newLocalState.__HASH__ && this.networkConnection.isConnected) {
+          if (
+            // this.oldHash !== newLocalState.__HASH__ &&
+            this.networkConnection.isConnected
+          ) {
             this.networkConnection.send("input", {
               frame: this.networkConnection.framesConnected,
               inputState: newLocalState
