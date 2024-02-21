@@ -51787,15 +51787,15 @@ void main(void)\r
             // Wall((width * 3) / 4 - 30, height - 450, width / 5 - 30, 20, "red"),
             // Wall(width / 2 - 5, height - 680, width / 5 - 30, 20, "red"),
             // Bottom
-            Wall(width / 2, height - 160, width * 4, 20, "red"),
+            Wall(width / 2, height - 50, width * 4, 20, "red"),
             // Middle
             Wall(width / 2 + 20, height - 430, width / 5 + 35, 30, "red"),
             // Bottom platforms
-            Wall(width / 4 + 130, height - 310, width / 5, 30, "red"),
-            Wall(width * 3 / 4 - 90, height - 320, width / 5, 30, "red"),
+            Wall(width / 4 + 130, height - 240, width / 5, 30, "red"),
+            Wall(width * 3 / 4 - 90, height - 245, width / 5, 30, "red")
             // Top Platforms
-            Wall(width / 4 + 130, height - 530, width / 5, 30, "red"),
-            Wall(width * 3 / 4 - 90, height - 540, width / 5, 30, "red")
+            // Wall(width / 4 + 130, height - 530, width / 5, 30, "red"),
+            // Wall((width * 3) / 4 - 90, height - 540, width / 5, 30, "red"),
             // Wall(width / 2, height - 20, width, 30, "red"),
             // Wall(width / 4, height - 200, width / 8, 20, "red"),
             // Wall(width * 0.75, height - 200, width / 8, 20, "red"),
