@@ -81,8 +81,8 @@ export function applyDefaultShooting(
             5,
             entity.get(Position.x),
             entity.get(Position.y),
-            Math.cos(input.get("aim", id)) * 20,
-            Math.sin(input.get("aim", id)) * 20
+            Math.cos(input.get("aim", id)) * 15,
+            Math.sin(input.get("aim", id)) * 15
         );
     } else {
         entity.inc(PlayerInfo.shootCooldown, -1);

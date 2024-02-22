@@ -2,6 +2,7 @@ import { Script } from "../engine/script";
 import { BombPlayer } from "./scripts/players/bombs";
 import { MrCarrierPlayer } from "./scripts/players/carrier";
 import { LaserPlayer } from "./scripts/players/laser";
+import { ShotgunPlayer } from "./scripts/players/shotgun";
 
 export interface PlayerDescriptor {
     name: string;
@@ -55,4 +56,14 @@ export const Players = {
         description:
             "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms",
     },
+    // whitehead: {
+    //     name: "whitehead",
+    //     displayName: "Mr. Whitehead",
+    //     available: true,
+    //     menuPic: window.DIST_URL + "/assets/Whitehead.png", //http://localhost:5500/src/assets/Whitehead.png",
+    //     spriteName: "Whitehead",
+    //     playerScript: ShotgunPlayer,
+    //     description:
+    //         "Even if hes hiding in a spiderman suit, Mr. Whitehead is still better at selling tickets than you, and its not close",
+    // },
 } satisfies Record<string, PlayerDescriptor>;

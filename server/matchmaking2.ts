@@ -222,12 +222,12 @@ export function handleGameOver(
 
 function reorderRanks() {
     const allCC = DATABASE.accounts.rows.filter((r) => !r.isGuest);
-    allCC.sort((a, b) => parseInt(a.trophies) - parseInt(b.trophies));
+    allCC.sort((a, b) => parseInt(b.trophies) - parseInt(a.trophies));
     allCC.forEach((row, i) => (row.overallRank = (i + 1).toString()));
 
     const classRanks = CLASSES.map((c) =>
         DATABASE.accounts.rows.filter((person) => person.class === c)
-    ).map((arr) => arr.sort());
+    ).map((arr) => arr.sort((a, b) => parseInt(b.trophies) - parseInt(a.trophies)));
 
     classRanks.forEach((people) => {
         people.forEach((person, i) => (person.classRank = (i + 1).toString()));

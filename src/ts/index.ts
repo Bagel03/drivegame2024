@@ -8,7 +8,7 @@ import {
 import { editorPlugins } from "./editor/editor";
 import { enginePlugins } from "./engine/engine";
 import { Logger } from "bagelecs";
-import { resume } from "./engine/loop";
+import { DESIRED_FPS, resume } from "./engine/loop";
 import "./engine/jsx-runtime";
 import { StateManager } from "./engine/state_managment";
 import { Login } from "./game/states/login";
@@ -16,7 +16,7 @@ import { Menu } from "./game/states/menu";
 import { ChooseGameMode } from "./game/states/choose_game";
 import { Preload } from "./game/states/preload";
 
-setDefaultLoggedStorageBufferSize(1000);
+setDefaultLoggedStorageBufferSize(DESIRED_FPS * 10);
 // Logger.prototype.log = function () {};
 
 //@ts-ignore

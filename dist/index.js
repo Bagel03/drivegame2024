@@ -47247,7 +47247,7 @@ void main(void)\r
         static getId() {
           return Input.getId();
         }
-        static bufferSize = 120;
+        static bufferSize = DESIRED_FPS * 10;
         watchedBindings = {
           digital: /* @__PURE__ */ new Set(),
           analog: /* @__PURE__ */ new Set()
@@ -47388,7 +47388,10 @@ void main(void)\r
             }
           }
           this.hashState(newLocalState);
-          if (this.oldHash !== newLocalState.__HASH__ && this.networkConnection.isConnected) {
+          if (
+            // this.oldHash !== newLocalState.__HASH__ &&
+            this.networkConnection.isConnected
+          ) {
             this.networkConnection.send("input", {
               frame: this.networkConnection.framesConnected,
               inputState: newLocalState
@@ -47460,10 +47463,14 @@ void main(void)\r
     "src/ts/engine/server.ts"() {
       "use strict";
       ServerConnection = class {
-        baseUrl = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080" : "https://drivegame2024.onrender.com";
-        //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
-        url = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080/api/v1" : "https://drivegame2024.onrender.com/api/v1";
-        //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
+        baseUrl = "https://drivegame2024.onrender.com";
+        // localStorage.getItem("dev-env") === "true"
+        //     ? "http://localhost:8080"
+        //     : "https://drivegame2024.onrender.com"; //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
+        url = "https://drivegame2024.onrender.com/api/v1";
+        // localStorage.getItem("dev-env") === "true"
+        //     ? "http://localhost:8080/api/v1"
+        //     : "https://drivegame2024.onrender.com/api/v1"; //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
         fetch(path2, options) {
           const url2 = new URL((options?.useBaseUrl ? this.baseUrl : this.url) + path2);
           if (options?.searchParams) {
@@ -51787,15 +51794,15 @@ void main(void)\r
             // Wall((width * 3) / 4 - 30, height - 450, width / 5 - 30, 20, "red"),
             // Wall(width / 2 - 5, height - 680, width / 5 - 30, 20, "red"),
             // Bottom
-            Wall(width / 2, height - 160, width * 4, 20, "red"),
+            Wall(width / 2, height - 50, width * 4, 20, "red"),
             // Middle
             Wall(width / 2 + 20, height - 430, width / 5 + 35, 30, "red"),
             // Bottom platforms
-            Wall(width / 4 + 130, height - 310, width / 5, 30, "red"),
-            Wall(width * 3 / 4 - 90, height - 320, width / 5, 30, "red"),
+            Wall(width / 4 + 130, height - 240, width / 5, 30, "red"),
+            Wall(width * 3 / 4 - 90, height - 245, width / 5, 30, "red")
             // Top Platforms
-            Wall(width / 4 + 130, height - 530, width / 5, 30, "red"),
-            Wall(width * 3 / 4 - 90, height - 540, width / 5, 30, "red")
+            // Wall(width / 4 + 130, height - 530, width / 5, 30, "red"),
+            // Wall((width * 3) / 4 - 90, height - 540, width / 5, 30, "red"),
             // Wall(width / 2, height - 20, width, 30, "red"),
             // Wall(width / 4, height - 200, width / 8, 20, "red"),
             // Wall(width * 0.75, height - 200, width / 8, 20, "red"),
@@ -51950,8 +51957,8 @@ void main(void)\r
         5,
         entity.get(Position.x),
         entity.get(Position.y),
-        Math.cos(input.get("aim", id3)) * 20,
-        Math.sin(input.get("aim", id3)) * 20
+        Math.cos(input.get("aim", id3)) * 15,
+        Math.sin(input.get("aim", id3)) * 15
       );
     } else {
       entity.inc(PlayerInfo.shootCooldown, -1);
@@ -52286,6 +52293,16 @@ void main(void) {
           playerScript: MrCarrierPlayer,
           description: "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms"
         }
+        // whitehead: {
+        //     name: "whitehead",
+        //     displayName: "Mr. Whitehead",
+        //     available: true,
+        //     menuPic: window.DIST_URL + "/assets/Whitehead.png", //http://localhost:5500/src/assets/Whitehead.png",
+        //     spriteName: "Whitehead",
+        //     playerScript: ShotgunPlayer,
+        //     description:
+        //         "Even if hes hiding in a spiderman suit, Mr. Whitehead is still better at selling tickets than you, and its not close",
+        // },
       };
     }
   });
@@ -52866,7 +52883,7 @@ void main(void) {
   // src/ts/index.ts
   init_state_managment();
   init_preload();
-  mt(1e3);
+  mt(DESIRED_FPS * 10);
   window.SharedArrayBuffer = ArrayBuffer;
   Object.defineProperty(Error.prototype, "toJSON", {
     value: function() {

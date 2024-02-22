@@ -12,7 +12,11 @@ import { RollbackManager } from "./rollback";
 import { ResourceUpdaterPlugin, ResourceUpdaterSystem } from "../resource";
 import { Diagnostics } from "../diagnostics";
 import { DigitalBinding } from "../input/input_bindings";
-import { DESIRED_FRAME_TIME, runOffSchedulePhysicsUpdate } from "../loop";
+import {
+    DESIRED_FPS,
+    DESIRED_FRAME_TIME,
+    runOffSchedulePhysicsUpdate,
+} from "../loop";
 
 export type InputState = Record<string, number | ButtonState> & {
     __HASH__: number;
@@ -77,7 +81,7 @@ export class MultiplayerInput {
         return Input.getId();
     }
 
-    private static readonly bufferSize = 120;
+    private static readonly bufferSize = DESIRED_FPS * 10;
 
     private readonly watchedBindings = {
         digital: new Set<DigitalBindingKey>(),
@@ -277,7 +281,7 @@ export class MultiplayerInput {
         this.hashState(newLocalState);
 
         if (
-            this.oldHash !== newLocalState.__HASH__ &&
+            // this.oldHash !== newLocalState.__HASH__ &&
             this.networkConnection.isConnected
         ) {
             // console.log(
