@@ -221,7 +221,10 @@ export function handleGameOver(
 }
 
 function reorderRanks() {
-    const allCC = DATABASE.accounts.rows.filter((r) => !r.isGuest);
+    const allCC = DATABASE.accounts.rows.filter(
+        (r) => r.isGuest.toLowerCase() !== "true"
+    );
+
     allCC.sort((a, b) => parseInt(b.trophies) - parseInt(a.trophies));
     allCC.forEach((row, i) => (row.overallRank = (i + 1).toString()));
 

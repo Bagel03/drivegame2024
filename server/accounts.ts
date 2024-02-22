@@ -46,8 +46,9 @@ export async function handleAccountRequests(
             : DATABASE.accounts.rows.filter((row) => row.class === klass).length + 1;
         const overallRank = isGuest
             ? ""
-            : DATABASE.accounts.rows.filter((row) => !Boolean(row.isGuest)).length +
-              1;
+            : DATABASE.accounts.rows.filter(
+                  (row) => row.isGuest.toLowerCase() !== "true"
+              ).length + 1;
         if (!info) {
             info = DATABASE.accounts.addRow({
                 email: jwt.email,
