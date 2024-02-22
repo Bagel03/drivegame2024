@@ -47247,7 +47247,7 @@ void main(void)\r
         static getId() {
           return Input.getId();
         }
-        static bufferSize = 120;
+        static bufferSize = DESIRED_FPS * 10;
         watchedBindings = {
           digital: /* @__PURE__ */ new Set(),
           analog: /* @__PURE__ */ new Set()
@@ -47463,10 +47463,14 @@ void main(void)\r
     "src/ts/engine/server.ts"() {
       "use strict";
       ServerConnection = class {
-        baseUrl = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080" : "https://drivegame2024.onrender.com";
-        //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
-        url = localStorage.getItem("dev-env") === "true" ? "http://localhost:8080/api/v1" : "https://drivegame2024.onrender.com/api/v1";
-        //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
+        baseUrl = "https://drivegame2024.onrender.com";
+        // localStorage.getItem("dev-env") === "true"
+        //     ? "http://localhost:8080"
+        //     : "https://drivegame2024.onrender.com"; //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
+        url = "https://drivegame2024.onrender.com/api/v1";
+        // localStorage.getItem("dev-env") === "true"
+        //     ? "http://localhost:8080/api/v1"
+        //     : "https://drivegame2024.onrender.com/api/v1"; //"https://8v7x2lnc-8080.use.devtunnels.ms/api/v1";
         fetch(path2, options) {
           const url2 = new URL((options?.useBaseUrl ? this.baseUrl : this.url) + path2);
           if (options?.searchParams) {
@@ -51953,8 +51957,8 @@ void main(void)\r
         5,
         entity.get(Position.x),
         entity.get(Position.y),
-        Math.cos(input.get("aim", id3)) * 20,
-        Math.sin(input.get("aim", id3)) * 20
+        Math.cos(input.get("aim", id3)) * 15,
+        Math.sin(input.get("aim", id3)) * 15
       );
     } else {
       entity.inc(PlayerInfo.shootCooldown, -1);
@@ -52240,6 +52244,70 @@ void main(void) {
     }
   });
 
+  // src/ts/game/scripts/players/shotgun.ts
+  var ShotgunPlayer;
+  var init_shotgun = __esm({
+    "src/ts/game/scripts/players/shotgun.ts"() {
+      "use strict";
+      init_multiplayer_input();
+      init_network();
+      init_position();
+      init_bullet();
+      init_player_info();
+      init_common();
+      init_lib38();
+      init_player_stats();
+      init_filter_glow();
+      ShotgunPlayer = function() {
+        const input = this.world.get(MultiplayerInput);
+        const id3 = this.get(PeerId);
+        applyDefaultMovement(this, input, id3);
+        if (this.get(PlayerInfo.ultPercent) >= 100 && input.is("ult", "PRESSED", id3) && !this.get(PlayerInfo.inUlt)) {
+          this.set(PlayerInfo.inUlt, true);
+          this.inc(PlayerStats.ultsUsed);
+          this.set(PlayerInfo.ultPercent, 100);
+          this.get(Container).filters = [
+            new l4({
+              color: 65280,
+              outerStrength: 3,
+              innerStrength: 1,
+              distance: 15
+            })
+          ];
+        }
+        const shotgunRange = Math.PI / 3;
+        const shotgunBullets = 10;
+        if (this.get(PlayerInfo.inUlt)) {
+          if (input.is("shoot", "JUST_RELEASED", id3)) {
+            for (let i2 = 0; i2 < shotgunBullets; i2++) {
+              const angle = input.get("aim", id3) - shotgunRange / 2 + shotgunRange * i2 / shotgunBullets;
+              const velX = Math.cos(angle);
+              const velY = Math.sin(angle);
+              this.inc(PlayerStats.bulletsShot);
+              BulletEnt(
+                this,
+                5,
+                this.get(Position.x) + velX,
+                this.get(Position.y) + velY,
+                velX * 15,
+                velY * 15
+              );
+            }
+            this.inc(PlayerInfo.ultPercent, -34);
+            if (this.get(PlayerInfo.ultPercent) <= 0) {
+              this.set(PlayerInfo.inUlt, false);
+              this.set(PlayerInfo.ultPercent, 0);
+              this.get(Container).filters = [];
+            }
+          } else if (input.is("shoot", "PRESSED", id3)) {
+          }
+        } else {
+          applyDefaultShooting(this, input, id3);
+        }
+      };
+    }
+  });
+
   // src/ts/game/players.ts
   var Players;
   var init_players = __esm({
@@ -52247,6 +52315,7 @@ void main(void) {
       "use strict";
       init_carrier();
       init_laser();
+      init_shotgun();
       Players = {
         // carrier: {
         //     name: "carrier",
@@ -52288,6 +52357,16 @@ void main(void) {
           spriteName: "Carrier",
           playerScript: MrCarrierPlayer,
           description: "Mr. Carrier runs around trying to sell drive tickets to all the freshman who were mad their mom didn't turn in their drive shirt forms"
+        },
+        whitehead: {
+          name: "whitehead",
+          displayName: "Mr. Whitehead",
+          available: true,
+          menuPic: window.DIST_URL + "/assets/Whitehead.png",
+          //http://localhost:5500/src/assets/Whitehead.png",
+          spriteName: "Whitehead",
+          playerScript: ShotgunPlayer,
+          description: "Even if hes hiding in a spiderman suit, Mr. Whitehead is still better at selling tickets than you, and its not close"
         }
       };
     }
@@ -52869,7 +52948,7 @@ void main(void) {
   // src/ts/index.ts
   init_state_managment();
   init_preload();
-  mt(1e3);
+  mt(DESIRED_FPS * 10);
   window.SharedArrayBuffer = ArrayBuffer;
   Object.defineProperty(Error.prototype, "toJSON", {
     value: function() {
